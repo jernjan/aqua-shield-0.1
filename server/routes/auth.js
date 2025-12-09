@@ -2,7 +2,6 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { getUserByEmail, getUser, saveUser } from '../db.js';
-import { v4 as uuidv4 } from 'crypto';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-prod';
