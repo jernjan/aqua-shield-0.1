@@ -1,0 +1,26 @@
+# render.yaml - AquaShield deployment config
+# See DEPLOY.md for instructions
+
+services:
+  # API service
+  - type: web
+    name: aqua-shield-api
+    runtime: node
+    buildCommand: "cd server && npm install"
+    startCommand: "cd server && npm start"
+    port: 3001
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: "3001"
+      - key: JWT_SECRET
+        generateValue: true
+
+  # Frontend (static)
+  - type: static_site
+    name: aqua-shield-web
+    buildCommand: "cd client && npm install && npm run build"
+    staticPublishPath: client/dist
+    routes:
+      - path: /
+        destination: /index.html
