@@ -1,6 +1,6 @@
-import express from 'express';
-import { authMiddleware } from './auth.js';
-import { getUser, saveUser } from '../db.js';
+const express = require('express');
+const { authMiddleware } = require('./auth.js');
+const { getUser, saveUser } = require('../db.js');
 
 const router = express.Router();
 
@@ -35,4 +35,4 @@ router.post('/select-sites', authMiddleware, async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

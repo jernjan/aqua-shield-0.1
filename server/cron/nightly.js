@@ -1,11 +1,11 @@
-import { readDB, saveAlert, getUser } from '../db.js';
-import { getAllFacilities, getUserFacilities } from '../utils/barentswatch.js';
-import { getAllVessels, getUserVessels } from '../utils/ais.js';
-import { calculateFacilityRisk, calculateVesselRisk, getRiskLevel } from '../utils/risk.js';
-import { sendEmail, generateFacilitySMS, generateVesselSMS } from '../utils/notify.js';
+const { readDB, saveAlert, getUser } = require('../db.js');
+const { getAllFacilities, getUserFacilities } = require('../utils/barentswatch.js');
+const { getAllVessels, getUserVessels } = require('../utils/ais.js');
+const { calculateFacilityRisk, calculateVesselRisk, getRiskLevel } = require('../utils/risk.js');
+const { sendEmail, generateFacilitySMS, generateVesselSMS } = require('../utils/notify.js');
 
 // Run every night at 03:00 UTC+1
-export function scheduleCronJob() {
+function scheduleCronJob() {
   // For development, run every minute for testing
   // In production, use a proper cron library (node-cron or scheduled task)
   
@@ -23,7 +23,7 @@ export function scheduleCronJob() {
   // }, { timezone: 'Europe/Oslo' });
 }
 
-export async function runNightlyAnalysis() {
+async function runNightlyAnalysis() {
   try {
     console.log('🌙 Starting nightly analysis...');
     
@@ -128,3 +128,8 @@ export async function runNightlyAnalysis() {
     console.error('❌ Nightly analysis failed:', err);
   }
 }
+
+module.exports = {
+  scheduleCronJob,
+  runNightlyAnalysis
+};

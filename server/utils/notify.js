@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+const nodemailer = require('nodemailer');
 
 const TWILIO_SID = process.env.TWILIO_SID || '';
 const TWILIO_TOKEN = process.env.TWILIO_TOKEN || '';
@@ -23,7 +23,7 @@ if (SMTP_USER && SMTP_PASS) {
 
 // TODO: In production, implement real Twilio SMS sending
 // For MVP: log to console and DB
-export async function sendSMS(phone, message) {
+async function sendSMS(phone, message) {
   try {
     console.log(`📱 SMS to ${phone}: ${message}`);
     
@@ -44,7 +44,7 @@ export async function sendSMS(phone, message) {
 }
 
 // TODO: Real email sending (using nodemailer templates)
-export async function sendEmail(email, subject, facilityName, riskLevel, details) {
+async function sendEmail(email, subject, facilityName, riskLevel, details) {
   try {
     if (!mailTransporter) {
       console.log(`📧 Email to ${email} (SMTP not configured): ${subject}`);
@@ -77,12 +77,19 @@ export async function sendEmail(email, subject, facilityName, riskLevel, details
 }
 
 // Generate SMS message for facility
-export function generateFacilitySMS(facilityName, riskLevel, details) {
+function generateFacilitySMS(facilityName, riskLevel, details) {
   const emoji = riskLevel === 'kritisk' ? '🔴' : '🟡';
   return `${emoji} AquaShield: ${riskLevel.toUpperCase()} smitterisiko på ${facilityName}. ${details.substring(0, 50)}...`;
 }
 
 // Generate SMS message for vessel
-export function generateVesselSMS(vesselName, facilityName, diseaseType) {
+function generateVesselSMS(vesselName, facilityName, diseaseType) {
   return `⚠️ AquaShield: ${vesselName} passerte rødsone (${facilityName}: ${diseaseType}). Desinfeksjon anbefalt!`;
 }
+
+module.exports = {
+  sendSMS,
+  sendEmail,
+  generateFacilitySMS,
+  generateVesselSMS
+};

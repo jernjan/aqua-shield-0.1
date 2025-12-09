@@ -1,7 +1,7 @@
-import axios from 'axios';
+const axios = require('axios');
 
 // Fetch wellboats and service vessels from Kystverket AIS
-export async function getAllVessels() {
+async function getAllVessels() {
   try {
     console.log('🚢 Fetching vessels from Kystverket AIS...');
     const response = await axios.get('https://www.barentswatch.no/bwapi/v2/vessel', {
@@ -46,7 +46,12 @@ export async function getAllVessels() {
 }
 
 // Get vessels for a specific user
-export async function getUserVessels(vesselIds) {
+async function getUserVessels(vesselIds) {
   const allVessels = await getAllVessels();
   return allVessels.filter(v => vesselIds.includes(v.id));
 }
+
+module.exports = {
+  getAllVessels,
+  getUserVessels
+};

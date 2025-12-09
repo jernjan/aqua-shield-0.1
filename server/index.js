@@ -1,12 +1,10 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import authRoutes from './routes/auth.js';
-import userRoutes from './routes/user.js';
-import alertRoutes from './routes/alerts.js';
-import { scheduleCronJob } from './cron/nightly.js';
-
-dotenv.config();
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
+const authRoutes = require('./routes/auth.js');
+const userRoutes = require('./routes/user.js');
+const alertRoutes = require('./routes/alerts.js');
+const { scheduleCronJob } = require('./cron/nightly.js');
 
 const app = express();
 const PORT = process.env.PORT || 3001;

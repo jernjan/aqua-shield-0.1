@@ -1,7 +1,7 @@
-import axios from 'axios';
+const axios = require('axios');
 
 // Fetch ALL active facilities from BarentsWatch API
-export async function getAllFacilities() {
+async function getAllFacilities() {
   try {
     console.log('🔄 Fetching facilities from BarentsWatch...');
     const response = await axios.get('https://www.barentswatch.no/bwapi/v2/fishhealth/lice', {
@@ -36,7 +36,12 @@ export async function getAllFacilities() {
 }
 
 // Get facilities for a specific user
-export async function getUserFacilities(facilityIds) {
+async function getUserFacilities(facilityIds) {
   const allFacilities = await getAllFacilities();
   return allFacilities.filter(f => facilityIds.includes(f.id));
 }
+
+module.exports = {
+  getAllFacilities,
+  getUserFacilities
+};

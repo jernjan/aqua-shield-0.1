@@ -16,7 +16,7 @@ function degreesToKm(degrees) {
 }
 
 // Calculate facility risk (0-100)
-export function calculateFacilityRisk(facility, nearbyFacilities, temperature, currentStrength) {
+function calculateFacilityRisk(facility, nearbyFacilities, temperature, currentStrength) {
   let score = 0;
   
   // Lice load (40% of score)
@@ -55,7 +55,7 @@ export function calculateFacilityRisk(facility, nearbyFacilities, temperature, c
 }
 
 // Calculate vessel risk (0-100)
-export function calculateVesselRisk(vessel, nearbyFacilities, visitsWithin1h) {
+function calculateVesselRisk(vessel, nearbyFacilities, visitsWithin1h) {
   let score = 0;
   
   // Visited high-risk facilities recently
@@ -80,17 +80,24 @@ export function calculateVesselRisk(vessel, nearbyFacilities, visitsWithin1h) {
 }
 
 // Get risk level name
-export function getRiskLevel(score) {
+function getRiskLevel(score) {
   if (score >= 60) return 'kritisk';
   if (score >= 40) return 'varsel';
   return 'grønn';
 }
 
 // Get risk color for UI
-export function getRiskColor(level) {
+function getRiskColor(level) {
   switch (level) {
     case 'kritisk': return '#DC2626'; // Red
     case 'varsel': return '#F59E0B'; // Amber
     default: return '#10B981'; // Green
   }
 }
+
+module.exports = {
+  calculateFacilityRisk,
+  calculateVesselRisk,
+  getRiskLevel,
+  getRiskColor
+};

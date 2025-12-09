@@ -2,7 +2,6 @@
   "name": "aqua-shield-api",
   "version": "0.1.0",
   "description": "AquaShield API - Varsling for norsk akvakultur",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "node index.js",

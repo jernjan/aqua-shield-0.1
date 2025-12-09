@@ -1,7 +1,7 @@
-import express from 'express';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { getUserByEmail, getUser, saveUser } from '../db.js';
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { getUserByEmail, getUser, saveUser } = require('../db.js');
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-prod';
@@ -80,7 +80,7 @@ router.post('/login', async (req, res) => {
 });
 
 // Verify token middleware
-export function authMiddleware(req, res, next) {
+function authMiddleware(req, res, next) {
   try {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: 'No token' });
@@ -93,4 +93,5 @@ export function authMiddleware(req, res, next) {
   }
 }
 
-export default router;
+module.exports = router;
+module.exports.authMiddleware = authMiddleware;
