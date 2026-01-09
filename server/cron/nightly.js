@@ -1,45 +1,7 @@
-const axios = require('axios')
-const { addAlert } = require('../storage')
-const path = require('path')
-const { computeRiskForLocality } = require('../utils/risk')
-
-// For now we generate mock fetch results and compute risk; replace with real API calls later.
-async function runNightlyAnalysis() {
-  // Mock: three localities with random conditions
-  const mockLocalities = [
-    { id: 'L1', name: 'Anlegg A', lat: 60.4, lon: 5.2 },
-    { id: 'L2', name: 'Anlegg B', lat: 61.0, lon: 5.9 },
-    { id: 'L3', name: 'Anlegg C', lat: 59.9, lon: 6.0 }
-  ]
-
-  const generated = []
-  for (const loc of mockLocalities) {
-    const risk = computeRiskForLocality({
-      locality: loc,
-      nearbyOutbreaks: Math.random() > 0.7 ? 1 : 0,
-      temperature: 5 + Math.random() * 8,
-      currentSpeed: Math.random() * 1.5
-    })
-
-    if (risk.score >= 60) {
-      const a = addAlert({
-        title: `${loc.name}: Høy risiko (${Math.round(risk.score)}%)`,
-        message: `Beregnet risiko for ${loc.name} er ${Math.round(risk.score)}%`,
-        riskLevel: risk.score >= 80 ? 'kritisk' : 'varsel'
-      })
-      generated.push(a)
-    }
-  }
-
-  return { generated }
-}
-
-module.exports = { runNightlyAnalysis }
-const { readDB, saveAlert, getUser } = require('../db.js');
-const { getAllFacilities, getUserFacilities } = require('../utils/barentswatch.js');
-const { getAllVessels, getUserVessels } = require('../utils/ais.js');
+const { readDB, saveAlert } = require('../db.js');
+const { getAllFacilities } = require('../utils/barentswatch.js');
+const { getAllVessels } = require('../utils/ais.js');
 const { calculateFacilityRisk, calculateVesselRisk, getRiskLevel } = require('../utils/risk.js');
-const { sendEmail, generateFacilitySMS, generateVesselSMS } = require('../utils/notify.js');
 
 // Run every night at 03:00 UTC+1
 function scheduleCronJob() {
@@ -47,17 +9,6 @@ function scheduleCronJob() {
   // In production, use a proper cron library (node-cron or scheduled task)
   
   console.log('⏰ Cron job scheduled for 03:00 Europe/Oslo');
-  
-  // Test run immediately
-  // runNightlyAnalysis();
-  
-  // Schedule daily at 03:00
-  // Real implementation would use: node-cron or Render cron service
-  // Example with node-cron:
-  // import cron from 'node-cron';
-  // cron.schedule('0 3 * * *', () => {
-  //   runNightlyAnalysis();
-  // }, { timezone: 'Europe/Oslo' });
 }
 
 async function runNightlyAnalysis() {
@@ -73,7 +24,7 @@ async function runNightlyAnalysis() {
       console.log(`📊 Analyzing for ${user.name}...`);
       
       // Get user's facilities
-      const userFacilities = allFacilities.filter(f => user.selectedFacilities.includes(f.id));
+      const userFacilities = allFacilities.filter(f => (user.selectedFacilities || []).includes(f.id));
       
       // Calculate facility risks
       for (const facility of userFacilities) {
@@ -124,7 +75,7 @@ async function runNightlyAnalysis() {
       }
       
       // Get user's vessels
-      const userVessels = allVessels.filter(v => user.selectedVessels.includes(v.id));
+      const userVessels = allVessels.filter(v => (user.selectedVessels || []).includes(v.id));
       
       // Check vessel risk (visits to high-risk facilities)
       for (const vessel of userVessels) {

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 
-function Login({ onLogin, onToast }) {
+function Login({ onLogin, onMVPLogin, onToast }) {
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -110,6 +110,40 @@ function Login({ onLogin, onToast }) {
           style={{ width: '100%', marginTop: '12px' }}
         >
           Prøv demo uten innlogging
+
+                <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #ddd' }}>
+                  <p style={{ textAlign: 'center', color: '#666', fontSize: '14px', marginBottom: '12px' }}>
+                    🧪 Prøv MVP med ulike roller:
+                  </p>
+                  <button
+                    onClick={() => onMVPLogin('farmer')}
+                    className="secondary"
+                    style={{ width: '100%', marginBottom: '8px' }}
+                  >
+                    Anleggseier (Gruppe 1)
+                  </button>
+                  <button
+                    onClick={() => onMVPLogin('vessel')}
+                    className="secondary"
+                    style={{ width: '100%', marginBottom: '8px' }}
+                  >
+                    Brønnbåt (Gruppe 2)
+                  </button>
+                  <button
+                    onClick={() => onMVPLogin('admin')}
+                    className="secondary"
+                    style={{ width: '100%', marginBottom: '8px' }}
+                  >
+                    Regulator (Gruppe 3)
+                  </button>
+                  <button
+                    onClick={() => onMVPLogin('public')}
+                    className="secondary"
+                    style={{ width: '100%' }}
+                  >
+                    Offentlig (Gruppe 4)
+                  </button>
+                </div>
         </button>
       </div>
     </div>

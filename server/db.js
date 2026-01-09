@@ -1,7 +1,11 @@
 const jsonfile = require('jsonfile');
 const path = require('path');
+const fs = require('fs');
 
-const dbPath = path.join(__dirname, '../db.json');
+// Use server/data/db.json to match storage.js; ensure directory exists
+const dataDir = path.join(__dirname, 'data');
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+const dbPath = path.join(dataDir, 'db.json');
 
 const defaultDB = {
   users: [],

@@ -2,8 +2,13 @@ const { Low } = require('lowdb')
 const { JSONFile } = require('lowdb/node')
 const { nanoid } = require('nanoid')
 const path = require('path')
+const fs = require('fs')
 
-const file = path.join(__dirname, 'db.json')
+// Ensure DB folder exists and move DB into a data/ dir so nodemon can ignore it
+const dataDir = path.join(__dirname, 'data')
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
+
+const file = path.join(dataDir, 'db.json')
 const adapter = new JSONFile(file)
 const db = new Low(adapter)
 
@@ -18,12 +23,12 @@ async function getRaw() {
   return db.data
 }
 
-function getAlerts() {
-  // sync read is fine for small prototype
+async function getAlerts() {
+  await db.read()
   return db.data?.alerts || []
 }
 
-function addAlert(alert) {
+async function addAlert(alert) {
   const a = {
     id: nanoid(),
     title: alert.title || 'Varsel',
@@ -33,11 +38,11 @@ function addAlert(alert) {
     isRead: false
   }
   db.data.alerts.unshift(a)
-  db.write()
+  await db.write()
   return a
 }
 
-function clearAlerts() {
+async function clearAlerts() {
   db.data.alerts = []
   return db.write()
 }

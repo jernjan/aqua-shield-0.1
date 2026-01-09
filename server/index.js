@@ -3,6 +3,10 @@ const express = require('express')
 const cors = require('cors')
 const { getAlerts, addAlert } = require('./storage')
 const { runNightlyAnalysis } = require('./cron/nightly')
+const mvpData = require('./mvp-data')
+
+// Initialize MVP data on startup
+const MVP = mvpData.init()
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -50,6 +54,50 @@ app.post('/api/admin/run-cron', async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
+
+// ============ MVP ENDPOINTS ============
+
+// Gruppe 1: Farmers (Anlegg)
+app.get('/api/mvp/farmer/:farmId?', (req, res) => {
+  const { farmId } = req.params
+  if (farmId) {
+    const farm = MVP.farmers.find(f => f.id === farmId)
+    if (!farm) return res.status(404).json({ error: 'Farm not found' })
+    const alerts = MVP.alerts.filter(a => a.farmId === farmId)
+    res.json({ farm, alerts })
+  } else {
+    // List all farms (paginated if needed)
+    res.json({ farms: MVP.farmers, alertCount: MVP.alerts.length })
+  }
+})
+
+// Gruppe 2: Vessels (Brønnbåter)
+app.get('/api/mvp/vessel/:vesselId?', (req, res) => {
+  const { vesselId } = req.params
+  if (vesselId) {
+    const vessel = MVP.vessels.find(v => v.id === vesselId)
+    if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
+    res.json({ vessel })
+  } else {
+    res.json({ vessels: MVP.vessels })
+  }
+})
+
+// Gruppe 3: Admin/Regulators (Statistikk og oversight)
+app.get('/api/mvp/admin/stats', (req, res) => {
+  res.json(MVP.adminStats)
+})
+
+app.get('/api/mvp/admin/alerts', (req, res) => {
+  res.json({ alerts: MVP.alerts })
+})
+
+// Gruppe 4: Public (Anonymous regional data)
+app.get('/api/mvp/public', (req, res) => {
+  res.json(MVP.publicData)
+})
+
+// ============ END MVP ENDPOINTS ============
 
 // Start server and provide graceful shutdown handlers so nodemon restarts don't
 // leave ports bound (prevents EADDRINUSE loops when files change rapidly).
