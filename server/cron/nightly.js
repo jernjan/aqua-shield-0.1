@@ -1,7 +1,7 @@
 const axios = require('axios')
-const { addAlert } = require('../server/storage')
+const { addAlert } = require('../storage')
 const path = require('path')
-const { computeRiskForLocality } = require('../server/utils/risk')
+const { computeRiskForLocality } = require('../utils/risk')
 
 // For now we generate mock fetch results and compute risk; replace with real API calls later.
 async function runNightlyAnalysis() {
