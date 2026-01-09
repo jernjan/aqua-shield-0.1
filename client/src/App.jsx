@@ -12,7 +12,12 @@ function App() {
 
   useEffect(() => {
     if (token) {
-      setPage('selectSites')
+      // Demo token goes straight to dashboard; real tokens to selectSites
+      if (token === 'demo') {
+        setPage('dashboard')
+      } else {
+        setPage('selectSites')
+      }
       // Could verify token here
     }
   }, [token])

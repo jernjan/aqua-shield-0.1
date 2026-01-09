@@ -103,6 +103,14 @@ function Login({ onLogin, onToast }) {
         >
           {isLogin ? 'Opprett bruker' : 'Allerede bruker?'}
         </button>
+
+        <button
+          onClick={() => onLogin('demo', { name: 'Demo bruker' })}
+          className="primary"
+          style={{ width: '100%', marginTop: '12px' }}
+        >
+          Prøv demo uten innlogging
+        </button>
       </div>
     </div>
   )

@@ -17,6 +17,7 @@ function Dashboard({ token, user, onLogout, onToast }) {
       setAlerts(response.data)
     } catch (err) {
       console.error('Failed to load alerts:', err)
+      onToast('Feil ved henting av varsler', 'error')
     } finally {
       setLoading(false)
     }
@@ -36,6 +37,21 @@ function Dashboard({ token, user, onLogout, onToast }) {
 
   const handleSendTestAlert = async () => {
     try {
+      if (token === 'demo') {
+        // Local demo: append a mock alert
+        const demoAlert = {
+          id: `demo-${Date.now()}`,
+          title: '🧪 Demo: Test-varsel ved Anlegg Demo',
+          message: 'Dette er et test-varsel i demo-modus.',
+          riskLevel: 'varsel',
+          createdAt: new Date().toISOString(),
+          isRead: false
+        }
+        setAlerts(prev => [demoAlert, ...prev])
+        onToast('🧪 Test-varsel lagt til (demo)')
+        return
+      }
+
       await axios.post('/api/alerts/test', 
         { facilityName: 'Test Anlegg', type: 'facility' },
         { headers: { 'Authorization': `Bearer ${token}` } }
@@ -105,9 +121,40 @@ function Dashboard({ token, user, onLogout, onToast }) {
           {loading && <p>Laster...</p>}
           
           {!loading && alerts.length === 0 && (
-            <p style={{ color: '#666', padding: '20px', textAlign: 'center' }}>
-              ✓ Ingen varsler. Systemet overvåker dine anlegg og båter 24/7.
-            </p>
+            <div style={{ color: '#666', padding: '20px', textAlign: 'center' }}>
+              <p>✓ Ingen varsler. Systemet overvåker dine anlegg og båter 24/7.</p>
+              {token === 'demo' && (
+                <div style={{ marginTop: '12px' }}>
+                  <p style={{ marginBottom: '8px' }}>Vis eksempeldatasett for demo:</p>
+                  <button
+                    onClick={() => {
+                      const sample = [
+                        {
+                          id: 'demo-1',
+                          title: 'Høy lus‑risiko: Anlegg X',
+                          message: 'Beregnet lusnivå over terskel. Vurder tiltak.',
+                          riskLevel: 'kritisk',
+                          createdAt: new Date().toISOString(),
+                          isRead: false
+                        },
+                        {
+                          id: 'demo-2',
+                          title: 'Moderate alger: Anlegg Y',
+                          message: 'Algenivåer økt – overvåk situasjonen.',
+                          riskLevel: 'varsel',
+                          createdAt: new Date().toISOString(),
+                          isRead: false
+                        }
+                      ]
+                      setAlerts(sample)
+                    }}
+                    className="primary"
+                  >
+                    Vis demo‑varsler
+                  </button>
+                </div>
+              )}
+            </div>
           )}
 
           {!loading && alerts.length > 0 && (
