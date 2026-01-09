@@ -6,7 +6,30 @@ function Dashboard({ token, user, onLogout, onToast }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    loadAlerts()
+    if (token === 'demo') {
+      const sample = [
+        {
+          id: 'demo-1',
+          title: 'Høy lus‑risiko: Anlegg X',
+          message: 'Beregnet lusnivå over terskel. Vurder tiltak.',
+          riskLevel: 'kritisk',
+          createdAt: new Date().toISOString(),
+          isRead: false
+        },
+        {
+          id: 'demo-2',
+          title: 'Moderate alger: Anlegg Y',
+          message: 'Algenivåer økt – overvåk situasjonen.',
+          riskLevel: 'varsel',
+          createdAt: new Date().toISOString(),
+          isRead: false
+        }
+      ]
+      setAlerts(sample)
+      setLoading(false)
+    } else {
+      loadAlerts()
+    }
   }, [token])
 
   const loadAlerts = async () => {
@@ -25,6 +48,12 @@ function Dashboard({ token, user, onLogout, onToast }) {
 
   const handleMarkAsRead = async (alertId) => {
     try {
+      if (token === 'demo') {
+        setAlerts(alerts.map(a => a.id === alertId ? { ...a, isRead: true } : a))
+        onToast('Varsel markert som lest')
+        return
+      }
+
       await axios.post(`/api/alerts/${alertId}/read`, {}, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
