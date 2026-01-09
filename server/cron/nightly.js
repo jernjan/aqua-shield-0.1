@@ -1,3 +1,40 @@
+const axios = require('axios')
+const { addAlert } = require('../server/storage')
+const path = require('path')
+const { computeRiskForLocality } = require('../server/utils/risk')
+
+// For now we generate mock fetch results and compute risk; replace with real API calls later.
+async function runNightlyAnalysis() {
+  // Mock: three localities with random conditions
+  const mockLocalities = [
+    { id: 'L1', name: 'Anlegg A', lat: 60.4, lon: 5.2 },
+    { id: 'L2', name: 'Anlegg B', lat: 61.0, lon: 5.9 },
+    { id: 'L3', name: 'Anlegg C', lat: 59.9, lon: 6.0 }
+  ]
+
+  const generated = []
+  for (const loc of mockLocalities) {
+    const risk = computeRiskForLocality({
+      locality: loc,
+      nearbyOutbreaks: Math.random() > 0.7 ? 1 : 0,
+      temperature: 5 + Math.random() * 8,
+      currentSpeed: Math.random() * 1.5
+    })
+
+    if (risk.score >= 60) {
+      const a = addAlert({
+        title: `${loc.name}: Høy risiko (${Math.round(risk.score)}%)`,
+        message: `Beregnet risiko for ${loc.name} er ${Math.round(risk.score)}%`,
+        riskLevel: risk.score >= 80 ? 'kritisk' : 'varsel'
+      })
+      generated.push(a)
+    }
+  }
+
+  return { generated }
+}
+
+module.exports = { runNightlyAnalysis }
 const { readDB, saveAlert, getUser } = require('../db.js');
 const { getAllFacilities, getUserFacilities } = require('../utils/barentswatch.js');
 const { getAllVessels, getUserVessels } = require('../utils/ais.js');

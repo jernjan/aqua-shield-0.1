@@ -1,3 +1,24 @@
+services:
+  - type: web
+    name: aqua-shield-server
+    env: node
+    region: oregon
+    plan: starter
+    buildCommand: "cd server && npm install"
+    startCommand: "cd server && npm start"
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+cron:
+  - name: nightly-analysis
+    schedule: "0 3 * * *" # daily at 03:00
+    command: "cd server && node -e \"require('./cron/nightly').runNightlyAnalysis().then(r=>console.log(r)).catch(e=>console.error(e))\""
+
+databases:
+  - name: aqua-shield-db
+    engine: postgres
+    plan: starter
 # render.yaml - AquaShield deployment config
 # See DEPLOY.md for instructions
 

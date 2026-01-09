@@ -1,3 +1,15 @@
+function computeRiskForLocality({ locality, nearbyOutbreaks = 0, temperature = 6, currentSpeed = 0.5 }) {
+  // Simple rule-based score: base 20, +30 per nearby outbreak, +temp bonus, -currentSpeed*5
+  let score = 20
+  score += nearbyOutbreaks * 30
+  if (temperature >= 8) score += 10
+  if (temperature >= 12) score += 10
+  score -= currentSpeed * 5
+  score = Math.max(0, Math.min(100, score))
+  return { score }
+}
+
+module.exports = { computeRiskForLocality }
 // Distance-weighted rule-based risk calculation
 // Score: 0-100, threshold 60 for alert, 40 for warning
 
