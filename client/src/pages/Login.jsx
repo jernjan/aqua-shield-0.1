@@ -1,86 +1,113 @@
-import { useState } from 'react'
-import axios from 'axios'
+import { useState } from 'react';
+import styles from './Login.module.css';
 
-function Login({ onLogin, onMVPLogin, onToast }) {
-  const [isLogin, setIsLogin] = useState(true)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [loading, setLoading] = useState(false)
+function Login({ onLogin, onMVPLogin }) {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
 
     try {
-      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register'
+      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
       const payload = isLogin
         ? { email, password }
-        : { email, password, name, phone }
+        : { email, password, name, phone };
 
-      const response = await axios.post(endpoint, payload)
-      const { token, user } = response.data
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
 
-      onLogin(token, user)
+      const data = await response.json();
+      if (response.ok) {
+        onLogin(data.token, data.user);
+      } else {
+        console.error(data.error);
+      }
     } catch (err) {
-      onToast(err.response?.data?.error || 'Feil ved autentisering', 'error')
+      console.error('Auth error:', err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
-      <div className="card" style={{ width: '100%', maxWidth: '400px' }}>
-        <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>🐟 AquaShield</h1>
-        <p style={{ textAlign: 'center', marginBottom: '30px', color: '#666' }}>
-          Varsling for norsk akvakultur
-        </p>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>AQUASHIELD</h1>
+        <p className={styles.subtitle}>Varslingssystem for norsk akvakultur</p>
+      </div>
 
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', marginBottom: '4px' }}>E-post:</label>
+      <div className={styles.card}>
+        <div className={styles.tabs}>
+          <button
+            className={`${styles.tab} ${isLogin ? styles.active : ''}`}
+            onClick={() => setIsLogin(true)}
+          >
+            Logg inn
+          </button>
+          <button
+            className={`${styles.tab} ${!isLogin ? styles.active : ''}`}
+            onClick={() => setIsLogin(false)}
+          >
+            Registrer
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>E-post</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              style={{ width: '100%' }}
+              className={styles.input}
+              placeholder="din@email.no"
             />
           </div>
 
-          <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', marginBottom: '4px' }}>Passord:</label>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Passord</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              style={{ width: '100%' }}
+              className={styles.input}
+              placeholder="••••••••"
             />
           </div>
 
           {!isLogin && (
             <>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '4px' }}>Navn:</label>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Navn</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  style={{ width: '100%' }}
+                  className={styles.input}
+                  placeholder="Ditt navn"
                 />
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '4px' }}>Telefon:</label>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Telefon</label>
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  style={{ width: '100%' }}
+                  className={styles.input}
+                  placeholder="+47 XXX XX XXX"
                 />
               </div>
             </>
@@ -88,66 +115,57 @@ function Login({ onLogin, onMVPLogin, onToast }) {
 
           <button
             type="submit"
-            className="primary"
-            style={{ width: '100%', marginBottom: '12px' }}
+            className={styles.submitBtn}
             disabled={loading}
           >
-            {loading ? 'Venter...' : isLogin ? 'Logg inn' : 'Registrer'}
+            {loading ? 'Behandler...' : isLogin ? 'Logg inn' : 'Registrer'}
           </button>
         </form>
+      </div>
 
+      <div className={styles.divider}>
+        <span>Eller velg rolle for demo</span>
+      </div>
+
+      <div className={styles.mvpRoles}>
         <button
-          onClick={() => setIsLogin(!isLogin)}
-          className="secondary"
-          style={{ width: '100%' }}
+          onClick={() => onMVPLogin('farmer')}
+          className={styles.roleBtn}
         >
-          {isLogin ? 'Opprett bruker' : 'Allerede bruker?'}
+          <div className={styles.roleIcon}>A</div>
+          <div className={styles.roleLabel}>Anleggseier</div>
+          <div className={styles.roleDesc}>Fiskeoppdrett</div>
         </button>
 
         <button
-          onClick={() => onLogin('demo', { name: 'Demo bruker' })}
-          className="primary"
-          style={{ width: '100%', marginTop: '12px' }}
+          onClick={() => onMVPLogin('vessel')}
+          className={styles.roleBtn}
         >
-          Prøv demo uten innlogging
+          <div className={styles.roleIcon}>B</div>
+          <div className={styles.roleLabel}>Brønnbåt</div>
+          <div className={styles.roleDesc}>Transportbåt</div>
+        </button>
 
-                <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #ddd' }}>
-                  <p style={{ textAlign: 'center', color: '#666', fontSize: '14px', marginBottom: '12px' }}>
-                    🧪 Prøv MVP med ulike roller:
-                  </p>
-                  <button
-                    onClick={() => onMVPLogin('farmer')}
-                    className="secondary"
-                    style={{ width: '100%', marginBottom: '8px' }}
-                  >
-                    Anleggseier (Gruppe 1)
-                  </button>
-                  <button
-                    onClick={() => onMVPLogin('vessel')}
-                    className="secondary"
-                    style={{ width: '100%', marginBottom: '8px' }}
-                  >
-                    Brønnbåt (Gruppe 2)
-                  </button>
-                  <button
-                    onClick={() => onMVPLogin('admin')}
-                    className="secondary"
-                    style={{ width: '100%', marginBottom: '8px' }}
-                  >
-                    Regulator (Gruppe 3)
-                  </button>
-                  <button
-                    onClick={() => onMVPLogin('public')}
-                    className="secondary"
-                    style={{ width: '100%' }}
-                  >
-                    Offentlig (Gruppe 4)
-                  </button>
-                </div>
+        <button
+          onClick={() => onMVPLogin('admin')}
+          className={styles.roleBtn}
+        >
+          <div className={styles.roleIcon}>R</div>
+          <div className={styles.roleLabel}>Regulator</div>
+          <div className={styles.roleDesc}>Mattilsynet</div>
+        </button>
+
+        <button
+          onClick={() => onMVPLogin('public')}
+          className={styles.roleBtn}
+        >
+          <div className={styles.roleIcon}>O</div>
+          <div className={styles.roleLabel}>Offentlig</div>
+          <div className={styles.roleDesc}>Område-varsler</div>
         </button>
       </div>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;

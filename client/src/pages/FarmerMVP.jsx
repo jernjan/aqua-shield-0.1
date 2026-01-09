@@ -1,202 +1,243 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
+import Tooltip from '../components/Tooltip';
+import styles from './FarmerMVP.module.css';
 
-export default function FarmerDashboard({ token }) {
-  const [farms, setFarms] = useState([])
-  const [selectedFarm, setSelectedFarm] = useState(null)
-  const [alerts, setAlerts] = useState([])
-  const [loading, setLoading] = useState(true)
+export default function FarmerMVP({ token }) {
+  const [farms, setFarms] = useState([]);
+  const [selectedFarm, setSelectedFarm] = useState(null);
+  const [alerts, setAlerts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState('severity');
 
   useEffect(() => {
-    // Fetch all farms
     fetch('/api/mvp/farmer')
       .then(r => r.json())
       .then(data => {
-        setFarms(data.farms)
+        setFarms(data.farms);
         if (data.farms.length > 0) {
-          setSelectedFarm(data.farms[0])
+          setSelectedFarm(data.farms[0]);
         }
-        setLoading(false)
+        setLoading(false);
       })
       .catch(err => {
-        console.error('Failed to fetch farms', err)
-        setLoading(false)
-      })
-  }, [])
+        console.error('Failed to fetch farms', err);
+        setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
-    if (!selectedFarm) return
+    if (!selectedFarm) return;
     
-    // Fetch alerts for selected farm
     fetch(`/api/mvp/farmer/${selectedFarm.id}`)
       .then(r => r.json())
       .then(data => setAlerts(data.alerts))
-      .catch(err => console.error('Failed to fetch farm alerts', err))
-  }, [selectedFarm])
+      .catch(err => console.error('Failed to fetch farm alerts', err));
+  }, [selectedFarm]);
 
   const handleMarkAsRead = (alertId) => {
-    setAlerts(prev => prev.map(a => a.id === alertId ? { ...a, isRead: true } : a))
-  }
+    setAlerts(prev => prev.map(a => a.id === alertId ? { ...a, isRead: true } : a));
+  };
 
   const handleDownloadPDF = () => {
-    if (!selectedFarm) return
-    alert(`PDF-rapporteksport for ${selectedFarm.name} (implementeres med jsPDF)`)
-  }
+    if (!selectedFarm) return;
+    alert(`PDF-rapporteksport for ${selectedFarm.name} (implementeres)`);
+  };
 
-  if (loading) return <div style={{ padding: '20px' }}>Laster...</div>
+  const sortedAlerts = [...alerts].sort((a, b) => {
+    if (sortBy === 'severity') {
+      const severityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+      return (severityOrder[a.severity] || 4) - (severityOrder[b.severity] || 4);
+    }
+    return new Date(b.timestamp) - new Date(a.timestamp);
+  });
+
+  const unreadCount = alerts.filter(a => !a.isRead).length;
+  const criticalCount = alerts.filter(a => a.severity === 'critical').length;
+
+  if (loading) return <div className={styles.loading}>Laster anlegg...</div>;
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>🐟 Anleggseier-Dashboard</h1>
-      <p style={{ color: '#666' }}>Oversikt over dine akvakulturanlegg og risikoindikatorer</p>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.titleSection}>
+          <h1 className={styles.title}>ANLEGGSEIER</h1>
+          <p className={styles.subtitle}>Fiskeoppdrett - Oversikt og varsler</p>
+        </div>
+        
+        <div className={styles.stats}>
+          <div className={styles.stat}>
+            <span className={styles.statLabel}>Aktive anlegg</span>
+            <span className={styles.statValue}>{farms.length}</span>
+          </div>
+          <div className={styles.stat}>
+            <span className={styles.statLabel}>Kritiske varsler</span>
+            <span className={`${styles.statValue} ${criticalCount > 0 ? styles.critical : ''}`}>
+              {criticalCount}
+            </span>
+          </div>
+          <div className={styles.stat}>
+            <span className={styles.statLabel}>Ulesle</span>
+            <span className={styles.statValue}>{unreadCount}</span>
+          </div>
+        </div>
+      </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '20px' }}>
-        {/* Farm List */}
-        <div style={{ borderRight: '1px solid #ddd', paddingRight: '20px' }}>
-          <h2 style={{ fontSize: '16px', marginBottom: '10px' }}>Dine anlegg ({farms.length})</h2>
-          <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+      <div className={styles.content}>
+        <div className={styles.sidebar}>
+          <h3 className={styles.sidebarTitle}>ANLEGG</h3>
+          <div className={styles.farmList}>
             {farms.map(farm => (
-              <div
+              <button
                 key={farm.id}
                 onClick={() => setSelectedFarm(farm)}
-                style={{
-                  padding: '10px',
-                  marginBottom: '8px',
-                  border: selectedFarm?.id === farm.id ? '2px solid #0066cc' : '1px solid #ddd',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  backgroundColor: selectedFarm?.id === farm.id ? '#f0f7ff' : '#fff',
-                }}
+                className={`${styles.farmItem} ${selectedFarm?.id === farm.id ? styles.active : ''}`}
               >
-                <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{farm.name}</div>
-                <div style={{ fontSize: '12px', color: '#666' }}>{farm.region}</div>
-                <div
-                  style={{
-                    display: 'inline-block',
-                    padding: '2px 6px',
-                    borderRadius: '3px',
-                    fontSize: '11px',
-                    marginTop: '4px',
-                    backgroundColor:
-                      farm.riskLevel === 'kritisk' ? '#ffcccc' :
-                      farm.riskLevel === 'høy' ? '#ffe6cc' : '#ccffcc',
-                    color: farm.riskLevel === 'kritisk' ? '#cc0000' : farm.riskLevel === 'høy' ? '#ff6600' : '#006600',
-                  }}
-                >
-                  {farm.riskLevel.charAt(0).toUpperCase() + farm.riskLevel.slice(1)} risiko
+                <div className={styles.farmName}>{farm.name}</div>
+                <div className={styles.farmRegion}>{farm.region}</div>
+                <div className={`${styles.farmRisk} ${styles[`risk${farm.riskLevel}`.toLowerCase()]}`}>
+                  {farm.riskScore}%
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
 
-        {/* Farm Details & Alerts */}
-        <div>
+        <div className={styles.main}>
           {selectedFarm && (
             <>
-              <div style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '4px', marginBottom: '20px' }}>
-                <h2 style={{ marginTop: 0 }}>{selectedFarm.name}</h2>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#666' }}>Region</div>
-                    <div style={{ fontSize: '14px', fontWeight: 'bold' }}>{selectedFarm.region}</div>
+              <div className={styles.farmDetail}>
+                <div className={styles.detailHeader}>
+                  <h2>{selectedFarm.name}</h2>
+                  <button onClick={handleDownloadPDF} className={styles.pdfBtn}>
+                    Eksporter PDF
+                  </button>
+                </div>
+
+                <div className={styles.detailGrid}>
+                  <div className={styles.detailItem}>
+                    <span className={styles.label}>
+                      <Tooltip text="Geografisk område hvor anlegget er lokalisert">
+                        Region
+                      </Tooltip>
+                    </span>
+                    <span className={styles.value}>{selectedFarm.region}</span>
                   </div>
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#666' }}>Art</div>
-                    <div style={{ fontSize: '14px', fontWeight: 'bold' }}>{selectedFarm.species}</div>
+
+                  <div className={styles.detailItem}>
+                    <span className={styles.label}>
+                      <Tooltip text="Type og art som oppdresses i anlegget">
+                        Art
+                      </Tooltip>
+                    </span>
+                    <span className={styles.value}>{selectedFarm.species.join(', ')}</span>
                   </div>
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#666' }}>Kapasitet</div>
-                    <div style={{ fontSize: '14px', fontWeight: 'bold' }}>{selectedFarm.capacity.toLocaleString()} tonn</div>
+
+                  <div className={styles.detailItem}>
+                    <span className={styles.label}>
+                      <Tooltip text="Maksimal biomasse som anlegget kan holde">
+                        Kapasitet
+                      </Tooltip>
+                    </span>
+                    <span className={styles.value}>{selectedFarm.capacity} tonn</span>
                   </div>
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#666' }}>Risikoscore</div>
-                    <div
-                      style={{
-                        fontSize: '18px',
-                        fontWeight: 'bold',
-                        color:
-                          selectedFarm.riskScore > 60 ? '#cc0000' :
-                          selectedFarm.riskScore > 40 ? '#ff6600' : '#006600',
-                      }}
-                    >
+
+                  <div className={styles.detailItem}>
+                    <span className={styles.label}>
+                      <Tooltip text="Risikonivå basert på historiske hendelser">
+                        Risiko
+                      </Tooltip>
+                    </span>
+                    <span className={`${styles.value} ${styles[`risk${selectedFarm.riskLevel}`.toLowerCase()]}`}>
                       {selectedFarm.riskScore}%
-                    </div>
+                    </span>
+                  </div>
+
+                  <div className={styles.detailItem}>
+                    <span className={styles.label}>
+                      <Tooltip text="Dato for siste mattilsyns inspeksjon">
+                        Sist inspeksjon
+                      </Tooltip>
+                    </span>
+                    <span className={styles.value}>
+                      {new Date(selectedFarm.lastInspection).toLocaleDateString('no-NO')}
+                    </span>
+                  </div>
+
+                  <div className={styles.detailItem}>
+                    <span className={styles.label}>
+                      <Tooltip text="Antall etterlevelsepunkter som er dokumentert">
+                        Etterlevelse
+                      </Tooltip>
+                    </span>
+                    <span className={styles.value}>{selectedFarm.complianceLogs.length}</span>
                   </div>
                 </div>
               </div>
 
-              <div style={{ marginBottom: '20px' }}>
-                <button
-                  onClick={handleDownloadPDF}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#0066cc',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                  }}
-                >
-                  📄 Last ned risiko-rapport (PDF)
-                </button>
-              </div>
-
-              <h3>Varsler ({alerts.length})</h3>
-              {alerts.length === 0 ? (
-                <div style={{ color: '#666' }}>Ingen varsler for dette anlegget.</div>
-              ) : (
-                <div>
-                  {alerts.map(alert => (
-                    <div
-                      key={alert.id}
-                      style={{
-                        padding: '12px',
-                        marginBottom: '10px',
-                        border: '1px solid #ddd',
-                        borderRadius: '4px',
-                        backgroundColor: alert.isRead ? '#fafafa' : '#fffbf0',
-                        borderLeft:
-                          alert.severity === 'kritisk' ? '4px solid #cc0000' :
-                          alert.severity === 'høy' ? '4px solid #ff6600' : '4px solid #ffcc00',
-                      }}
+              <div className={styles.alertsSection}>
+                <div className={styles.alertsHeader}>
+                  <h3>VARSLER</h3>
+                  <div className={styles.sortControl}>
+                    <label>Sorter etter:</label>
+                    <select 
+                      value={sortBy} 
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className={styles.sortSelect}
                     >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                        <div>
-                          <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{alert.message}</div>
-                          <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-                            Type: {alert.type} | Kilde: {alert.dataSource}
-                          </div>
-                          <div style={{ fontSize: '11px', color: '#999', marginTop: '2px' }}>
-                            {new Date(alert.timestamp).toLocaleDateString('nb-NO')}
-                          </div>
-                        </div>
-                        {!alert.isRead && (
-                          <button
-                            onClick={() => handleMarkAsRead(alert.id)}
-                            style={{
-                              padding: '4px 8px',
-                              fontSize: '12px',
-                              backgroundColor: '#0066cc',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '3px',
-                              cursor: 'pointer',
-                              marginLeft: '10px',
-                            }}
-                          >
-                            ✓ Markér lest
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                      <option value="severity">Alvorlighetsgrad</option>
+                      <option value="date">Nyeste først</option>
+                    </select>
+                  </div>
                 </div>
-              )}
+
+                {sortedAlerts.length === 0 ? (
+                  <div className={styles.noAlerts}>
+                    <p>Ingen varsler for dette anlegget</p>
+                  </div>
+                ) : (
+                  <div className={styles.alertsTable}>
+                    <div className={styles.tableHeader}>
+                      <div className={styles.colType}>Type</div>
+                      <div className={styles.colSeverity}>Alvorlighetsgrad</div>
+                      <div className={styles.colSource}>Kilde</div>
+                      <div className={styles.colDate}>Dato</div>
+                      <div className={styles.colAction}>Handling</div>
+                    </div>
+                    {sortedAlerts.map(alert => (
+                      <div 
+                        key={alert.id} 
+                        className={`${styles.tableRow} ${alert.isRead ? styles.read : styles.unread}`}
+                      >
+                        <div className={styles.colType}>{alert.type}</div>
+                        <div className={styles.colSeverity}>
+                          <span className={`${styles.severity} ${styles[`sev${alert.severity}`.toLowerCase()]}`}>
+                            {alert.severity}
+                          </span>
+                        </div>
+                        <div className={styles.colSource}>{alert.source}</div>
+                        <div className={styles.colDate}>
+                          {new Date(alert.timestamp).toLocaleDateString('no-NO')}
+                        </div>
+                        <div className={styles.colAction}>
+                          {!alert.isRead && (
+                            <button
+                              onClick={() => handleMarkAsRead(alert.id)}
+                              className={styles.readBtn}
+                            >
+                              Markert som lest
+                            </button>
+                          )}
+                          {alert.isRead && <span className={styles.readLabel}>Lest</span>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,0 +1,72 @@
+.tooltipContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.trigger {
+  cursor: help;
+  border-bottom: 1px dashed var(--accent-gold);
+  transition: color 0.2s ease;
+}
+
+.trigger:hover {
+  color: var(--accent-gold);
+}
+
+.tooltip {
+  position: absolute;
+  background-color: #1a1a1a;
+  color: var(--text-primary);
+  border: 1px solid var(--accent-gold);
+  border-radius: 2px;
+  padding: 8px 12px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.tooltip.top {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+}
+
+.tooltip.bottom {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+}
+
+.tooltip.left {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(-8px);
+}
+
+.tooltip.right {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(8px);
+}
+
+.tooltip::before {
+  content: '';
+  position: absolute;
+  border: 6px solid transparent;
+}
+
+.tooltip.top::before {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-color: var(--accent-gold);
+}
+
+.tooltip.bottom::before {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom-color: var(--accent-gold);
+}

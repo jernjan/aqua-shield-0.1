@@ -1,146 +1,136 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
+import Tooltip from '../components/Tooltip';
+import styles from './Dashboard.module.css';
 
 export default function VesselMVP({ token }) {
-  const [vessels, setVessels] = useState([])
-  const [selectedVessel, setSelectedVessel] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [vessels, setVessels] = useState([]);
+  const [selectedVessel, setSelectedVessel] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/mvp/vessel')
       .then(r => r.json())
       .then(data => {
-        setVessels(data.vessels)
+        setVessels(data.vessels);
         if (data.vessels.length > 0) {
-          setSelectedVessel(data.vessels[0])
+          setSelectedVessel(data.vessels[0]);
         }
-        setLoading(false)
+        setLoading(false);
       })
       .catch(err => {
-        console.error('Failed to fetch vessels', err)
-        setLoading(false)
-      })
-  }, [])
+        console.error('Failed to fetch vessels', err);
+        setLoading(false);
+      });
+  }, []);
 
-  if (loading) return <div style={{ padding: '20px' }}>Laster...</div>
+  if (loading) return <div className={styles.container}>Laster båter...</div>;
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>⛵ Brønnbåt-Dashboard</h1>
-      <p style={{ color: '#666' }}>Posisjoner, last, og compliance-logging for alle båter</p>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>BRØNNBÅT</h1>
+        <p className={styles.subtitle}>Transportbåter - Posisjoner, last og compliance</p>
+      </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '20px' }}>
-        {/* Vessel List */}
-        <div style={{ borderRight: '1px solid #ddd', paddingRight: '20px' }}>
-          <h2 style={{ fontSize: '16px', marginBottom: '10px' }}>Båter ({vessels.length})</h2>
-          <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+      <div className={styles.content}>
+        <div className={styles.sidebar}>
+          <h3 className={styles.sidebarTitle}>BÅTER ({vessels.length})</h3>
+          <div className={styles.list}>
             {vessels.map(vessel => (
-              <div
+              <button
                 key={vessel.id}
                 onClick={() => setSelectedVessel(vessel)}
-                style={{
-                  padding: '10px',
-                  marginBottom: '8px',
-                  border: selectedVessel?.id === vessel.id ? '2px solid #0066cc' : '1px solid #ddd',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  backgroundColor: selectedVessel?.id === vessel.id ? '#f0f7ff' : '#fff',
-                }}
+                className={`${styles.listItem} ${selectedVessel?.id === vessel.id ? styles.active : ''}`}
               >
-                <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{vessel.name}</div>
-                <div style={{ fontSize: '12px', color: '#666' }}>MMSI: {vessel.mmsi}</div>
-                <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>{vessel.type}</div>
-              </div>
+                <div style={{ fontWeight: 600, marginBottom: 4 }}>{vessel.name}</div>
+                <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>MMSI: {vessel.mmsi}</div>
+              </button>
             ))}
           </div>
         </div>
 
-        {/* Vessel Details */}
-        <div>
+        <div className={styles.main}>
           {selectedVessel && (
             <>
-              <div style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '4px', marginBottom: '20px' }}>
-                <h2 style={{ marginTop: 0 }}>{selectedVessel.name}</h2>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#666' }}>MMSI</div>
-                    <div style={{ fontSize: '14px', fontWeight: 'bold' }}>{selectedVessel.mmsi}</div>
+              <div className={styles.detail}>
+                <div className={styles.detailTitle}>{selectedVessel.name}</div>
+                <div className={styles.grid}>
+                  <div className={styles.card}>
+                    <span className={styles.cardLabel}>
+                      <Tooltip text="Maritime Mobile Service Identity">MMSI</Tooltip>
+                    </span>
+                    <span className={styles.cardValue}>{selectedVessel.mmsi}</span>
                   </div>
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#666' }}>Type</div>
-                    <div style={{ fontSize: '14px', fontWeight: 'bold' }}>{selectedVessel.type}</div>
+                  <div className={styles.card}>
+                    <span className={styles.cardLabel}>
+                      <Tooltip text="Type transportbåt">Type</Tooltip>
+                    </span>
+                    <span className={styles.cardValue} style={{ fontSize: 14 }}>{selectedVessel.type}</span>
                   </div>
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#666' }}>Siste posisjon (Lat, Lng)</div>
-                    <div style={{ fontSize: '14px', fontWeight: 'bold' }}>
-                      {selectedVessel.lastPosition.lat.toFixed(2)}, {selectedVessel.lastPosition.lng.toFixed(2)}
-                    </div>
+                  <div className={styles.card}>
+                    <span className={styles.cardLabel}>
+                      <Tooltip text="Siste kjent posisjon">Posisjon</Tooltip>
+                    </span>
+                    <span className={styles.cardValue} style={{ fontSize: 13 }}>
+                      {selectedVessel.lastPosition.lat.toFixed(2)}°N
+                    </span>
                   </div>
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#666' }}>Cargo / Art</div>
-                    <div style={{ fontSize: '14px', fontWeight: 'bold' }}>{selectedVessel.cargo}</div>
-                  </div>
-                  <div style={{ gridColumn: '1 / -1' }}>
-                    <div style={{ fontSize: '12px', color: '#666' }}>Compliance Status</div>
-                    <div
-                      style={{
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        color: selectedVessel.documentationStatus === 'godkjent' ? '#006600' : '#ff6600',
-                      }}
-                    >
-                      {selectedVessel.documentationStatus === 'godkjent' ? '✓ Godkjent' : '⏳ Under gjennomgang'}
-                    </div>
+                  <div className={styles.card}>
+                    <span className={styles.cardLabel}>
+                      <Tooltip text="Gjeldende last type">Last</Tooltip>
+                    </span>
+                    <span className={styles.cardValue} style={{ fontSize: 14 }}>{selectedVessel.cargo}</span>
                   </div>
                 </div>
               </div>
 
-              <h3>Compliance Actions</h3>
-              <div>
-                {selectedVessel.complianceActions.map((action, idx) => (
-                  <div
-                    key={idx}
-                    style={{
-                      padding: '12px',
-                      marginBottom: '10px',
-                      border: '1px solid #ddd',
-                      borderRadius: '4px',
-                      backgroundColor: action.verified ? '#ccffcc' : '#ffffcc',
-                      borderLeft: action.verified ? '4px solid #006600' : '4px solid #ff6600',
-                    }}
-                  >
-                    <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{action.action}</div>
-                    <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-                      Lokasjon: {action.location} | {new Date(action.date).toLocaleDateString('nb-NO')}
+              {selectedVessel.complianceActions && selectedVessel.complianceActions.length > 0 && (
+                <div className={styles.detail}>
+                  <div className={styles.detailTitle}>Compliance-handlinger</div>
+                  <div className={styles.table}>
+                    <div className={styles.tableHead}>
+                      <div>Handling</div>
+                      <div>Lokasjon</div>
+                      <div>Dato</div>
+                      <div>Status</div>
+                      <div>Verifisert</div>
                     </div>
-                    <div style={{ fontSize: '12px', marginTop: '4px' }}>
-                      {action.verified ? '✓ Verifisert' : '⚠️ Ej verifisert av Mattilsynet'}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <h3 style={{ marginTop: '20px' }}>Risikosoner oppgitt</h3>
-              {selectedVessel.riskZonesEntered.length === 0 ? (
-                <div style={{ color: '#666' }}>Ingen risikosoner oppgitt.</div>
-              ) : (
-                <div>
-                  {selectedVessel.riskZonesEntered.map((zone, idx) => (
-                    <div
-                      key={idx}
-                      style={{
-                        padding: '10px',
-                        marginBottom: '8px',
-                        backgroundColor: '#fff3cd',
-                        border: '1px solid #ffc107',
-                        borderRadius: '4px',
-                      }}
-                    >
-                      <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{zone.zone}</div>
-                      <div style={{ fontSize: '12px', color: '#666' }}>
-                        Avstand: ~{zone.distance} km | {new Date(zone.timestamp).toLocaleDateString('nb-NO')}
+                    {selectedVessel.complianceActions.map((action, idx) => (
+                      <div key={idx} className={styles.tableRow}>
+                        <div>{action.action}</div>
+                        <div>{action.location}</div>
+                        <div>{new Date(action.date).toLocaleDateString('no-NO')}</div>
+                        <div><span className={`${styles.badge} ${styles.badgeLow}`}>{action.status}</span></div>
+                        <div><span className={action.verified ? `${styles.badge} ${styles.badgeLow}` : `${styles.badge} ${styles.badgeHigh}`}>
+                          {action.verified ? 'Ja' : 'Nei'}
+                        </span></div>
                       </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedVessel.riskZones && selectedVessel.riskZones.length > 0 && (
+                <div className={styles.detail}>
+                  <div className={styles.detailTitle}>Risikozone-passage</div>
+                  <div className={styles.table}>
+                    <div className={styles.tableHead}>
+                      <div>Zone</div>
+                      <div>Risiko</div>
+                      <div>Avstand</div>
+                      <div>Dato</div>
+                      <div>Status</div>
                     </div>
-                  ))}
+                    {selectedVessel.riskZones.map((zone, idx) => (
+                      <div key={idx} className={styles.tableRow}>
+                        <div>{zone.name}</div>
+                        <div><span className={`${styles.badge} ${styles.badgeMedium}`}>{zone.riskLevel}</span></div>
+                        <div>{zone.distance} km</div>
+                        <div>{new Date(zone.date).toLocaleDateString('no-NO')}</div>
+                        <div>{zone.status}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </>
@@ -148,5 +138,5 @@ export default function VesselMVP({ token }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
