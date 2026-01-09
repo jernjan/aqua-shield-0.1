@@ -6,11 +6,8 @@ services:
     plan: starter
     buildCommand: "cd server && npm install"
     startCommand: "cd server && npm start"
-    port: 3001
     healthCheckPath: /api/health
     envVars:
-      - key: PORT
-        value: "3001"
       - key: NODE_ENV
         value: production
       - key: JWT_SECRET
@@ -35,55 +32,3 @@ databases:
   - name: aqua-shield-db
     engine: postgres
     plan: starter
-
-# Notes:
-# - The API service runs from the `server/` folder and uses `npm start` (server/package.json:start = "node index.js").
-# - The static frontend is built from `client/` and published from `client/dist`.
-# - Set production environment variables in the Render dashboard or use the generated `JWT_SECRET` above.
-services:
-  - type: web
-    name: aqua-shield-server
-    env: node
-    region: oregon
-    plan: starter
-    buildCommand: "cd server && npm install"
-    startCommand: "cd server && npm start"
-    envVars:
-      - key: NODE_ENV
-        value: production
-
-cron:
-  - name: nightly-analysis
-    schedule: "0 3 * * *" # daily at 03:00
-    command: "cd server && node -e \"require('./cron/nightly').runNightlyAnalysis().then(r=>console.log(r)).catch(e=>console.error(e))\""
-
-databases:
-  - name: aqua-shield-db
-    engine: postgres
-    plan: starter
-# render.yaml - AquaShield deployment config
-# See DEPLOY.md for instructions
-
-services:
-  # API service
-  - type: web
-    name: aqua-shield-api
-    runtime: node
-    buildCommand: "cd server && npm install"
-    startCommand: "cd server && npm start"
-    port: 3001
-    healthCheckPath: /api/health
-    envVars:
-      - key: PORT
-        value: "3001"
-      - key: JWT_SECRET
-        generateValue: true
-
-  # Frontend (static)
-  - type: static_site
-    name: aqua-shield-web
-    buildCommand: "cd client && npm install && npm run build"
-    staticPublishPath: client/dist
-    routes:
-      - path: /
-        destination: /index.html
