@@ -93,10 +93,55 @@
   display: block;
 }
 
+.searchInput,
+.filterSelect {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  color: var(--text-primary);
+  font-size: 12px;
+  margin-bottom: 12px;
+  font-family: inherit;
+}
+
+.searchInput::placeholder {
+  color: var(--text-secondary);
+}
+
+.searchInput:focus,
+.filterSelect:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 2px rgba(212, 165, 116, 0.1);
+}
+
+.filterControls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.filterControls label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .farmList {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.noResults {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 12px;
 }
 
 .farmItem {

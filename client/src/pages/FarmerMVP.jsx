@@ -8,6 +8,8 @@ export default function FarmerMVP({ token }) {
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState('severity');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterRisk, setFilterRisk] = useState('alle');
 
   useEffect(() => {
     fetch('/api/mvp/farmer')
@@ -42,6 +44,17 @@ export default function FarmerMVP({ token }) {
     if (!selectedFarm) return;
     alert(`PDF-rapporteksport for ${selectedFarm.name} (implementeres)`);
   };
+
+  // Filter farms by search and risk level
+  const filteredFarms = farms.filter(farm => {
+    const matchesSearch = farm.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          farm.region.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRisk = filterRisk === 'alle' || 
+                        (filterRisk === 'kritisk' && farm.riskScore > 60) ||
+                        (filterRisk === 'høy' && farm.riskScore > 40 && farm.riskScore <= 60) ||
+                        (filterRisk === 'moderat' && farm.riskScore <= 40);
+    return matchesSearch && matchesRisk;
+  });
 
   const sortedAlerts = [...alerts].sort((a, b) => {
     if (sortBy === 'severity') {
@@ -84,9 +97,32 @@ export default function FarmerMVP({ token }) {
 
       <div className={styles.content}>
         <div className={styles.sidebar}>
-          <h3 className={styles.sidebarTitle}>ANLEGG</h3>
+          <h3 className={styles.sidebarTitle}>ANLEGG ({filteredFarms.length})</h3>
+          
+          <input
+            type="text"
+            placeholder="Søk anlegg eller region..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={styles.searchInput}
+          />
+          
+          <div className={styles.filterControls}>
+            <label>Filter risiko:</label>
+            <select 
+              value={filterRisk} 
+              onChange={(e) => setFilterRisk(e.target.value)}
+              className={styles.filterSelect}
+            >
+              <option value="alle">Alle</option>
+              <option value="kritisk">Kritisk</option>
+              <option value="høy">Høy</option>
+              <option value="moderat">Moderat</option>
+            </select>
+          </div>
+          
           <div className={styles.farmList}>
-            {farms.map(farm => (
+            {filteredFarms.map(farm => (
               <button
                 key={farm.id}
                 onClick={() => setSelectedFarm(farm)}
@@ -99,6 +135,9 @@ export default function FarmerMVP({ token }) {
                 </div>
               </button>
             ))}
+            {filteredFarms.length === 0 && (
+              <div className={styles.noResults}>Ingen anlegg funnet</div>
+            )}
           </div>
         </div>
 
@@ -109,11 +148,31 @@ export default function FarmerMVP({ token }) {
                 <div className={styles.detailHeader}>
                   <h2>{selectedFarm.name}</h2>
                   <button onClick={handleDownloadPDF} className={styles.pdfBtn}>
-                    Eksporter PDF
+                    📄 Eksporter PDF
                   </button>
                 </div>
 
                 <div className={styles.detailGrid}>
+                  <div className={styles.detailItem}>
+                    <span className={styles.label}>
+                      <Tooltip text="Eier av anlegget">
+                        Eier
+                      </Tooltip>
+                    </span>
+                    <span className={styles.value}>{selectedFarm.owner}</span>
+                  </div>
+
+                  <div className={styles.detailItem}>
+                    <span className={styles.label}>
+                      <Tooltip text="Lisensnummer">
+                        Lisens
+                      </Tooltip>
+                    </span>
+                    <span className={styles.value} style={{ fontSize: '12px', fontFamily: 'monospace' }}>
+                      {selectedFarm.license}
+                    </span>
+                  </div>
+
                   <div className={styles.detailItem}>
                     <span className={styles.label}>
                       <Tooltip text="Geografisk område hvor anlegget er lokalisert">
@@ -129,7 +188,16 @@ export default function FarmerMVP({ token }) {
                         Art
                       </Tooltip>
                     </span>
-                    <span className={styles.value}>{selectedFarm.species.join(', ')}</span>
+                    <span className={styles.value}>{selectedFarm.species}</span>
+                  </div>
+
+                  <div className={styles.detailItem}>
+                    <span className={styles.label}>
+                      <Tooltip text="Type anlegg (Merd, Kar, etc)">
+                        Anleggstype
+                      </Tooltip>
+                    </span>
+                    <span className={styles.value}>{selectedFarm.type}</span>
                   </div>
 
                   <div className={styles.detailItem}>
@@ -138,13 +206,13 @@ export default function FarmerMVP({ token }) {
                         Kapasitet
                       </Tooltip>
                     </span>
-                    <span className={styles.value}>{selectedFarm.capacity} tonn</span>
+                    <span className={styles.value}>{selectedFarm.capacity.toLocaleString()} tonn</span>
                   </div>
 
                   <div className={styles.detailItem}>
                     <span className={styles.label}>
                       <Tooltip text="Risikonivå basert på historiske hendelser">
-                        Risiko
+                        Risikoscore
                       </Tooltip>
                     </span>
                     <span className={`${styles.value} ${styles[`risk${selectedFarm.riskLevel}`.toLowerCase()]}`}>
@@ -166,17 +234,35 @@ export default function FarmerMVP({ token }) {
                   <div className={styles.detailItem}>
                     <span className={styles.label}>
                       <Tooltip text="Antall etterlevelsepunkter som er dokumentert">
-                        Etterlevelse
+                        Dokumenterte punkt
                       </Tooltip>
                     </span>
                     <span className={styles.value}>{selectedFarm.complianceLogs.length}</span>
+                  </div>
+
+                  <div className={styles.detailItem}>
+                    <span className={styles.label}>
+                      <Tooltip text="Dødelighetrate denne uken">
+                        Dødelig denne uke
+                      </Tooltip>
+                    </span>
+                    <span className={styles.value}>{selectedFarm.mortalities.thisWeek}</span>
+                  </div>
+
+                  <div className={styles.detailItem}>
+                    <span className={styles.label}>
+                      <Tooltip text="Gjeldende vanntemperatur">
+                        Temperatur
+                      </Tooltip>
+                    </span>
+                    <span className={styles.value}>{selectedFarm.waterTemperature.current.toFixed(1)}°C</span>
                   </div>
                 </div>
               </div>
 
               <div className={styles.alertsSection}>
                 <div className={styles.alertsHeader}>
-                  <h3>VARSLER</h3>
+                  <h3>VARSLER ({sortedAlerts.length})</h3>
                   <div className={styles.sortControl}>
                     <label>Sorter etter:</label>
                     <select 
@@ -214,7 +300,7 @@ export default function FarmerMVP({ token }) {
                             {alert.severity}
                           </span>
                         </div>
-                        <div className={styles.colSource}>{alert.source}</div>
+                        <div className={styles.colSource}>{alert.dataSource}</div>
                         <div className={styles.colDate}>
                           {new Date(alert.timestamp).toLocaleDateString('no-NO')}
                         </div>

@@ -64,10 +64,16 @@ app.get('/api/mvp/farmer/:farmId?', (req, res) => {
     const farm = MVP.farmers.find(f => f.id === farmId)
     if (!farm) return res.status(404).json({ error: 'Farm not found' })
     const alerts = MVP.alerts.filter(a => a.farmId === farmId)
-    res.json({ farm, alerts })
+    res.json({ farm, alerts, totalAlerts: alerts.length })
   } else {
-    // List all farms (paginated if needed)
-    res.json({ farms: MVP.farmers, alertCount: MVP.alerts.length })
+    // List all farms with basic stats
+    const stats = {
+      total: MVP.farmers.length,
+      critical: MVP.farmers.filter(f => f.riskScore > 60).length,
+      high: MVP.farmers.filter(f => f.riskScore > 40 && f.riskScore <= 60).length,
+      unreadAlerts: MVP.alerts.filter(a => !a.isRead).length,
+    }
+    res.json({ farms: MVP.farmers, stats, alertCount: MVP.alerts.length })
   }
 })
 
@@ -79,7 +85,13 @@ app.get('/api/mvp/vessel/:vesselId?', (req, res) => {
     if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
     res.json({ vessel })
   } else {
-    res.json({ vessels: MVP.vessels })
+    const stats = {
+      total: MVP.vessels.length,
+      withExpiredCerts: MVP.vessels.filter(v => 
+        v.certificates.some(c => new Date(c.expires) < new Date())
+      ).length,
+    }
+    res.json({ vessels: MVP.vessels, stats })
   }
 })
 
@@ -89,7 +101,7 @@ app.get('/api/mvp/admin/stats', (req, res) => {
 })
 
 app.get('/api/mvp/admin/alerts', (req, res) => {
-  res.json({ alerts: MVP.alerts })
+  res.json({ alerts: MVP.adminStats.topAlerts })
 })
 
 // Gruppe 4: Public (Anonymous regional data)

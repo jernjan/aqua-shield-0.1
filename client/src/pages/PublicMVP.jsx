@@ -5,6 +5,7 @@ import styles from './Dashboard.module.css';
 export default function PublicMVP({ token }) {
   const [publicData, setPublicData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState('date');
 
   useEffect(() => {
     fetch('/api/mvp/public')
@@ -21,11 +22,23 @@ export default function PublicMVP({ token }) {
 
   if (loading) return <div className={styles.container}>Laster områdedata...</div>;
 
+  const sortedAlerts = publicData?.topAlerts 
+    ? [...publicData.topAlerts].sort((a, b) => {
+        if (sortBy === 'severity') {
+          const severityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+          return (severityOrder[a.severity] || 4) - (severityOrder[b.severity] || 4);
+        }
+        return new Date(b.timestamp) - new Date(a.timestamp);
+      })
+    : [];
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>OMRÅDEVARSLER</h1>
-        <p className={styles.subtitle}>Offentlig informasjon - Anonyme regionale varsler for nordiske kystsamfunn</p>
+        <div>
+          <h1 className={styles.title}>OMRÅDEVARSLER</h1>
+          <p className={styles.subtitle}>Offentlig informasjon - Anonyme regionale varsler for nordiske kystsamfunn</p>
+        </div>
       </div>
 
       {publicData && (
@@ -36,15 +49,32 @@ export default function PublicMVP({ token }) {
               {publicData.regions.map(region => (
                 <div key={region.name} className={styles.card}>
                   <span className={styles.cardLabel}>
-                    <Tooltip text="Geografisk område">
+                    <Tooltip text={`Statistikk for region ${region.name}`}>
                       {region.name}
                     </Tooltip>
                   </span>
-                  <div style={{ marginTop: 8, fontSize: '11px', color: 'var(--text-secondary)' }}>
-                    <div>{region.facilityCount} anlegg</div>
-                    <div>{region.recentAlerts} varsler</div>
-                    <div style={{ marginTop: 4, fontWeight: 600, color: 'var(--accent-gold)' }}>
-                      {region.averageRisk}
+                  <div style={{ marginTop: 8, fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.8 }}>
+                    <div>
+                      <span style={{ color: 'var(--text-primary)' }}>{region.facilityCount}</span> anlegg
+                    </div>
+                    <div>
+                      <span style={{ color: 'var(--accent-orange)' }}>{region.recentAlerts}</span> varsler (7d)
+                    </div>
+                    <div style={{ marginTop: 6, paddingTop: 6, borderTop: '1px solid var(--border-color)' }}>
+                      Risiko:{' '}
+                      <span 
+                        style={{
+                          color: region.riskLevel === 'Høy' ? 'var(--accent-red)' :
+                                 region.riskLevel === 'Moderat' ? 'var(--accent-orange)' :
+                                 'var(--accent-green)',
+                          fontWeight: 600,
+                        }}
+                      >
+                        {region.riskLevel}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 10, marginTop: 4, color: 'var(--text-secondary)' }}>
+                      Score: {region.averageRisk}%
                     </div>
                   </div>
                 </div>
@@ -52,58 +82,116 @@ export default function PublicMVP({ token }) {
             </div>
           </div>
 
-          <div className={styles.detail}>
-            <div className={styles.detailTitle}>Siste varsler</div>
-            {publicData.topAlerts.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '20px', color: 'var(--text-secondary)' }}>
-                Ingen varsler
+          {publicData.topAlerts && publicData.topAlerts.length > 0 && (
+            <div className={styles.detail}>
+              <div className={styles.detailTitle}>Nyeste varsler</div>
+              
+              <div style={{ marginBottom: 12, fontSize: 12 }}>
+                <label style={{ color: 'var(--text-secondary)', marginRight: 8 }}>Sorter etter:</label>
+                <select 
+                  value={sortBy} 
+                  onChange={(e) => setSortBy(e.target.value)}
+                  style={{
+                    padding: '6px 10px',
+                    background: 'var(--bg-dark)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: 3,
+                    color: 'var(--text-primary)',
+                    fontSize: 11,
+                  }}
+                >
+                  <option value="date">Nyeste først</option>
+                  <option value="severity">Alvorlighetsgrad</option>
+                </select>
               </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {publicData.topAlerts.slice(0, 10).map((alert, idx) => (
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {sortedAlerts.slice(0, 15).map((alert, idx) => (
                   <div
                     key={idx}
                     style={{
-                      padding: 12,
+                      padding: 14,
                       background: 'var(--bg-elevated)',
-                      border: `1px solid var(--border-color)`,
+                      border: '1px solid var(--border-color)',
                       borderLeft: `4px solid ${
                         alert.severity === 'critical' ? 'var(--accent-red)' :
                         alert.severity === 'high' ? 'var(--accent-orange)' :
-                        'var(--accent-gold)'
+                        alert.severity === 'medium' ? 'var(--accent-gold)' :
+                        'var(--accent-green)'
                       }`,
-                      borderRadius: 2,
+                      borderRadius: 3,
                     }}
                   >
-                    <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 4 }}>
-                      {alert.region} — {alert.type}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 8 }}>
+                      <div>
+                        <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 4 }}>
+                          {alert.region}
+                        </div>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: 12 }}>
+                          {alert.type}
+                        </div>
+                      </div>
+                      <div>
+                        <span 
+                          style={{
+                            display: 'inline-block',
+                            padding: '4px 10px',
+                            borderRadius: 3,
+                            fontSize: 11,
+                            fontWeight: 600,
+                            backgroundColor: 
+                              alert.severity === 'critical' ? 'rgba(231, 76, 60, 0.2)' :
+                              alert.severity === 'high' ? 'rgba(255, 107, 53, 0.2)' :
+                              alert.severity === 'medium' ? 'rgba(212, 165, 116, 0.2)' :
+                              'rgba(39, 174, 96, 0.2)',
+                            color:
+                              alert.severity === 'critical' ? 'var(--accent-red)' :
+                              alert.severity === 'high' ? 'var(--accent-orange)' :
+                              alert.severity === 'medium' ? 'var(--accent-gold)' :
+                              'var(--accent-green)',
+                          }}
+                        >
+                          {alert.severity}
+                        </span>
+                      </div>
                     </div>
-                    <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 4 }}>
-                      <span className={`${styles.badge} ${
-                        alert.severity === 'critical' ? styles.badgeHigh :
-                        alert.severity === 'high' ? styles.badgeMedium :
-                        styles.badgeLow
-                      }`}>
-                        {alert.severity}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: 11 }}>
+                      {alert.daysSince === 0 ? 'I dag' : alert.daysSince === 1 ? 'Igår' : `${alert.daysSince} dager siden`} — 
+                      {' '}
                       {new Date(alert.timestamp).toLocaleDateString('no-NO')}
                     </div>
                   </div>
                 ))}
               </div>
-            )}
-          </div>
 
-          <div className={styles.detail} style={{ background: 'rgba(212, 165, 116, 0.1)', borderColor: 'var(--accent-gold)' }}>
-            <div className={styles.detailTitle} style={{ color: 'var(--text-secondary)' }}>Om denne siden</div>
-            <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: 13, lineHeight: 1.6 }}>
-              Denne siden viser aggregert, anonymisert data fra fiskeoppdrettsanlegg i Norge. 
-              Data oppdateres daglig basert på varsler fra Mattilsynet, BarentsWatch og meteorologiske kilder.
-              For detaljert informasjon om spesifikke anlegg, kontakt Mattilsynet eller logg inn som anleggseier.
-            </p>
-          </div>
+              {publicData.topAlerts.length > 15 && (
+                <div style={{ marginTop: 12, padding: 12, textAlign: 'center', color: 'var(--text-secondary)', fontSize: 11 }}>
+                  Viser {Math.min(15, sortedAlerts.length)} av {publicData.topAlerts.length} varsler
+                </div>
+              )}
+            </div>
+          )}
+
+          {publicData.disclaimer && (
+            <div 
+              style={{
+                margin: '20px 20px',
+                padding: 14,
+                background: 'var(--bg-elevated)',
+                border: '1px solid var(--border-color)',
+                borderLeft: '3px solid var(--accent-gold)',
+                borderRadius: 3,
+                fontSize: 11,
+                color: 'var(--text-secondary)',
+                lineHeight: 1.6,
+              }}
+            >
+              <div style={{ fontWeight: 600, color: 'var(--accent-gold)', marginBottom: 6 }}>
+                ℹ️ Om disse varslene
+              </div>
+              {publicData.disclaimer}
+            </div>
+          )}
         </div>
       )}
     </div>
