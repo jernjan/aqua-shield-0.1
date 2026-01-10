@@ -6,9 +6,18 @@
  * Gruppe 4: Public (anonymous regional data) - Anonyme varsler, regionale trender
  */
 
+// Mock user accounts for testing
+const MOCK_USERS = {
+  farmer1: { id: 'user_1', name: 'Arne Anleggmann', email: 'arne@farms.no', role: 'farmer' },
+  farmer2: { id: 'user_2', name: 'Berit Fiskeoppdrett', email: 'berit@farms.no', role: 'farmer' },
+  vessel1: { id: 'user_3', name: 'Kåre Båtrederi', email: 'kare@shipping.no', role: 'vessel_operator' },
+  vessel2: { id: 'user_4', name: 'Siri Sjøtransport', email: 'siri@shipping.no', role: 'vessel_operator' },
+};
+
 const generateFarmers = () => {
   const regions = ['Tromsø', 'Finnmark', 'Nord-Trøndelag', 'Sogn og Fjordane', 'Hordaland'];
   const farmers = [];
+  const userIds = ['user_1', 'user_2']; // Distribute farms across 2 users
   
   for (let i = 1; i <= 100; i++) {
     const region = regions[Math.floor(Math.random() * regions.length)];
@@ -28,6 +37,7 @@ const generateFarmers = () => {
 
     farmers.push({
       id: `farm_${i}`,
+      userId: userIds[i % 2], // Distribute: user_1 gets farms 1,3,5... user_2 gets 2,4,6...
       name: `Anlegg ${i}`,
       region,
       coordinates: {
@@ -37,7 +47,7 @@ const generateFarmers = () => {
       capacity: Math.floor(50000 + Math.random() * 100000),
       species: ['Atlantisk laks', 'Ørret', 'Piggvar'][Math.floor(Math.random() * 3)],
       type: ['Merd', 'Kar', 'Innland'][Math.floor(Math.random() * 3)],
-      riskLevel: baseRisk > 60 ? 'kritisk' : baseRisk > 40 ? 'høy' : 'moderat',
+      riskLevel: baseRisk > 60 ? 'risikofylt' : baseRisk > 40 ? 'høy oppmerksomhet' : 'moderat',
       riskScore: baseRisk,
       lastInspection: inspections[0].date,
       inspectionHistory: inspections,
@@ -83,13 +93,14 @@ const generateVessels = () => {
   const vessels = [];
   const fishTypes = ['Laks', 'Torsk', 'Sei', 'Hyse'];
   const zones = ['Tromsø fiskeripolitizone', 'Finnmark fiskeripolitizone', 'Nord-Trøndelag fiskeripolitizone', 'Sogn fiskeripolitizone'];
+  const userIds = ['user_3', 'user_4']; // Distribute vessels across 2 users
   
   for (let i = 1; i <= 20; i++) {
     const riskZones = [];
     for (let j = 0; j < Math.floor(Math.random() * 3) + 1; j++) {
       riskZones.push({
         zone: zones[Math.floor(Math.random() * zones.length)],
-        riskLevel: ['høy', 'moderat', 'lav'][Math.floor(Math.random() * 3)],
+        riskLevel: ['høy oppmerksomhet', 'moderat', 'lav'][Math.floor(Math.random() * 3)],
         distance: Math.floor(Math.random() * 50),
         timestamp: new Date(Date.now() - j * 24 * 3600 * 1000 - Math.random() * 12 * 3600 * 1000).toISOString(),
         status: Math.random() > 0.5 ? 'aktiv' : 'passert',
@@ -108,6 +119,7 @@ const generateVessels = () => {
 
     vessels.push({
       id: `vessel_${i}`,
+      userId: userIds[i % 2], // Distribute: user_3 gets vessels 1,3,5... user_4 gets 2,4,6...
       name: `M/S Båt ${i}`,
       mmsi: 250000000 + i,
       type: ['Brønnbåt', 'Trawler', 'Linjebåt'][Math.floor(Math.random() * 3)],
@@ -144,16 +156,16 @@ const generateVessels = () => {
 const generateAlerts = (farmers) => {
   const alerts = [];
   const alertTypes = [
-    { type: 'lus-risiko', severity: 'critical', message: 'Høy lus-risiko detektert', dataSource: 'BarentsWatch' },
-    { type: 'lus-risiko', severity: 'high', message: 'Moderat lus-risiko', dataSource: 'BarentsWatch' },
-    { type: 'alger', severity: 'high', message: 'Moderate alger i området', dataSource: 'Met.no' },
-    { type: 'alger', severity: 'medium', message: 'Svake alger påvist', dataSource: 'Met.no' },
-    { type: 'temperatur', severity: 'high', message: 'Uvanlig høy temperatur', dataSource: 'Kystvarsling' },
-    { type: 'temperatur', severity: 'medium', message: 'Temperatur Over normalt', dataSource: 'Kystvarsling' },
-    { type: 'båtkontakt', severity: 'high', message: 'Båtkontakt registrert', dataSource: 'AIS' },
-    { type: 'båtkontakt', severity: 'low', message: 'Båt i nærheten', dataSource: 'AIS' },
-    { type: 'mortilitet', severity: 'critical', message: 'Uvanlig høy dødelighetrate', dataSource: 'Internal' },
-    { type: 'inspeksjon', severity: 'high', message: 'Inspeksjon avsluttet med merknader', dataSource: 'Mattilsynet' },
+    { type: 'lus-risiko', severity: 'risikofylt', message: 'Høy lus-risiko detektert', dataSource: 'BarentsWatch' },
+    { type: 'lus-risiko', severity: 'høy oppmerksomhet', message: 'Moderat lus-risiko', dataSource: 'BarentsWatch' },
+    { type: 'alger', severity: 'høy oppmerksomhet', message: 'Moderate alger i området', dataSource: 'Met.no' },
+    { type: 'alger', severity: 'moderat', message: 'Svake alger påvist', dataSource: 'Met.no' },
+    { type: 'temperatur', severity: 'høy oppmerksomhet', message: 'Uvanlig høy temperatur', dataSource: 'Kystvarsling' },
+    { type: 'temperatur', severity: 'moderat', message: 'Temperatur Over normalt', dataSource: 'Kystvarsling' },
+    { type: 'båtkontakt', severity: 'høy oppmerksomhet', message: 'Båtkontakt registrert', dataSource: 'AIS' },
+    { type: 'båtkontakt', severity: 'lav', message: 'Båt i nærheten', dataSource: 'AIS' },
+    { type: 'mortilitet', severity: 'risikofylt', message: 'Uvanlig høy dødelighetrate', dataSource: 'Internal' },
+    { type: 'inspeksjon', severity: 'høy oppmerksomhet', message: 'Inspeksjon avsluttet med merknader', dataSource: 'Mattilsynet' },
   ];
   
   farmers.forEach((farm, idx) => {
@@ -165,6 +177,7 @@ const generateAlerts = (farmers) => {
       alerts.push({
         id: `alert_${farm.id}_${j}`,
         farmId: farm.id,
+        userId: farm.userId, // Link alert to farm owner
         farmName: farm.name,
         region: farm.region,
         type: alertType.type,
@@ -186,8 +199,8 @@ const generateAdminStats = (farmers, vessels, alerts) => {
   const riskyFarms = farmers.filter(f => f.riskScore > 60).length;
   const moderate = farmers.filter(f => f.riskScore > 40 && f.riskScore <= 60).length;
   
-  const criticalAlerts = alerts.filter(a => a.severity === 'critical').length;
-  const highAlerts = alerts.filter(a => a.severity === 'high').length;
+  const risikofyltAlerts = alerts.filter(a => a.severity === 'risikofylt').length;
+  const highAlerts = alerts.filter(a => a.severity === 'høy oppmerksomhet').length;
   
   const regionBreakdown = {};
   farmers.forEach(f => {
@@ -195,15 +208,15 @@ const generateAdminStats = (farmers, vessels, alerts) => {
       regionBreakdown[f.region] = {
         name: f.region,
         totalFacilities: 0,
-        criticalRisk: 0,
-        highRisk: 0,
+        risikofyltRisk: 0,
+        høyOppmerksomhetRisk: 0,
         averageRisk: 0,
         recentAlerts: 0,
       };
     }
     regionBreakdown[f.region].totalFacilities++;
-    if (f.riskScore > 60) regionBreakdown[f.region].criticalRisk++;
-    if (f.riskScore > 40) regionBreakdown[f.region].highRisk++;
+    if (f.riskScore > 60) regionBreakdown[f.region].risikofyltRisk++;
+    if (f.riskScore > 40) regionBreakdown[f.region].høyOppmerksomhetRisk++;
   });
 
   Object.keys(regionBreakdown).forEach(region => {
@@ -221,9 +234,9 @@ const generateAdminStats = (farmers, vessels, alerts) => {
       totalFacilities: farmers.length,
       totalVessels: vessels.length,
       totalAlerts: alerts.length,
-      criticalAlerts: criticalAlerts,
-      highAlerts: highAlerts,
-      criticalRiskFacilities: riskyFarms,
+      risikofyltAlerts: risikofyltAlerts,
+      høyOppmerksomhetAlerts: highAlerts,
+      risikofyltRiskFacilities: riskyFarms,
       moderateRiskFacilities: moderate,
       averageRiskScore: (farmers.reduce((sum, f) => sum + f.riskScore, 0) / farmers.length).toFixed(1),
       lastUpdated: new Date().toISOString(),
@@ -278,14 +291,56 @@ const generatePublicData = (farmers, alerts) => {
   };
 };
 
+const generateTasks = (vessels) => {
+  const tasks = [];
+  const taskTypes = [
+    { name: 'Karantene - Lus', duration: 7, chemicals: ['Hydrogenperoksid', 'Parasorb'], type: 'karantene-lus' },
+    { name: 'Karantene - Furunkulose', duration: 14, chemicals: ['Oxolinic acid', 'Florfenikol'], type: 'karantene-furunkulose' },
+    { name: 'Merbromin behandling', duration: 5, chemicals: ['Merbromin'], type: 'merbromin' },
+    { name: 'Sertifikat fornyelse', duration: 0, chemicals: [], type: 'sertifikat' },
+    { name: 'Vedlikehold merd', duration: 2, chemicals: [], type: 'vedlikehold' },
+  ];
+  
+  for (let i = 0; i < 40; i++) {
+    const vessel = vessels[Math.floor(Math.random() * vessels.length)];
+    const taskType = taskTypes[Math.floor(Math.random() * taskTypes.length)];
+    const daysUntilDue = Math.floor(Math.random() * 60) + 1;
+    
+    let status = 'planned';
+    if (daysUntilDue <= 7) status = 'urgent';
+    else if (daysUntilDue <= 14) status = 'scheduled';
+    
+    tasks.push({
+      id: `task_${i}`,
+      vesselId: vessel.id,
+      userId: vessel.userId,
+      type: taskType.type,
+      name: taskType.name,
+      status: status,
+      dueDate: new Date(Date.now() + daysUntilDue * 24 * 3600 * 1000).toISOString(),
+      daysUntil: daysUntilDue,
+      duration: taskType.duration,
+      chemicals: taskType.chemicals,
+      notes: `Task for ${vessel.name}`,
+      createdDate: new Date(Date.now() - Math.random() * 30 * 24 * 3600 * 1000).toISOString(),
+      completedDate: null,
+    });
+  }
+  
+  return tasks;
+};
+
 module.exports = {
   farmers: generateFarmers(),
   alerts: null, // Will be populated after farmers are generated
   vessels: generateVessels(),
+  tasks: null, // Will be populated after vessels are generated
   init() {
     this.alerts = generateAlerts(this.farmers);
+    this.tasks = generateTasks(this.vessels);
     this.adminStats = generateAdminStats(this.farmers, this.vessels, this.alerts);
     this.publicData = generatePublicData(this.farmers, this.alerts);
     return this;
   },
+  MOCK_USERS,
 };
