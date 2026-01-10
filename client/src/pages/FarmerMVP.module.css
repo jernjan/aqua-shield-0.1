@@ -412,22 +412,26 @@
   letter-spacing: 0.5px;
 }
 
-.severity.sevcritical {
+.severity.sevcritical,
+.severity.sev-risikofylt {
   background-color: rgba(231, 76, 60, 0.2);
   color: var(--accent-red);
 }
 
-.severity.sevhigh {
+.severity.sevhigh,
+.severity.sev-hoy-oppmerksomhet {
   background-color: rgba(255, 107, 53, 0.2);
   color: var(--accent-orange);
 }
 
-.severity.sevmedium {
+.severity.sevmedium,
+.severity.sev-moderat {
   background-color: rgba(212, 165, 116, 0.2);
   color: var(--accent-gold);
 }
 
-.severity.sevlow {
+.severity.sevlow,
+.severity.sev-lav {
   background-color: rgba(39, 174, 96, 0.2);
   color: var(--accent-green);
 }

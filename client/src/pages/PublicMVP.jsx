@@ -2,22 +2,39 @@ import { useEffect, useState } from 'react';
 import Tooltip from '../components/Tooltip';
 import styles from './Dashboard.module.css';
 
-export default function PublicMVP({ token }) {
+export default function PublicMVP({ token, currentUser }) {
   const [publicData, setPublicData] = useState(null);
+  const [vesselMetrics, setVesselMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState('date');
 
   useEffect(() => {
-    fetch('/api/mvp/public')
-      .then(r => r.json())
-      .then(data => {
-        setPublicData(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to fetch public data', err);
-        setLoading(false);
-      });
+    // Mock data for public view
+    const mockPublicData = {
+      topAlerts: [
+        { id: 1, region: 'Nord-Trøndelag', severity: 'risikofylt', title: 'Høy lus-risiko', timestamp: new Date().toISOString() },
+        { id: 2, region: 'Troms & Finnmark', severity: 'høy oppmerksomhet', title: 'Temperatur over grense', timestamp: new Date().toISOString() },
+        { id: 3, region: 'Hordaland', severity: 'moderat', title: 'Båtkontakt registrert', timestamp: new Date().toISOString() },
+      ],
+      regions: [
+        { name: 'Nord-Trøndelag', facilityCount: 1, recentAlerts: 2, riskLevel: 'Høy' },
+        { name: 'Troms & Finnmark', facilityCount: 1, recentAlerts: 1, riskLevel: 'Moderat' },
+        { name: 'Hordaland', facilityCount: 1, recentAlerts: 0, riskLevel: 'Lav' },
+        { name: 'Sogn & Fjordane', facilityCount: 1, recentAlerts: 0, riskLevel: 'Lav' },
+        { name: 'Møre og Romsdal', facilityCount: 1, recentAlerts: 0, riskLevel: 'Lav' },
+        { name: 'Vest-Agder', facilityCount: 1, recentAlerts: 0, riskLevel: 'Lav' },
+      ],
+    };
+
+    const mockVesselMetrics = {
+      activeVessels: 2,
+      quarantineActive: 0,
+      disinfectionsThisWeek: 1,
+    };
+
+    setPublicData(mockPublicData);
+    setVesselMetrics(mockVesselMetrics);
+    setLoading(false);
   }, []);
 
   if (loading) return <div className={styles.container}>Laster områdedata...</div>;
@@ -25,7 +42,7 @@ export default function PublicMVP({ token }) {
   const sortedAlerts = publicData?.topAlerts 
     ? [...publicData.topAlerts].sort((a, b) => {
         if (sortBy === 'severity') {
-          const severityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+          const severityOrder = { 'risikofylt': 0, 'høy oppmerksomhet': 1, 'moderat': 2, 'lav': 3 };
           return (severityOrder[a.severity] || 4) - (severityOrder[b.severity] || 4);
         }
         return new Date(b.timestamp) - new Date(a.timestamp);
@@ -114,9 +131,9 @@ export default function PublicMVP({ token }) {
                       background: 'var(--bg-elevated)',
                       border: '1px solid var(--border-color)',
                       borderLeft: `4px solid ${
-                        alert.severity === 'critical' ? 'var(--accent-red)' :
-                        alert.severity === 'high' ? 'var(--accent-orange)' :
-                        alert.severity === 'medium' ? 'var(--accent-gold)' :
+                        alert.severity === 'risikofylt' ? 'var(--accent-red)' :
+                        alert.severity === 'høy oppmerksomhet' ? 'var(--accent-orange)' :
+                        alert.severity === 'moderat' ? 'var(--accent-gold)' :
                         'var(--accent-green)'
                       }`,
                       borderRadius: 3,
@@ -140,19 +157,38 @@ export default function PublicMVP({ token }) {
                             fontSize: 11,
                             fontWeight: 600,
                             backgroundColor: 
-                              alert.severity === 'critical' ? 'rgba(231, 76, 60, 0.2)' :
-                              alert.severity === 'high' ? 'rgba(255, 107, 53, 0.2)' :
-                              alert.severity === 'medium' ? 'rgba(212, 165, 116, 0.2)' :
+                              alert.severity === 'risikofylt' ? 'rgba(231, 76, 60, 0.2)' :
+                              alert.severity === 'høy oppmerksomhet' ? 'rgba(255, 107, 53, 0.2)' :
+                              alert.severity === 'moderat' ? 'rgba(212, 165, 116, 0.2)' :
                               'rgba(39, 174, 96, 0.2)',
                             color:
-                              alert.severity === 'critical' ? 'var(--accent-red)' :
-                              alert.severity === 'high' ? 'var(--accent-orange)' :
-                              alert.severity === 'medium' ? 'var(--accent-gold)' :
+                              alert.severity === 'risikofylt' ? 'var(--accent-red)' :
+                              alert.severity === 'høy oppmerksomhet' ? 'var(--accent-orange)' :
+                              alert.severity === 'moderat' ? 'var(--accent-gold)' :
                               'var(--accent-green)',
                           }}
                         >
                           {alert.severity}
                         </span>
+                                {vesselMetrics && (
+                                  <div className={styles.detail}>
+                                    <div className={styles.detailTitle}>Transportbåter (aggregert)</div>
+                                    <div className={styles.grid}>
+                                      <div className={styles.card}>
+                                        <span className={styles.cardLabel}>Totalt</span>
+                                        <span className={styles.cardValue}>{vesselMetrics.total}</span>
+                                      </div>
+                                      <div className={styles.card}>
+                                        <span className={styles.cardLabel}>Utgåtte sertifikater</span>
+                                        <span className={styles.cardValue} style={{ color: 'var(--accent-orange)' }}>{vesselMetrics.expiredCerts}</span>
+                                      </div>
+                                      <div className={styles.card}>
+                                        <span className={styles.cardLabel}>Sist oppdatert (24t)</span>
+                                        <span className={styles.cardValue} style={{ color: 'var(--accent-gold)' }}>{vesselMetrics.recentPositions24h}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
                       </div>
                     </div>
                     <div style={{ color: 'var(--text-secondary)', fontSize: 11 }}>

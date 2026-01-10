@@ -1,5 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './Login.module.css';
+
+// Mock users matching backend
+const MOCK_USERS = {
+  'arne@farms.no': { id: 'user_1', name: 'Arne Anleggmann', email: 'arne@farms.no', role: 'farmer', password: 'demo' },
+  'berit@farms.no': { id: 'user_2', name: 'Berit Fiskeoppdrett', email: 'berit@farms.no', role: 'farmer', password: 'demo' },
+  'kare@shipping.no': { id: 'user_3', name: 'Kåre Båtrederi', email: 'kare@shipping.no', role: 'vessel_operator', password: 'demo' },
+  'siri@shipping.no': { id: 'user_4', name: 'Siri Sjøtransport', email: 'siri@shipping.no', role: 'vessel_operator', password: 'demo' },
+};
 
 function Login({ onLogin, onMVPLogin }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -9,30 +17,39 @@ function Login({ onLogin, onMVPLogin }) {
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    // Check for existing session
+    const saved = localStorage.getItem('aquashield_user');
+    if (saved) {
+      const user = JSON.parse(saved);
+      onLogin(user.id, user);
+    }
+  }, [onLogin]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
 
     try {
-      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
-      const payload = isLogin
-        ? { email, password }
-        : { email, password, name, phone };
-
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        onLogin(data.token, data.user);
+      if (isLogin) {
+        // Mock login - check MOCK_USERS
+        const user = MOCK_USERS[email];
+        if (user && user.password === password) {
+          // Save to localStorage for persistence
+          localStorage.setItem('aquashield_user', JSON.stringify(user));
+          onLogin(user.id, user);
+        } else {
+          setError('Invalid email or password. Try: arne@farms.no, berit@farms.no, kare@shipping.no, siri@shipping.no (all password: demo)');
+        }
       } else {
-        console.error(data.error);
+        // Registration not implemented for demo
+        setError('Registration not available in demo mode');
       }
     } catch (err) {
-      console.error('Auth error:', err);
+      setError(err.message || 'Authentication error');
     } finally {
       setLoading(false);
     }
@@ -60,6 +77,7 @@ function Login({ onLogin, onMVPLogin }) {
             Registrer
           </button>
         </div>
+  {error && <div style={{ color: '#ff6b6b', marginBottom: '1rem', padding: '0.75rem', backgroundColor: 'rgba(255,107,107,0.1)', borderRadius: '4px' }}>{error}</div>}
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
@@ -156,12 +174,12 @@ function Login({ onLogin, onMVPLogin }) {
         </button>
 
         <button
-          onClick={() => onMVPLogin('public')}
+          onClick={() => onMVPLogin('analytics')}
           className={styles.roleBtn}
         >
-          <div className={styles.roleIcon}>O</div>
-          <div className={styles.roleLabel}>Offentlig</div>
-          <div className={styles.roleDesc}>Område-varsler</div>
+          <div className={styles.roleIcon}>📊</div>
+          <div className={styles.roleLabel}>Analytics</div>
+          <div className={styles.roleDesc}>Rapporter & Analyse</div>
         </button>
       </div>
     </div>

@@ -41,7 +41,102 @@ async function getUserFacilities(facilityIds) {
   return allFacilities.filter(f => facilityIds.includes(f.id));
 }
 
+// Fetch AIS data (vessel positions) from BarentsWatch
+async function getVesselPositions(bbox = null) {
+  try {
+    console.log('🔄 Fetching vessel positions from BarentsWatch...');
+    
+    // Note: BarentsWatch AIS API may require authentication or may not be available
+    // Multiple endpoint attempts for compatibility
+    const endpoints = [
+      'https://www.barentswatch.no/bwapi/v2/vessels',
+      'https://www.barentswatch.no/bwapi/v2/live/vessels',
+      'https://www.barentswatch.no/api/v1/ais/vessels'
+    ];
+    
+    let response = null;
+    let lastError = null;
+    
+    for (const url of endpoints) {
+      try {
+        response = await axios.get(url, {
+          headers: {
+            'Accept': 'application/json',
+            'User-Agent': 'AquaShield/0.1'
+          },
+          timeout: 5000
+        });
+        console.log(`✓ Connected to BarentsWatch: ${url}`);
+        break; // Success - exit loop
+      } catch (err) {
+        lastError = err;
+        console.log(`⚠️  Endpoint failed: ${url}`);
+        continue; // Try next endpoint
+      }
+    }
+    
+    if (!response) {
+      console.log(`⚠️  All BarentsWatch endpoints failed. Using fallback data.`);
+      console.log(`   Last error: ${lastError?.message || 'Unknown'}`);
+      console.log(`   Note: Some BarentsWatch APIs may require authentication or may be temporarily unavailable`);
+      return []; // Return empty - will trigger fallback
+    }
+    
+    const data = Array.isArray(response.data) ? response.data : response.data.vessels || [];
+    console.log(`✓ Got ${data.length} vessel positions from BarentsWatch`);
+    
+    return data.map(vessel => ({
+      id: vessel.mmsi?.toString() || vessel.callsign || `vessel_${Date.now()}`,
+      mmsi: vessel.mmsi,
+      name: vessel.name || 'Unknown Vessel',
+      callsign: vessel.callsign,
+      lat: vessel.latitude || vessel.lat || 0,
+      lng: vessel.longitude || vessel.lng || 0,
+      speed: vessel.sog || vessel.speed || 0,
+      heading: vessel.cog || vessel.heading || 0,
+      vesselType: vessel.shipType || vessel.type || 'Unknown',
+      lastPosition: vessel.positionTime || new Date().toISOString(),
+      status: vessel.status || 'underway'
+    }));
+  } catch (err) {
+    console.error('⚠️  Unexpected error fetching vessel positions:', err.message);
+    return [];
+  }
+}
+
+// Calculate distance between two coordinates (in km)
+function calculateDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371; // Earth's radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+// Find vessels near a facility
+function getVesselsNearFacility(vessels, facility, radiusKm = 10) {
+  return vessels.filter(vessel => {
+    const distance = calculateDistance(
+      facility.lat, 
+      facility.lng, 
+      vessel.lat, 
+      vessel.lng
+    );
+    return distance <= radiusKm;
+  }).map(vessel => ({
+    ...vessel,
+    distanceKm: calculateDistance(facility.lat, facility.lng, vessel.lat, vessel.lng)
+  }));
+}
+
 module.exports = {
   getAllFacilities,
-  getUserFacilities
+  getUserFacilities,
+  getVesselPositions,
+  calculateDistance,
+  getVesselsNearFacility
 };

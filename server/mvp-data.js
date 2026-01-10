@@ -35,15 +35,26 @@ const generateFarmers = () => {
       });
     }
 
+    // Generate realistic coordinates based on region and add current direction
+    let lat = 68 + Math.random() * 4;
+    let lng = 16 + Math.random() * 8;
+    let currentDirection = 'vestlig'; // Westerly current (typical for Norway)
+    
+    // Classify as upstream/downstream based on position
+    // Westerly current = farms to the west are "upstream" (safer if current farm infected)
+    const downstreamRisk = lng < 20 ? 'nedstrøms' : lng < 24 ? 'samme-område' : 'oppstrøms';
+
     farmers.push({
       id: `farm_${i}`,
       userId: userIds[i % 2], // Distribute: user_1 gets farms 1,3,5... user_2 gets 2,4,6...
       name: `Anlegg ${i}`,
       region,
       coordinates: {
-        lat: 68 + Math.random() * 4,
-        lng: 16 + Math.random() * 8,
+        lat,
+        lng,
       },
+      currentDirection, // Havstrøm-retning
+      downstreamRisk, // Smitte-risiko fra nærliggende anlegg
       capacity: Math.floor(50000 + Math.random() * 100000),
       species: ['Atlantisk laks', 'Ørret', 'Piggvar'][Math.floor(Math.random() * 3)],
       type: ['Merd', 'Kar', 'Innland'][Math.floor(Math.random() * 3)],
@@ -330,14 +341,158 @@ const generateTasks = (vessels) => {
   return tasks;
 };
 
+const generateNearbyFarms = (farmers) => {
+  // Create index of farms by location for proximity queries
+  const nearbyMap = {};
+  
+  farmers.forEach((farm) => {
+    nearbyMap[farm.id] = {
+      farm,
+      nearby: [],
+    };
+  });
+  
+  // For each farm, find nearby farms (within ~30 km distance and current direction)
+  farmers.forEach((farm) => {
+    const nearby = farmers
+      .filter((other) => {
+        if (other.id === farm.id) return false;
+        
+        // Calculate rough distance (simplified)
+        const dlat = other.coordinates.lat - farm.coordinates.lat;
+        const dlng = other.coordinates.lng - farm.coordinates.lng;
+        const distance = Math.sqrt(dlat * dlat + dlng * dlng) * 111; // km
+        
+        return distance <= 30; // Within 30km
+      })
+      .map((other) => {
+        // Classify risk based on current direction and position
+        const dlat = other.coordinates.lat - farm.coordinates.lat;
+        const dlng = other.coordinates.lng - farm.coordinates.lng;
+        const distanceKm = Math.sqrt(dlat * dlat + dlng * dlng) * 111;
+        
+        let riskCategory = 'same-area'; // same-område
+        let riskColor = 'orange';
+        
+        if (dlng < -2) {
+          // West (upstream of westerly current)
+          riskCategory = 'upstream';
+          riskColor = 'green';
+        } else if (dlng > 2) {
+          // East (downstream of westerly current)
+          riskCategory = 'downstream';
+          riskColor = 'red';
+        }
+        
+        return {
+          id: other.id,
+          name: other.name,
+          distance: distanceKm,
+          riskCategory,
+          riskColor,
+          riskLevel: other.riskLevel,
+          species: other.species,
+          currentState: other.riskLevel === 'risikofylt' ? 'infected-risk' : 'monitoring',
+        };
+      })
+      .sort((a, b) => {
+        // Sort by risk: downstream (red) > same-area (orange) > upstream (green)
+        const riskOrder = { downstream: 0, 'same-area': 1, upstream: 2 };
+        return riskOrder[a.riskCategory] - riskOrder[b.riskCategory];
+      });
+    
+    nearbyMap[farm.id].nearby = nearby;
+  });
+  
+  return nearbyMap;
+};
+
+const generateAlgaeAlerts = (farmers) => {
+  // Generate algae bloom alerts for farms
+  const algaeAlerts = [];
+  const algaeStrains = ['Dinoflagellater', 'Diatomer', 'Grønnalger', 'Rødalger', 'Havblink'];
+  
+  farmers.forEach((farm) => {
+    // 40% of farms get algae alerts
+    if (Math.random() > 0.6) {
+      const strain = algaeStrains[Math.floor(Math.random() * algaeStrains.length)];
+      const concentration = ['lav', 'moderat', 'høy'][Math.floor(Math.random() * 3)];
+      const severity = concentration === 'høy' ? 'høy oppmerksomhet' : concentration === 'moderat' ? 'moderat' : 'lav';
+      
+      // Generate several bloom events across next 30 days
+      for (let j = 0; j < Math.floor(Math.random() * 3) + 1; j++) {
+        const startDay = Math.floor(Math.random() * 30) + 1;
+        const durationDays = Math.floor(Math.random() * 7) + 2;
+        
+        algaeAlerts.push({
+          id: `algae_${farm.id}_${j}`,
+          farmId: farm.id,
+          userId: farm.userId,
+          farmName: farm.name,
+          region: farm.region,
+          strain,
+          concentration,
+          severity,
+          startDate: new Date(Date.now() + startDay * 24 * 3600 * 1000).toISOString(),
+          endDate: new Date(Date.now() + (startDay + durationDays) * 24 * 3600 * 1000).toISOString(),
+          durationDays,
+          estimatedRiskLevel: concentration === 'høy' ? 'høy oppmerksomhet' : 'moderat',
+          dataSource: 'Met.no / Havforskningsinstituttet',
+          notes: `${strain} bloom - ${concentration} concentration in area`,
+        });
+      }
+    }
+  });
+  
+  return algaeAlerts;
+};
+
+const generateInfectionChain = (farmers, nearbyFarmsMap) => {
+  // Build a graph showing which farms can infect which other farms via sea current
+  const infectionGraph = {};
+  
+  farmers.forEach((farm) => {
+    // If this farm is at risk (risikofylt), find all downstream farms it could infect
+    const riskLevel = farm.riskLevel === 'risikofylt' ? 'critical' : farm.riskLevel === 'høy oppmerksomhet' ? 'high' : 'moderate';
+    
+    const nearby = nearbyFarmsMap[farm.id]?.nearby || [];
+    const downstreamFarms = nearby.filter(n => n.riskCategory === 'downstream');
+    
+    infectionGraph[farm.id] = {
+      farmId: farm.id,
+      farmName: farm.name,
+      region: farm.region,
+      coordinates: farm.coordinates,
+      riskLevel: farm.riskLevel,
+      riskScore: farm.riskScore,
+      currentDirection: farm.currentDirection,
+      canInfect: downstreamFarms.map(f => f.id), // List of farm IDs this farm could infect
+      downstreamFarms: downstreamFarms, // Detailed info about downstream neighbors
+      infectionRiskLevel: riskLevel,
+    };
+  });
+  
+  return infectionGraph;
+};
+
 module.exports = {
   farmers: generateFarmers(),
   alerts: null, // Will be populated after farmers are generated
   vessels: generateVessels(),
   tasks: null, // Will be populated after vessels are generated
+  disinfections: [], // Will be populated/added to after vessels are generated
+  quarantines: [], // Auto-triggered quarantines based on non-reporting vessels
+  nearbyFarmsMap: null, // Will be populated after farmers are generated
+  algaeAlerts: null, // Will be populated after farmers are generated
+  infectionGraph: null, // Will be populated after farmers and nearbyFarmsMap are generated
   init() {
     this.alerts = generateAlerts(this.farmers);
     this.tasks = generateTasks(this.vessels);
+    this.disinfections = []; // Initialize empty disinfections array
+    this.quarantines = []; // Initialize empty quarantines array
+    this.nearbyFarmsMap = generateNearbyFarms(this.farmers);
+    this.infectionGraph = generateInfectionChain(this.farmers, this.nearbyFarmsMap);
+    this.algaeAlerts = generateAlgaeAlerts(this.farmers);
     this.adminStats = generateAdminStats(this.farmers, this.vessels, this.alerts);
     this.publicData = generatePublicData(this.farmers, this.alerts);
     return this;
