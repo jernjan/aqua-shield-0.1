@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
+import { MOCK_USERS } from '../mocks/data';
 import styles from './Login.module.css';
-
-// Mock users matching backend
-const MOCK_USERS = {
-  'arne@farms.no': { id: 'user_1', name: 'Arne Anleggmann', email: 'arne@farms.no', role: 'farmer', password: 'demo' },
-  'berit@farms.no': { id: 'user_2', name: 'Berit Fiskeoppdrett', email: 'berit@farms.no', role: 'farmer', password: 'demo' },
-  'kare@shipping.no': { id: 'user_3', name: 'Kåre Båtrederi', email: 'kare@shipping.no', role: 'vessel_operator', password: 'demo' },
-  'siri@shipping.no': { id: 'user_4', name: 'Siri Sjøtransport', email: 'siri@shipping.no', role: 'vessel_operator', password: 'demo' },
-};
 
 function Login({ onLogin, onMVPLogin }) {
   const [isLogin, setIsLogin] = useState(true);

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { MOCK_FARMS, MOCK_FARM_ALERTS, getMockFarmData } from '../mocks/data';
 import { severityCompare } from '../lib/riskTerms';
 
 export default function FarmerMVP({ token, currentUser }) {
@@ -10,56 +11,21 @@ export default function FarmerMVP({ token, currentUser }) {
   const [diseaseRisks, setDiseaseRisks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandAllDiseases, setExpandAllDiseases] = useState(false);
-  const [allFarmAlerts, setAllFarmAlerts] = useState({}); // Store alerts for all farms
+  const [allFarmAlerts, setAllFarmAlerts] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [filterAlertType, setFilterAlertType] = useState('all');
 
   useEffect(() => {
-    // Mock data for farms
-    const mockFarms = [
-      { id: 1, name: 'Anlegg Nord-Trøndelag', region: 'Nord-Trøndelag', riskScore: 78 },
-      { id: 2, name: 'Anlegg Troms', region: 'Troms & Finnmark', riskScore: 65 },
-      { id: 3, name: 'Anlegg Hordaland', region: 'Hordaland', riskScore: 45 },
-      { id: 4, name: 'Anlegg Sogn', region: 'Sogn & Fjordane', riskScore: 32 },
-      { id: 5, name: 'Anlegg Møre', region: 'Møre og Romsdal', riskScore: 55 },
-      { id: 6, name: 'Anlegg Vest-Agder', region: 'Vest-Agder', riskScore: 42 },
-    ];
-
-    const mockAlerts = {
-      1: [
-        { id: 'a1', title: 'Høy lus-risiko', severity: 'risikofylt', farmId: 1, type: 'disease', isRead: false },
-        { id: 'a2', title: 'Temperatur over grense', severity: 'høy oppmerksomhet', farmId: 1, type: 'environment', isRead: false },
-      ],
-      2: [
-        { id: 'a3', title: 'Båtkontakt registrert', severity: 'moderat', farmId: 2, type: 'vessel', isRead: false },
-      ],
-    };
-
-    setFarms(mockFarms);
-    setSelectedFarm(mockFarms[0]);
-    setAllFarmAlerts(mockAlerts);
+    setFarms(MOCK_FARMS);
+    setSelectedFarm(MOCK_FARMS[0]);
+    setAllFarmAlerts(MOCK_FARM_ALERTS);
     setLoading(false);
   }, []);
 
   useEffect(() => {
     if (!selectedFarm) return;
     
-    // Mock data for selected farm
-    const mockFarmData = {
-      alerts: [
-        { id: 'a1', title: 'Høy lus-risiko', severity: 'risikofylt', type: 'disease', timestamp: new Date(), isRead: false },
-        { id: 'a2', title: 'Temperatur over grense', severity: 'høy oppmerksomhet', type: 'environment', timestamp: new Date(), isRead: false },
-      ],
-      visitingVessels: [
-        { id: 'v1', name: 'MV Nordlys', mmsi: '123456789', lastVisit: new Date() },
-      ],
-      quarantines: [
-        { id: 'q1', reason: 'Fish health concerns', startDate: new Date(), endDate: new Date(Date.now() + 7*24*60*60*1000) }
-      ],
-      diseases: [
-        { name: 'Sea lice', riskLevel: 'høy', cases: 5 },
-      ]
-    };
+    const mockFarmData = getMockFarmData(selectedFarm.id);
 
     setAlerts(mockFarmData.alerts);
     setVisitingVessels(mockFarmData.visitingVessels);

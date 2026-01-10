@@ -1,12 +1,36 @@
 import { useState, useEffect } from 'react'
 import Login from './pages/Login'
-import Dashboard from './pages/Dashboard'
 import SelectSites from './pages/SelectSites'
 import FarmerMVP from './pages/FarmerMVP'
 import VesselMVP from './pages/VesselMVP'
 import AdminMVP from './pages/AdminMVP'
 import AnalyticsMVP from './pages/AnalyticsMVP'
 import Toast from './components/Toast'
+
+// MVP wrapper component for consistent styling
+const MVPWrapper = ({ children, onLogout }) => (
+  <div style={{ backgroundColor: 'var(--bg-dark)', minHeight: '100vh', paddingTop: 50, position: 'relative' }}>
+    <button 
+      onClick={onLogout} 
+      style={{ position: 'fixed', top: 10, left: 10, padding: '10px 16px', background: 'var(--accent-gold)', color: '#000', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600, zIndex: 1000, transition: 'all 0.2s ease' }} 
+      onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'} 
+      onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+    >
+      ← Velg bruker
+    </button>
+    {children}
+  </div>
+)
+
+// Page routing configuration
+const PAGE_CONFIG = {
+  'login': { component: Login, requiresAuth: false },
+  'selectSites': { component: SelectSites, requiresAuth: true },
+  'mvp-farmer': { component: FarmerMVP, requiresAuth: true, wrapper: true },
+  'mvp-vessel': { component: VesselMVP, requiresAuth: true, wrapper: true },
+  'mvp-admin': { component: AdminMVP, requiresAuth: true, wrapper: true },
+  'mvp-analytics': { component: AnalyticsMVP, requiresAuth: true, wrapper: true },
+}
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token') || null)
@@ -99,63 +123,33 @@ function App() {
     showToast(`Testet ${role} rolle`)
   }
 
+  // Render current page
+  const renderPage = () => {
+    if (!PAGE_CONFIG[page]) return null
+    
+    const config = PAGE_CONFIG[page]
+    const Component = config.component
+    const commonProps = { token, user, onLogout: handleLogout, onToast: showToast }
+    
+    let element = null
+    
+    if (page === 'login') {
+      element = <Component onLogin={handleLogin} onMVPLogin={handleMVPLogin} {...commonProps} />
+    } else if (page === 'selectSites') {
+      element = <Component onSitesSelected={handleSitesSelected} {...commonProps} />
+    } else {
+      element = <Component currentUser={user} {...commonProps} />
+    }
+    
+    if (config.wrapper) {
+      return <MVPWrapper onLogout={handleLogout}>{element}</MVPWrapper>
+    }
+    return element
+  }
+
   return (
     <div className="app">
-      {page === 'login' && <Login onLogin={handleLogin} onMVPLogin={handleMVPLogin} onToast={showToast} />}
-      {page === 'selectSites' && <SelectSites token={token} user={user} onSitesSelected={handleSitesSelected} onToast={showToast} />}
-      {page === 'dashboard' && <Dashboard token={token} user={user} onLogout={handleLogout} onToast={showToast} />}
-      {page === 'mvp-farmer' && (
-        <div style={{ position: 'relative', height: '100vh' }}>
-          <button 
-            onClick={handleLogout} 
-            style={{ position: 'fixed', top: 10, right: 10, padding: '10px 16px', background: 'var(--accent-gold)', color: '#000', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600, zIndex: 1000, transition: 'all 0.2s ease' }} 
-            onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'} 
-            onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-          >
-            ← Velg bruker
-          </button>
-          <FarmerMVP token={token} currentUser={user} />
-        </div>
-      )}
-      {page === 'mvp-vessel' && (
-        <div style={{ backgroundColor: 'var(--bg-dark)', minHeight: '100vh', paddingTop: 50 }}>
-          <button 
-            onClick={handleLogout} 
-            style={{ position: 'fixed', top: 10, left: 10, padding: '10px 16px', background: 'var(--accent-gold)', color: '#000', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600, zIndex: 1000, transition: 'all 0.2s ease' }} 
-            onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'} 
-            onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-          >
-            ← Velg bruker
-          </button>
-          <VesselMVP token={token} currentUser={user} />
-        </div>
-      )}
-      {page === 'mvp-admin' && (
-        <div style={{ backgroundColor: 'var(--bg-dark)', minHeight: '100vh', paddingTop: 50 }}>
-          <button 
-            onClick={handleLogout} 
-            style={{ position: 'fixed', top: 10, left: 10, padding: '10px 16px', background: 'var(--accent-gold)', color: '#000', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600, zIndex: 1000, transition: 'all 0.2s ease' }} 
-            onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'} 
-            onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-          >
-            ← Velg bruker
-          </button>
-          <AdminMVP token={token} currentUser={user} />
-        </div>
-      )}
-      {page === 'mvp-analytics' && (
-        <div style={{ backgroundColor: 'var(--bg-dark)', minHeight: '100vh', paddingTop: 50 }}>
-          <button 
-            onClick={handleLogout} 
-            style={{ position: 'fixed', top: 10, left: 10, padding: '10px 16px', background: 'var(--accent-gold)', color: '#000', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600, zIndex: 1000, transition: 'all 0.2s ease' }} 
-            onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'} 
-            onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-          >
-            ← Velg bruker
-          </button>
-          <AnalyticsMVP token={token} currentUser={user} />
-        </div>
-      )}
+      {renderPage()}
       {toast && <Toast message={toast.message} type={toast.type} />}
     </div>
   )

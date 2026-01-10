@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { MOCK_VESSELS, getMockVesselData } from '../mocks/data';
 import QuarantineCalendar from '../components/QuarantineCalendar';
 import { generateICSFromQuarantine } from '../lib/ics';
 
@@ -19,14 +20,8 @@ export default function VesselMVP({ token, currentUser }) {
 
   // Load all vessels
   useEffect(() => {
-    // Mock data for vessels
-    const mockVessels = [
-      { id: 1, name: 'MV Nordlys', mmsi: '123456789', type: 'Service Vessel', status: 'Active' },
-      { id: 2, name: 'MV Atlantica', mmsi: '987654321', type: 'Transport', status: 'Active' },
-    ];
-
-    setVessels(mockVessels);
-    setSelectedVessel(mockVessels[0]);
+    setVessels(MOCK_VESSELS);
+    setSelectedVessel(MOCK_VESSELS[0]);
     setLoading(false);
   }, [currentUser?.id]);
 
@@ -34,17 +29,10 @@ export default function VesselMVP({ token, currentUser }) {
   useEffect(() => {
     if (!selectedVessel) return;
     
-    // Mock data for tasks and disinfections
-    const mockTasks = [
-      { id: 1, type: 'karantene', name: 'Planlagt karantene', dueDate: new Date(Date.now() + 7*24*60*60*1000).toISOString(), duration: 7 },
-    ];
-    
-    const mockDisinfections = [
-      { id: 1, date: new Date().toISOString(), chemical: 'Sodium hypochlorite', operator: 'John Doe', comment: 'Routine disinfection' },
-    ];
+    const mockVesselData = getMockVesselData(selectedVessel.id);
 
-    setTasks(mockTasks);
-    setDisinfections(mockDisinfections);
+    setTasks(mockVesselData.tasks);
+    setDisinfections(mockVesselData.disinfections);
   }, [selectedVessel]);
 
   const exportICS = () => {
