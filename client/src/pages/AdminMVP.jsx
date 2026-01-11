@@ -78,6 +78,11 @@ export default function AdminMVP({ token, currentUser }) {
         
         if (data.ok && data.alerts) {
           setFacilityAlerts(data.alerts);
+          // Cache to localStorage
+          localStorage.setItem('facilityAlerts_cache', JSON.stringify({
+            data: data.alerts,
+            timestamp: Date.now()
+          }));
           console.log(`✓ Fetched ${data.alerts.length} active facility alerts`);
         }
 
@@ -86,18 +91,30 @@ export default function AdminMVP({ token, currentUser }) {
         const statsData = await statsResponse.json();
         if (statsData.ok) {
           setAlertStats(statsData.stats);
+          localStorage.setItem('alertStats_cache', JSON.stringify({
+            data: statsData.stats,
+            timestamp: Date.now()
+          }));
           console.log('✓ Fetched alert statistics');
         }
       } catch (err) {
         console.error('Error fetching facility alerts:', err);
+        // Try to load from cache on error
+        try {
+          const cached = JSON.parse(localStorage.getItem('facilityAlerts_cache') || '{}');
+          if (cached.data) {
+            setFacilityAlerts(cached.data);
+            console.log('ℹ️ Loaded alerts from cache');
+          }
+        } catch (e) {}
       } finally {
         setLoadingAlerts(false);
       }
     };
 
     fetchFacilityAlerts();
-    // Refresh every 5 minutes for active monitoring
-    const interval = setInterval(fetchFacilityAlerts, 5 * 60 * 1000);
+    // Refresh every 1 hour for active monitoring (was 5 min - too aggressive)
+    const interval = setInterval(fetchFacilityAlerts, 60 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -113,6 +130,11 @@ export default function AdminMVP({ token, currentUser }) {
         if (data.ok && data.outbreaks) {
           setRealOutbreaks(data.outbreaks);
           setLastOutbreakRefresh(new Date());
+          // Cache to localStorage
+          localStorage.setItem('realOutbreaks_cache', JSON.stringify({
+            data: data.outbreaks,
+            timestamp: Date.now()
+          }));
           console.log(`✓ Fetched ${data.outbreaks.length} real outbreaks from BarentsWatch`);
           
           // Also fetch stats
@@ -120,6 +142,10 @@ export default function AdminMVP({ token, currentUser }) {
           const statsData = await statsResponse.json();
           if (statsData.ok) {
             setOutbreakStats(statsData.stats);
+            localStorage.setItem('outbreakStats_cache', JSON.stringify({
+              data: statsData.stats,
+              timestamp: Date.now()
+            }));
             console.log('✓ Fetched outbreak statistics');
           }
         } else {
@@ -127,6 +153,14 @@ export default function AdminMVP({ token, currentUser }) {
         }
       } catch (err) {
         console.error('Error fetching outbreak data:', err);
+        // Try to load from cache on error
+        try {
+          const cached = JSON.parse(localStorage.getItem('realOutbreaks_cache') || '{}');
+          if (cached.data) {
+            setRealOutbreaks(cached.data);
+            console.log('ℹ️ Loaded outbreaks from cache');
+          }
+        } catch (e) {}
       } finally {
         setLoadingOutbreaks(false);
       }
