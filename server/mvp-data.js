@@ -131,7 +131,7 @@ const generateFarmers = () => {
 const generateVessels = () => {
   const vessels = [];
   const fishTypes = ['Laks', 'Torsk', 'Sei', 'Hyse'];
-  const zones = ['Tromsø fiskeripolitizone', 'Finnmark fiskeripolitizone', 'Nord-Trøndelag fiskeripolitizone', 'Sogn fiskeripolitizone'];
+  const zones = ['Tromsø region', 'Finnmark region', 'Nord-Trøndelag region', 'Sogn region'];
   const userIds = ['user_3', 'user_4']; // Distribute vessels across 2 users
   
   for (let i = 1; i <= 20; i++) {
