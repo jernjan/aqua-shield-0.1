@@ -144,12 +144,18 @@ async function getOutbreakHistory(weeks = 52) {
         'Accept': 'application/json',
         'User-Agent': 'AquaShield/0.1'
       },
-      timeout: 15000
+      timeout: 10000
     });
     
     const data = Array.isArray(response.data) ? response.data : response.data.items || [];
     
     console.log(`✓ Got ${data.length} disease records from Fishhealth API`);
+    
+    // If no data, return empty array (not an error - just no active outbreaks)
+    if (data.length === 0) {
+      console.log('ℹ️  No outbreak data currently in BarentsWatch Fishhealth API');
+      return [];
+    }
     
     // Filter and transform data
     return data.map(item => ({
@@ -172,6 +178,8 @@ async function getOutbreakHistory(weeks = 52) {
     }));
   } catch (err) {
     console.error('❌ Failed to fetch outbreak history:', err.message);
+    console.log('📝 Returning empty outbreak list (BarentsWatch API may be temporarily unavailable)');
+    // Return empty array instead of crashing - endpoint will still work
     return [];
   }
 }
@@ -186,12 +194,15 @@ async function getFacilityLiceData(facilityNo) {
         'Accept': 'application/json',
         'User-Agent': 'AquaShield/0.1'
       },
-      timeout: 10000
+      timeout: 8000
     });
     
     const data = response.data;
     
-    if (!data) return null;
+    if (!data) {
+      console.log(`ℹ️  No lice data for facility ${facilityNo}`);
+      return null;
+    }
     
     return {
       facilityNo: data.localityNo,
