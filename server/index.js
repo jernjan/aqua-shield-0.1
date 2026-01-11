@@ -9,6 +9,8 @@ const logger = require('./datalogger')
 const { startAISPolling } = require('./ais-poller')
 const barentswatch = require('./utils/barentswatch')
 const RiskPredictionModel = require('./ml/risk-model')
+const alertService = require('./services/alerts')
+const notifier = require('./services/notifier')
 
 // Initialize MVP data on startup
 const MVP = mvpData.init()
@@ -938,6 +940,222 @@ app.get('/api/ml/model', (req, res) => {
   }
 });
 
+// ============================================================================
+// ALERT SERVICE - Varsler til Anlegg (Facilities)
+// ============================================================================
+
+// POST /api/alerts/check-risk - Check facility risk and create alerts if needed
+app.post('/api/alerts/check-risk', (req, res) => {
+  try {
+    const { facilityId, diseaseCode, vesselContactCount, latitude, longitude, facilityName } = req.body;
+    
+    if (!facilityId || !diseaseCode) {
+      return res.status(400).json({
+        ok: false,
+        error: 'facilityId and diseaseCode are required'
+      });
+    }
+
+    // Get risk prediction from ML model
+    const prediction = riskModel.predictRisk({
+      diseaseCode,
+      vesselContactCount: vesselContactCount || 0,
+      latitude: latitude || 0,
+      longitude: longitude || 0
+    });
+
+    // Check if alert should be created
+    const alert = alertService.checkAndCreateAlert(
+      facilityId,
+      prediction.riskScore,
+      diseaseCode,
+      {
+        vesselContactCount,
+        latitude,
+        longitude,
+        facilityName
+      }
+    );
+
+    res.json({
+      ok: true,
+      prediction,
+      alert: alert ? {
+        id: alert.id,
+        status: alert.status,
+        message: alert.message,
+        severity: alert.severity
+      } : null,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ POST /api/alerts/check-risk error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// GET /api/alerts/facility/:facilityId - Get alerts for specific facility
+app.get('/api/alerts/facility/:facilityId', (req, res) => {
+  try {
+    const { facilityId } = req.params;
+    const { limit } = req.query;
+    
+    const alerts = alertService.getAlertsForFacility(
+      facilityId,
+      limit ? parseInt(limit) : 50
+    );
+
+    res.json({
+      ok: true,
+      facilityId,
+      alerts,
+      count: alerts.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ GET /api/alerts/facility error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// GET /api/alerts/active - Get all active (unresolved) alerts
+app.get('/api/alerts/active', (req, res) => {
+  try {
+    const alerts = alertService.getActiveAlerts();
+    
+    res.json({
+      ok: true,
+      alerts,
+      count: alerts.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ GET /api/alerts/active error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// GET /api/alerts/stats - Get alert statistics
+app.get('/api/alerts/stats', (req, res) => {
+  try {
+    const stats = alertService.getAlertStats();
+    
+    res.json({
+      ok: true,
+      stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ GET /api/alerts/stats error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// PATCH /api/alerts/:alertId/acknowledge - Mark alert as acknowledged by facility
+app.patch('/api/alerts/:alertId/acknowledge', (req, res) => {
+  try {
+    const { alertId } = req.params;
+    const { acknowledgedBy } = req.body;
+    
+    if (!acknowledgedBy) {
+      return res.status(400).json({
+        ok: false,
+        error: 'acknowledgedBy is required'
+      });
+    }
+
+    const alert = alertService.acknowledgeAlert(alertId, acknowledgedBy);
+    
+    if (!alert) {
+      return res.status(404).json({
+        ok: false,
+        error: 'Alert not found'
+      });
+    }
+
+    res.json({
+      ok: true,
+      alert,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ PATCH /api/alerts/:alertId/acknowledge error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// PATCH /api/alerts/:alertId/resolve - Mark alert as resolved
+app.patch('/api/alerts/:alertId/resolve', (req, res) => {
+  try {
+    const { alertId } = req.params;
+    
+    const alert = alertService.resolveAlert(alertId);
+    
+    if (!alert) {
+      return res.status(404).json({
+        ok: false,
+        error: 'Alert not found'
+      });
+    }
+
+    res.json({
+      ok: true,
+      alert,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ PATCH /api/alerts/:alertId/resolve error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// POST /api/alerts/send-test - Send test alert email
+app.post('/api/alerts/send-test', async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({
+        ok: false,
+        error: 'email is required'
+      });
+    }
+
+    const result = await notifier.sendTestNotification(email);
+
+    res.json({
+      ok: result.success,
+      result,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ POST /api/alerts/send-test error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// ============ END ALERT SERVICE ENDPOINTS ============
 
 // PATCH /api/datalog/alert/:alertId/outbreak - Mark alert as confirmed/false positive
 app.patch('/api/datalog/alert/:alertId/outbreak', async (req, res) => {

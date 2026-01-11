@@ -45,6 +45,9 @@ export default function AdminMVP({ token, currentUser }) {
   const [outbreakStats, setOutbreakStats] = useState(null); // Outbreak statistics
   const [loadingOutbreaks, setLoadingOutbreaks] = useState(false); // Loading state
   const [lastOutbreakRefresh, setLastOutbreakRefresh] = useState(null); // Track last refresh time
+  const [facilityAlerts, setFacilityAlerts] = useState([]); // Facility risk alerts from alert service
+  const [alertStats, setAlertStats] = useState(null) // Alert statistics
+  const [loadingAlerts, setLoadingAlerts] = useState(false)
 
   // Fetch alerts from backend on mount
   useEffect(() => {
@@ -61,6 +64,40 @@ export default function AdminMVP({ token, currentUser }) {
       }
     };
     fetchAlerts();
+  }, []);
+
+  // Fetch facility risk alerts and statistics
+  useEffect(() => {
+    const fetchFacilityAlerts = async () => {
+      try {
+        setLoadingAlerts(true);
+        console.log('📡 Fetching facility risk alerts...');
+        const response = await fetch('http://localhost:3001/api/alerts/active');
+        const data = await response.json();
+        
+        if (data.ok && data.alerts) {
+          setFacilityAlerts(data.alerts);
+          console.log(`✓ Fetched ${data.alerts.length} active facility alerts`);
+        }
+
+        // Also fetch alert stats
+        const statsResponse = await fetch('http://localhost:3001/api/alerts/stats');
+        const statsData = await statsResponse.json();
+        if (statsData.ok) {
+          setAlertStats(statsData.stats);
+          console.log('✓ Fetched alert statistics');
+        }
+      } catch (err) {
+        console.error('Error fetching facility alerts:', err);
+      } finally {
+        setLoadingAlerts(false);
+      }
+    };
+
+    fetchFacilityAlerts();
+    // Refresh every 5 minutes for active monitoring
+    const interval = setInterval(fetchFacilityAlerts, 5 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
   // Fetch real outbreak data from BarentsWatch Fishhealth API
@@ -222,8 +259,9 @@ export default function AdminMVP({ token, currentUser }) {
         <div style={{ padding: '10px', borderBottom: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: 4 }}>
           {[
             { id: 'overview', label: '📊 Oversikt', icon: '📊' },
+            { id: 'facility-alerts', label: '🚨 Risiko-varsler', icon: '🚨' },
             { id: 'outbreaks', label: '🦐 Utbrudd (Real)', icon: '🦐' },
-            { id: 'alerts', label: '🚨 Varsler', icon: '🚨' },
+            { id: 'alerts', label: '📝 Varsler', icon: '📝' },
             { id: 'farms', label: '🐟 Anlegg', icon: '🐟' },
             { id: 'vessels', label: '🚢 Båter', icon: '🚢' },
             { id: 'regions', label: '🗺️ Regioner', icon: '🗺️' }
@@ -630,6 +668,204 @@ export default function AdminMVP({ token, currentUser }) {
                     )}
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* FACILITY RISK ALERTS TAB */}
+          {activeTab === 'facility-alerts' && (
+            <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <div>
+                  <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-red)', margin: 0, paddingBottom: 6, borderBottom: '2px solid var(--accent-red)' }}>
+                    🚨 Risiko-varsler til Anlegg
+                  </h3>
+                  <p style={{ fontSize: 9, color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>
+                    Automatiske varsler når ML-modellen registrerer økt risiko
+                  </p>
+                </div>
+                <button
+                  onClick={async () => {
+                    setLoadingAlerts(true);
+                    try {
+                      const response = await fetch('http://localhost:3001/api/alerts/active');
+                      const data = await response.json();
+                      if (data.ok && data.alerts) {
+                        setFacilityAlerts(data.alerts);
+                      }
+                      const statsResponse = await fetch('http://localhost:3001/api/alerts/stats');
+                      const statsData = await statsResponse.json();
+                      if (statsData.ok) {
+                        setAlertStats(statsData.stats);
+                      }
+                    } catch (err) {
+                      console.error('Manual refresh error:', err);
+                    } finally {
+                      setLoadingAlerts(false);
+                    }
+                  }}
+                  disabled={loadingAlerts}
+                  style={{
+                    padding: '6px 10px',
+                    background: loadingAlerts ? 'var(--bg-dark)' : 'var(--accent-red)',
+                    color: loadingAlerts ? 'var(--text-secondary)' : '#fff',
+                    border: 'none',
+                    borderRadius: 3,
+                    cursor: loadingAlerts ? 'default' : 'pointer',
+                    fontSize: 10,
+                    fontWeight: 600,
+                    opacity: loadingAlerts ? 0.6 : 1
+                  }}
+                >
+                  {loadingAlerts ? '⏳ Laster...' : '🔄 Oppdater nå'}
+                </button>
+              </div>
+
+              {/* Alert Statistics */}
+              {alertStats && (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 10, marginBottom: 14 }}>
+                  <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
+                    <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 8, textTransform: 'uppercase' }}>
+                      Totalt
+                    </p>
+                    <p style={{ fontSize: 28, fontWeight: 700, color: 'var(--accent-gold)', margin: 0 }}>
+                      {alertStats.total}
+                    </p>
+                  </div>
+                  <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
+                    <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 8, textTransform: 'uppercase' }}>
+                      Aktiv
+                    </p>
+                    <p style={{ fontSize: 28, fontWeight: 700, color: 'var(--accent-red)', margin: 0 }}>
+                      {alertStats.pending}
+                    </p>
+                  </div>
+                  <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
+                    <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 8, textTransform: 'uppercase' }}>
+                      Kritisk
+                    </p>
+                    <p style={{ fontSize: 28, fontWeight: 700, color: '#dc2626', margin: 0 }}>
+                      {alertStats.critical}
+                    </p>
+                  </div>
+                  <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
+                    <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 8, textTransform: 'uppercase' }}>
+                      Bekreftet
+                    </p>
+                    <p style={{ fontSize: 28, fontWeight: 700, color: '#22c55e', margin: 0 }}>
+                      {alertStats.acknowledged}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Active Alerts List */}
+              <div style={{ display: 'grid', gap: 8, maxHeight: '700px', overflowY: 'auto' }}>
+                {facilityAlerts.length > 0 ? facilityAlerts.map((alert, idx) => {
+                  const severityEmoji = alert.severity === 'CRITICAL' ? '🔴' : '🟠';
+                  const statusColor = alert.status === 'PENDING' ? 'var(--accent-red)' : alert.status === 'SENT' ? 'var(--accent-orange)' : alert.status === 'ACKNOWLEDGED' ? '#22c55e' : '#6b7280';
+
+                  return (
+                    <div
+                      key={idx}
+                      style={{
+                        background: 'var(--bg-surface)',
+                        border: `1.5px solid ${statusColor}`,
+                        borderLeft: `3px solid ${statusColor}`,
+                        borderRadius: 6,
+                        padding: 12
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 8 }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                            <span style={{ fontSize: 14 }}>{severityEmoji}</span>
+                            <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>
+                              {alert.disease}
+                            </p>
+                            <span style={{ fontSize: 9, padding: '2px 6px', background: statusColor, color: '#fff', borderRadius: 3 }}>
+                              {alert.status}
+                            </span>
+                          </div>
+                          <p style={{ margin: 0, fontSize: 11, color: 'var(--text-secondary)' }}>
+                            Anlegg: {alert.facilityId} • Risiko: {alert.riskScore}/100 ({alert.riskLevel})
+                          </p>
+                          <p style={{ margin: '4px 0 0 0', fontSize: 10, color: 'var(--text-secondary)' }}>
+                            {new Date(alert.timestamp).toLocaleString('no-NO')}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div style={{ background: 'rgba(0, 0, 0, 0.2)', padding: 8, borderRadius: 3, marginBottom: 8, fontSize: 10, color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+                        "{alert.message}"
+                      </div>
+
+                      {alert.status === 'PENDING' && (
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button
+                            onClick={async () => {
+                              try {
+                                await fetch(`http://localhost:3001/api/alerts/${alert.id}/acknowledge`, {
+                                  method: 'PATCH',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ acknowledgedBy: 'Admin' })
+                                });
+                                setFacilityAlerts(facilityAlerts.map(a => a.id === alert.id ? { ...a, status: 'ACKNOWLEDGED' } : a));
+                              } catch (err) {
+                                console.error('Error acknowledging alert:', err);
+                              }
+                            }}
+                            style={{
+                              flex: 1,
+                              padding: '6px 8px',
+                              background: '#22c55e',
+                              color: '#fff',
+                              border: 'none',
+                              borderRadius: 3,
+                              cursor: 'pointer',
+                              fontSize: 10,
+                              fontWeight: 600
+                            }}
+                          >
+                            ✓ Anlegget varslet
+                          </button>
+                          <button
+                            onClick={async () => {
+                              try {
+                                await fetch(`http://localhost:3001/api/alerts/${alert.id}/resolve`, {
+                                  method: 'PATCH',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({})
+                                });
+                                setFacilityAlerts(facilityAlerts.filter(a => a.id !== alert.id));
+                              } catch (err) {
+                                console.error('Error resolving alert:', err);
+                              }
+                            }}
+                            style={{
+                              flex: 1,
+                              padding: '6px 8px',
+                              background: '#6b7280',
+                              color: '#fff',
+                              border: 'none',
+                              borderRadius: 3,
+                              cursor: 'pointer',
+                              fontSize: 10,
+                              fontWeight: 600
+                            }}
+                          >
+                            ✗ Løst
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }) : (
+                  <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-secondary)' }}>
+                    <p style={{ fontSize: 12, margin: 0 }}>🟢 Ingen aktive risiko-varsler</p>
+                    <p style={{ fontSize: 10, margin: '4px 0 0 0' }}>Alle anlegg er innenfor trygge risiko-nivåer</p>
+                  </div>
+                )}
               </div>
             </div>
           )}
