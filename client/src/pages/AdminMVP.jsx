@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import apiClient from '../lib/apiClient';
 
 const downloadCSV = (filename, data) => {
   const csv = data;
@@ -53,7 +54,7 @@ export default function AdminMVP({ token, currentUser }) {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/datalog/alerts');
+        const response = await apiClient.get('/api/datalog/alerts');
         const data = await response.json();
         if (data.ok && data.alerts) {
           setBackendAlerts(data.alerts);
@@ -72,7 +73,7 @@ export default function AdminMVP({ token, currentUser }) {
       try {
         setLoadingAlerts(true);
         console.log('📡 Fetching facility risk alerts...');
-        const response = await fetch('http://localhost:3001/api/alerts/active');
+        const response = await apiClient.get('/api/alerts/active');
         const data = await response.json();
         
         if (data.ok && data.alerts) {
@@ -81,7 +82,7 @@ export default function AdminMVP({ token, currentUser }) {
         }
 
         // Also fetch alert stats
-        const statsResponse = await fetch('http://localhost:3001/api/alerts/stats');
+        const statsResponse = await apiClient.get('/api/alerts/stats');
         const statsData = await statsResponse.json();
         if (statsData.ok) {
           setAlertStats(statsData.stats);
@@ -106,7 +107,7 @@ export default function AdminMVP({ token, currentUser }) {
       try {
         setLoadingOutbreaks(true);
         console.log('🔄 Fetching real outbreak data from BarentsWatch API...');
-        const response = await fetch('http://localhost:3001/api/barentswatch/outbreaks?weeks=12');
+        const response = await apiClient.get('/api/barentswatch/outbreaks?weeks=12');
         const data = await response.json();
         
         if (data.ok && data.outbreaks) {
@@ -115,7 +116,7 @@ export default function AdminMVP({ token, currentUser }) {
           console.log(`✓ Fetched ${data.outbreaks.length} real outbreaks from BarentsWatch`);
           
           // Also fetch stats
-          const statsResponse = await fetch('http://localhost:3001/api/barentswatch/stats?weeks=12');
+          const statsResponse = await apiClient.get('/api/barentswatch/stats?weeks=12');
           const statsData = await statsResponse.json();
           if (statsData.ok) {
             setOutbreakStats(statsData.stats);
@@ -688,12 +689,12 @@ export default function AdminMVP({ token, currentUser }) {
                   onClick={async () => {
                     setLoadingAlerts(true);
                     try {
-                      const response = await fetch('http://localhost:3001/api/alerts/active');
+                      const response = await apiClient.get('/api/alerts/active');
                       const data = await response.json();
                       if (data.ok && data.alerts) {
                         setFacilityAlerts(data.alerts);
                       }
-                      const statsResponse = await fetch('http://localhost:3001/api/alerts/stats');
+                      const statsResponse = await apiClient.get('/api/alerts/stats');
                       const statsData = await statsResponse.json();
                       if (statsData.ok) {
                         setAlertStats(statsData.stats);
@@ -805,10 +806,8 @@ export default function AdminMVP({ token, currentUser }) {
                           <button
                             onClick={async () => {
                               try {
-                                await fetch(`http://localhost:3001/api/alerts/${alert.id}/acknowledge`, {
-                                  method: 'PATCH',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify({ acknowledgedBy: 'Admin' })
+                                await apiClient.patch(`/api/alerts/${alert.id}/acknowledge`, {
+                                  acknowledgedBy: 'Admin'
                                 });
                                 setFacilityAlerts(facilityAlerts.map(a => a.id === alert.id ? { ...a, status: 'ACKNOWLEDGED' } : a));
                               } catch (err) {
@@ -832,11 +831,7 @@ export default function AdminMVP({ token, currentUser }) {
                           <button
                             onClick={async () => {
                               try {
-                                await fetch(`http://localhost:3001/api/alerts/${alert.id}/resolve`, {
-                                  method: 'PATCH',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify({})
-                                });
+                                await apiClient.patch(`/api/alerts/${alert.id}/resolve`, {});
                                 setFacilityAlerts(facilityAlerts.filter(a => a.id !== alert.id));
                               } catch (err) {
                                 console.error('Error resolving alert:', err);
@@ -889,12 +884,12 @@ export default function AdminMVP({ token, currentUser }) {
                     onClick={async () => {
                       setLoadingOutbreaks(true);
                       try {
-                        const response = await fetch('http://localhost:3001/api/barentswatch/outbreaks?weeks=12');
+                        const response = await apiClient.get('/api/barentswatch/outbreaks?weeks=12');
                         const data = await response.json();
                         if (data.ok && data.outbreaks) {
                           setRealOutbreaks(data.outbreaks);
                           setLastOutbreakRefresh(new Date());
-                          const statsResponse = await fetch('http://localhost:3001/api/barentswatch/stats?weeks=12');
+                          const statsResponse = await apiClient.get('/api/barentswatch/stats?weeks=12');
                           const statsData = await statsResponse.json();
                           if (statsData.ok) {
                             setOutbreakStats(statsData.stats);
