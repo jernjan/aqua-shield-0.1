@@ -27,6 +27,22 @@ riskModel.load(modelPath)
 // Initialize Disease Zones on startup
 diseaseZones.getAllZones().catch(err => console.warn('Disease zones load warning:', err.message))
 
+// Auto-sync BarentsWatch data on startup
+async function autoSyncOnStartup() {
+  try {
+    const { syncFromBarentsWatch } = require('./cron/sync-barentswatch.js');
+    console.log('🔄 Starting BarentsWatch sync on server startup...');
+    const result = await syncFromBarentsWatch();
+    if (result.success) {
+      console.log(`✅ Startup sync complete: ${result.facilities} facilities, ${result.vessels} vessels`);
+    } else {
+      console.warn(`⚠️  Startup sync had issues: ${result.error}`);
+    }
+  } catch (err) {
+    console.warn('⚠️  Startup sync error (will use mock data):', err.message);
+  }
+}
+
 const app = express()
 const PORT = process.env.PORT || 3001
 const RENDER_HEALTH_PORT = process.env.RENDER_HEALTH_PORT || 10000
@@ -1586,6 +1602,9 @@ app.get('/api/datalog/export', async (req, res) => {
 // leave ports bound (prevents EADDRINUSE loops when files change rapidly).
 const server = app.listen(PORT, () => {
   console.log(`🐟 AquaShield API running on port ${PORT}`)
+  
+  // Sync BarentsWatch data on startup
+  autoSyncOnStartup()
   
   // Start AIS polling for data logging
   // MVP: 1440 minutes (24 hours) = once daily to save CPU/memory
