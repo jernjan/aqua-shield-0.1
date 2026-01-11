@@ -213,316 +213,438 @@ const FisherDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div style={{ backgroundColor: 'var(--bg-dark)', minHeight: '100vh', padding: 0 }}>
       {alert && <Toast {...alert} onClose={() => setAlert(null)} />}
       
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            🎣 Yrkesfisker Tracking
-          </h1>
-          <p className="text-gray-600">Oppgaver, sone-unngåelse og smittezone-data (samme system som brønnbåt)</p>
-        </div>
+      {/* Header */}
+      <div style={{ backgroundColor: 'var(--bg-surface)', borderBottom: '1px solid var(--border-color)', padding: 16 }}>
+        <h1 style={{ margin: '0 0 4px 0', fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>
+          🎣 Yrkesfisker Tracking
+        </h1>
+        <p style={{ margin: 0, fontSize: 14, color: 'var(--text-secondary)' }}>
+          Oppgaver, sone-unngåelse og smittezone-data
+        </p>
+      </div>
 
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          {/* Left: Fisher Selection & Summary */}
-          <div className="space-y-4">
-            {/* Fisher List */}
-            <div className="bg-white rounded-lg shadow-lg p-4">
-              <h2 className="font-bold text-gray-800 mb-3">Velg Fisker</h2>
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {fishers.map(fisher => (
-                  <button
-                    key={fisher.id}
-                    onClick={() => setSelectedFisher(fisher)}
-                    className={`w-full text-left p-3 rounded-lg border-2 transition ${
-                      selectedFisher?.id === fisher.id
-                        ? 'border-blue-600 bg-blue-50'
-                        : 'border-gray-200 bg-white hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="font-semibold text-gray-800">{fisher.name}</div>
-                    <div className="text-xs text-gray-600">{fisher.homePort}</div>
-                  </button>
-                ))}
+      {/* Fisher Selector - Horizontal */}
+      <div style={{ backgroundColor: 'var(--bg-surface)', borderBottom: '1px solid var(--border-color)', padding: '12px 16px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {fishers.map(fisher => (
+            <button
+              key={fisher.id}
+              onClick={() => setSelectedFisher(fisher)}
+              style={{
+                padding: '8px 12px',
+                borderRadius: 4,
+                border: selectedFisher?.id === fisher.id ? '2px solid var(--accent-gold)' : '1px solid var(--border-color)',
+                backgroundColor: selectedFisher?.id === fisher.id ? 'rgba(212, 165, 116, 0.15)' : 'var(--bg-dark)',
+                color: selectedFisher?.id === fisher.id ? 'var(--accent-gold)' : 'var(--text-primary)',
+                cursor: 'pointer',
+                flexShrink: 0,
+                fontSize: 13,
+                fontWeight: 600,
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                if (selectedFisher?.id !== fisher.id) {
+                  e.target.style.borderColor = 'var(--accent-gold)';
+                  e.target.style.color = 'var(--accent-gold)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (selectedFisher?.id !== fisher.id) {
+                  e.target.style.borderColor = 'var(--border-color)';
+                  e.target.style.color = 'var(--text-primary)';
+                }
+              }}
+            >
+              {fisher.name.split(' ')[0]}
+              <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2 }}>
+                {fisher.homePort}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Main Content */}
+      {selectedFisher ? (
+        <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr 300px', height: 'calc(100vh - 180px)' }}>
+          {/* LEFT: Fisher Info */}
+          <div style={{ backgroundColor: 'var(--bg-surface)', borderRight: '1px solid var(--border-color)', padding: 16, overflowY: 'auto' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+              📋 Info
+            </h3>
+            <div style={{ display: 'grid', gap: 8 }}>
+              <div style={{ backgroundColor: 'var(--bg-dark)', padding: 10, borderRadius: 4, borderLeft: '3px solid var(--accent-gold)' }}>
+                <p style={{ margin: '0 0 4px 0', fontSize: 11, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Navn</p>
+                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{selectedFisher.name}</p>
+              </div>
+              <div style={{ backgroundColor: 'var(--bg-dark)', padding: 10, borderRadius: 4, borderLeft: '3px solid var(--accent-gold)' }}>
+                <p style={{ margin: '0 0 4px 0', fontSize: 11, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Lisens</p>
+                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: 'var(--accent-gold)' }}>{selectedFisher.license}</p>
+              </div>
+              <div style={{ backgroundColor: 'var(--bg-dark)', padding: 10, borderRadius: 4, borderLeft: '3px solid var(--accent-gold)' }}>
+                <p style={{ margin: '0 0 4px 0', fontSize: 11, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Port</p>
+                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{selectedFisher.homePort}</p>
+              </div>
+              <div style={{ backgroundColor: 'var(--bg-dark)', padding: 10, borderRadius: 4, borderLeft: '3px solid var(--accent-gold)' }}>
+                <p style={{ margin: '0 0 4px 0', fontSize: 11, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Fang</p>
+                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{selectedFisher.catches}kg</p>
               </div>
             </div>
+          </div>
 
-            {/* Selected Fisher Info */}
-            {selectedFisher && (
-              <div className="bg-blue-50 rounded-lg shadow p-4 border border-blue-200">
-                <h3 className="font-bold text-gray-800 mb-2">📋 Info</h3>
-                <div className="space-y-1 text-sm">
-                  <p><strong>Navn:</strong> {selectedFisher.name}</p>
-                  <p><strong>Lisens:</strong> {selectedFisher.license}</p>
-                  <p><strong>Port:</strong> {selectedFisher.homePort}</p>
-                  <p><strong>Fang:</strong> {selectedFisher.catches}kg</p>
+          {/* CENTER: Tasks & Calendar */}
+          <div style={{ backgroundColor: 'var(--bg-dark)', display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--border-color)', overflowY: 'auto' }}>
+            {/* Tabs */}
+            <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-surface)' }}>
+              <button
+                onClick={() => setTab('tasks')}
+                style={{
+                  flex: 1,
+                  padding: 12,
+                  border: 'none',
+                  backgroundColor: tab === 'tasks' ? 'var(--bg-dark)' : 'var(--bg-surface)',
+                  borderBottom: tab === 'tasks' ? '2px solid var(--accent-gold)' : 'none',
+                  color: tab === 'tasks' ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                📋 Oppgaver
+              </button>
+              <button
+                onClick={() => setTab('calendar')}
+                style={{
+                  flex: 1,
+                  padding: 12,
+                  border: 'none',
+                  backgroundColor: tab === 'calendar' ? 'var(--bg-dark)' : 'var(--bg-surface)',
+                  borderBottom: tab === 'calendar' ? '2px solid var(--accent-gold)' : 'none',
+                  color: tab === 'calendar' ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                📅 Karantene
+              </button>
+            </div>
+
+            {/* Tasks Tab */}
+            {tab === 'tasks' && (
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: 16, overflowY: 'auto', gap: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <h3 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>Oppgaver ({tasks.length})</h3>
+                  <button
+                    onClick={() => setShowTaskForm(!showTaskForm)}
+                    style={{
+                      padding: '6px 12px',
+                      backgroundColor: 'var(--accent-gold)',
+                      color: '#000',
+                      border: 'none',
+                      borderRadius: 4,
+                      cursor: 'pointer',
+                      fontSize: 12,
+                      fontWeight: 600,
+                    }}
+                  >
+                    + Ny
+                  </button>
+                </div>
+
+                {/* Add Task Form */}
+                {showTaskForm && (
+                  <div style={{ backgroundColor: 'var(--bg-surface)', padding: 12, borderRadius: 4, display: 'grid', gap: 8 }}>
+                    <input
+                      type="text"
+                      placeholder="Oppgave"
+                      value={taskName}
+                      onChange={(e) => setTaskName(e.target.value)}
+                      style={{ padding: '8px 10px', borderRadius: 4, border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-dark)', color: 'var(--text-primary)', fontSize: 13 }}
+                    />
+                    <input
+                      type="date"
+                      value={taskDueDate}
+                      onChange={(e) => setTaskDueDate(e.target.value)}
+                      style={{ padding: '8px 10px', borderRadius: 4, border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-dark)', color: 'var(--text-primary)', fontSize: 13 }}
+                    />
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button
+                        onClick={handleAddTask}
+                        style={{
+                          flex: 1,
+                          padding: '8px 12px',
+                          backgroundColor: 'var(--accent-gold)',
+                          color: '#000',
+                          border: 'none',
+                          borderRadius: 4,
+                          cursor: 'pointer',
+                          fontSize: 12,
+                          fontWeight: 600,
+                        }}
+                      >
+                        Lagre
+                      </button>
+                      <button
+                        onClick={() => setShowTaskForm(false)}
+                        style={{
+                          flex: 1,
+                          padding: '8px 12px',
+                          backgroundColor: 'var(--border-color)',
+                          color: 'var(--text-primary)',
+                          border: 'none',
+                          borderRadius: 4,
+                          cursor: 'pointer',
+                          fontSize: 12,
+                        }}
+                      >
+                        Avbryt
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Tasks List */}
+                <div style={{ display: 'grid', gap: 6, overflowY: 'auto' }}>
+                  {tasks.length === 0 ? (
+                    <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Ingen oppgaver</p>
+                  ) : (
+                    tasks.map(task => (
+                      <button
+                        key={task.id}
+                        onClick={() => handleToggleTask(task)}
+                        style={{
+                          padding: 10,
+                          borderRadius: 4,
+                          border: 'none',
+                          backgroundColor: task.completed ? 'var(--bg-success)' : 'var(--bg-surface)',
+                          color: task.completed ? 'var(--text-secondary)' : 'var(--text-primary)',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          borderLeft: task.completed ? '3px solid var(--text-success)' : '3px solid var(--accent-gold)',
+                          textDecoration: task.completed ? 'line-through' : 'none',
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
+                          {task.completed ? '✓' : '○'} {task.name}
+                        </div>
+                        <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
+                          {new Date(task.dueDate).toLocaleDateString('no')}
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Calendar Tab */}
+            {tab === 'calendar' && (
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: 16, overflowY: 'auto', gap: 12 }}>
+                <div style={{ backgroundColor: 'var(--bg-surface)', padding: 12, borderRadius: 4, display: 'grid', gap: 8 }}>
+                  <h3 style={{ margin: '0 0 8px 0', fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>Planlegg Karantene</h3>
+                  <div>
+                    <label style={{ fontSize: 11, color: 'var(--text-secondary)', display: 'block', marginBottom: 4, textTransform: 'uppercase' }}>Startdato</label>
+                    <input
+                      type="date"
+                      value={qStart}
+                      onChange={(e) => setQStart(e.target.value)}
+                      style={{ width: '100%', padding: '8px 10px', borderRadius: 4, border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-dark)', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 11, color: 'var(--text-secondary)', display: 'block', marginBottom: 4, textTransform: 'uppercase' }}>Varighet</label>
+                    <select
+                      value={qDuration}
+                      onChange={(e) => setQDuration(parseInt(e.target.value))}
+                      style={{ width: '100%', padding: '8px 10px', borderRadius: 4, border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-dark)', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box' }}
+                    >
+                      {[1,3,7,14,21,30].map(d => <option key={d} value={d}>{d} dager</option>)}
+                    </select>
+                  </div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      onClick={handleAddQuarantine}
+                      style={{
+                        flex: 1,
+                        padding: '8px 12px',
+                        backgroundColor: 'var(--accent-red)',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 4,
+                        cursor: 'pointer',
+                        fontSize: 12,
+                        fontWeight: 600,
+                      }}
+                    >
+                      Legg til
+                    </button>
+                    <button
+                      onClick={exportICS}
+                      style={{
+                        flex: 1,
+                        padding: '8px 12px',
+                        backgroundColor: 'var(--text-secondary)',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 4,
+                        cursor: 'pointer',
+                        fontSize: 12,
+                        fontWeight: 600,
+                      }}
+                    >
+                      📥 Eksporter
+                    </button>
+                  </div>
+                </div>
+
+                {/* Calendar */}
+                <div style={{ flex: 1 }}>
+                  <QuarantineCalendar tasks={tasks} />
                 </div>
               </div>
             )}
           </div>
 
-        {/* Middle: Tasks & Calendar */}
-        <div className="space-y-4">
-          {/* Tabs */}
-          <div className="bg-white rounded-lg shadow-lg p-0 flex border-b">
-            <button
-              onClick={() => setTab('tasks')}
-              className={`flex-1 px-4 py-3 font-semibold text-center transition ${
-                tab === 'tasks'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-gray-600 hover:text-gray-800'
-              }`}
-            >
-              📋 Oppgaver
-            </button>
-            <button
-              onClick={() => setTab('calendar')}
-              className={`flex-1 px-4 py-3 font-semibold text-center transition ${
-                tab === 'calendar'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-gray-600 hover:text-gray-800'
-              }`}
-            >
-              📅 Karantene
-            </button>
-          </div>
-
-          {/* Tasks Tab */}
-          {tab === 'tasks' && (
-            <div className="bg-white rounded-lg shadow-lg p-4">
-              <div className="flex justify-between items-center mb-3">
-                <h2 className="font-bold text-gray-800">📋 Oppgaver</h2>
-                <button
-                  onClick={() => setShowTaskForm(!showTaskForm)}
-                  className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
-                >
-                  + Ny
-                </button>
-              </div>
-
-              {/* Add Task Form */}
-              {showTaskForm && selectedFisher && (
-                <div className="mb-3 p-3 bg-gray-50 rounded border">
-                  <input
-                    type="text"
-                    placeholder="Oppgave"
-                    value={taskName}
-                    onChange={(e) => setTaskName(e.target.value)}
-                    className="w-full px-2 py-1 border rounded mb-2 text-sm"
-                  />
-                  <input
-                    type="date"
-                    value={taskDueDate}
-                    onChange={(e) => setTaskDueDate(e.target.value)}
-                    className="w-full px-2 py-1 border rounded mb-2 text-sm"
-                  />
-                  <select
-                    value={taskDuration}
-                    onChange={(e) => setTaskDuration(parseInt(e.target.value))}
-                    className="w-full px-2 py-1 border rounded mb-2 text-sm"
-                  >
-                    {[1,3,7,14,30].map(d => <option key={d} value={d}>{d} dager</option>)}
-                  </select>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleAddTask}
-                      className="flex-1 px-3 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
-                    >
-                      Lagre
-                    </button>
-                    <button
-                      onClick={() => setShowTaskForm(false)}
-                      className="flex-1 px-3 py-2 bg-gray-300 text-gray-800 rounded text-sm hover:bg-gray-400"
-                    >
-                      Avbryt
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Tasks List */}
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {tasks.length === 0 ? (
-                  <p className="text-gray-500 text-sm">Ingen oppgaver</p>
-                ) : (
-                  tasks.map(task => (
-                    <button
-                      key={task.id}
-                      onClick={() => handleToggleTask(task)}
-                      className={`w-full text-left p-2 rounded text-sm border-l-4 transition ${
-                        task.completed
-                          ? 'bg-green-50 border-green-400 line-through text-gray-600'
-                          : 'bg-white border-blue-400 text-gray-800 hover:bg-blue-50'
-                      }`}
-                    >
-                      <div className="font-semibold">{task.completed ? '✓' : '○'} {task.name}</div>
-                      <div className="text-xs text-gray-600">{new Date(task.dueDate).toLocaleDateString('no')}</div>
-                    </button>
-                  ))
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Calendar Tab */}
-          {tab === 'calendar' && selectedFisher && (
-            <div className="bg-white rounded-lg shadow-lg p-4 space-y-4">
-              {/* Quarantine Form */}
-              <div className="p-3 bg-blue-50 rounded border border-blue-200">
-                <h3 className="font-bold text-gray-800 mb-2">Planlegg Karantene</h3>
-                <div className="space-y-2 mb-3">
-                  <div>
-                    <label className="text-sm text-gray-600">Startdato</label>
-                    <input
-                      type="date"
-                      value={qStart}
-                      onChange={(e) => setQStart(e.target.value)}
-                      className="w-full px-2 py-1 border rounded text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600">Varighet (dager)</label>
-                    <select
-                      value={qDuration}
-                      onChange={(e) => setQDuration(parseInt(e.target.value))}
-                      className="w-full px-2 py-1 border rounded text-sm"
-                    >
-                      {[1,3,7,14,21,30].map(d => <option key={d} value={d}>{d} dager</option>)}
-                    </select>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleAddQuarantine}
-                    className="flex-1 px-3 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700"
-                  >
-                    Legg til karantene
-                  </button>
-                  <button
-                    onClick={exportICS}
-                    className="flex-1 px-3 py-2 bg-gray-600 text-white rounded text-sm hover:bg-gray-700"
-                  >
-                    📥 Eksporter ICS
-                  </button>
-                </div>
-              </div>
-
-              {/* Calendar */}
-              <QuarantineCalendar tasks={tasks} />
-            </div>
-          )}
-        </div>
-
-          {/* Right: Zones & Avoidances */}
-          <div className="space-y-4">
+          {/* RIGHT: Zones & Avoidances */}
+          <div style={{ backgroundColor: 'var(--bg-surface)', padding: 16, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
             {/* Statistics */}
             {stats && (
-              <div className="bg-white rounded-lg shadow p-4">
-                <h3 className="font-bold text-gray-800 mb-2">📊 Smittesoner</h3>
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div className="bg-red-50 p-2 rounded">
-                    <div className="text-xs text-gray-600">ILA</div>
-                    <div className="font-bold text-red-600">{stats.ilaZones || 0}</div>
+              <div style={{ backgroundColor: 'var(--bg-dark)', padding: 12, borderRadius: 4, borderLeft: '3px solid var(--accent-gold)' }}>
+                <h3 style={{ margin: '0 0 8px 0', fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+                  📊 Smittesoner
+                </h3>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <div style={{ backgroundColor: 'rgba(220, 38, 38, 0.1)', padding: 8, borderRadius: 4, textAlign: 'center' }}>
+                    <p style={{ margin: '0 0 4px 0', fontSize: 11, color: 'var(--text-secondary)' }}>ILA</p>
+                    <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: 'var(--accent-red)' }}>{stats.ilaZones || 0}</p>
                   </div>
-                  <div className="bg-orange-50 p-2 rounded">
-                    <div className="text-xs text-gray-600">PD</div>
-                    <div className="font-bold text-orange-600">{stats.pdZones || 0}</div>
+                  <div style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', padding: 8, borderRadius: 4, textAlign: 'center' }}>
+                    <p style={{ margin: '0 0 4px 0', fontSize: 11, color: 'var(--text-secondary)' }}>PD</p>
+                    <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: 'rgb(245, 158, 11)' }}>{stats.pdZones || 0}</p>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Zone Avoidance Form */}
-            <div className="bg-white rounded-lg shadow-lg p-4">
-              <div className="flex justify-between items-center mb-3">
-                <h2 className="font-bold text-gray-800">🚫 Unngåelser</h2>
-                <button
-                  onClick={() => setShowZoneForm(!showZoneForm)}
-                  className="px-3 py-1 bg-orange-600 text-white rounded text-sm hover:bg-orange-700"
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>🚫 Unngåelser</h3>
+              <button
+                onClick={() => setShowZoneForm(!showZoneForm)}
+                style={{
+                  padding: '6px 12px',
+                  backgroundColor: 'var(--accent-gold)',
+                  color: '#000',
+                  border: 'none',
+                  borderRadius: 4,
+                  cursor: 'pointer',
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                + Ny
+              </button>
+            </div>
+
+            {showZoneForm && (
+              <div style={{ backgroundColor: 'var(--bg-dark)', padding: 12, borderRadius: 4, display: 'grid', gap: 8 }}>
+                <input
+                  type="text"
+                  placeholder="Sonennavn"
+                  value={zoneName}
+                  onChange={(e) => setZoneName(e.target.value)}
+                  style={{ padding: '8px 10px', borderRadius: 4, border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-surface)', color: 'var(--text-primary)', fontSize: 13 }}
+                />
+                <select
+                  value={zoneDisease}
+                  onChange={(e) => setZoneDisease(e.target.value)}
+                  style={{ padding: '8px 10px', borderRadius: 4, border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-surface)', color: 'var(--text-primary)', fontSize: 13 }}
                 >
-                  + Ny
-                </button>
-              </div>
-
-              {showZoneForm && selectedFisher && (
-                <div className="mb-3 p-3 bg-gray-50 rounded border">
-                  <input
-                    type="text"
-                    placeholder="Sonennavn"
-                    value={zoneName}
-                    onChange={(e) => setZoneName(e.target.value)}
-                    className="w-full px-2 py-1 border rounded mb-2 text-sm"
-                  />
-                  <select
-                    value={zoneDisease}
-                    onChange={(e) => setZoneDisease(e.target.value)}
-                    className="w-full px-2 py-1 border rounded mb-2 text-sm"
+                  <option value="ILA">ILA</option>
+                  <option value="PD">PD</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="Grunn (valgfritt)"
+                  value={zoneReason}
+                  onChange={(e) => setZoneReason(e.target.value)}
+                  style={{ padding: '8px 10px', borderRadius: 4, border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-surface)', color: 'var(--text-primary)', fontSize: 13 }}
+                />
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    onClick={handleRecordZoneAvoidance}
+                    style={{
+                      flex: 1,
+                      padding: '8px 12px',
+                      backgroundColor: 'var(--accent-gold)',
+                      color: '#000',
+                      border: 'none',
+                      borderRadius: 4,
+                      cursor: 'pointer',
+                      fontSize: 12,
+                      fontWeight: 600,
+                    }}
                   >
-                    <option value="ILA">ILA</option>
-                    <option value="PD">PD</option>
-                  </select>
-                  <input
-                    type="text"
-                    placeholder="Grunn (valgfritt)"
-                    value={zoneReason}
-                    onChange={(e) => setZoneReason(e.target.value)}
-                    className="w-full px-2 py-1 border rounded mb-2 text-sm"
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleRecordZoneAvoidance}
-                      className="flex-1 px-3 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
-                    >
-                      Registrer
-                    </button>
-                    <button
-                      onClick={() => setShowZoneForm(false)}
-                      className="flex-1 px-3 py-2 bg-gray-300 text-gray-800 rounded text-sm hover:bg-gray-400"
-                    >
-                      Avbryt
-                    </button>
-                  </div>
+                    Registrer
+                  </button>
+                  <button
+                    onClick={() => setShowZoneForm(false)}
+                    style={{
+                      flex: 1,
+                      padding: '8px 12px',
+                      backgroundColor: 'var(--border-color)',
+                      color: 'var(--text-primary)',
+                      border: 'none',
+                      borderRadius: 4,
+                      cursor: 'pointer',
+                      fontSize: 12,
+                    }}
+                  >
+                    Avbryt
+                  </button>
                 </div>
-              )}
-
-              {/* Avoidances List */}
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {zoneAvoidances.length === 0 ? (
-                  <p className="text-gray-500 text-sm">Ingen registrerte unngåelser</p>
-                ) : (
-                  zoneAvoidances.map(avoidance => (
-                    <div key={avoidance.id} className={`p-2 rounded text-sm border-l-4 ${
-                      avoidance.disease === 'ILA'
-                        ? 'bg-red-50 border-red-400'
-                        : 'bg-orange-50 border-orange-400'
-                    }`}>
-                      <div className="font-semibold">{avoidance.zoneName}</div>
-                      <div className="text-xs text-gray-600">
-                        {avoidance.disease} • {new Date(avoidance.timestamp).toLocaleDateString('no')}
-                      </div>
-                    </div>
-                  ))
-                )}
               </div>
+            )}
+
+            {/* Avoidances List */}
+            <div style={{ display: 'grid', gap: 6, overflowY: 'auto' }}>
+              {zoneAvoidances.length === 0 ? (
+                <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Ingen unngåelser</p>
+              ) : (
+                zoneAvoidances.map(avoidance => (
+                  <div
+                    key={avoidance.id}
+                    style={{
+                      padding: 10,
+                      borderRadius: 4,
+                      backgroundColor: 'var(--bg-dark)',
+                      borderLeft: avoidance.disease === 'ILA' ? '3px solid var(--accent-red)' : '3px solid rgb(245, 158, 11)',
+                    }}
+                  >
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>
+                      {avoidance.zoneName}
+                    </div>
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>
+                      {avoidance.disease} • {new Date(avoidance.timestamp).toLocaleDateString('no')}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
-
-        {/* Guidelines */}
-        <div className="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-4 mt-6">
-          <h3 className="font-bold text-yellow-900 mb-2">⚠️ Retningslinjer</h3>
-          <ul className="text-sm text-yellow-900 space-y-1">
-            <li>📋 <strong>Oppgaver:</strong> Registrer inspeksjoner og vedlikehold av redskaper</li>
-            <li>🚫 <strong>Unngåelser:</strong> Registrer smittesoner du unngår - dette blir ML-treningsdata</li>
-            <li>🧹 <strong>Rengjøring:</strong> Vask redskaper grundig ved sonegrenser</li>
-            <li>📞 <strong>Rapport:</strong> Meld observasjoner av smitte til Mattilsynet umiddelbart</li>
-          </ul>
+      ) : (
+        <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-secondary)' }}>
+          Velg en fisker for å begynne
         </div>
-      </div>
+      )}
     </div>
   );
 };
