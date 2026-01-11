@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { MOCK_FARMS, MOCK_FARM_ALERTS, getMockFarmData } from '../mocks/data';
+import { MOCK_FARM_ALERTS, getMockFarmData } from '../mocks/data';
 import { severityCompare } from '../lib/riskTerms';
 import OutbreakReport from '../components/OutbreakReport';
+import apiClient from '../lib/apiClient';
 
 export default function FarmerMVP({ token, currentUser }) {
   const [farms, setFarms] = useState([]);
@@ -18,10 +19,22 @@ export default function FarmerMVP({ token, currentUser }) {
   const [showReportForm, setShowReportForm] = useState(false);
 
   useEffect(() => {
-    setFarms(MOCK_FARMS);
-    setSelectedFarm(MOCK_FARMS[0]);
-    setAllFarmAlerts(MOCK_FARM_ALERTS);
-    setLoading(false);
+    const fetchFarms = async () => {
+      try {
+        const data = await apiClient.get('/api/mvp/farmer');
+        if (data && Array.isArray(data)) {
+          setFarms(data);
+          setSelectedFarm(data[0] || null);
+        }
+      } catch (error) {
+        console.error('Error fetching farms:', error);
+        setFarms([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchFarms();
   }, []);
 
   useEffect(() => {
