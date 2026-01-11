@@ -164,6 +164,39 @@ const generateVessels = () => {
   return vessels;
 };
 
+// Generate professional fishers (tracked identically to vessels for MVP)
+const generateFishers = () => {
+  const fishers = [];
+  const fisherNames = [
+    'Arne Johansen', 'Berit Larsen', 'Kåre Svendsen', 'Siri Andersen',
+    'Jan Pettersen', 'Maria Nilsen', 'Ole Eriksen', 'Ingrid Moen'
+  ];
+  
+  const userIds = ['user_5', 'user_6']; // Distribute fishers across 2 users
+  const zones = ['Nordfjord', 'Sognefjord', 'Hardangerfjord', 'Rombofjord', 'Varangerfjord'];
+  
+  for (let i = 0; i < fisherNames.length; i++) {
+    fishers.push({
+      id: `fisher_${i + 1}`,
+      name: fisherNames[i],
+      userId: userIds[i % 2],
+      type: 'profesjonell',
+      license: `Fiskeri-${1000 + i}`,
+      homePort: zones[i % zones.length],
+      vessel: `Båt ${i + 1}`,
+      registrationNumber: `REG-${Math.floor(10000 + Math.random() * 90000)}`,
+      permits: [
+        { type: 'Fiskeritillatelse', expires: new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString(), status: 'gyldig' },
+        { type: 'Miljøtillatelse', expires: new Date(Date.now() + 500 * 24 * 3600 * 1000).toISOString(), status: 'gyldig' },
+      ],
+      catches: Math.floor(Math.random() * 50),
+      lastReport: new Date(Date.now() - Math.random() * 7 * 24 * 3600 * 1000).toISOString(),
+    });
+  }
+  
+  return fishers;
+};
+
 const generateAlerts = (farmers) => {
   const alerts = [];
   const alertTypes = [
@@ -479,8 +512,11 @@ module.exports = {
   farmers: generateFarmers(),
   alerts: null, // Will be populated after farmers are generated
   vessels: generateVessels(),
+  fishers: generateFishers(), // Professional fishers - tracked identical to vessels
   tasks: null, // Will be populated after vessels are generated
+  fisherTasks: null, // Will be populated after fishers are generated
   disinfections: [], // Will be populated/added to after vessels are generated
+  fisherZoneAvoidances: [], // Will be populated with fisher zone avoidance data
   quarantines: [], // Auto-triggered quarantines based on non-reporting vessels
   nearbyFarmsMap: null, // Will be populated after farmers are generated
   algaeAlerts: null, // Will be populated after farmers are generated
@@ -488,7 +524,9 @@ module.exports = {
   init() {
     this.alerts = generateAlerts(this.farmers);
     this.tasks = generateTasks(this.vessels);
+    this.fisherTasks = generateTasks(this.fishers); // Same tasks as vessels
     this.disinfections = []; // Initialize empty disinfections array
+    this.fisherZoneAvoidances = []; // Initialize empty zone avoidance array
     this.quarantines = []; // Initialize empty quarantines array
     this.nearbyFarmsMap = generateNearbyFarms(this.farmers);
     this.infectionGraph = generateInfectionChain(this.farmers, this.nearbyFarmsMap);

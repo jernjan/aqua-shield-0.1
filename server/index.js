@@ -209,6 +209,92 @@ app.post('/api/mvp/vessel/:vesselId/disinfection', (req, res) => {
   res.json({ ok: true, disinfection })
 })
 
+// Gruppe 2b: Fisher tracking (identical to vessel for now - data aggregation)
+app.get('/api/mvp/fisher/:fisherId?', (req, res) => {
+  const { fisherId } = req.params
+  if (fisherId) {
+    const fisher = MVP.fishers.find(f => f.id === fisherId)
+    res.json(fisher || { error: 'Fisher not found' })
+  } else {
+    res.json(MVP.fishers)
+  }
+})
+
+app.get('/api/mvp/fisher/:fisherId/tasks', (req, res) => {
+  const { fisherId } = req.params
+  const fisher = MVP.fishers.find(f => f.id === fisherId)
+  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
+  const tasks = MVP.fisherTasks.filter(t => t.fisherId === fisherId)
+  res.json({ fisherId, tasks })
+})
+
+app.post('/api/mvp/fisher/:fisherId/task', (req, res) => {
+  const { fisherId } = req.params
+  const fisher = MVP.fishers.find(f => f.id === fisherId)
+  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
+  const { name, dueDate, duration, type } = req.body || {}
+  if (!name || !dueDate) return res.status(400).json({ error: 'Missing name or dueDate' })
+  const id = `task_${Date.now()}`
+  const task = {
+    id,
+    fisherId,
+    name,
+    type: type || 'kontroll',
+    dueDate,
+    duration: duration || 7,
+    completed: false,
+    completedAt: null,
+    createdAt: new Date().toISOString(),
+  }
+  if (!MVP.fisherTasks) MVP.fisherTasks = []
+  MVP.fisherTasks.push(task)
+  res.json({ ok: true, task })
+})
+
+app.patch('/api/mvp/fisher/:fisherId/task/:taskId', (req, res) => {
+  const { fisherId, taskId } = req.params
+  const { completed } = req.body
+  const fisher = MVP.fishers.find(f => f.id === fisherId)
+  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
+  if (!MVP.fisherTasks) MVP.fisherTasks = []
+  const task = MVP.fisherTasks.find(t => t.id === taskId && t.fisherId === fisherId)
+  if (!task) return res.status(404).json({ error: 'Task not found' })
+  task.completed = completed
+  task.completedAt = completed ? new Date().toISOString() : null
+  res.json({ ok: true, task })
+})
+
+app.get('/api/mvp/fisher/:fisherId/zone-avoidances', (req, res) => {
+  const { fisherId } = req.params
+  const fisher = MVP.fishers.find(f => f.id === fisherId)
+  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
+  const avoidances = MVP.fisherZoneAvoidances.filter(a => a.fisherId === fisherId)
+  res.json({ fisherId, avoidances })
+})
+
+app.post('/api/mvp/fisher/:fisherId/zone-avoidance', (req, res) => {
+  const { fisherId } = req.params
+  const fisher = MVP.fishers.find(f => f.id === fisherId)
+  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
+  const { zoneName, disease, lat, lon, reason, timestamp } = req.body || {}
+  if (!zoneName || !disease) return res.status(400).json({ error: 'Missing zoneName or disease' })
+  const id = `avoid_${Date.now()}`
+  const avoidance = {
+    id,
+    fisherId,
+    zoneName,
+    disease,
+    lat: lat || null,
+    lon: lon || null,
+    reason: reason || '',
+    timestamp: timestamp || new Date().toISOString(),
+    recordedAt: new Date().toISOString(),
+  }
+  if (!MVP.fisherZoneAvoidances) MVP.fisherZoneAvoidances = []
+  MVP.fisherZoneAvoidances.push(avoidance)
+  res.json({ ok: true, avoidance })
+})
+
 // Gruppe 3: Admin/Regulators (Statistikk og oversight)
 app.get('/api/mvp/admin/stats', (req, res) => {
   res.json(MVP.adminStats)
