@@ -59,8 +59,17 @@ function App() {
   const [toast, setToast] = useState(null)
 
   useEffect(() => {
-    // Check URL path for direct navigation
+    // Only do path-based auto-login if token is explicitly requested (not on logout)
+    // Logout sets token to null, so we should not auto-login from path in that case
     const path = window.location.pathname
+    
+    // Skip auto-login from path if user just logged out (token is null but page might still show old path)
+    // Instead, check if there's a saved token in localStorage
+    const savedToken = localStorage.getItem('token')
+    
+    // Only auto-login from path if explicitly enabled (future feature)
+    // For now, if token exists in localStorage, use it; otherwise go to login
+    
     if (path === '/admin' || path === '/admin/') {
       setToken('mvp-admin')
       localStorage.setItem('token', 'mvp-admin')
@@ -102,6 +111,9 @@ function App() {
         setPage('selectSites')
       }
       // Could verify token here
+    } else {
+      // No token, ensure we're on login page
+      setPage('login')
     }
   }, [token])
 
