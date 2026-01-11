@@ -174,6 +174,15 @@ function Login({ onLogin, onMVPLogin }) {
           <div className={styles.roleLabel}>Analytics</div>
           <div className={styles.roleDesc}>Rapporter & Analyse</div>
         </button>
+
+        <button
+          onClick={() => onMVPLogin('fisher')}
+          className={styles.roleBtn}
+        >
+          <div className={styles.roleIcon}>🎣</div>
+          <div className={styles.roleLabel}>Yrkesfisker</div>
+          <div className={styles.roleDesc}>Smittesone-kart</div>
+        </button>
       </div>
     </div>
   );
