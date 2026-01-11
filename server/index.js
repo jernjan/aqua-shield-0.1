@@ -75,12 +75,20 @@ app.post('/api/admin/run-cron', async (req, res) => {
 app.post('/api/admin/sync-barentswatch', async (req, res) => {
   try {
     const { syncFromBarentsWatch } = require('./cron/sync-barentswatch.js');
+    console.log('📡 Sync endpoint called');
     const result = await syncFromBarentsWatch()
+    console.log('📡 Sync result:', result);
     res.json({ ok: result.success, result })
   } catch (err) {
-    console.error(err)
+    console.error('❌ Sync error:', err)
     res.status(500).json({ ok: false, error: err.message })
   }
+})
+
+// Alternative route for sync
+app.get('/api/admin/sync-status', async (req, res) => {
+  const db = await readDB()
+  res.json({ lastSync: db.lastSync, facilities: db.facilities?.length || 0, vessels: db.vessels?.length || 0 })
 })
 
 app.get('/api/health', (req, res) => {
