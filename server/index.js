@@ -11,6 +11,7 @@ const barentswatch = require('./utils/barentswatch')
 const RiskPredictionModel = require('./ml/risk-model')
 const alertService = require('./services/alerts')
 const notifier = require('./services/notifier')
+const scheduler = require('./scheduler')
 
 // Initialize MVP data on startup
 const MVP = mvpData.init()
@@ -23,6 +24,7 @@ riskModel.load(modelPath)
 const app = express()
 const PORT = process.env.PORT || 3001
 const RENDER_HEALTH_PORT = process.env.RENDER_HEALTH_PORT || 10000
+
 
 app.use(cors())
 app.use(express.json())
@@ -1157,6 +1159,131 @@ app.post('/api/alerts/send-test', async (req, res) => {
 
 // ============ END ALERT SERVICE ENDPOINTS ============
 
+// ============================================================================
+// SCHEDULER ENDPOINTS
+// ============================================================================
+
+// GET /api/scheduler/status - Get scheduler status
+app.get('/api/scheduler/status', (req, res) => {
+  try {
+    const status = scheduler.getStatus();
+    res.json({
+      ok: true,
+      scheduler: status,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ GET /api/scheduler/status error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// POST /api/scheduler/run-retraining - Manually trigger ML retraining
+app.post('/api/scheduler/run-retraining', async (req, res) => {
+  try {
+    if (scheduler.isRetraining) {
+      return res.status(409).json({
+        ok: false,
+        error: 'Retraining already in progress'
+      });
+    }
+
+    console.log('🤖 [MANUAL] Starting ML model retraining...');
+    
+    // Run pipeline (don't await, return immediately)
+    scheduler.runMLPipeline().then(() => {
+      console.log('✓ [MANUAL] ML retraining completed');
+      // Reload model
+      scheduler.riskModel.load(path.join(__dirname, 'data/risk-model.json'));
+    }).catch(err => {
+      console.error('✗ [MANUAL] ML retraining failed:', err.message);
+    });
+
+    res.json({
+      ok: true,
+      message: 'ML retraining started',
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ POST /api/scheduler/run-retraining error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// POST /api/scheduler/run-risk-check - Manually trigger risk monitoring
+app.post('/api/scheduler/run-risk-check', async (req, res) => {
+  try {
+    console.log('📡 [MANUAL] Starting risk monitoring...');
+    
+    const facilities = [
+      { id: 'FARM-001', name: 'Anlegg Nord-Trøndelag', latitude: 64.1466, longitude: 11.4871 },
+      { id: 'FARM-002', name: 'Anlegg Troms', latitude: 69.6492, longitude: 18.9553 },
+      { id: 'FARM-003', name: 'Anlegg Hordaland', latitude: 60.9711, longitude: 5.1913 }
+    ];
+
+    let alertsCreated = 0;
+    const alertsData = [];
+
+    for (const facility of facilities) {
+      for (const disease of ['ISA', 'PD', 'PRV', 'SRS']) {
+        const vesselContacts = Math.floor(Math.random() * 5);
+        const prediction = riskModel.predictRisk({
+          diseaseCode: disease,
+          vesselContactCount: vesselContacts,
+          latitude: facility.latitude,
+          longitude: facility.longitude
+        });
+
+        const alert = alertService.checkAndCreateAlert(
+          facility.id,
+          prediction.riskScore,
+          disease,
+          {
+            vesselContactCount: vesselContacts,
+            latitude: facility.latitude,
+            longitude: facility.longitude,
+            facilityName: facility.name,
+            source: 'MANUAL_CHECK'
+          }
+        );
+
+        if (alert) {
+          alertsCreated++;
+          alertsData.push({
+            facilityId: facility.id,
+            facilityName: facility.name,
+            disease: disease,
+            riskLevel: alert.riskLevel,
+            riskScore: prediction.riskScore
+          });
+        }
+      }
+    }
+
+    res.json({
+      ok: true,
+      message: 'Risk monitoring completed',
+      alertsCreated,
+      alerts: alertsData,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ POST /api/scheduler/run-risk-check error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// ============ END SCHEDULER ENDPOINTS ============
+
 // PATCH /api/datalog/alert/:alertId/outbreak - Mark alert as confirmed/false positive
 app.patch('/api/datalog/alert/:alertId/outbreak', async (req, res) => {
   try {
@@ -1202,10 +1329,14 @@ app.get('/api/datalog/export', async (req, res) => {
 // leave ports bound (prevents EADDRINUSE loops when files change rapidly).
 const server = app.listen(PORT, () => {
   console.log(`🐟 AquaShield API running on port ${PORT}`)
+  
   // Start AIS polling for data logging
   // MVP: 1440 minutes (24 hours) = once daily to save CPU/memory
   // Phase 2: Change to 5 minutes for real-time production vessel tracking
   startAISPolling(1440)
+  
+  // Start scheduler for ML retraining and risk monitoring
+  scheduler.start()
 })
 
 // If Render (or other host) expects the internal health check on port 10000,
