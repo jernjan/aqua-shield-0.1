@@ -147,6 +147,7 @@ function App() {
 
   const handleLogout = () => {
     console.log('✓ Logout button clicked!')
+    alert('Logging out...')
     setToken(null)
     localStorage.removeItem('token')
     localStorage.removeItem('aquashield_user')
