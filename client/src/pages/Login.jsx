@@ -35,7 +35,7 @@ function Login({ onLogin, onMVPLogin }) {
           localStorage.setItem('aquashield_user', JSON.stringify(user));
           onLogin(user.id, user);
         } else {
-          setError('Invalid email or password. Try: arne@farms.no, berit@farms.no, kare@shipping.no, siri@shipping.no (all password: demo)');
+          setError('Invalid email or password. Try demo accounts: arne@farms.no, berit@farms.no, kare@shipping.no, siri@shipping.no, lars@fisher.no, gunnar@fisher.no (all password: demo)');
         }
       } else {
         // Registration not implemented for demo

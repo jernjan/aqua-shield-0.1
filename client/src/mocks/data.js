@@ -33,6 +33,20 @@ export const MOCK_USERS = {
     role: 'vessel_operator', 
     password: 'demo' 
   },
+  'lars@fisher.no': { 
+    id: 'user_5', 
+    name: 'Lars Fiskerisjef', 
+    email: 'lars@fisher.no', 
+    role: 'fisher', 
+    password: 'demo' 
+  },
+  'gunnar@fisher.no': { 
+    id: 'user_6', 
+    name: 'Gunnar Fiskekontrollør', 
+    email: 'gunnar@fisher.no', 
+    role: 'fisher', 
+    password: 'demo' 
+  },
 };
 
 // ============= FARMER MVP DATA =============

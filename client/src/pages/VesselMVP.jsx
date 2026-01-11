@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MOCK_VESSELS, getMockVesselData } from '../mocks/data';
+import { getMockVesselData } from '../mocks/data';
 import QuarantineCalendar from '../components/QuarantineCalendar';
 import { generateICSFromQuarantine } from '../lib/ics';
 import apiClient from '../lib/apiClient';
@@ -21,9 +21,22 @@ export default function VesselMVP({ token, currentUser }) {
 
   // Load all vessels
   useEffect(() => {
-    setVessels(MOCK_VESSELS);
-    setSelectedVessel(MOCK_VESSELS[0]);
-    setLoading(false);
+    const fetchVessels = async () => {
+      try {
+        const data = await apiClient.get('/api/mvp/vessel');
+        if (data && Array.isArray(data)) {
+          setVessels(data);
+          setSelectedVessel(data[0] || null);
+        }
+      } catch (error) {
+        console.error('Error fetching vessels:', error);
+        setVessels([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchVessels();
   }, [currentUser?.id]);
 
   // Load selected vessel's tasks and disinfections
