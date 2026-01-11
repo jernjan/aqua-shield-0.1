@@ -70,6 +70,18 @@ app.post('/api/admin/run-cron', async (req, res) => {
   }
 })
 
+// Manual sync with BarentsWatch - can be called anytime
+app.post('/api/admin/sync-barentswatch', async (req, res) => {
+  try {
+    const { syncFromBarentsWatch } = require('./cron/sync-barentswatch.js');
+    const result = await syncFromBarentsWatch()
+    res.json({ ok: result.success, result })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ ok: false, error: err.message })
+  }
+})
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
@@ -77,37 +89,72 @@ app.get('/api/health', (req, res) => {
 // ============ MVP ENDPOINTS ============
 
 // Gruppe 1: Farmers (Anlegg)
-app.get('/api/mvp/farmer/:farmId?', (req, res) => {
-  const { farmId } = req.params
-  const { userId } = req.query
-  if (farmId) {
-    const farm = MVP.farmers.find(f => f.id === farmId)
-    if (!farm) return res.status(404).json({ error: 'Farm not found' })
-    const alerts = MVP.alerts.filter(a => a.farmId === farmId)
-    res.json({ farm, alerts, totalAlerts: alerts.length })
-  } else {
-    // Optional auth-based filtering by userId
-    const farms = userId ? MVP.farmers.filter(f => f.userId === userId) : MVP.farmers
-    const alerts = userId ? MVP.alerts.filter(a => a.userId === userId) : MVP.alerts
-    const stats = {
-      total: farms.length,
-      risikofylt: farms.filter(f => f.riskScore > 60).length,
-      hoyOppmerksomhet: farms.filter(f => f.riskScore > 40 && f.riskScore <= 60).length,
-      unreadAlerts: alerts.filter(a => !a.isRead).length,
+app.get('/api/mvp/farmer/:farmId?', async (req, res) => {
+  try {
+    const { farmId } = req.params
+    const { userId } = req.query
+    
+    // Try to get real data from db first, fall back to MVP mock data
+    const db = await readDB()
+    const facilities = db.facilities && db.facilities.length > 0 ? db.facilities : MVP.farmers
+    const alerts = db.alerts && db.alerts.length > 0 ? db.alerts : MVP.alerts
+    
+    if (farmId) {
+      const farm = facilities.find(f => f.id === farmId)
+      if (!farm) return res.status(404).json({ error: 'Farm not found' })
+      const farmAlerts = alerts.filter(a => a.farmId === farmId)
+      res.json({ farm, alerts: farmAlerts, totalAlerts: farmAlerts.length })
+    } else {
+      // Optional auth-based filtering by userId
+      const farms = userId ? facilities.filter(f => f.userId === userId) : facilities
+      const userAlerts = userId ? alerts.filter(a => a.userId === userId) : alerts
+      const stats = {
+        total: farms.length,
+        risikofylt: farms.filter(f => f.riskScore > 60).length,
+        hoyOppmerksomhet: farms.filter(f => f.riskScore > 40 && f.riskScore <= 60).length,
+        unreadAlerts: userAlerts.filter(a => !a.isRead).length,
+      }
+      res.json({ farms, stats, alertCount: userAlerts.length })
     }
-    res.json({ farms, stats, alertCount: alerts.length })
+  } catch (err) {
+    console.error('Error fetching farmer data:', err);
+    res.status(500).json({ error: 'Failed to fetch farmer data' })
   }
 })
 
 // Gruppe 2: Vessels (Brønnbåter)
-app.get('/api/mvp/vessel/:vesselId?', (req, res) => {
-  const { vesselId } = req.params
-  const { userId } = req.query
-  if (vesselId) {
-    const vessel = MVP.vessels.find(v => v.id === vesselId)
-    if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
-    const tasks = MVP.tasks.filter(t => t.vesselId === vesselId)
-    res.json({ vessel, tasks, taskCount: tasks.length })
+app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
+  try {
+    const { vesselId } = req.params
+    const { userId } = req.query
+    
+    // Try to get real data from db first, fall back to MVP mock data
+    const db = await readDB()
+    const vessels = db.vessels && db.vessels.length > 0 ? db.vessels : MVP.vessels
+    const tasks = MVP.tasks || []
+    
+    if (vesselId) {
+      const vessel = vessels.find(v => v.id === vesselId)
+      if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
+      const vesselTasks = tasks.filter(t => t.vesselId === vesselId)
+      res.json({ vessel, tasks: vesselTasks, taskCount: vesselTasks.length })
+    } else {
+      // Optional auth-based filtering by userId
+      const userVessels = userId ? vessels.filter(v => v.userId === userId) : vessels
+      const userTasks = userId ? tasks.filter(t => t.userId === userId) : tasks
+      const stats = {
+        total: userVessels.length,
+        onRoute: userVessels.filter(v => v.status === 'en route').length,
+        inPort: userVessels.filter(v => v.status === 'in port').length,
+        unreadTasks: userTasks.filter(t => !t.isRead).length,
+      }
+      res.json({ vessels: userVessels, stats, taskCount: userTasks.length })
+    }
+  } catch (err) {
+    console.error('Error fetching vessel data:', err);
+    res.status(500).json({ error: 'Failed to fetch vessel data' })
+  }
+})
   } else {
     const vessels = userId ? MVP.vessels.filter(v => v.userId === userId) : MVP.vessels
     const stats = {
