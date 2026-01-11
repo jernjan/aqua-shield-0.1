@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Circle, Polygon } from 'react-leaflet';
-import L from 'leaflet';
-import { AlertTriangle, RefreshCw, Waves, MapPin, AlertCircle } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import Toast from '../components/Toast.jsx';
 import 'leaflet/dist/leaflet.css';
 
@@ -117,8 +115,7 @@ const FisherDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
-                <Waves className="w-8 h-8 text-blue-600" />
-                Yrkesfisker GPS & Smittesoner
+                🌊 Yrkesfisker GPS & Smittesoner
               </h1>
               <p className="text-gray-600 mt-1">Unngå smittede områder for å forhindre sykdomsspredning</p>
             </div>
@@ -127,8 +124,7 @@ const FisherDashboard = () => {
               disabled={loading}
               className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-              Oppdater
+              🔄 Oppdater
             </button>
           </div>
         </div>
@@ -138,7 +134,7 @@ const FisherDashboard = () => {
           <div className="bg-white rounded-lg shadow-lg p-4 mb-6">
             <div className="flex items-center gap-4">
               <div className="bg-blue-100 p-3 rounded-lg">
-                <MapPin className="w-6 h-6 text-blue-600" />
+                📍
               </div>
               <div className="flex-1">
                 <h2 className="text-lg font-semibold text-gray-800">{vesselPos.name}</h2>
@@ -162,7 +158,7 @@ const FisherDashboard = () => {
                 <div className="w-full h-full flex items-center justify-center bg-gray-100">
                   <div className="text-center">
                     <div className="animate-spin mb-4">
-                      <RefreshCw className="w-8 h-8 text-blue-600" />
+                      🔄
                     </div>
                     <p className="text-gray-600">Henter smittesoner...</p>
                   </div>
@@ -280,8 +276,7 @@ const FisherDashboard = () => {
             {selectedZone && (
               <div className="bg-blue-50 rounded-lg shadow-lg p-4 border-l-4 border-blue-600">
                 <h3 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 text-blue-600" />
-                  Sondetaljer
+                  ℹ️ Sonedetaljer
                 </h3>
                 <div className="space-y-1 text-sm">
                   <p><strong>Navn:</strong> {selectedZone.name}</p>
@@ -309,8 +304,7 @@ const FisherDashboard = () => {
         {/* Guidelines */}
         <div className="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-4 mt-6">
           <h3 className="font-bold text-yellow-900 mb-2 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5" />
-            Viktige Retningslinjer
+            ⚠️ Viktige Retningslinjer
           </h3>
           <ul className="text-sm text-yellow-900 space-y-1">
             <li>✅ Unngå røde soner (ILA-beskyttelsessoner) - Høyeste risiko</li>
