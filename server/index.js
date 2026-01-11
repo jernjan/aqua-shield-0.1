@@ -6,6 +6,7 @@ const { runNightlyAnalysis } = require('./cron/nightly')
 const mvpData = require('./mvp-data')
 const logger = require('./datalogger')
 const { startAISPolling } = require('./ais-poller')
+const barentswatch = require('./utils/barentswatch')
 
 // Initialize MVP data on startup
 const MVP = mvpData.init()
@@ -747,6 +748,118 @@ app.get('/api/datalog/vessel-movements', async (req, res) => {
     res.status(500).json({ ok: false, error: err.message })
   }
 })
+
+// ============================================================================
+// BarentsWatch Fishhealth API Integration - REAL OUTBREAK DATA
+// ============================================================================
+
+// GET /api/barentswatch/outbreaks - Get real disease outbreaks from Fishhealth API
+app.get('/api/barentswatch/outbreaks', async (req, res) => {
+  try {
+    const { weeks } = req.query
+    console.log('📊 Fetching outbreak data from BarentsWatch Fishhealth API...')
+    
+    const outbreaks = await barentswatch.getOutbreakHistory(weeks ? parseInt(weeks) : 52)
+    
+    res.json({
+      ok: true,
+      outbreaks,
+      count: outbreaks.length,
+      source: 'BarentsWatch Fishhealth API',
+      timestamp: new Date().toISOString()
+    })
+  } catch (err) {
+    console.error('❌ GET /api/barentswatch/outbreaks error:', err.message)
+    res.status(500).json({
+      ok: false,
+      error: err.message,
+      message: 'Failed to fetch outbreak data from BarentsWatch API'
+    })
+  }
+})
+
+// GET /api/barentswatch/facility/:facilityNo/lice - Get sea lice data for facility
+app.get('/api/barentswatch/facility/:facilityNo/lice', async (req, res) => {
+  try {
+    const { facilityNo } = req.params
+    console.log(`🦐 Fetching lice data for facility ${facilityNo}...`)
+    
+    const liceData = await barentswatch.getFacilityLiceData(facilityNo)
+    
+    if (!liceData) {
+      return res.status(404).json({
+        ok: false,
+        error: 'Facility not found or no lice data available'
+      })
+    }
+    
+    res.json({
+      ok: true,
+      liceData,
+      source: 'BarentsWatch Fishhealth API',
+      timestamp: new Date().toISOString()
+    })
+  } catch (err) {
+    console.error(`❌ GET /api/barentswatch/facility/:facilityNo/lice error:`, err.message)
+    res.status(500).json({
+      ok: false,
+      error: err.message,
+      message: 'Failed to fetch lice data from BarentsWatch API'
+    })
+  }
+})
+
+// GET /api/barentswatch/stats - Get statistics about outbreaks
+app.get('/api/barentswatch/stats', async (req, res) => {
+  try {
+    const { weeks } = req.query
+    const outbreaks = await barentswatch.getOutbreakHistory(weeks ? parseInt(weeks) : 52)
+    
+    // Calculate statistics
+    const stats = {
+      total: outbreaks.length,
+      byDisease: {},
+      bySeverity: {
+        'kritisk': 0,
+        'høy': 0,
+        'moderat': 0,
+        'lav': 0
+      },
+      activeCount: 0,
+      dataCollectionPeriod: `${weeks || 52} weeks`,
+      timestamp: new Date().toISOString()
+    }
+    
+    outbreaks.forEach(outbreak => {
+      // Count by disease
+      const disease = outbreak.diseaseName || outbreak.diseaseCode
+      stats.byDisease[disease] = (stats.byDisease[disease] || 0) + 1
+      
+      // Count by severity
+      if (stats.bySeverity[outbreak.severity] !== undefined) {
+        stats.bySeverity[outbreak.severity]++
+      }
+      
+      // Count active outbreaks
+      if (outbreak.status === 'active') {
+        stats.activeCount++
+      }
+    })
+    
+    res.json({
+      ok: true,
+      stats,
+      source: 'BarentsWatch Fishhealth API'
+    })
+  } catch (err) {
+    console.error('❌ GET /api/barentswatch/stats error:', err.message)
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    })
+  }
+})
+
 
 // PATCH /api/datalog/alert/:alertId/outbreak - Mark alert as confirmed/false positive
 app.patch('/api/datalog/alert/:alertId/outbreak', async (req, res) => {

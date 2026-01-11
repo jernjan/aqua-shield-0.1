@@ -41,6 +41,8 @@ export default function AdminMVP({ token, currentUser }) {
   const [filterRegion, setFilterRegion] = useState('all');
   const [outbreakConfirmation, setOutbreakConfirmation] = useState({}); // Track confirmed/denied alerts
   const [backendAlerts, setBackendAlerts] = useState([]); // Alerts from backend datalogger
+  const [realOutbreaks, setRealOutbreaks] = useState([]); // Real outbreak data from BarentsWatch
+  const [outbreakStats, setOutbreakStats] = useState(null); // Outbreak statistics
 
   // Fetch alerts from backend on mount
   useEffect(() => {
@@ -57,6 +59,39 @@ export default function AdminMVP({ token, currentUser }) {
       }
     };
     fetchAlerts();
+  }, []);
+
+  // Fetch real outbreak data from BarentsWatch Fishhealth API
+  useEffect(() => {
+    const fetchOutbreaks = async () => {
+      try {
+        console.log('🔄 Fetching real outbreak data from BarentsWatch API...');
+        const response = await fetch('http://localhost:3001/api/barentswatch/outbreaks?weeks=12');
+        const data = await response.json();
+        
+        if (data.ok && data.outbreaks) {
+          setRealOutbreaks(data.outbreaks);
+          console.log(`✓ Fetched ${data.outbreaks.length} real outbreaks from BarentsWatch`);
+          
+          // Also fetch stats
+          const statsResponse = await fetch('http://localhost:3001/api/barentswatch/stats?weeks=12');
+          const statsData = await statsResponse.json();
+          if (statsData.ok) {
+            setOutbreakStats(statsData.stats);
+            console.log('✓ Fetched outbreak statistics');
+          }
+        } else {
+          console.warn('No outbreak data or API error:', data);
+        }
+      } catch (err) {
+        console.error('Error fetching outbreak data:', err);
+      }
+    };
+    
+    fetchOutbreaks();
+    // Refresh every 5 minutes
+    const interval = setInterval(fetchOutbreaks, 5 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
   // Mock data for demo
@@ -181,6 +216,7 @@ export default function AdminMVP({ token, currentUser }) {
         <div style={{ padding: '10px', borderBottom: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: 4 }}>
           {[
             { id: 'overview', label: '📊 Oversikt', icon: '📊' },
+            { id: 'outbreaks', label: '🦐 Utbrudd (Real)', icon: '🦐' },
             { id: 'alerts', label: '🚨 Varsler', icon: '🚨' },
             { id: 'farms', label: '🐟 Anlegg', icon: '🐟' },
             { id: 'vessels', label: '🚢 Båter', icon: '🚢' },
@@ -592,8 +628,135 @@ export default function AdminMVP({ token, currentUser }) {
             </div>
           )}
 
+          {/* REAL OUTBREAKS TAB - BarentsWatch Fishhealth API */}
+          {activeTab === 'outbreaks' && (
+            <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-green)', margin: 0, paddingBottom: 6, borderBottom: '2px solid var(--accent-green)' }}>
+                  🦐 Real Outbreaks fra BarentsWatch
+                </h3>
+                <span style={{ fontSize: 10, color: 'var(--text-secondary)' }}>
+                  {realOutbreaks.length} utbrudd registrert
+                </span>
+              </div>
+
+              {/* Outbreak Statistics */}
+              {outbreakStats && (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 14 }}>
+                  <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
+                    <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 8, textTransform: 'uppercase' }}>
+                      Totalt
+                    </p>
+                    <p style={{ fontSize: 28, fontWeight: 700, color: 'var(--accent-gold)', margin: 0 }}>
+                      {outbreakStats.total}
+                    </p>
+                  </div>
+                  <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
+                    <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 8, textTransform: 'uppercase' }}>
+                      Aktive
+                    </p>
+                    <p style={{ fontSize: 28, fontWeight: 700, color: 'var(--accent-red)', margin: 0 }}>
+                      {outbreakStats.activeCount}
+                    </p>
+                  </div>
+                  <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
+                    <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 8, textTransform: 'uppercase' }}>
+                      ISA
+                    </p>
+                    <p style={{ fontSize: 28, fontWeight: 700, color: 'var(--accent-red)', margin: 0 }}>
+                      {outbreakStats.byDisease['Infectious Salmon Anaemia'] || 0}
+                    </p>
+                  </div>
+                  <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
+                    <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 8, textTransform: 'uppercase' }}>
+                      PD
+                    </p>
+                    <p style={{ fontSize: 28, fontWeight: 700, color: 'var(--accent-orange)', margin: 0 }}>
+                      {outbreakStats.byDisease['Pancreatic Disease'] || 0}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Real Outbreak List */}
+              {realOutbreaks.length > 0 ? (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 10 }}>
+                  {realOutbreaks.slice(0, 50).map((outbreak, idx) => (
+                    <div 
+                      key={outbreak.id || idx} 
+                      style={{ 
+                        background: outbreak.severity === 'kritisk' ? 'rgba(220, 38, 38, 0.1)' : 
+                                   outbreak.severity === 'høy' ? 'rgba(251, 146, 60, 0.1)' :
+                                   outbreak.severity === 'moderat' ? 'rgba(250, 204, 21, 0.1)' :
+                                   'rgba(34, 197, 94, 0.1)',
+                        border: outbreak.severity === 'kritisk' ? '1px solid var(--accent-red)' :
+                               outbreak.severity === 'høy' ? '1px solid var(--accent-orange)' :
+                               outbreak.severity === 'moderat' ? '1px solid var(--accent-gold)' :
+                               '1px solid var(--accent-green)',
+                        borderRadius: 6, 
+                        padding: 12
+                      }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12 }}>
+                        <div>
+                          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>
+                            {outbreak.diseaseName} ({outbreak.diseaseCode})
+                          </p>
+                          <p style={{ margin: '4px 0 0 0', fontSize: 11, color: 'var(--text-secondary)' }}>
+                            Anlegg: {outbreak.facilityName || `#${outbreak.localityNo}`}
+                          </p>
+                          <p style={{ margin: '2px 0 0 0', fontSize: 10, color: 'var(--text-secondary)' }}>
+                            Status: {outbreak.status === 'active' ? '🔴 Aktiv' : '✓ Avsluttet'} 
+                            {outbreak.startDate && ` • Start: ${new Date(outbreak.startDate).toLocaleDateString('no-NO')}`}
+                          </p>
+                          {outbreak.location && (
+                            <p style={{ margin: '2px 0 0 0', fontSize: 10, color: 'var(--text-secondary)' }}>
+                              📍 Lokasjon: {outbreak.location.lat?.toFixed(2)}, {outbreak.location.lng?.toFixed(2)}
+                            </p>
+                          )}
+                        </div>
+                        <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                          <span style={{ 
+                            padding: '4px 8px',
+                            background: outbreak.severity === 'kritisk' ? 'var(--accent-red)' :
+                                       outbreak.severity === 'høy' ? 'var(--accent-orange)' :
+                                       outbreak.severity === 'moderat' ? 'var(--accent-gold)' :
+                                       'var(--accent-green)',
+                            color: '#fff',
+                            borderRadius: 3,
+                            fontSize: 10,
+                            fontWeight: 600,
+                            whiteSpace: 'nowrap'
+                          }}>
+                            {outbreak.severity?.toUpperCase() || 'UKJENT'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div style={{ 
+                  background: 'var(--bg-elevated)', 
+                  border: '1px dashed var(--border-color)',
+                  borderRadius: 6,
+                  padding: 20,
+                  textAlign: 'center',
+                  color: 'var(--text-secondary)'
+                }}>
+                  <p style={{ margin: 0, fontSize: 12 }}>
+                    📡 Laster outbreak data fra BarentsWatch Fishhealth API...
+                  </p>
+                  <p style={{ margin: '4px 0 0 0', fontSize: 10, color: 'var(--text-secondary)' }}>
+                    Hvis denne meldingen vedvarer, sjekk browser-konsollen for feil
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* REGIONS TAB */}
           {activeTab === 'regions' && (
+
             <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
               <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-orange)', margin: '0 0 8px 0', paddingBottom: 6, borderBottom: '2px solid var(--accent-orange)' }}>
                 🗺️ Regioner

@@ -133,10 +133,125 @@ function getVesselsNearFacility(vessels, facility, radiusKm = 10) {
   }));
 }
 
+// Get outbreak history from Fishhealth API
+async function getOutbreakHistory(weeks = 52) {
+  try {
+    console.log(`🔄 Fetching outbreak history (last ${weeks} weeks) from Fishhealth API...`);
+    
+    // Fishhealth API v2 endpoint for historical disease data
+    const response = await axios.get('https://www.barentswatch.no/bwapi/v2/fishhealth/disease', {
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'AquaShield/0.1'
+      },
+      timeout: 15000
+    });
+    
+    const data = Array.isArray(response.data) ? response.data : response.data.items || [];
+    
+    console.log(`✓ Got ${data.length} disease records from Fishhealth API`);
+    
+    // Filter and transform data
+    return data.map(item => ({
+      id: `outbreak_${item.localityNo}_${item.reportDate}`,
+      localityNo: item.localityNo,
+      facilityName: item.localityName || `Anlegg ${item.localityNo}`,
+      diseaseCode: item.diseaseCode, // PD, ISA, etc
+      diseaseName: getDiseaseNameFromCode(item.diseaseCode),
+      startDate: item.startDate,
+      reportDate: item.reportDate,
+      endDate: item.endDate,
+      severity: calculateSeverity(item),
+      location: {
+        lat: item.latitude,
+        lng: item.longitude
+      },
+      productionArea: item.productionAreaId,
+      status: item.status, // 'active' or 'resolved'
+      source: 'Fishhealth_API'
+    }));
+  } catch (err) {
+    console.error('❌ Failed to fetch outbreak history:', err.message);
+    return [];
+  }
+}
+
+// Get sea lice data for specific facility
+async function getFacilityLiceData(facilityNo) {
+  try {
+    console.log(`🔄 Fetching lice data for facility ${facilityNo}...`);
+    
+    const response = await axios.get(`https://www.barentswatch.no/bwapi/v2/fishhealth/lice?localityNo=${facilityNo}`, {
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'AquaShield/0.1'
+      },
+      timeout: 10000
+    });
+    
+    const data = response.data;
+    
+    if (!data) return null;
+    
+    return {
+      facilityNo: data.localityNo,
+      facilityName: data.localityName,
+      adultFemaleLice: data.adultFemaleLice,
+      mobileAdultLice: data.mobileAdultLice,
+      movableLiceStages: data.movableLiceStages,
+      immobileJuvenileLice: data.immobileJuvenileLice,
+      femaleAdultLice: data.femaleAdultLice,
+      liceLevel: data.liceLevel, // 'GREEN', 'YELLOW', 'RED'
+      lastRiskScore: data.lastRiskScore,
+      riskScore: data.riskScore,
+      treatmentDates: data.treatmentDates,
+      measureDate: data.measureDate,
+      source: 'Fishhealth_API'
+    };
+  } catch (err) {
+    console.error(`❌ Failed to fetch lice data for ${facilityNo}:`, err.message);
+    return null;
+  }
+}
+
+// Helper: Convert disease code to name
+function getDiseaseNameFromCode(code) {
+  const diseases = {
+    'ISA': 'Infectious Salmon Anaemia',
+    'PD': 'Pancreatic Disease',
+    'PRV': 'Piscine Reovirus',
+    'SRS': 'Salmon Rickettsial Septicaemia',
+    'CMS': 'Cardiomyopathy Syndrome',
+    'HVS': 'Hitra Virus Syndrome',
+    'IPN': 'Infectious Pancreatic Necrosis',
+    'VHS': 'Viral Haemorrhagic Septicaemia'
+  };
+  return diseases[code] || code || 'Unknown Disease';
+}
+
+// Helper: Calculate severity based on data
+function calculateSeverity(item) {
+  if (!item) return 'moderat';
+  
+  const startDate = item.startDate ? new Date(item.startDate) : null;
+  const now = new Date();
+  const daysActive = startDate ? Math.floor((now - startDate) / (1000 * 60 * 60 * 24)) : 0;
+  
+  // Severity based on disease duration and code
+  if (item.diseaseCode === 'ISA' || daysActive > 60) return 'kritisk';
+  if (daysActive > 30) return 'høy';
+  if (daysActive > 14) return 'moderat';
+  return 'lav';
+}
+
 module.exports = {
   getAllFacilities,
   getUserFacilities,
   getVesselPositions,
   calculateDistance,
-  getVesselsNearFacility
+  getVesselsNearFacility,
+  getOutbreakHistory,
+  getFacilityLiceData,
+  getDiseaseNameFromCode,
+  calculateSeverity
 };
