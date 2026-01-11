@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MOCK_FARM_ALERTS, getMockFarmData } from '../mocks/data';
+import { getMockFarmData } from '../mocks/data';
 import { severityCompare } from '../lib/riskTerms';
 import OutbreakReport from '../components/OutbreakReport';
 import apiClient from '../lib/apiClient';
