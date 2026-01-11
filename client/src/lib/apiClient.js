@@ -29,25 +29,33 @@ const apiClient = {
   },
 
   async get(endpoint) {
-    return this.fetch(endpoint, { method: 'GET' });
+    const response = await this.fetch(endpoint, { method: 'GET' });
+    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    return response.json();
   },
 
   async post(endpoint, body) {
-    return this.fetch(endpoint, {
+    const response = await this.fetch(endpoint, {
       method: 'POST',
       body: JSON.stringify(body),
     });
+    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    return response.json();
   },
 
   async patch(endpoint, body) {
-    return this.fetch(endpoint, {
+    const response = await this.fetch(endpoint, {
       method: 'PATCH',
       body: JSON.stringify(body),
     });
+    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    return response.json();
   },
 
   async delete(endpoint) {
-    return this.fetch(endpoint, { method: 'DELETE' });
+    const response = await this.fetch(endpoint, { method: 'DELETE' });
+    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    return response.json();
   },
 };
 
