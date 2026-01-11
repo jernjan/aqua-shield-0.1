@@ -180,17 +180,6 @@ app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch vessel data' })
   }
 })
-  } else {
-    const vessels = userId ? MVP.vessels.filter(v => v.userId === userId) : MVP.vessels
-    const stats = {
-      total: vessels.length,
-      withExpiredCerts: vessels.filter(v => 
-        v.certificates.some(c => new Date(c.expires) < new Date())
-      ).length,
-    }
-    res.json({ vessels, stats })
-  }
-})
 
 // Vessel tasks APIs
 app.get('/api/mvp/vessel/:vesselId/tasks', (req, res) => {
