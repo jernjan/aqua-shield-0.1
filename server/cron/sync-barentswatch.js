@@ -1,3 +1,4 @@
+require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const { readDB, writeDB } = require('../db.js');
 const { getAllFacilities } = require('../utils/barentswatch.js');
 const { getAllVessels } = require('../utils/ais.js');

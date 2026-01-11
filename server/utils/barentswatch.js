@@ -1,41 +1,64 @@
 const axios = require('axios');
+const { getBarentsWatchToken } = require('./auth');
 
 // Fetch ALL active facilities from BarentsWatch API
 async function getAllFacilities() {
   try {
-    console.log('🔄 Fetching facilities from BarentsWatch...');
-    const response = await axios.get('https://www.barentswatch.no/bwapi/v2/fishhealth/lice', {
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'AquaShield/0.1'
-      },
-      timeout: 10000
-    });
+    console.log('🔄 Fetching aquaculture facilities from BarentsWatch...');
     
-    const data = Array.isArray(response.data) ? response.data : response.data.items || [];
+    // Get OAuth2 token first
+    const token = await getBarentsWatchToken();
+    if (!token) {
+      console.warn('⚠️ No OAuth2 token available, skipping BarentsWatch sync');
+      return [];
+    }
+
+    // The correct endpoint returns a simple JSON array, not GeoJSON
+    const endpoint = 'https://www.barentswatch.no/bwapi/v1/geodata/fishhealth/localities';
     
-    console.log(`✓ Got ${data.length} facilities from BarentsWatch`);
+    try {
+      console.log(`  Fetching: ${endpoint}`);
+      const response = await axios.get(endpoint, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'User-Agent': 'AquaShield/0.1'
+        },
+        timeout: 15000
+      });
+      
+      const localities = Array.isArray(response.data) ? response.data : [];
+      
+      if (localities.length > 0) {
+        console.log(`✓ Got ${localities.length} facilities from BarentsWatch`);
+        
+        return localities.map(item => ({
+          id: item.localityNo?.toString() || 'unknown',
+          name: item.name || `Anlegg ${item.localityNo}`,
+          lat: item.latitude || 0,
+          lng: item.longitude || 0,
+          municipality: item.municipality,
+          municipalityNo: item.municipalityNo,
+          po: item.productionAreaId,
+          species: item.species || 'Salmon',
+          liceCount: item.adultFemaleLice || 0,
+          diseaseStatus: item.diseaseStatus,
+          lastUpdate: item.lastUpdate || new Date().toISOString()
+        }));
+      }
+    } catch (err) {
+      console.log(`  ❌ Endpoint failed (${err.response?.status || err.code}): ${err.message}`);
+    }
     
-    return data.map(item => ({
-      id: item.localityNo?.toString() || 'unknown',
-      name: item.localityName || `Anlegg ${item.localityNo}`,
-      lat: item.latitude || 0,
-      lng: item.longitude || 0,
-      po: item.productionAreaId,
-      species: item.species || 'Salmon',
-      liceCount: item.adultFemaleLice || 0,
-      liceLevel: item.liceLevel,
-      disease: item.mostRecentDisease?.diseaseCode || null,
-      diseaseStatus: item.diseaseStatus,
-      lastUpdate: item.lastRiskScore?.date || new Date().toISOString()
-    }));
+    console.warn('⚠️ BarentsWatch facility endpoint failed, will use mock data');
+    return [];
   } catch (err) {
     console.error('❌ Failed to fetch facilities:', err.message);
     return [];
   }
 }
 
-// Get facilities for a specific user
+// Old code to preserve - Get facilities for a specific user
 async function getUserFacilities(facilityIds) {
   const allFacilities = await getAllFacilities();
   return allFacilities.filter(f => facilityIds.includes(f.id));
@@ -44,14 +67,76 @@ async function getUserFacilities(facilityIds) {
 // Fetch AIS data (vessel positions) from BarentsWatch
 async function getVesselPositions(bbox = null) {
   try {
+    console.log('🔄 Fetching vessel positions from live AIS API...');
+    
+    // Get OAuth2 token
+    const token = await getBarentsWatchToken();
+    if (!token) {
+      console.warn('⚠️ No OAuth2 token, skipping AIS fetch');
+      return [];
+    }
+    
+    // Try live AIS API endpoints
+    const endpoints = [
+      'https://live.ais.barentswatch.no/v1/latest/combined',
+      'https://live.ais.barentswatch.no/v1/combined'
+    ];
+    
+    for (const url of endpoints) {
+      try {
+        console.log(`  Trying: ${url}`);
+        const response = await axios.get(url, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
+          },
+          timeout: 10000
+        });
+        
+        const vessels = Array.isArray(response.data) ? response.data : response.data.features || [];
+        
+        if (vessels.length > 0) {
+          console.log(`✓ Got ${vessels.length} vessel positions from AIS`);
+          return vessels.map(vessel => ({
+            id: vessel.mmsi?.toString() || vessel.properties?.mmsi?.toString() || 'unknown',
+            name: vessel.name || vessel.properties?.name || 'Unknown',
+            lat: vessel.latitude || vessel.properties?.latitude || vessel.geometry?.coordinates?.[1] || 0,
+            lng: vessel.longitude || vessel.properties?.longitude || vessel.geometry?.coordinates?.[0] || 0,
+            speed: vessel.speedOverGround || vessel.properties?.speedOverGround || 0,
+            course: vessel.courseOverGround || vessel.properties?.courseOverGround || 0,
+            lastUpdate: vessel.msgtime || vessel.properties?.msgtime || new Date().toISOString()
+          }));
+        }
+      } catch (err) {
+        console.log(`  ❌ Failed (${err.response?.status || err.code})`);
+        continue;
+      }
+    }
+    
+    console.log(`⚠️ All AIS endpoints failed, will use mock data`);
+    return [];
+  } catch (err) {
+    console.error('❌ Failed to fetch vessels:', err.message);
+    return [];
+  }
+}
+
+// OLD MAPPING CODE BELOW - KEEP FOR REFERENCE
+async function getVesselPositions_Old(bbox = null) {
+  try {
     console.log('🔄 Fetching vessel positions from BarentsWatch...');
     
-    // Note: BarentsWatch AIS API may require authentication or may not be available
-    // Multiple endpoint attempts for compatibility
+    // Get OAuth2 token
+    const token = await getBarentsWatchToken();
+    if (!token) {
+      console.warn('⚠️ No OAuth2 token, skipping AIS fetch');
+      return [];
+    }
     const endpoints = [
       'https://www.barentswatch.no/bwapi/v2/vessels',
       'https://www.barentswatch.no/bwapi/v2/live/vessels',
-      'https://www.barentswatch.no/api/v1/ais/vessels'
+      'https://www.barentswatch.no/api/v1/ais/vessels',
+      'https://www.barentswatch.no/bwapi/v1/latest/ais'
     ];
     
     let response = null;
@@ -62,6 +147,7 @@ async function getVesselPositions(bbox = null) {
         response = await axios.get(url, {
           headers: {
             'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
             'User-Agent': 'AquaShield/0.1'
           },
           timeout: 5000
@@ -70,19 +156,19 @@ async function getVesselPositions(bbox = null) {
         break; // Success - exit loop
       } catch (err) {
         lastError = err;
-        console.log(`⚠️  Endpoint failed: ${url}`);
+        console.log(`⚠️  Endpoint failed (${err.response?.status || err.message}): ${url}`);
         continue; // Try next endpoint
       }
     }
     
     if (!response) {
-      console.log(`⚠️  All BarentsWatch endpoints failed. Using fallback data.`);
+      console.log(`⚠️  All BarentsWatch AIS endpoints failed. Using fallback data.`);
       console.log(`   Last error: ${lastError?.message || 'Unknown'}`);
-      console.log(`   Note: Some BarentsWatch APIs may require authentication or may be temporarily unavailable`);
+      console.log(`   Note: AIS APIs may require special permissions or may be temporarily unavailable`);
       return []; // Return empty - will trigger fallback
     }
     
-    const data = Array.isArray(response.data) ? response.data : response.data.vessels || [];
+    const data = Array.isArray(response.data) ? response.data : response.data.vessels || response.data.features || [];
     console.log(`✓ Got ${data.length} vessel positions from BarentsWatch`);
     
     return data.map(vessel => ({
