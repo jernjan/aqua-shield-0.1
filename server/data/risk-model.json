@@ -1,0 +1,38 @@
+{
+  "trainingSize": 150,
+  "timestamp": "2026-01-11T03:20:10.590Z",
+  "diseases": {
+    "PD": {
+      "count": 32,
+      "avgDuration": 53,
+      "minDuration": 5,
+      "maxDuration": 93,
+      "avgVesselContact": "2.9",
+      "prevalence": "21.3%"
+    },
+    "PRV": {
+      "count": 34,
+      "avgDuration": 52,
+      "minDuration": 11,
+      "maxDuration": 92,
+      "avgVesselContact": "3.2",
+      "prevalence": "22.7%"
+    },
+    "SRS": {
+      "count": 43,
+      "avgDuration": 52,
+      "minDuration": 5,
+      "maxDuration": 94,
+      "avgVesselContact": "2.7",
+      "prevalence": "28.7%"
+    },
+    "ISA": {
+      "count": 41,
+      "avgDuration": 55,
+      "minDuration": 12,
+      "maxDuration": 91,
+      "avgVesselContact": "2.9",
+      "prevalence": "27.3%"
+    }
+  }
+}

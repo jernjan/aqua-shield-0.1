@@ -1,15 +1,22 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const path = require('path')
 const { getAlerts, addAlert } = require('./storage')
 const { runNightlyAnalysis } = require('./cron/nightly')
 const mvpData = require('./mvp-data')
 const logger = require('./datalogger')
 const { startAISPolling } = require('./ais-poller')
 const barentswatch = require('./utils/barentswatch')
+const RiskPredictionModel = require('./ml/risk-model')
 
 // Initialize MVP data on startup
 const MVP = mvpData.init()
+
+// Initialize ML Risk Model
+const riskModel = new RiskPredictionModel()
+const modelPath = path.join(__dirname, 'data/risk-model.json')
+riskModel.load(modelPath)
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -859,6 +866,77 @@ app.get('/api/barentswatch/stats', async (req, res) => {
     })
   }
 })
+
+// ============================================================================
+// ML RISK PREDICTION
+// ============================================================================
+
+// POST /api/ml/predict-risk - Predict outbreak risk for a facility
+app.post('/api/ml/predict-risk', (req, res) => {
+  try {
+    const { diseaseCode, vesselContactCount, latitude, longitude } = req.body;
+    
+    if (!diseaseCode) {
+      return res.status(400).json({
+        ok: false,
+        error: 'diseaseCode is required'
+      });
+    }
+
+    if (!riskModel.model) {
+      return res.status(503).json({
+        ok: false,
+        error: 'ML model not yet trained',
+        message: 'Run: node server/ml/pipeline.js'
+      });
+    }
+
+    const prediction = riskModel.predictRisk({
+      diseaseCode,
+      vesselContactCount: vesselContactCount || 0,
+      latitude: latitude || 0,
+      longitude: longitude || 0
+    });
+
+    res.json({
+      ok: true,
+      prediction,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ POST /api/ml/predict-risk error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// GET /api/ml/model - Get model summary
+app.get('/api/ml/model', (req, res) => {
+  try {
+    if (!riskModel.model) {
+      return res.status(503).json({
+        ok: false,
+        error: 'ML model not yet trained',
+        message: 'Run: node server/ml/pipeline.js'
+      });
+    }
+
+    const summary = riskModel.getSummary();
+    res.json({
+      ok: true,
+      model: summary,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ GET /api/ml/model error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
 
 
 // PATCH /api/datalog/alert/:alertId/outbreak - Mark alert as confirmed/false positive
