@@ -5,6 +5,7 @@ import FarmerMVP from './pages/FarmerMVP'
 import VesselMVP from './pages/VesselMVP'
 import AdminMVP from './pages/AdminMVP'
 import AnalyticsMVP from './pages/AnalyticsMVP'
+import FisherDashboard from './pages/FisherDashboard'
 import Toast from './components/Toast'
 
 // MVP wrapper component for consistent styling
@@ -30,6 +31,7 @@ const PAGE_CONFIG = {
   'mvp-vessel': { component: VesselMVP, requiresAuth: true, wrapper: true },
   'mvp-admin': { component: AdminMVP, requiresAuth: true, wrapper: true },
   'mvp-analytics': { component: AnalyticsMVP, requiresAuth: true, wrapper: true },
+  'mvp-fisher': { component: FisherDashboard, requiresAuth: true, wrapper: true },
 }
 
 function App() {
@@ -53,6 +55,13 @@ function App() {
       localStorage.setItem('token', 'mvp-farmer')
       setUser({ name: 'Farmer', role: 'farmer' })
       setPage('mvp-farmer')
+      return
+    }
+    if (path === '/fisher' || path === '/fisher/') {
+      setToken('mvp-fisher')
+      localStorage.setItem('token', 'mvp-fisher')
+      setUser({ name: 'Yrkesfisker', role: 'fisher' })
+      setPage('mvp-fisher')
       return
     }
     if (path === '/analytics' || path === '/analytics/') {
