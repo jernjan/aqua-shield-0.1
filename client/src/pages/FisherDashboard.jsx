@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Toast from '../components/Toast.jsx';
 import QuarantineCalendar from '../components/QuarantineCalendar';
 import { generateICSFromQuarantine } from '../lib/ics';
+import apiClient from '../lib/apiClient';
 
 const FisherDashboard = () => {
   // Fisher selection & zone tracking
@@ -34,7 +35,7 @@ const FisherDashboard = () => {
   // Fetch all fishers
   const fetchFishers = async () => {
     try {
-      const response = await fetch('/api/mvp/fisher');
+      const response = await apiClient.get('/api/mvp/fisher');
       if (!response.ok) throw new Error('Failed to fetch fishers');
       const data = await response.json();
       setFishers(data);
@@ -49,7 +50,7 @@ const FisherDashboard = () => {
   // Fetch zones
   const fetchZones = async () => {
     try {
-      const response = await fetch('/api/disease-zones/all');
+      const response = await apiClient.get('/api/disease-zones/all');
       if (!response.ok) throw new Error('Failed to fetch zones');
       const data = await response.json();
       setZones(data.zones || []);
@@ -64,8 +65,8 @@ const FisherDashboard = () => {
     if (!fisher) return;
     try {
       const [tasksRes, avoidancesRes] = await Promise.all([
-        fetch(`/api/mvp/fisher/${fisher.id}/tasks`),
-        fetch(`/api/mvp/fisher/${fisher.id}/zone-avoidances`)
+        apiClient.get(`/api/mvp/fisher/${fisher.id}/tasks`),
+        apiClient.get(`/api/mvp/fisher/${fisher.id}/zone-avoidances`)
       ]);
       
       if (tasksRes.ok) {
@@ -103,15 +104,11 @@ const FisherDashboard = () => {
       return;
     }
     try {
-      const response = await fetch(`/api/mvp/fisher/${selectedFisher.id}/task`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: taskName,
-          dueDate: taskDueDate,
-          duration: taskDuration,
-          type: 'kontroll'
-        })
+      const response = await apiClient.post(`/api/mvp/fisher/${selectedFisher.id}/task`, {
+        name: taskName,
+        dueDate: taskDueDate,
+        duration: taskDuration,
+        type: 'kontroll'
       });
       if (!response.ok) throw new Error('Failed to add task');
       const data = await response.json();
@@ -132,10 +129,8 @@ const FisherDashboard = () => {
   const handleToggleTask = async (task) => {
     if (!selectedFisher) return;
     try {
-      const response = await fetch(`/api/mvp/fisher/${selectedFisher.id}/task/${task.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ completed: !task.completed })
+      const response = await apiClient.patch(`/api/mvp/fisher/${selectedFisher.id}/task/${task.id}`, {
+        completed: !task.completed
       });
       if (!response.ok) throw new Error('Failed to update task');
       const data = await response.json();
@@ -152,15 +147,11 @@ const FisherDashboard = () => {
       return;
     }
     try {
-      const response = await fetch(`/api/mvp/fisher/${selectedFisher.id}/zone-avoidance`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          zoneName,
-          disease: zoneDisease,
-          reason: zoneReason,
-          timestamp: new Date().toISOString()
-        })
+      const response = await apiClient.post(`/api/mvp/fisher/${selectedFisher.id}/zone-avoidance`, {
+        zoneName,
+        disease: zoneDisease,
+        reason: zoneReason,
+        timestamp: new Date().toISOString()
       });
       if (!response.ok) throw new Error('Failed to record avoidance');
       const data = await response.json();
@@ -186,15 +177,11 @@ const FisherDashboard = () => {
     try {
       const due = new Date(qStart);
       due.setDate(due.getDate() + Number(qDuration));
-      const response = await fetch(`/api/mvp/fisher/${selectedFisher.id}/task`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'Karantene',
-          dueDate: due.toISOString(),
-          duration: Number(qDuration),
-          type: 'karantene'
-        })
+      const response = await apiClient.post(`/api/mvp/fisher/${selectedFisher.id}/task`, {
+        name: 'Karantene',
+        dueDate: due.toISOString(),
+        duration: Number(qDuration),
+        type: 'karantene'
       });
       if (!response.ok) throw new Error('Failed to add quarantine');
       const data = await response.json();

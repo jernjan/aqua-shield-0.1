@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { MOCK_VESSELS, getMockVesselData } from '../mocks/data';
 import QuarantineCalendar from '../components/QuarantineCalendar';
 import { generateICSFromQuarantine } from '../lib/ics';
+import apiClient from '../lib/apiClient';
 
 export default function VesselMVP({ token, currentUser }) {
   const [vessels, setVessels] = useState([]);
@@ -54,10 +55,11 @@ export default function VesselMVP({ token, currentUser }) {
     try {
       const due = new Date(qStart);
       due.setDate(due.getDate() + Number(qDuration));
-      const res = await fetch(`/api/mvp/vessel/${selectedVessel.id}/task`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'karantene', name: 'Planlagt karantene', dueDate: due.toISOString(), duration: Number(qDuration) }),
+      const res = await apiClient.post(`/api/mvp/vessel/${selectedVessel.id}/task`, {
+        type: 'karantene',
+        name: 'Planlagt karantene',
+        dueDate: due.toISOString(),
+        duration: Number(qDuration)
       });
       const data = await res.json();
       if (data?.task) setTasks(prev => [data.task, ...prev]);
@@ -71,16 +73,12 @@ export default function VesselMVP({ token, currentUser }) {
   const addDisinfection = async () => {
     if (!selectedVessel || !dDate || !dChemical || !dOperator) return;
     try {
-      const res = await fetch(`/api/mvp/vessel/${selectedVessel.id}/disinfection`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          date: dDate, 
-          chemical: dChemical, 
-          operator: dOperator,
-          comment: dComment,
-          reportedBy: currentUser?.id || 'unknown'
-        }),
+      const res = await apiClient.post(`/api/mvp/vessel/${selectedVessel.id}/disinfection`, {
+        date: dDate,
+        chemical: dChemical,
+        operator: dOperator,
+        comment: dComment,
+        reportedBy: currentUser?.id || 'unknown'
       });
       const data = await res.json();
       if (data?.disinfection) {
