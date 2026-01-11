@@ -24,9 +24,13 @@ const MVPWrapper = ({ children, onLogout }) => (
         borderRadius: 4, 
         cursor: 'pointer', 
         fontWeight: 600, 
-        zIndex: 9999, 
+        fontSize: '14px',
+        zIndex: 99999, 
         transition: 'all 0.2s ease',
-        pointerEvents: 'auto'
+        pointerEvents: 'auto',
+        visibility: 'visible',
+        display: 'block',
+        opacity: 1
       }} 
       onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'} 
       onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
