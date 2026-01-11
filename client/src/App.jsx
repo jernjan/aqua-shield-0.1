@@ -149,9 +149,14 @@ function App() {
     console.log('✓ Logout button clicked!')
     setToken(null)
     localStorage.removeItem('token')
+    localStorage.removeItem('aquashield_user')
     setUser(null)
     setPage('login')
     showToast('Logget ut')
+    // Hard redirect to ensure clean state
+    setTimeout(() => {
+      window.location.href = '/'
+    }, 500)
   }
 
   const handleMVPLogin = (role) => {
