@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getMockFarmData } from '../mocks/data';
 import { severityCompare } from '../lib/riskTerms';
-import OutbreakReport from '../components/OutbreakReport';
+
 import apiClient from '../lib/apiClient';
 
 export default function FarmerMVP({ token, currentUser }) {
@@ -16,7 +16,7 @@ export default function FarmerMVP({ token, currentUser }) {
   const [allFarmAlerts, setAllFarmAlerts] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [filterAlertType, setFilterAlertType] = useState('all');
-  const [showReportForm, setShowReportForm] = useState(false);
+
 
   useEffect(() => {
     const fetchFarms = async () => {
@@ -212,27 +212,7 @@ export default function FarmerMVP({ token, currentUser }) {
         <div style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
           {selectedFarm ? (
             <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
-              {/* ===== REPORT BUTTON ===== */}
-              <div style={{ marginBottom: 16 }}>
-                <button
-                  onClick={() => setShowReportForm(true)}
-                  style={{
-                    padding: '10px 16px',
-                    background: 'var(--accent-red)',
-                    border: 'none',
-                    borderRadius: 4,
-                    color: '#fff',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    fontSize: 13,
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-                  onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-                >
-                  🚨 Meld Inn Utbrudd
-                </button>
-              </div>
+
 
               {/* ===== VARSLER - TOP PRIORITY ===== */}
               {alerts.length > 0 && (
@@ -693,18 +673,6 @@ export default function FarmerMVP({ token, currentUser }) {
         </div>
       </div>
 
-      {/* Outbreak Report Modal */}
-      {showReportForm && selectedFarm && (
-        <OutbreakReport
-          farm={selectedFarm}
-          onSubmit={(data) => {
-            console.log('Outbreak reported:', data);
-            // Refresh alerts from backend
-            setShowReportForm(false);
-          }}
-          onClose={() => setShowReportForm(false)}
-        />
-      )}
     </div>
   );
 }

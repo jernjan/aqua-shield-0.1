@@ -147,17 +147,17 @@ function App() {
 
   const handleLogout = () => {
     console.log('✓ Logout button clicked!')
-    alert('Logging out...')
     setToken(null)
     localStorage.removeItem('token')
     localStorage.removeItem('aquashield_user')
     setUser(null)
     setPage('login')
     showToast('Logget ut')
-    // Hard redirect to ensure clean state
+    // Clear all state before redirect to prevent re-login
     setTimeout(() => {
       window.location.href = '/'
-    }, 500)
+      window.location.reload()
+    }, 300)
   }
 
   const handleMVPLogin = (role) => {
