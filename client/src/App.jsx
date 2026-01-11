@@ -134,6 +134,7 @@ function App() {
   }
 
   const handleLogout = () => {
+    console.log('✓ Logout button clicked!')
     setToken(null)
     localStorage.removeItem('token')
     setUser(null)
