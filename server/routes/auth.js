@@ -9,11 +9,15 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-prod';
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, name, phone } = req.body;
+    const { email, password, name, phone, role } = req.body;
     
     if (!email || !password || !name) {
       return res.status(400).json({ error: 'Email, password, name required' });
     }
+    
+    // Validate role
+    const validRoles = ['admin', 'regulator', 'farmer', 'vessel', 'fisher'];
+    const userRole = validRoles.includes(role) ? role : 'farmer'; // Default to farmer
     
     let existing = await getUserByEmail(email);
     if (existing) {
@@ -29,6 +33,7 @@ router.post('/register', async (req, res) => {
       name,
       phone: phone || '',
       password: hashed,
+      role: userRole,
       selectedFacilities: [],
       selectedVessels: [],
       createdAt: new Date().toISOString()
@@ -36,11 +41,21 @@ router.post('/register', async (req, res) => {
     
     await saveUser(user);
     
-    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '30d' });
+    const token = jwt.sign({ 
+      userId: user.id, 
+      email: user.email,
+      role: user.role 
+    }, JWT_SECRET, { expiresIn: '30d' });
     
     res.json({ 
       token, 
-      user: { id: user.id, email: user.email, name: user.name, phone: user.phone }
+      user: { 
+        id: user.id, 
+        email: user.email, 
+        name: user.name, 
+        phone: user.phone,
+        role: user.role
+      }
     });
   } catch (err) {
     console.error('Register error:', err);

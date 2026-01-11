@@ -12,6 +12,7 @@ const RiskPredictionModel = require('./ml/risk-model')
 const alertService = require('./services/alerts')
 const notifier = require('./services/notifier')
 const scheduler = require('./scheduler')
+const diseaseZones = require('./services/disease-zones')
 
 // Initialize MVP data on startup
 const MVP = mvpData.init()
@@ -20,6 +21,9 @@ const MVP = mvpData.init()
 const riskModel = new RiskPredictionModel()
 const modelPath = path.join(__dirname, 'data/risk-model.json')
 riskModel.load(modelPath)
+
+// Initialize Disease Zones on startup
+diseaseZones.getAllZones().catch(err => console.warn('Disease zones load warning:', err.message))
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -1284,7 +1288,117 @@ app.post('/api/scheduler/run-risk-check', async (req, res) => {
 
 // ============ END SCHEDULER ENDPOINTS ============
 
-// PATCH /api/datalog/alert/:alertId/outbreak - Mark alert as confirmed/false positive
+// ============================================================================
+// DISEASE ZONES API - For Professional Fishers
+// ============================================================================
+
+// GET /api/disease-zones/all - Get all disease zones
+app.get('/api/disease-zones/all', (req, res) => {
+  try {
+    const zones = diseaseZones.zones;
+    const stats = diseaseZones.getStats();
+    
+    res.json({
+      ok: true,
+      zones,
+      stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ GET /api/disease-zones/all error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// POST /api/disease-zones/refresh - Manually refresh zones from BarentsWatch
+app.post('/api/disease-zones/refresh', async (req, res) => {
+  try {
+    const { year, week } = req.body;
+    console.log('🔄 [MANUAL] Refreshing disease zones...');
+    
+    const zones = await diseaseZones.getAllZones(year, week);
+    const stats = diseaseZones.getStats();
+    
+    res.json({
+      ok: true,
+      message: `Loaded ${zones.length} disease zones`,
+      zones,
+      stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ POST /api/disease-zones/refresh error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// POST /api/disease-zones/nearby - Get zones near vessel position
+app.post('/api/disease-zones/nearby', (req, res) => {
+  try {
+    const { latitude, longitude, radiusKm } = req.body;
+    
+    if (latitude === undefined || longitude === undefined) {
+      return res.status(400).json({
+        ok: false,
+        error: 'latitude and longitude required'
+      });
+    }
+
+    const nearbyZones = diseaseZones.getNearbyZones(
+      latitude,
+      longitude,
+      radiusKm || 50
+    );
+
+    const isInZone = diseaseZones.isInZone(latitude, longitude);
+
+    res.json({
+      ok: true,
+      vessel: {
+        latitude,
+        longitude,
+        inZone: isInZone
+      },
+      nearbyZones,
+      count: nearbyZones.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ POST /api/disease-zones/nearby error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// GET /api/disease-zones/stats - Get zone statistics
+app.get('/api/disease-zones/stats', (req, res) => {
+  try {
+    const stats = diseaseZones.getStats();
+    
+    res.json({
+      ok: true,
+      stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('❌ GET /api/disease-zones/stats error:', err.message);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
+// ============ END DISEASE ZONES API ============
+
 app.patch('/api/datalog/alert/:alertId/outbreak', async (req, res) => {
   try {
     const { alertId } = req.params
