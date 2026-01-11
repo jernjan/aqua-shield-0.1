@@ -13,7 +13,21 @@ const MVPWrapper = ({ children, onLogout }) => (
   <div style={{ backgroundColor: 'var(--bg-dark)', minHeight: '100vh', paddingTop: 50, position: 'relative' }}>
     <button 
       onClick={onLogout} 
-      style={{ position: 'fixed', top: 10, left: 10, padding: '10px 16px', background: 'var(--accent-gold)', color: '#000', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600, zIndex: 1000, transition: 'all 0.2s ease' }} 
+      style={{ 
+        position: 'fixed', 
+        top: 10, 
+        left: 10, 
+        padding: '10px 16px', 
+        background: 'var(--accent-gold)', 
+        color: '#000', 
+        border: 'none', 
+        borderRadius: 4, 
+        cursor: 'pointer', 
+        fontWeight: 600, 
+        zIndex: 9999, 
+        transition: 'all 0.2s ease',
+        pointerEvents: 'auto'
+      }} 
       onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'} 
       onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
     >

@@ -14,6 +14,34 @@ const MOCK_USERS = {
   vessel2: { id: 'user_4', name: 'Siri Sjøtransport', email: 'siri@shipping.no', role: 'vessel_operator' },
 };
 
+// Realistic Norwegian fish farm names
+const FARM_NAMES = [
+  'Hjørnes Settefisk', 'Tromsøfarm AS', 'Nordvik Fisk', 'Fiord Salmon', 'Kyst & Co',
+  'Nordlys Oppdrett', 'Barents Aqua', 'Polarmarin AS', 'Lyngen Fisk', 'Ullsfjord Farm',
+  'Skjellstrand', 'Risnes Farm', 'Sørøy Fish', 'Vanna Fiskeri', 'Langenes',
+  'Steigletta Farm', 'Kjølnes Fisk', 'Vannlandet AS', 'Mørkholl Farm', 'Porsangerfjord',
+  'Holmbukta Fisk', 'Komagfjord Salmon', 'Tanahornet', 'Bay Farm', 'Lofoten Fisk',
+  'Vest-Nord Farm', 'Senja Aqua', 'Bergsfjord Salmon', 'Tamsvik Farm', 'Kåfjord Fisk',
+  'Revsnes Farm', 'Gisund Fisk', 'Indre Holmen', 'Storøya Farm', 'Vannlandet II',
+  'Aurikelfjord', 'Balsfjord Farm', 'Blomstrandhalvøya', 'Dalvik Salmon', 'Eidsvoll Farm',
+  'Fjord Harvest', 'Gleditsch Farm', 'Hamsun Fisk', 'Ifjord Farm', 'Jotun Aqua',
+  'Kippfarm AS', 'Laksestad', 'Mørkholl II', 'Nautilus Farm', 'Øresund Fisk',
+  'Porsangerhalvøya', 'Qualøya Farm', 'Risheim Salmon', 'Storfjord Fish', 'Tromsøfjord',
+  'Ullaryd Farm', 'Valsøyfjord', 'Westlake Farm', 'Xanadu Aqua', 'Ytre Enningen',
+  'Zander Fish', 'Åsen Fiskeri', 'Borgsund Farm', 'Cairns Aquaculture', 'Dypingen',
+  'Enebakk Farm', 'Farlund', 'Guldvik Fisk', 'Holmenkollen', 'Indsaltet Farm',
+  'Justnesvik', 'Kirkevik', 'Lamøya Farm', 'Merkenes', 'Nordsund',
+  'Oversund', 'Påven Farm', 'Risnesvik', 'Sør-Varangerfjord', 'Tangen Fish',
+  'Utøy Farm', 'Veiholmen', 'Westkapp', 'Xeren Aqua', 'Ypenfjord',
+  'Zelma Farm', 'Altkvatn', 'Bergsfjord II', 'Cirkusbukta', 'Dåtungen',
+  'Eventyrfjord', 'Friarvik', 'Gjemmenes', 'Høgklakken', 'Indre Nørholm',
+  'Johannesmoen', 'Kokevik', 'Labradorhalvøya', 'Magerøya', 'Nordendalen'
+];
+
+const getRealisticFarmName = (index) => {
+  return FARM_NAMES[index % FARM_NAMES.length];
+};
+
 const generateFarmers = () => {
   const regions = ['Tromsø', 'Finnmark', 'Nord-Trøndelag', 'Sogn og Fjordane', 'Hordaland'];
   const farmers = [];
@@ -47,7 +75,7 @@ const generateFarmers = () => {
     farmers.push({
       id: `farm_${i}`,
       userId: userIds[i % 2], // Distribute: user_1 gets farms 1,3,5... user_2 gets 2,4,6...
-      name: `Anlegg ${i}`,
+      name: getRealisticFarmName(i),
       region,
       coordinates: {
         lat,
