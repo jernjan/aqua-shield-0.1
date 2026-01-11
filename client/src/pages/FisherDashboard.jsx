@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Toast from '../components/Toast.jsx';
+import QuarantineCalendar from '../components/QuarantineCalendar';
+import { generateICSFromQuarantine } from '../lib/ics';
 
 const FisherDashboard = () => {
   // Fisher selection & zone tracking
@@ -11,13 +13,19 @@ const FisherDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [alert, setAlert] = useState(null);
+  const [tab, setTab] = useState('tasks'); // 'tasks', 'avoidances', 'calendar'
   
-  // Form states
+  // Quarantine form
+  const [qStart, setQStart] = useState('');
+  const [qDuration, setQDuration] = useState(7);
+  
+  // Form states for tasks
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [taskName, setTaskName] = useState('');
   const [taskDueDate, setTaskDueDate] = useState('');
   const [taskDuration, setTaskDuration] = useState(7);
   
+  // Form states for zone avoidance
   const [showZoneForm, setShowZoneForm] = useState(false);
   const [zoneName, setZoneName] = useState('');
   const [zoneDisease, setZoneDisease] = useState('ILA');
@@ -169,6 +177,54 @@ const FisherDashboard = () => {
     }
   };
 
+  // Add quarantine
+  const handleAddQuarantine = async () => {
+    if (!selectedFisher || !qStart || !qDuration) {
+      setAlert({ type: 'warning', message: 'Fyll inn startdato og varighet', duration: 3000 });
+      return;
+    }
+    try {
+      const due = new Date(qStart);
+      due.setDate(due.getDate() + Number(qDuration));
+      const response = await fetch(`/api/mvp/fisher/${selectedFisher.id}/task`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'Karantene',
+          dueDate: due.toISOString(),
+          duration: Number(qDuration),
+          type: 'karantene'
+        })
+      });
+      if (!response.ok) throw new Error('Failed to add quarantine');
+      const data = await response.json();
+      if (data.task) {
+        setTasks(prev => [data.task, ...prev]);
+        setQStart('');
+        setQDuration(7);
+        setAlert({ type: 'success', message: 'Karantene lagt til', duration: 3000 });
+      }
+    } catch (err) {
+      setAlert({ type: 'error', message: err.message, duration: 5000 });
+    }
+  };
+
+  // Export calendar
+  const exportICS = () => {
+    if (!selectedFisher) return;
+    const ics = generateICSFromQuarantine(tasks, selectedFisher.name);
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `karantene-${selectedFisher.name}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setAlert({ type: 'success', message: 'Kalender eksportert', duration: 3000 });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
       {alert && <Toast {...alert} onClose={() => setAlert(null)} />}
@@ -222,9 +278,34 @@ const FisherDashboard = () => {
             )}
           </div>
 
-          {/* Middle: Tasks */}
-          <div className="space-y-4">
-            {/* Tasks Header */}
+        {/* Middle: Tasks & Calendar */}
+        <div className="space-y-4">
+          {/* Tabs */}
+          <div className="bg-white rounded-lg shadow-lg p-0 flex border-b">
+            <button
+              onClick={() => setTab('tasks')}
+              className={`flex-1 px-4 py-3 font-semibold text-center transition ${
+                tab === 'tasks'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              📋 Oppgaver
+            </button>
+            <button
+              onClick={() => setTab('calendar')}
+              className={`flex-1 px-4 py-3 font-semibold text-center transition ${
+                tab === 'calendar'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              📅 Karantene
+            </button>
+          </div>
+
+          {/* Tasks Tab */}
+          {tab === 'tasks' && (
             <div className="bg-white rounded-lg shadow-lg p-4">
               <div className="flex justify-between items-center mb-3">
                 <h2 className="font-bold text-gray-800">📋 Oppgaver</h2>
@@ -298,7 +379,56 @@ const FisherDashboard = () => {
                 )}
               </div>
             </div>
-          </div>
+          )}
+
+          {/* Calendar Tab */}
+          {tab === 'calendar' && selectedFisher && (
+            <div className="bg-white rounded-lg shadow-lg p-4 space-y-4">
+              {/* Quarantine Form */}
+              <div className="p-3 bg-blue-50 rounded border border-blue-200">
+                <h3 className="font-bold text-gray-800 mb-2">Planlegg Karantene</h3>
+                <div className="space-y-2 mb-3">
+                  <div>
+                    <label className="text-sm text-gray-600">Startdato</label>
+                    <input
+                      type="date"
+                      value={qStart}
+                      onChange={(e) => setQStart(e.target.value)}
+                      className="w-full px-2 py-1 border rounded text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-600">Varighet (dager)</label>
+                    <select
+                      value={qDuration}
+                      onChange={(e) => setQDuration(parseInt(e.target.value))}
+                      className="w-full px-2 py-1 border rounded text-sm"
+                    >
+                      {[1,3,7,14,21,30].map(d => <option key={d} value={d}>{d} dager</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleAddQuarantine}
+                    className="flex-1 px-3 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700"
+                  >
+                    Legg til karantene
+                  </button>
+                  <button
+                    onClick={exportICS}
+                    className="flex-1 px-3 py-2 bg-gray-600 text-white rounded text-sm hover:bg-gray-700"
+                  >
+                    📥 Eksporter ICS
+                  </button>
+                </div>
+              </div>
+
+              {/* Calendar */}
+              <QuarantineCalendar tasks={tasks} />
+            </div>
+          )}
+        </div>
 
           {/* Right: Zones & Avoidances */}
           <div className="space-y-4">
