@@ -21,10 +21,11 @@ export default function FarmerMVP({ token, currentUser }) {
   useEffect(() => {
     const fetchFarms = async () => {
       try {
-        const data = await apiClient.get('/api/mvp/farmer');
-        if (data && Array.isArray(data)) {
-          setFarms(data);
-          setSelectedFarm(data[0] || null);
+        const response = await apiClient.get('/api/mvp/farmer');
+        // API returns { farms: [...], stats: {...}, alertCount: ... }
+        if (response && response.farms && Array.isArray(response.farms)) {
+          setFarms(response.farms);
+          setSelectedFarm(response.farms[0] || null);
         }
       } catch (error) {
         console.error('Error fetching farms:', error);
