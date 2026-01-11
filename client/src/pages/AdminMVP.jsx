@@ -43,6 +43,8 @@ export default function AdminMVP({ token, currentUser }) {
   const [backendAlerts, setBackendAlerts] = useState([]); // Alerts from backend datalogger
   const [realOutbreaks, setRealOutbreaks] = useState([]); // Real outbreak data from BarentsWatch
   const [outbreakStats, setOutbreakStats] = useState(null); // Outbreak statistics
+  const [loadingOutbreaks, setLoadingOutbreaks] = useState(false); // Loading state
+  const [lastOutbreakRefresh, setLastOutbreakRefresh] = useState(null); // Track last refresh time
 
   // Fetch alerts from backend on mount
   useEffect(() => {
@@ -65,12 +67,14 @@ export default function AdminMVP({ token, currentUser }) {
   useEffect(() => {
     const fetchOutbreaks = async () => {
       try {
+        setLoadingOutbreaks(true);
         console.log('🔄 Fetching real outbreak data from BarentsWatch API...');
         const response = await fetch('http://localhost:3001/api/barentswatch/outbreaks?weeks=12');
         const data = await response.json();
         
         if (data.ok && data.outbreaks) {
           setRealOutbreaks(data.outbreaks);
+          setLastOutbreakRefresh(new Date());
           console.log(`✓ Fetched ${data.outbreaks.length} real outbreaks from BarentsWatch`);
           
           // Also fetch stats
@@ -85,12 +89,14 @@ export default function AdminMVP({ token, currentUser }) {
         }
       } catch (err) {
         console.error('Error fetching outbreak data:', err);
+      } finally {
+        setLoadingOutbreaks(false);
       }
     };
     
     fetchOutbreaks();
-    // Refresh every 5 minutes
-    const interval = setInterval(fetchOutbreaks, 5 * 60 * 1000);
+    // Refresh once per day (24 hours) to save API bandwidth
+    const interval = setInterval(fetchOutbreaks, 24 * 60 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -632,12 +638,57 @@ export default function AdminMVP({ token, currentUser }) {
           {activeTab === 'outbreaks' && (
             <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-green)', margin: 0, paddingBottom: 6, borderBottom: '2px solid var(--accent-green)' }}>
-                  🦐 Real Outbreaks fra BarentsWatch
-                </h3>
-                <span style={{ fontSize: 10, color: 'var(--text-secondary)' }}>
-                  {realOutbreaks.length} utbrudd registrert
-                </span>
+                <div>
+                  <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-green)', margin: 0, paddingBottom: 6, borderBottom: '2px solid var(--accent-green)' }}>
+                    🦐 Real Outbreaks fra BarentsWatch
+                  </h3>
+                  {lastOutbreakRefresh && (
+                    <p style={{ fontSize: 9, color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>
+                      Sist oppdatert: {lastOutbreakRefresh.toLocaleString('no-NO')}
+                    </p>
+                  )}
+                </div>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <button
+                    onClick={async () => {
+                      setLoadingOutbreaks(true);
+                      try {
+                        const response = await fetch('http://localhost:3001/api/barentswatch/outbreaks?weeks=12');
+                        const data = await response.json();
+                        if (data.ok && data.outbreaks) {
+                          setRealOutbreaks(data.outbreaks);
+                          setLastOutbreakRefresh(new Date());
+                          const statsResponse = await fetch('http://localhost:3001/api/barentswatch/stats?weeks=12');
+                          const statsData = await statsResponse.json();
+                          if (statsData.ok) {
+                            setOutbreakStats(statsData.stats);
+                          }
+                        }
+                      } catch (err) {
+                        console.error('Manual refresh error:', err);
+                      } finally {
+                        setLoadingOutbreaks(false);
+                      }
+                    }}
+                    disabled={loadingOutbreaks}
+                    style={{
+                      padding: '6px 10px',
+                      background: loadingOutbreaks ? 'var(--bg-dark)' : 'var(--accent-green)',
+                      color: loadingOutbreaks ? 'var(--text-secondary)' : '#fff',
+                      border: 'none',
+                      borderRadius: 3,
+                      cursor: loadingOutbreaks ? 'default' : 'pointer',
+                      fontSize: 10,
+                      fontWeight: 600,
+                      opacity: loadingOutbreaks ? 0.6 : 1
+                    }}
+                  >
+                    {loadingOutbreaks ? '⏳ Laster...' : '🔄 Oppdater nå'}
+                  </button>
+                  <span style={{ fontSize: 10, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+                    {realOutbreaks.length} utbrudd
+                  </span>
+                </div>
               </div>
 
               {/* Outbreak Statistics */}
