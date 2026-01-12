@@ -66,6 +66,7 @@ app.use(express.static(join(__dirname, 'dist'), {
 
 // SPA fallback
 app.get('*', (req, res) => {
+  console.log(`SPA fallback: serving index.html for ${req.path}`);
   res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
 
