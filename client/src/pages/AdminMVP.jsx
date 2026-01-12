@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect } from 'react';
 import apiClient from '../lib/apiClient';
+import ValidationDashboard from './ValidationDashboard';
 
 const downloadCSV = (filename, data) => {
   const csv = data;
@@ -112,6 +113,7 @@ export default function AdminMVP({ token, currentUser }) {
             { id: 'vessels', label: '🚢 Båter', color: '#8B5CF6' },
             { id: 'facilities', label: '🏭 Anlegg', color: '#14B8A6' },
             { id: 'monitoring', label: '👁️ Overvåking', color: '#F59E0B' },
+            { id: 'validation', label: '✅ Validering', color: '#10B981' },
             { id: 'history', label: '📚 Historikk', color: '#06B6D4' }
           ].map(tab => (
             <button
@@ -517,6 +519,12 @@ export default function AdminMVP({ token, currentUser }) {
                 </div>
                 <p style={{ margin: '16px 0 0 0', fontSize: 10, color: 'var(--text-secondary)' }}>🔄 Starter når modellen er operativ (estimert 1-2 dager)</p>
               </div>
+            </div>
+          )}
+
+          {activeTab === 'validation' && (
+            <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
+              <ValidationDashboard />
             </div>
           )}
         </div>
