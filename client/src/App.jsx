@@ -13,7 +13,7 @@ import FisherDashboard from './pages/FisherDashboard'
 import Toast from './components/Toast'
 
 // MVP wrapper component for consistent styling - memoized
-const MVPWrapper = memo(({ children, onLogout }) => (
+const MVPWrapper = memo(({ children, onLogout, onSwitchRole, currentRole }) => (
   <div style={{ backgroundColor: 'var(--bg-dark)', minHeight: '100vh', paddingTop: 50, position: 'relative' }}>
     <button 
       onClick={onLogout} 
@@ -41,6 +41,43 @@ const MVPWrapper = memo(({ children, onLogout }) => (
     >
       ← Velg bruker
     </button>
+    
+    {/* Role Switcher - Demo only */}
+    <div style={{
+      position: 'fixed',
+      top: 10,
+      right: 10,
+      display: 'flex',
+      gap: '8px',
+      zIndex: 99998,
+      background: 'rgba(0,0,0,0.7)',
+      padding: '8px 12px',
+      borderRadius: 4,
+      border: '1px solid var(--border-color)'
+    }}>
+      {['farmer', 'brønnbåt', 'admin'].map(role => (
+        <button
+          key={role}
+          onClick={() => onSwitchRole(role)}
+          style={{
+            padding: '6px 12px',
+            background: currentRole === role ? 'var(--accent-gold)' : 'var(--bg-surface)',
+            color: currentRole === role ? '#000' : 'var(--text-primary)',
+            border: `1px solid ${currentRole === role ? 'var(--accent-gold)' : 'var(--border-color)'}`,
+            borderRadius: 3,
+            cursor: 'pointer',
+            fontWeight: currentRole === role ? 600 : 400,
+            fontSize: '12px',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => !['farmer', 'brønnbåt', 'admin'].includes(currentRole) && (e.target.style.background = 'var(--bg-elevated)')}
+          onMouseLeave={(e) => currentRole !== role && (e.target.style.background = 'var(--bg-surface)')}
+        >
+          {role === 'farmer' ? '🌾' : role === 'brønnbåt' ? '⛵' : '👨‍💼'} {role}
+        </button>
+      ))}
+    </div>
+    
     {children}
   </div>
 ))
@@ -173,6 +210,18 @@ function App() {
     }, 300)
   }, [])
 
+  const handleSwitchRole = useCallback((role) => {
+    const roleMap = {
+      'farmer': { name: 'Farmer', role: 'farmer', page: 'farmer-dashboard' },
+      'brønnbåt': { name: 'Brønnbåt', role: 'vessel', page: 'vessel-dashboard' },
+      'admin': { name: 'Admin', role: 'admin', page: 'mvp-admin' }
+    }
+    const roleConfig = roleMap[role]
+    setUser(roleConfig)
+    setPage(roleConfig.page)
+    showToast(`Bytta til ${role} rolle`)
+  }, [])
+
   const handleMVPLogin = useCallback((role) => {
     const token = `mvp-${role}`
     setToken(token)
@@ -214,7 +263,7 @@ function App() {
     }
     
     if (config.wrapper) {
-      return <MVPWrapper onLogout={handleLogout}>{element}</MVPWrapper>
+      return <MVPWrapper onLogout={handleLogout} onSwitchRole={handleSwitchRole} currentRole={user?.role}>{element}</MVPWrapper>
     }
     return element
   }
