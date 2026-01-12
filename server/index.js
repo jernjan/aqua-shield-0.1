@@ -1910,6 +1910,29 @@ app.get('/api/datalog/export', async (req, res) => {
   }
 })
 
+// ============ SERVE FRONTEND ============
+// If SERVE_FRONTEND is enabled, serve React app from client/dist
+if (process.env.SERVE_FRONTEND === 'true') {
+  const distPath = path.join(__dirname, '../client/dist')
+  console.log(`📦 Serving frontend from ${distPath}`)
+  
+  // Serve static files with cache control
+  app.use(express.static(distPath, {
+    maxAge: '1h',
+    etag: false,
+    index: false // Don't auto-serve index.html for /api routes
+  }))
+  
+  // SPA fallback: serve index.html for non-API routes
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api/')) {
+      res.sendFile(path.join(distPath, 'index.html'))
+    } else {
+      res.status(404).json({ error: 'API endpoint not found' })
+    }
+  })
+}
+
 // ============ END DATA LOGGING ENDPOINTS ============
 // leave ports bound (prevents EADDRINUSE loops when files change rapidly).
 const server = app.listen(PORT, () => {

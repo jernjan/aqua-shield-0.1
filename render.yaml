@@ -1,10 +1,10 @@
 services:
   - type: web
-    name: aqua-shield-api
+    name: aqua-shield
     runtime: node
     region: oregon
     plan: starter
-    buildCommand: "cd server && npm install"
+    buildCommand: "npm install && cd client && npm ci && npm run build && cd ../server && npm ci --only=production"
     startCommand: "cd server && npm start"
     healthCheckPath: /api/health
     envVars:
@@ -12,14 +12,8 @@ services:
         value: production
       - key: JWT_SECRET
         generateValue: true
-
-  - type: web
-    name: aqua-shield-web
-    runtime: node
-    region: oregon
-    plan: starter
-    buildCommand: "cd client && npm ci && npm run build && npm ci --only=production"
-    startCommand: "cd client && node server.js"
+      - key: SERVE_FRONTEND
+        value: "true"
 
 cron:
   - name: nightly-analysis
