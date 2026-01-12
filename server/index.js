@@ -384,6 +384,63 @@ app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
   }
 })
 
+// Get nearby facilities for a vessel (for proximity warnings)
+app.get('/api/vessel/:vesselId/nearby', async (req, res) => {
+  try {
+    const { vesselId } = req.params
+    const db = await readDB()
+    
+    // Get vessel from db or MVP
+    const vessels = db.vessels && db.vessels.length > 0 ? db.vessels : MVP.vessels
+    const vessel = vessels.find(v => v.id === vesselId)
+    
+    if (!vessel) {
+      return res.status(404).json({ error: 'Vessel not found' })
+    }
+    
+    // Get all facilities
+    const facilities = db.facilities || []
+    
+    // Calculate nearby facilities with risk
+    const { getNearbyFacilities } = require('./utils/vessel-proximity')
+    const nearbyFacilities = getNearbyFacilities(vessel, facilities, 3)
+    
+    // Get risk scores
+    const { assessAllRisks } = require('./utils/risk')
+    const risksMap = {}
+    try {
+      const risks = await assessAllRisks()
+      risks.forEach(r => {
+        risksMap[r.locId] = r.ownRisk
+      })
+    } catch (err) {
+      console.warn('Risk assessment failed:', err.message)
+    }
+    
+    // Enrich nearby facilities with current risk scores
+    const enriched = nearbyFacilities.map(f => ({
+      ...f,
+      riskScore: risksMap[f.id] || f.riskScore
+    }))
+    
+    res.json({
+      vessel: {
+        id: vessel.id,
+        name: vessel.name,
+        mmsi: vessel.mmsi,
+        latitude: vessel.latitude,
+        longitude: vessel.longitude,
+        status: vessel.status
+      },
+      nearbyFacilities: enriched,
+      lastUpdate: new Date().toISOString()
+    })
+  } catch (err) {
+    console.error('Error getting nearby facilities:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
 // Vessel tasks APIs
 app.get('/api/mvp/vessel/:vesselId/tasks', (req, res) => {
   const { vesselId } = req.params
