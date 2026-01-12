@@ -3,6 +3,7 @@ import Login from './pages/Login'
 import SelectSites from './pages/SelectSites'
 import FarmerMVP from './pages/FarmerMVP'
 import FarmerDashboard from './pages/FarmerDashboard'
+import ValidationDashboard from './pages/ValidationDashboard'
 import VesselMVP from './pages/VesselMVP'
 import AdminMVP from './pages/AdminMVP'
 import AnalyticsMVP from './pages/AnalyticsMVP'
@@ -48,6 +49,7 @@ const PAGE_CONFIG = {
   'selectSites': { component: SelectSites, requiresAuth: true },
   'mvp-farmer': { component: FarmerMVP, requiresAuth: true, wrapper: true },
   'farmer-dashboard': { component: FarmerDashboard, requiresAuth: true, wrapper: true },
+  'validation-dashboard': { component: ValidationDashboard, requiresAuth: true, wrapper: true },
   'mvp-vessel': { component: VesselMVP, requiresAuth: true, wrapper: true },
   'mvp-admin': { component: AdminMVP, requiresAuth: true, wrapper: true },
   'mvp-analytics': { component: AnalyticsMVP, requiresAuth: true, wrapper: true },

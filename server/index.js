@@ -233,6 +233,123 @@ app.get('/api/farmer/facility/:facilityId', async (req, res) => {
   }
 })
 
+// ===== VALIDATION SYSTEM =====
+// Get validation metrics (accuracy, precision, recall, etc)
+app.get('/api/admin/validation/metrics', async (req, res) => {
+  try {
+    const validation = require('./utils/validation')
+    const db = await readDB()
+    const metrics = validation.getValidationMetrics(db)
+    res.json(metrics)
+  } catch (err) {
+    console.error('Error getting validation metrics:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Get forecasts pending validation (older than 24h)
+app.get('/api/admin/validation/pending', async (req, res) => {
+  try {
+    const validation = require('./utils/validation')
+    const db = await readDB()
+    const pending = validation.getPendingValidation(db, 24)
+    res.json({
+      count: pending.length,
+      forecasts: pending.slice(0, 50) // Return last 50 for review
+    })
+  } catch (err) {
+    console.error('Error getting pending validations:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Get forecast history for a specific facility
+app.get('/api/admin/validation/facility/:facilityId', async (req, res) => {
+  try {
+    const { facilityId } = req.params
+    const validation = require('./utils/validation')
+    const db = await readDB()
+    const history = validation.getFacilityForecastHistory(db, facilityId)
+    res.json({
+      facilityId,
+      count: history.length,
+      history: history.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    })
+  } catch (err) {
+    console.error('Error getting facility forecast history:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Validate a specific forecast against actual BarentsWatch data
+app.post('/api/admin/validation/validate/:forecastId', async (req, res) => {
+  try {
+    const { forecastId } = req.params
+    const db = await readDB()
+    const validation = require('./utils/validation')
+    
+    if (!db.forecast_history) {
+      return res.status(404).json({ error: 'No forecast history' })
+    }
+    
+    const entry = db.forecast_history.find(f => f.id === forecastId)
+    if (!entry) {
+      return res.status(404).json({ error: 'Forecast not found' })
+    }
+    
+    // Get actual data from BarentsWatch
+    const facilities = db.facilities || []
+    const facility = facilities.find(f => f.locId === entry.facilityId)
+    
+    if (!facility) {
+      return res.status(404).json({ error: 'Facility not found' })
+    }
+    
+    // Validate
+    const validated = validation.validateForecast(entry, facility)
+    await writeDB(db)
+    
+    res.json({
+      forecast: validated,
+      metrics: validation.getValidationMetrics(db)
+    })
+  } catch (err) {
+    console.error('Error validating forecast:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Auto-validate all pending forecasts (run manually or via cron)
+app.post('/api/admin/validation/auto-validate', async (req, res) => {
+  try {
+    const validation = require('./utils/validation')
+    const db = await readDB()
+    const facilities = db.facilities || []
+    
+    const pending = validation.getPendingValidation(db, 24)
+    let validatedCount = 0
+    
+    pending.forEach(forecastEntry => {
+      const facility = facilities.find(f => f.locId === forecastEntry.facilityId)
+      if (facility) {
+        validation.validateForecast(forecastEntry, facility)
+        validatedCount++
+      }
+    })
+    
+    await writeDB(db)
+    
+    res.json({
+      validatedCount,
+      totalPending: pending.length,
+      metrics: validation.getValidationMetrics(db)
+    })
+  } catch (err) {
+    console.error('Error auto-validating forecasts:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
 // Gruppe 2: Vessels (Brønnbåter)
 app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
   try {

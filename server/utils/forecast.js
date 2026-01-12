@@ -104,8 +104,25 @@ function generateAlertMessage(facility, forecast) {
   };
 }
 
+/**
+ * Forecast with validation tracking
+ * Saves forecast to history for later validation against BarentsWatch
+ */
+function forecast7DayWithTracking(facility, historicalData, db) {
+  const forecast = forecast7Day(facility, historicalData);
+  
+  // Save to forecast_history for validation
+  if (db && db.forecast_history !== undefined) {
+    const validation = require('./validation');
+    validation.saveForecast(db, facility, forecast);
+  }
+  
+  return forecast;
+}
+
 module.exports = {
   forecast7Day,
+  forecast7DayWithTracking,
   shouldSendAlert,
   generateAlertMessage
 };
