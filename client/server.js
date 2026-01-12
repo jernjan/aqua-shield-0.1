@@ -35,8 +35,7 @@ app.get('/health', (req, res) => {
 // Simple API proxy using fetch - forward to backend API server
 app.all('/api/*', async (req, res) => {
   try {
-    const apiPath = req.url.substring(4); // Remove /api prefix, keep /mvp/vessel etc
-    const apiUrl = `${API_BASE_URL}${apiPath}`;
+    const apiUrl = `${API_BASE_URL}${req.url}`; // Keep full path including /api
     
     const options = {
       method: req.method,
