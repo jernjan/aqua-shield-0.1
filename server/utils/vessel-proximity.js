@@ -49,15 +49,16 @@ function getDistance(vessel, facility) {
  */
 function calculateMeasure(distanceMeters, riskScore) {
   const distanceKm = distanceMeters / 1000;
+  const ALERT_THRESHOLD = 50; // Match forecast.js
   
   // Primary factor: distance
-  if (distanceKm < 1 && riskScore >= 70) {
+  if (distanceKm < 1 && riskScore >= ALERT_THRESHOLD) {
     return { grad: 3, label: 'Desinfeksjon + Karantene', description: 'Båten må desinfiseres før annet arbeid' };
   }
   if (distanceKm < 1) {
     return { grad: 2, label: 'Karantene', description: '48 timer pause før annet arbeid' };
   }
-  if (distanceKm < 3 && riskScore >= 70) {
+  if (distanceKm < 3 && riskScore >= ALERT_THRESHOLD) {
     return { grad: 2, label: 'Karantene', description: '48 timer pause før annet arbeid' };
   }
   if (distanceKm < 3) {

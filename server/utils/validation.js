@@ -46,17 +46,18 @@ function saveForecast(db, facility, forecast) {
  * Should be called several days after forecast was made
  */
 function validateForecast(entry, actualData) {
-  const forecastedRiskAbove70 = entry.forecastRisk >= 70;
-  const actualRiskAbove70 = (actualData.ownRisk || 0) >= 70;
+  const ALERT_THRESHOLD = 50; // Match forecast.js threshold
+  const forecastedRiskAbove = entry.forecastRisk >= ALERT_THRESHOLD;
+  const actualRiskAbove = (actualData.ownRisk || 0) >= ALERT_THRESHOLD;
   
   // Determine outcome
   let result = null;
-  if (forecastedRiskAbove70 && actualRiskAbove70) {
-    result = 'TP'; // True Positive: predicted high, was high
-  } else if (forecastedRiskAbove70 && !actualRiskAbove70) {
-    result = 'FP'; // False Positive: predicted high, was not
-  } else if (!forecastedRiskAbove70 && actualRiskAbove70) {
-    result = 'FN'; // False Negative: predicted safe, was not
+  if (forecastedRiskAbove && actualRiskAbove) {
+    result = 'TP'; // True Positive: predicted alert, was alert
+  } else if (forecastedRiskAbove && !actualRiskAbove) {
+    result = 'FP'; // False Positive: predicted alert, was not
+  } else if (!forecastedRiskAbove && actualRiskAbove) {
+    result = 'FN'; // False Negative: predicted safe, was alert
   } else {
     result = 'TN'; // True Negative: predicted safe, was safe
   }

@@ -71,10 +71,10 @@ function forecast7Day(facility, historicalData = []) {
 
 /**
  * Determine if facility should get daily alert
- * Alert if: current risk >= 70%
+ * Alert if: current risk >= 50% (lowered for faster data collection)
  */
 function shouldSendAlert(facility) {
-  return (facility.ownRisk || 0) >= 70;
+  return (facility.ownRisk || 0) >= 50;
 }
 
 /**
