@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import apiClient from '../lib/apiClient';
 
+// Dashboard with professional improvements: search, alert modal, better UX
 export default function FarmerDashboard({ token, currentUser }) {
   const [facilities, setFacilities] = useState([]);
   const [selectedFacility, setSelectedFacility] = useState(null);
