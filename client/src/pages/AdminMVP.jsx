@@ -68,7 +68,7 @@ export default function AdminMVP({ token, currentUser }) {
       }
     };
     fetchAlerts();
-  }, [];
+  }, []);
 
   // Fetch facility risk alerts and statistics
   useEffect(() => {
