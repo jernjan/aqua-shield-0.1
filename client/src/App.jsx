@@ -177,8 +177,8 @@ function App() {
     const token = `mvp-${role}`
     setToken(token)
     localStorage.setItem('token', token)
-    setUser({ name: `MVP ${role}` })
-    setPage(`mvp-${role}`)
+    setUser({ name: `MVP ${role}`, role: role })
+    setPage('dashboard') // Go to dashboard selector instead of role-specific page
     showToast(`Testet ${role} rolle`)
   }
 

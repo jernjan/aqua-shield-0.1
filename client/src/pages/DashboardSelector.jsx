@@ -17,7 +17,7 @@ export default function DashboardSelector({ onSelectDashboard, user }) {
       description: 'Se anlegg i nærheten, avstand og nødvendige karantenetiltak',
       icon: '⛵',
       color: '#06B6D4',
-      roles: ['vessel', 'admin']
+      roles: ['vessel', 'admin', 'brønnbåt'] // brønnbåt is vessel role in MVP
     },
     {
       id: 'mvp-admin',
