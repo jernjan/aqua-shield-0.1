@@ -57,8 +57,7 @@ export default function AdminMVP({ token, currentUser }) {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-        const response = await apiClient.get('/api/datalog/alerts');
-        const data = response.data;
+        const data = await apiClient.get('/api/datalog/alerts');
         if (data.ok && data.alerts) {
           setBackendAlerts(data.alerts);
           console.log(`Fetched ${data.alerts.length} alerts from backend`);
@@ -76,8 +75,7 @@ export default function AdminMVP({ token, currentUser }) {
       try {
         setLoadingAlerts(true);
         console.log('📡 Fetching facility risk alerts...');
-        const response = await apiClient.get('/api/alerts/active');
-        const data = response.data;
+        const data = await apiClient.get('/api/alerts/active');
         
         if (data.ok && data.alerts) {
           setFacilityAlerts(data.alerts);
@@ -90,8 +88,7 @@ export default function AdminMVP({ token, currentUser }) {
         }
 
         // Also fetch alert stats
-        const statsResponse = await apiClient.get('/api/alerts/stats');
-        const statsData = statsResponse.data;
+        const statsData = await apiClient.get('/api/alerts/stats');
         if (statsData.ok) {
           setAlertStats(statsData.stats);
           localStorage.setItem('alertStats_cache', JSON.stringify({
@@ -127,8 +124,7 @@ export default function AdminMVP({ token, currentUser }) {
       try {
         setLoadingRisks(true);
         console.log('📊 Fetching risk assessment...');
-        const response = await apiClient.get('/api/admin/risks');
-        const data = response.data;
+        const data = await apiClient.get('/api/admin/risks');
         
         if (data && data.summary) {
           setRiskAssessment(data);
@@ -153,8 +149,7 @@ export default function AdminMVP({ token, currentUser }) {
       try {
         setLoadingOutbreaks(true);
         console.log('🔄 Fetching real outbreak data from BarentsWatch API...');
-        const response = await apiClient.get('/api/barentswatch/outbreaks?weeks=12');
-        const data = response.data;
+        const data = await apiClient.get('/api/barentswatch/outbreaks?weeks=12');
         
         if (data.ok && data.outbreaks) {
           setRealOutbreaks(data.outbreaks);
@@ -167,8 +162,7 @@ export default function AdminMVP({ token, currentUser }) {
           console.log(`✓ Fetched ${data.outbreaks.length} real outbreaks from BarentsWatch`);
           
           // Also fetch stats
-          const statsResponse = await apiClient.get('/api/barentswatch/stats?weeks=12');
-          const statsData = statsResponse.data;
+          const statsData = await apiClient.get('/api/barentswatch/stats?weeks=12');
           if (statsData.ok) {
             setOutbreakStats(statsData.stats);
             localStorage.setItem('outbreakStats_cache', JSON.stringify({
@@ -893,8 +887,7 @@ export default function AdminMVP({ token, currentUser }) {
                   onClick={async () => {
                     setLoadingAlerts(true);
                     try {
-                      const response = await apiClient.get('/api/alerts/active');
-                      const data = response.data;
+                      const data = await apiClient.get('/api/alerts/active');
                       if (data.ok && data.alerts) {
                         setFacilityAlerts(data.alerts);
                       }
@@ -1088,13 +1081,11 @@ export default function AdminMVP({ token, currentUser }) {
                     onClick={async () => {
                       setLoadingOutbreaks(true);
                       try {
-                        const response = await apiClient.get('/api/barentswatch/outbreaks?weeks=12');
-                        const data = response.data;
+                        const data = await apiClient.get('/api/barentswatch/outbreaks?weeks=12');
                         if (data.ok && data.outbreaks) {
                           setRealOutbreaks(data.outbreaks);
                           setLastOutbreakRefresh(new Date());
-                          const statsResponse = await apiClient.get('/api/barentswatch/stats?weeks=12');
-                          const statsData = statsResponse.data;
+                          const statsData = await apiClient.get('/api/barentswatch/stats?weeks=12');
                           if (statsData.ok) {
                             setOutbreakStats(statsData.stats);
                           }
