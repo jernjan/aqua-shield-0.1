@@ -30,30 +30,38 @@ app.all('/api/*', async (req, res) => {
       method: req.method,
       headers: {
         'Content-Type': 'application/json',
-        ...req.headers,
       }
     };
 
-    // Only add body for methods that support it
-    if (req.method !== 'GET' && req.method !== 'HEAD' && req.body) {
-      options.body = JSON.stringify(req.body);
+    // Copy relevant headers from client
+    if (req.headers['authorization']) {
+      options.headers['authorization'] = req.headers['authorization'];
+    }
+    if (req.headers['cookie']) {
+      options.headers['cookie'] = req.headers['cookie'];
     }
 
-    console.log(`Proxying ${req.method} ${apiUrl}`);
+    // Add body for POST/PATCH
+    if ((req.method === 'POST' || req.method === 'PATCH' || req.method === 'PUT') && req.body) {
+      if (typeof req.body === 'string') {
+        options.body = req.body;
+      } else {
+        options.body = JSON.stringify(req.body);
+      }
+    }
+
+    console.log(`[PROXY] ${req.method} ${apiUrl}`);
     
     const response = await fetch(apiUrl, options);
-    const data = await response.text();
+    const text = await response.text();
     
-    // Copy headers
-    Object.entries(response.headers.raw ? response.headers.raw() : {}).forEach(([key, value]) => {
-      if (!['content-encoding', 'transfer-encoding'].includes(key.toLowerCase())) {
-        res.setHeader(key, value);
-      }
-    });
-
-    res.status(response.status).send(data);
+    // Copy status and key headers
+    res.status(response.status);
+    res.setHeader('Content-Type', response.headers.get('content-type') || 'application/json');
+    
+    res.send(text);
   } catch (err) {
-    console.error('API proxy error:', err.message);
+    console.error('[PROXY ERROR]', err.message);
     res.status(502).json({ error: 'API Unavailable', details: err.message });
   }
 });
