@@ -66,6 +66,39 @@ export default function VesselDashboard() {
       <h1>⛵ Båt-Oversikt & Nærbyvarslinger</h1>
       <p className="subtitle">Se hvilke anlegg som er i nærheten og anbefalte tiltak</p>
 
+      {/* NEW: Measures Quick Reference */}
+      <div style={{
+        background: '#FFF8F0',
+        border: '2px solid #F59E0B',
+        borderRadius: 8,
+        padding: 16,
+        marginBottom: 24
+      }}>
+        <h3 style={{ margin: '0 0 12px 0', fontSize: 16, fontWeight: 700, color: '#F59E0B' }}>
+          📋 Tiltaksnivåer - Hva Du Skal Gjøre
+        </h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+          <div style={{ background: 'white', padding: 12, borderRadius: 6, borderLeft: '4px solid #3B82F6' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#3B82F6' }}>ℹ️ Grad 1: Info</div>
+            <div style={{ fontSize: 12, color: '#666', marginTop: 6 }}>
+              Anlegget er i varslingssone. Moniter situasjonen fortsatt jobbing normalt.
+            </div>
+          </div>
+          <div style={{ background: 'white', padding: 12, borderRadius: 6, borderLeft: '4px solid #F59E0B' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#F59E0B' }}>⚠️ Grad 2: Karantene</div>
+            <div style={{ fontSize: 12, color: '#666', marginTop: 6 }}>
+              Båten må i 48h karantene før neste arbeid. Vask dekk grundig før du forlater området.
+            </div>
+          </div>
+          <div style={{ background: 'white', padding: 12, borderRadius: 6, borderLeft: '4px solid #DC2626' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#DC2626' }}>🚨 Grad 3: Desinfeksjon</div>
+            <div style={{ fontSize: 12, color: '#666', marginTop: 6 }}>
+              IKKE arbeid her. Båten må fulldesinfiseres før neste anlegg. Kontakt rederiet nå.
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Vessel Selector */}
       {vessels.length > 1 && (
         <div className="vessel-selector">
@@ -162,6 +195,42 @@ export default function VesselDashboard() {
                     </div>
                   </div>
                   <p className="measure-description">{facility.measure.description}</p>
+                  
+                  {/* NEW: Concrete instructions */}
+                  <div style={{
+                    marginTop: 12,
+                    padding: 10,
+                    background: facility.measure.grad === 3 ? 'rgba(220,38,38,0.1)' : facility.measure.grad === 2 ? 'rgba(245,158,11,0.1)' : 'rgba(59,130,246,0.1)',
+                    borderRadius: 4,
+                    fontSize: 12,
+                    color: '#333',
+                    lineHeight: 1.5
+                  }}>
+                    {facility.measure.grad === 3 && (
+                      <>
+                        <strong style={{ color: '#DC2626' }}>❌ DU KAN IKKE GÅ HER NÅ</strong>
+                        <div style={{ marginTop: 6 }}>
+                          Båten må minst {facility.distanceKm}km unna. Desinfeksjonsprotokoll aktivert.
+                        </div>
+                      </>
+                    )}
+                    {facility.measure.grad === 2 && (
+                      <>
+                        <strong style={{ color: '#F59E0B' }}>⚠️ 48 TIMER KARANTENE</strong>
+                        <div style={{ marginTop: 6 }}>
+                          Du kan fortsette jobbing, men må vente 48h eller være mer enn 1km fra {facility.name} før neste arbeid.
+                        </div>
+                      </>
+                    )}
+                    {facility.measure.grad === 1 && (
+                      <>
+                        <strong style={{ color: '#3B82F6' }}>ℹ️ MONITER SITUASJONEN</strong>
+                        <div style={{ marginTop: 6 }}>
+                          Du kan jobbe normalt, men følg med på endringer hos {facility.name}.
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

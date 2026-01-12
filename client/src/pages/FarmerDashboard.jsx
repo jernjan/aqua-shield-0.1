@@ -7,6 +7,9 @@ export default function FarmerDashboard({ token, currentUser }) {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState('all'); // all, critical, high, medium
+  const [searchQuery, setSearchQuery] = useState(''); // NEW: search functionality
+  const [showAlertModal, setShowAlertModal] = useState(false); // NEW: alert modal
+  const [alertMessage, setAlertMessage] = useState(''); // NEW: alert message
 
   useEffect(() => {
     const fetchFacilities = async () => {
@@ -29,13 +32,78 @@ export default function FarmerDashboard({ token, currentUser }) {
     fetchFacilities();
   }, []);
 
-  const filteredFacilities = filter === 'all' 
-    ? facilities 
-    : facilities.filter(f => f.riskCategory === filter.toUpperCase());
+  // NEW: Alert when facility becomes critical
+  useEffect(() => {
+    if (selectedFacility?.riskCategory === 'CRITICAL' && selectedFacility?.shouldAlert) {
+      setAlertMessage(`🚨 KRITISK: ${selectedFacility.name} har nådd kritisk risiko (${selectedFacility.ownRisk}%)`);
+      setShowAlertModal(true);
+    }
+  }, [selectedFacility?.id, selectedFacility?.riskCategory]);
+
+  // NEW: Combined filter + search
+  const filteredFacilities = facilities.filter(f => {
+    const matchesCategory = filter === 'all' || f.riskCategory === filter.toUpperCase();
+    const matchesSearch = searchQuery === '' || 
+      f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      f.municipality.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const selectedFacilityData = selectedFacility;
 
   return (
+    <>
+      {/* NEW: Alert Modal */}
+      {showAlertModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: 'var(--bg-dark)',
+            border: '3px solid #DC2626',
+            borderRadius: 8,
+            padding: 24,
+            maxWidth: 400,
+            textAlign: 'center'
+          }}>
+            <p style={{ margin: 0, fontSize: 36 }}>🚨</p>
+            <h2 style={{ margin: '12px 0', fontSize: 20, fontWeight: 700, color: '#DC2626' }}>
+              KRITISK RISIKO
+            </h2>
+            <p style={{ margin: '12px 0', fontSize: 14, color: 'var(--text-secondary)' }}>
+              {alertMessage}
+            </p>
+            <p style={{ margin: '8px 0', fontSize: 12, color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+              Anbefalinger finner du under "Risikofaktorer" nedenfor.
+            </p>
+            <button
+              onClick={() => setShowAlertModal(false)}
+              style={{
+                marginTop: 16,
+                padding: '10px 20px',
+                background: 'var(--accent-gold)',
+                border: 'none',
+                borderRadius: 4,
+                color: 'var(--bg-dark)',
+                fontWeight: 700,
+                cursor: 'pointer',
+                fontSize: 14
+              }}
+            >
+              Lukk
+            </button>
+          </div>
+        </div>
+      )}
     <div style={{ display: 'flex', height: 'calc(100vh - 50px)', background: 'var(--bg-dark)' }}>
       {/* Sidebar - Facility List */}
       <div style={{ width: 320, background: 'var(--bg-surface)', borderRight: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
@@ -85,6 +153,31 @@ export default function FarmerDashboard({ token, currentUser }) {
               {f.charAt(0).toUpperCase() + f.slice(1)}
             </button>
           ))}
+        </div>
+
+        {/* NEW: Search Box */}
+        <div style={{ padding: '8px', borderBottom: '1px solid var(--border-color)' }}>
+          <input
+            type="text"
+            placeholder="🔍 Søk anlegg..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '8px 10px',
+              background: 'var(--bg-dark)',
+              border: '1px solid var(--border-color)',
+              borderRadius: 4,
+              color: 'var(--text-primary)',
+              fontSize: 11,
+              fontFamily: 'inherit'
+            }}
+          />
+          {searchQuery && (
+            <p style={{ margin: '4px 0 0 0', fontSize: 9, color: 'var(--text-secondary)' }}>
+              {filteredFacilities.length} resultat
+            </p>
+          )}
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
@@ -227,5 +320,6 @@ export default function FarmerDashboard({ token, currentUser }) {
         </div>
       </div>
     </div>
+    </>
   );
 }

@@ -8,6 +8,7 @@ export default function ValidationDashboard() {
   const [facilityHistory, setFacilityHistory] = useState(null)
   const [loading, setLoading] = useState(false)
   const [validating, setValidating] = useState(false)
+  const [metricsHistory, setMetricsHistory] = useState([]) // NEW: Track metrics over time
 
   // Load metrics and pending forecasts
   useEffect(() => {
@@ -15,6 +16,22 @@ export default function ValidationDashboard() {
     const interval = setInterval(loadDashboard, 60000) // Refresh every minute
     return () => clearInterval(interval)
   }, [])
+
+  // NEW: Track metrics history for trend graph
+  useEffect(() => {
+    if (metrics && metrics.accuracy !== null) {
+      setMetricsHistory(prev => {
+        const newHistory = [...prev, {
+          timestamp: new Date().getTime(),
+          accuracy: metrics.accuracy,
+          precision: metrics.precision,
+          recall: metrics.recall
+        }];
+        // Keep only last 30 days of data
+        return newHistory.slice(-30);
+      });
+    }
+  }, [metrics?.accuracy]);
 
   async function loadDashboard() {
     try {
@@ -154,6 +171,64 @@ export default function ValidationDashboard() {
         </div>
       </div>
 
+      {/* NEW: Accuracy Trend Graph */}
+      {metricsHistory.length > 1 && (
+        <div style={{
+          background: 'white',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+          padding: 24,
+          marginBottom: 24
+        }}>
+          <h3 style={{ margin: '0 0 16px 0', fontSize: 16, fontWeight: 700, color: '#1f2937' }}>
+            📈 Trend (Siste {metricsHistory.length} målinger)
+          </h3>
+          
+          {/* Simple line graph using SVG */}
+          <svg width="100%" height="200" style={{ background: '#f9fafb', borderRadius: 4 }} viewBox="0 0 500 150">
+            {/* Grid lines */}
+            <line x1="40" y1="130" x2="490" y2="130" stroke="#d1d5db" strokeWidth="1" />
+            <line x1="40" y1="90" x2="490" y2="90" stroke="#d1d5db" strokeWidth="1" />
+            <line x1="40" y1="50" x2="490" y2="50" stroke="#d1d5db" strokeWidth="1" />
+            
+            {/* Y-axis labels */}
+            <text x="5" y="135" fontSize="10" fill="#6b7280">0%</text>
+            <text x="5" y="95" fontSize="10" fill="#6b7280">50%</text>
+            <text x="5" y="55" fontSize="10" fill="#6b7280">100%</text>
+            
+            {/* Accuracy line */}
+            <polyline
+              points={metricsHistory.map((d, i) => `${40 + (i / (metricsHistory.length - 1)) * 450},${130 - (d.accuracy / 100) * 80}`).join(' ')}
+              fill="none"
+              stroke="#3B82F6"
+              strokeWidth="2"
+            />
+            
+            {/* Current accuracy point */}
+            {metricsHistory.length > 0 && (
+              <circle
+                cx={40 + 450}
+                cy={130 - (metricsHistory[metricsHistory.length - 1].accuracy / 100) * 80}
+                r="4"
+                fill="#3B82F6"
+              />
+            )}
+          </svg>
+          
+          <p style={{ marginTop: 12, fontSize: 12, color: '#6b7280' }}>
+            Nåværende nøyaktighet: <strong style={{ color: '#3B82F6' }}>{metrics.accuracy}%</strong>
+            {metricsHistory.length > 1 && (
+              <>
+                {' | Trend: '}
+                <strong style={{ color: metricsHistory[metricsHistory.length - 1].accuracy >= metricsHistory[metricsHistory.length - 2].accuracy ? '#10B981' : '#EF4444' }}>
+                  {metricsHistory[metricsHistory.length - 1].accuracy >= metricsHistory[metricsHistory.length - 2].accuracy ? '📈 Forbedring' : '📉 Nedbør'}
+                </strong>
+              </>
+            )}
+          </p>
+        </div>
+      )}
+
       {/* Result Breakdown */}
       <div className="results-breakdown">
         <h3>Prognose-Resultat (Confusion Matrix)</h3>
@@ -196,27 +271,71 @@ export default function ValidationDashboard() {
       {pending.count > 0 && (
         <div className="pending-section">
           <h3>⏳ Venter Validering ({pending.count} stk)</h3>
-          <div className="pending-list">
-            {pending.forecasts.slice(0, 10).map(f => (
-              <div key={f.id} className="pending-item">
-                <div className="pending-info">
-                  <div className="facility-name">{f.facilityName}</div>
-                  <div className="forecast-details">
-                    Prognose: {f.forecastRisk}% ({f.forecastTrend}) • Lus: {f.liceCount} • {f.diseaseStatus}
-                  </div>
-                  <div className="forecast-date">
-                    Prognostisert: {new Date(f.createdAt).toLocaleDateString('no-NO')}
-                  </div>
-                </div>
-                <button
-                  onClick={() => validateForecast(f.id)}
-                  className="btn-small"
-                >
-                  Validér nå
-                </button>
-              </div>
-            ))}
+          {/* NEW: Improved table view */}
+          <div style={{ overflowX: 'auto', marginBottom: 24 }}>
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              fontSize: 13,
+              background: 'white'
+            }}>
+              <thead>
+                <tr style={{ background: '#f3f4f6', borderBottom: '2px solid #e5e7eb' }}>
+                  <th style={{ padding: 12, textAlign: 'left', fontWeight: 700, color: '#374151' }}>Anlegg</th>
+                  <th style={{ padding: 12, textAlign: 'left', fontWeight: 700, color: '#374151' }}>Prognose</th>
+                  <th style={{ padding: 12, textAlign: 'left', fontWeight: 700, color: '#374151' }}>Trend</th>
+                  <th style={{ padding: 12, textAlign: 'left', fontWeight: 700, color: '#374151' }}>Lus</th>
+                  <th style={{ padding: 12, textAlign: 'left', fontWeight: 700, color: '#374151' }}>Status</th>
+                  <th style={{ padding: 12, textAlign: 'left', fontWeight: 700, color: '#374151' }}>Prognostisert</th>
+                  <th style={{ padding: 12, textAlign: 'center', fontWeight: 700, color: '#374151' }}>Handling</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pending.forecasts.slice(0, 20).map((f, idx) => (
+                  <tr key={f.id} style={{ 
+                    borderBottom: '1px solid #e5e7eb',
+                    background: idx % 2 === 0 ? 'white' : '#f9fafb',
+                    hover: { background: '#f3f4f6' }
+                  }}>
+                    <td style={{ padding: 12, fontWeight: 600, color: '#1f2937' }}>{f.facilityName}</td>
+                    <td style={{ padding: 12, color: f.forecastRisk >= 70 ? '#DC2626' : f.forecastRisk >= 50 ? '#F59E0B' : '#10B981' }}>
+                      <strong>{f.forecastRisk}%</strong>
+                    </td>
+                    <td style={{ padding: 12 }}>
+                      {f.forecastTrend === 'increasing' ? '📈' : f.forecastTrend === 'decreasing' ? '📉' : '➡️'} {f.forecastTrend}
+                    </td>
+                    <td style={{ padding: 12, color: '#666' }}>{f.liceCount}</td>
+                    <td style={{ padding: 12, color: '#666' }}>{f.diseaseStatus}</td>
+                    <td style={{ padding: 12, fontSize: 12, color: '#666' }}>
+                      {new Date(f.createdAt).toLocaleDateString('no-NO')}
+                    </td>
+                    <td style={{ padding: 12, textAlign: 'center' }}>
+                      <button
+                        onClick={() => validateForecast(f.id)}
+                        style={{
+                          padding: '6px 12px',
+                          background: '#10B981',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: 4,
+                          cursor: 'pointer',
+                          fontWeight: 600,
+                          fontSize: 12
+                        }}
+                      >
+                        Validér
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+          {pending.count > 20 && (
+            <p style={{ color: '#666', fontSize: 12, marginBottom: 16 }}>
+              Viser 20 av {pending.count} prognoser. Klikk "Validér {pending.count} Prognoser" ovenfor for rask validering.
+            </p>
+          )}
         </div>
       )}
 
