@@ -356,10 +356,14 @@ app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
     const { vesselId } = req.params
     const { userId } = req.query
     
+    console.log(`[VESSEL] GET /api/mvp/vessel${vesselId ? `/${vesselId}` : ''} (userId=${userId || 'none'})`)
+    
     // Try to get real data from db first, fall back to MVP mock data
     const db = await readDB()
     const vessels = db.vessels && db.vessels.length > 0 ? db.vessels : MVP.vessels
     const tasks = MVP.tasks || []
+    
+    console.log(`[VESSEL] Found ${vessels.length} vessels in DB`)
     
     if (vesselId) {
       const vessel = vessels.find(v => v.id === vesselId)
@@ -376,10 +380,11 @@ app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
         inPort: userVessels.filter(v => v.status === 'in port').length,
         unreadTasks: userTasks.filter(t => !t.isRead).length,
       }
+      console.log(`[VESSEL] Returning ${userVessels.length} vessels`)
       res.json({ vessels: userVessels, stats, taskCount: userTasks.length })
     }
   } catch (err) {
-    console.error('Error fetching vessel data:', err);
+    console.error('[VESSEL] Error fetching vessel data:', err);
     res.status(500).json({ error: 'Failed to fetch vessel data' })
   }
 })
@@ -1925,23 +1930,26 @@ if (require('fs').existsSync(distPath)) {
     index: false // Don't auto-serve index.html for /api routes
   }))
   
-  // SPA fallback: serve index.html for non-API routes
+  // SPA fallback: serve index.html for non-API routes (but NOT for /api routes)
   app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api/')) {
-      res.sendFile(path.join(distPath, 'index.html'))
-    } else {
-      res.status(404).json({ error: 'API endpoint not found' })
+    if (req.path.startsWith('/api/')) {
+      // Don't handle API routes here - let Express return 404
+      // This means the API route above didn't match, so return error
+      console.error(`[404] API route not found: ${req.path}`)
+      return res.status(404).json({ error: 'API endpoint not found', path: req.path })
     }
+    // Non-API routes get the React app (for SPA routing)
+    res.sendFile(path.join(distPath, 'index.html'))
   })
 } else {
   console.warn(`⚠️  Client dist folder not found at ${distPath}`)
   // Still provide API, but no frontend
   app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api/')) {
-      res.status(503).json({ error: 'Frontend not available' })
-    } else {
-      res.status(404).json({ error: 'API endpoint not found' })
+    if (req.path.startsWith('/api/')) {
+      console.error(`[404] API route not found: ${req.path}`)
+      return res.status(404).json({ error: 'API endpoint not found', path: req.path })
     }
+    res.status(503).json({ error: 'Frontend not available' })
   })
 }
 
