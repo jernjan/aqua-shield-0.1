@@ -178,7 +178,18 @@ function App() {
     setToken(token)
     localStorage.setItem('token', token)
     setUser({ name: `MVP ${role}`, role: role })
-    setPage('dashboard') // Go to dashboard selector instead of role-specific page
+    
+    // Route directly to role-specific dashboard
+    let targetPage = 'dashboard'
+    if (role === 'brønnbåt' || role === 'vessel') {
+      targetPage = 'vessel-dashboard'
+    } else if (role === 'anleggsseler' || role === 'farmer') {
+      targetPage = 'farmer-dashboard'
+    } else if (role === 'admin') {
+      targetPage = 'mvp-admin'
+    }
+    
+    setPage(targetPage)
     showToast(`Testet ${role} rolle`)
   }
 
