@@ -211,15 +211,16 @@ function App() {
   }, [])
 
   const handleSwitchRole = useCallback((role) => {
-    const roleMap = {
-      'farmer': { name: 'Farmer', role: 'farmer', page: 'farmer-dashboard' },
-      'brønnbåt': { name: 'Brønnbåt', role: 'vessel', page: 'vessel-dashboard' },
-      'admin': { name: 'Admin', role: 'admin', page: 'mvp-admin' }
+    const pageMap = {
+      'farmer': 'farmer-dashboard',
+      'brønnbåt': 'vessel-dashboard',
+      'admin': 'mvp-admin'
     }
-    const roleConfig = roleMap[role]
-    setUser(roleConfig)
-    setPage(roleConfig.page)
-    showToast(`Bytta til ${role} rolle`)
+    const targetPage = pageMap[role]
+    if (targetPage) {
+      setPage(targetPage)
+      showToast(`Bytta til ${role} rolle`)
+    }
   }, [])
 
   const handleMVPLogin = useCallback((role) => {
