@@ -20,7 +20,6 @@ services:
     plan: starter
     buildCommand: "cd client && npm ci && npm run build"
     startCommand: "cd client && npm start"
-    staticPublishPath: client/dist
 
 cron:
   - name: nightly-analysis
