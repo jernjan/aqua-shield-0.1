@@ -420,7 +420,7 @@ export default function AdminMVP({ token, currentUser }) {
                 </div>
               ) : riskAssessment ? (
                 <>
-                  {/* Summary Cards */}
+                  {/* Summary Cards with Average Risk */}
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginBottom: 16 }}>
                     <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
                       <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 6, textTransform: 'uppercase' }}>Total</p>
@@ -439,9 +439,59 @@ export default function AdminMVP({ token, currentUser }) {
                       <p style={{ fontSize: 28, fontWeight: 700, color: '#3B82F6', margin: 0 }}>{riskAssessment.summary.medium}</p>
                     </div>
                     <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '2px solid #10B981', borderRadius: 6, padding: 12, textAlign: 'center' }}>
-                      <p style={{ fontSize: 10, fontWeight: 600, color: '#10B981', margin: 0, marginBottom: 6, textTransform: 'uppercase' }}>✓ Grønn</p>
-                      <p style={{ fontSize: 28, fontWeight: 700, color: '#10B981', margin: 0 }}>{riskAssessment.summary.safe}</p>
+                      <p style={{ fontSize: 10, fontWeight: 600, color: '#10B981', margin: 0, marginBottom: 6, textTransform: 'uppercase' }}>Gj.snitt risiko</p>
+                      <p style={{ fontSize: 28, fontWeight: 700, color: '#10B981', margin: 0 }}>
+                        {Math.round((riskAssessment.risky.reduce((sum, f) => sum + (f.ownRisk || 0), 0) / Math.max(riskAssessment.metadata.total_facilities, 1)) * 100)}%
+                      </p>
                     </div>
+                  </div>
+
+                  {/* Regional Fordeling */}
+                  <h3 style={{ color: 'var(--accent-gold)', fontSize: 14, fontWeight: 600, marginBottom: 12, marginTop: 20 }}>🗺️ Regional fordeling</h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 10, marginBottom: 24 }}>
+                    {riskAssessment.risky.length > 0 && 
+                      [...new Set(riskAssessment.risky.map(f => f.municipality))].map((region, idx) => {
+                        const regionFacilities = riskAssessment.risky.filter(f => f.municipality === region);
+                        const avgRegionRisk = Math.round(regionFacilities.reduce((sum, f) => sum + (f.ownRisk || 0), 0) / regionFacilities.length);
+                        const criticalCount = regionFacilities.filter(f => f.riskLevel === 'CRITICAL').length;
+                        
+                        return (
+                          <div key={idx} style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12 }}>
+                            <p style={{ margin: '0 0 8px 0', fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>
+                              {region}
+                            </p>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 11 }}>
+                              <div>
+                                <p style={{ margin: 0, fontSize: 9, color: 'var(--text-secondary)' }}>Anlegg</p>
+                                <p style={{ margin: '2px 0 0 0', fontSize: 16, fontWeight: 700, color: 'var(--accent-gold)' }}>
+                                  {regionFacilities.length}
+                                </p>
+                              </div>
+                              <div>
+                                <p style={{ margin: 0, fontSize: 9, color: 'var(--text-secondary)' }}>Kritisk</p>
+                                <p style={{ margin: '2px 0 0 0', fontSize: 16, fontWeight: 700, color: criticalCount > 0 ? '#DC2626' : '#10B981' }}>
+                                  {criticalCount}
+                                </p>
+                              </div>
+                            </div>
+                            <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--border-color)' }}>
+                              <p style={{ margin: 0, fontSize: 9, color: 'var(--text-secondary)', marginBottom: 4 }}>Gj. risiko</p>
+                              <div style={{ width: '100%', height: 20, background: 'var(--bg-dark)', borderRadius: 3, overflow: 'hidden', position: 'relative' }}>
+                                <div style={{ 
+                                  width: `${Math.min(avgRegionRisk, 100)}%`, 
+                                  height: '100%', 
+                                  background: avgRegionRisk >= 75 ? '#DC2626' : avgRegionRisk >= 60 ? '#F59E0B' : avgRegionRisk >= 45 ? '#3B82F6' : '#10B981',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center'
+                                }}>
+                                  <span style={{ fontSize: 10, fontWeight: 600, color: 'white' }}>{avgRegionRisk}%</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                   </div>
 
                   {/* Risk Facilities List */}
