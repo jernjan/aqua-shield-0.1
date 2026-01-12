@@ -54,6 +54,8 @@ export default function AdminMVP({ token, currentUser }) {
   const [selectedRiskyFacility, setSelectedRiskyFacility] = useState(null);
   const [loadingAlerts, setLoadingAlerts] = useState(false);
   const [sortBy, setSortBy] = useState('risk');
+  const [lastUpdated, setLastUpdated] = useState(null);
+  const [assignments, setAssignments] = useState({});
 
   useEffect(() => {
     const fetchRisks = async () => {
@@ -62,6 +64,7 @@ export default function AdminMVP({ token, currentUser }) {
         const data = await apiClient.get('/api/admin/risks');
         if (data && data.summary) {
           setRiskAssessment(data);
+          setLastUpdated(new Date());
         }
       } catch (err) {
         console.error('Error fetching risk assessment:', err);
@@ -130,9 +133,25 @@ export default function AdminMVP({ token, currentUser }) {
       </div>
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
-        <div style={{ background: 'var(--bg-dark)', padding: '12px 16px', borderBottom: '2px solid var(--accent-gold)', position: 'sticky', top: 0, zIndex: 100 }}>
-          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: 'var(--accent-gold)' }}>ADMIN</h1>
-          <p style={{ margin: '2px 0 0 0', fontSize: 12, color: 'var(--text-secondary)' }}>Ditt administratorpanel</p>
+        <div style={{ background: 'var(--bg-dark)', padding: '12px 16px', borderBottom: '2px solid var(--accent-gold)', position: 'sticky', top: 0, zIndex: 100, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: 'var(--accent-gold)' }}>ADMIN</h1>
+            <p style={{ margin: '2px 0 0 0', fontSize: 12, color: 'var(--text-secondary)' }}>Ditt administratorpanel</p>
+          </div>
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+            {riskAssessment?.summary?.critical > 0 && (
+              <div style={{ background: 'rgba(220, 38, 38, 0.2)', border: '2px solid #DC2626', borderRadius: 6, padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontSize: 18 }}>⚠️</span>
+                <div>
+                  <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: '#DC2626' }}>{riskAssessment.summary.critical} Kritisk</p>
+                  <p style={{ margin: '2px 0 0 0', fontSize: 10, color: 'var(--text-secondary)' }}>Trenger handling</p>
+                </div>
+              </div>
+            )}
+            {lastUpdated && (
+              <p style={{ margin: 0, fontSize: 10, color: 'var(--text-secondary)' }}>🔄 Oppdatert: {lastUpdated.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' })}</p>
+            )}
+          </div>
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
@@ -193,7 +212,25 @@ export default function AdminMVP({ token, currentUser }) {
           {/* DISTRIBUTION TAB */}
           {activeTab === 'distribution' && (
             <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
-              <h2 style={{ color: 'var(--accent-gold)', fontSize: 16, fontWeight: 700, margin: '0 0 16px 0' }}>Fordeling til Undergrupper</h2>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <h2 style={{ color: 'var(--accent-gold)', fontSize: 16, fontWeight: 700, margin: 0 }}>Fordeling til Undergrupper</h2>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button onClick={() => {
+                    const criticals = riskAssessment.risky.filter(f => f.riskLevel === 'CRITICAL');
+                    setAssignments(prev => ({
+                      ...prev,
+                      ...criticals.reduce((acc, f) => ({ ...acc, [f.id]: 'mattilsynet' }), {})
+                    }));
+                  }} style={{ background: '#DC2626', color: 'white', border: 'none', padding: '8px 12px', borderRadius: 4, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Tilordne Alle Kritisk</button>
+                  <button onClick={() => {
+                    const highs = riskAssessment.risky.filter(f => f.riskLevel === 'HIGH');
+                    setAssignments(prev => ({
+                      ...prev,
+                      ...highs.reduce((acc, f) => ({ ...acc, [f.id]: 'regional' }), {})
+                    }));
+                  }} style={{ background: '#F59E0B', color: 'white', border: 'none', padding: '8px 12px', borderRadius: 4, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Tilordne Alle Høy</button>
+                </div>
+              </div>
               {riskAssessment ? (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 12 }}>
                   <div style={{ background: 'rgba(220, 38, 38, 0.1)', border: '2px solid #DC2626', borderRadius: 6, padding: 16 }}>
@@ -202,9 +239,14 @@ export default function AdminMVP({ token, currentUser }) {
                     <div style={{ background: 'var(--bg-dark)', padding: 10, borderRadius: 4, maxHeight: '300px', overflowY: 'auto' }}>
                       {riskAssessment.risky.filter(f => f.riskLevel === 'CRITICAL').length > 0 ? (
                         riskAssessment.risky.filter(f => f.riskLevel === 'CRITICAL').map((f, i) => (
-                          <div key={i} style={{ fontSize: 10, padding: '6px 8px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
-                            <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{f.name}</p>
-                            <p style={{ margin: '2px 0 0 0' }}>{f.municipality} • Risiko: {f.ownRisk}</p>
+                          <div key={i} style={{ fontSize: 10, padding: '6px 8px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ flex: 1 }}>
+                              <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{f.name}</p>
+                              <p style={{ margin: '2px 0 0 0' }}>{f.municipality} • Risiko: {f.ownRisk}%</p>
+                            </div>
+                            {assignments[f.id] === 'mattilsynet' && (
+                              <span style={{ fontSize: 9, background: '#DC2626', color: 'white', padding: '2px 6px', borderRadius: 3, marginLeft: 6, whiteSpace: 'nowrap' }}>✓ Tildelt</span>
+                            )}
                           </div>
                         ))
                       ) : (
@@ -218,9 +260,14 @@ export default function AdminMVP({ token, currentUser }) {
                     <div style={{ background: 'var(--bg-dark)', padding: 10, borderRadius: 4, maxHeight: '300px', overflowY: 'auto' }}>
                       {riskAssessment.risky.filter(f => f.riskLevel === 'HIGH').length > 0 ? (
                         riskAssessment.risky.filter(f => f.riskLevel === 'HIGH').map((f, i) => (
-                          <div key={i} style={{ fontSize: 10, padding: '6px 8px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
-                            <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{f.name}</p>
-                            <p style={{ margin: '2px 0 0 0' }}>{f.municipality} • Risiko: {f.ownRisk}</p>
+                          <div key={i} style={{ fontSize: 10, padding: '6px 8px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ flex: 1 }}>
+                              <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{f.name}</p>
+                              <p style={{ margin: '2px 0 0 0' }}>{f.municipality} • Risiko: {f.ownRisk}%</p>
+                            </div>
+                            {assignments[f.id] === 'regional' && (
+                              <span style={{ fontSize: 9, background: '#F59E0B', color: 'white', padding: '2px 6px', borderRadius: 3, marginLeft: 6, whiteSpace: 'nowrap' }}>✓ Tildelt</span>
+                            )}
                           </div>
                         ))
                       ) : (
@@ -234,9 +281,14 @@ export default function AdminMVP({ token, currentUser }) {
                     <div style={{ background: 'var(--bg-dark)', padding: 10, borderRadius: 4, maxHeight: '300px', overflowY: 'auto' }}>
                       {riskAssessment.risky.filter(f => f.riskLevel === 'MEDIUM').length > 0 ? (
                         riskAssessment.risky.filter(f => f.riskLevel === 'MEDIUM').map((f, i) => (
-                          <div key={i} style={{ fontSize: 10, padding: '6px 8px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
-                            <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{f.name}</p>
-                            <p style={{ margin: '2px 0 0 0' }}>{f.municipality} • Risiko: {f.ownRisk}</p>
+                          <div key={i} style={{ fontSize: 10, padding: '6px 8px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ flex: 1 }}>
+                              <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{f.name}</p>
+                              <p style={{ margin: '2px 0 0 0' }}>{f.municipality} • Risiko: {f.ownRisk}%</p>
+                            </div>
+                            {assignments[f.id] === 'farmer' && (
+                              <span style={{ fontSize: 9, background: '#3B82F6', color: 'white', padding: '2px 6px', borderRadius: 3, marginLeft: 6, whiteSpace: 'nowrap' }}>✓ Tildelt</span>
+                            )}
                           </div>
                         ))
                       ) : (
@@ -247,6 +299,11 @@ export default function AdminMVP({ token, currentUser }) {
                 </div>
               ) : (
                 <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>Laster fordeling...</div>
+              )}
+              {lastUpdated && (
+                <div style={{ marginTop: 20, padding: 12, background: 'var(--bg-elevated)', borderRadius: 4, textAlign: 'center', fontSize: 10, color: 'var(--text-secondary)' }}>
+                  Sist oppdatert: {lastUpdated.toLocaleString('no-NO', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                </div>
               )}
             </div>
           )}
