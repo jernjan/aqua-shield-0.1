@@ -487,22 +487,40 @@ export default function AdminMVP({ token, currentUser }) {
                             {selectedRiskyFacility?.id === facility.id && (
                               <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--border-color)' }}>
                                 <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', margin: '0 0 8px 0', textTransform: 'uppercase' }}>
-                                  Kan smitte følgende anlegg:
+                                  Kan smitte følgende anlegg (sortert etter risiko):
                                 </p>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
-                                  {facility.transmissionTargets.slice(0, 6).map((target, tidx) => (
-                                    <div key={tidx} style={{ background: 'var(--bg-dark)', padding: 8, borderRadius: 4, fontSize: 10 }}>
-                                      <p style={{ margin: '0 0 4px 0', fontWeight: 600, color: 'var(--text-primary)' }}>
-                                        {target.name}
-                                      </p>
-                                      <p style={{ margin: '0 0 2px 0', color: 'var(--text-secondary)' }}>
-                                        Risk: <span style={{ color: '#F59E0B', fontWeight: 600 }}>{target.transmissionRisk.score}</span>
-                                      </p>
-                                      <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
-                                        {target.transmissionRisk.distance.toFixed(1)} km
-                                      </p>
-                                    </div>
-                                  ))}
+                                  {facility.transmissionTargets
+                                    .slice(0, 6)
+                                    .sort((a, b) => (b.transmissionRisk?.score || 0) - (a.transmissionRisk?.score || 0))
+                                    .map((target, tidx) => {
+                                      const riskScore = target.transmissionRisk?.score || 0;
+                                      const distance = target.transmissionRisk?.distance || 0;
+                                      let riskColor = '#10B981'; // Green - Safe
+                                      if (riskScore >= 75) riskColor = '#DC2626'; // Red - Critical
+                                      else if (riskScore >= 60) riskColor = '#F59E0B'; // Orange - High
+                                      else if (riskScore >= 45) riskColor = '#3B82F6'; // Blue - Medium
+                                      
+                                      return (
+                                        <div key={tidx} style={{ 
+                                          background: riskScore >= 75 ? 'rgba(220, 38, 38, 0.1)' : 'var(--bg-dark)', 
+                                          padding: 8, 
+                                          borderRadius: 4, 
+                                          fontSize: 10,
+                                          border: riskScore >= 75 ? '1px solid #DC2626' : '1px solid transparent'
+                                        }}>
+                                          <p style={{ margin: '0 0 4px 0', fontWeight: 600, color: 'var(--text-primary)' }}>
+                                            {target.name}
+                                          </p>
+                                          <p style={{ margin: '0 0 2px 0', color: 'var(--text-secondary)' }}>
+                                            Risk: <span style={{ color: riskColor, fontWeight: 600 }}>{riskScore}</span>
+                                          </p>
+                                          <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
+                                            📍 {distance.toFixed(1)} km
+                                          </p>
+                                        </div>
+                                      );
+                                    })}
                                 </div>
                                 <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border-color)' }}>
                                   <button style={{
