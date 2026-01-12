@@ -18,8 +18,8 @@ services:
     runtime: node
     region: oregon
     plan: starter
-    buildCommand: "cd client && npm ci && npm run build"
-    startCommand: "cd client && npm start"
+    buildCommand: "cd client && npm ci && npm run build && npm ci --only=production"
+    startCommand: "cd client && node server.js"
 
 cron:
   - name: nightly-analysis
