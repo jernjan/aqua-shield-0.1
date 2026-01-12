@@ -107,8 +107,12 @@ export default function AdminMVP({ token, currentUser }) {
         <div style={{ padding: '10px', borderBottom: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: 4 }}>
           {[
             { id: 'dashboard', label: '📊 Dashboard', color: 'var(--accent-gold)' },
-            { id: 'risks', label: '⚠️ Risiko-analyse', color: '#DC2626' },
-            { id: 'distribution', label: '📦 Fordeling', color: '#3B82F6' }
+            { id: 'risks', label: '⚠️ Risiko', color: '#DC2626' },
+            { id: 'distribution', label: '📦 Fordeling', color: '#3B82F6' },
+            { id: 'vessels', label: '🚢 Båter', color: '#8B5CF6' },
+            { id: 'facilities', label: '🏭 Anlegg', color: '#14B8A6' },
+            { id: 'monitoring', label: '👁️ Overvåking', color: '#F59E0B' },
+            { id: 'history', label: '📚 Historikk', color: '#06B6D4' }
           ].map(tab => (
             <button
               key={tab.id}
@@ -413,6 +417,106 @@ export default function AdminMVP({ token, currentUser }) {
               ) : (
                 <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>Ingen risiko-data tilgjengelig</div>
               )}
+            </div>
+          )}
+
+          {activeTab === 'vessels' && (
+            <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
+              <h2 style={{ color: 'var(--accent-gold)', fontSize: 16, fontWeight: 700, margin: '0 0 16px 0' }}>🚢 Båter & Sertifikater</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 12 }}>
+                <div style={{ background: 'var(--bg-elevated)', border: '2px solid #8B5CF6', borderRadius: 6, padding: 16 }}>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: 13, fontWeight: 700, color: '#8B5CF6' }}>Total Båter</h3>
+                  <p style={{ fontSize: 28, fontWeight: 700, margin: 0, color: 'var(--accent-gold)' }}>4047+</p>
+                  <p style={{ fontSize: 10, color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>AIS-sporede fartøy</p>
+                </div>
+                <div style={{ background: 'var(--bg-elevated)', border: '2px solid #F59E0B', borderRadius: 6, padding: 16 }}>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: 13, fontWeight: 700, color: '#F59E0B' }}>Utgåtte Sertifikater</h3>
+                  <p style={{ fontSize: 28, fontWeight: 700, margin: 0, color: 'var(--accent-gold)' }}>--</p>
+                  <p style={{ fontSize: 10, color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>Krever oppmerksomhet</p>
+                </div>
+                <div style={{ background: 'var(--bg-elevated)', border: '2px solid #14B8A6', borderRadius: 6, padding: 16 }}>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: 13, fontWeight: 700, color: '#14B8A6' }}>Aktive i Risikosone</h3>
+                  <p style={{ fontSize: 28, fontWeight: 700, margin: 0, color: 'var(--accent-gold)' }}>--</p>
+                  <p style={{ fontSize: 10, color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>Nær kritiske anlegg</p>
+                </div>
+              </div>
+              <div style={{ marginTop: 20, padding: 12, background: 'var(--bg-elevated)', borderRadius: 4, fontSize: 11, color: 'var(--text-secondary)' }}>
+                💡 Data fra: <code style={{ fontSize: 10, background: 'var(--bg-dark)', padding: '2px 4px', borderRadius: 2 }}>/api/mvp/admin/vessels</code>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'facilities' && (
+            <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
+              <h2 style={{ color: 'var(--accent-gold)', fontSize: 16, fontWeight: 700, margin: '0 0 16px 0' }}>🏭 Anlegg Oversikt</h2>
+              <div style={{ background: 'var(--bg-elevated)', borderRadius: 6, border: '1px solid var(--border-color)', overflow: 'hidden' }}>
+                <div style={{ padding: 12, maxHeight: '500px', overflowY: 'auto' }}>
+                  {riskAssessment?.risky?.slice(0, 20).map((f, i) => (
+                    <div key={i} style={{ padding: '8px', borderBottom: '1px solid var(--border-color)', fontSize: 10, display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 8 }}>
+                      <div>
+                        <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{f.name}</p>
+                        <p style={{ margin: '2px 0 0 0', color: 'var(--text-secondary)', fontSize: 9 }}>{f.municipality}</p>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <p style={{ margin: 0, fontWeight: 700, color: f.ownRisk >= 85 ? '#DC2626' : f.ownRisk >= 75 ? '#F59E0B' : '#3B82F6' }}>{f.ownRisk}%</p>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <span style={{ background: f.ownRisk >= 85 ? 'rgba(220,38,38,0.3)' : f.ownRisk >= 75 ? 'rgba(245,158,11,0.3)' : 'rgba(59,130,246,0.3)', padding: '2px 6px', borderRadius: 3, fontSize: 8, fontWeight: 600, color: 'var(--text-secondary)' }}>{f.riskLevel}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ padding: 10, background: 'var(--bg-dark)', textAlign: 'center', fontSize: 10, color: 'var(--text-secondary)' }}>Viser 20 av {riskAssessment?.risky?.length || 0} anlegg</div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'monitoring' && (
+            <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
+              <h2 style={{ color: 'var(--accent-gold)', fontSize: 16, fontWeight: 700, margin: '0 0 16px 0' }}>👁️ Overvåking & Sensorer</h2>
+              <div style={{ background: 'var(--bg-elevated)', borderRadius: 6, padding: 20, textAlign: 'center', border: '2px dashed var(--border-color)' }}>
+                <p style={{ margin: 0, fontSize: 14, color: 'var(--text-secondary)', marginBottom: 12 }}>Samlegruppe for Forskere, Studenter & Forsikringsselskaper</p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginTop: 16 }}>
+                  <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid #F59E0B', borderRadius: 4, padding: 12 }}>
+                    <p style={{ margin: 0, fontWeight: 600, color: '#F59E0B', fontSize: 12 }}>Forskere</p>
+                    <p style={{ margin: '4px 0 0 0', fontSize: 10, color: 'var(--text-secondary)' }}>Sensordata & feltobservasjoner</p>
+                  </div>
+                  <div style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px solid #3B82F6', borderRadius: 4, padding: 12 }}>
+                    <p style={{ margin: 0, fontWeight: 600, color: '#3B82F6', fontSize: 12 }}>Studenter</p>
+                    <p style={{ margin: '4px 0 0 0', fontSize: 10, color: 'var(--text-secondary)' }}>Prosjekt & validering</p>
+                  </div>
+                  <div style={{ background: 'rgba(14, 182, 210, 0.1)', border: '1px solid #06B6D4', borderRadius: 4, padding: 12 }}>
+                    <p style={{ margin: 0, fontWeight: 600, color: '#06B6D4', fontSize: 12 }}>Forsikring</p>
+                    <p style={{ margin: '4px 0 0 0', fontSize: 10, color: 'var(--text-secondary)' }}>Risikovurdering & data</p>
+                  </div>
+                </div>
+                <p style={{ margin: '16px 0 0 0', fontSize: 10, color: 'var(--text-secondary)' }}>🚀 Kommer snart: Sensor-integrasjon og validerings-data</p>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'history' && (
+            <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
+              <h2 style={{ color: 'var(--accent-gold)', fontSize: 16, fontWeight: 700, margin: '0 0 16px 0' }}>📚 Modellhistorikk & Trening</h2>
+              <div style={{ background: 'var(--bg-elevated)', borderRadius: 6, padding: 20, textAlign: 'center', border: '2px dashed var(--border-color)' }}>
+                <p style={{ margin: 0, fontSize: 14, color: 'var(--text-secondary)', marginBottom: 12 }}>Predikert vs. Faktisk Data</p>
+                <p style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Batch-oppdateringer når modellen er i produksjon</p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12, marginTop: 20 }}>
+                  <div style={{ background: 'rgba(220, 38, 38, 0.1)', borderRadius: 4, padding: 12, border: '1px solid #DC2626' }}>
+                    <p style={{ margin: 0, fontSize: 10, fontWeight: 600, color: '#DC2626' }}>🎯 Accuracy</p>
+                    <p style={{ margin: '6px 0 0 0', fontSize: 20, fontWeight: 700, color: 'var(--accent-gold)' }}>--</p>
+                  </div>
+                  <div style={{ background: 'rgba(245, 158, 11, 0.1)', borderRadius: 4, padding: 12, border: '1px solid #F59E0B' }}>
+                    <p style={{ margin: 0, fontSize: 10, fontWeight: 600, color: '#F59E0B' }}>📈 Sensitivity</p>
+                    <p style={{ margin: '6px 0 0 0', fontSize: 20, fontWeight: 700, color: 'var(--accent-gold)' }}>--</p>
+                  </div>
+                  <div style={{ background: 'rgba(59, 130, 246, 0.1)', borderRadius: 4, padding: 12, border: '1px solid #3B82F6' }}>
+                    <p style={{ margin: 0, fontSize: 10, fontWeight: 600, color: '#3B82F6' }}>📊 Precision</p>
+                    <p style={{ margin: '6px 0 0 0', fontSize: 20, fontWeight: 700, color: 'var(--accent-gold)' }}>--</p>
+                  </div>
+                </div>
+                <p style={{ margin: '16px 0 0 0', fontSize: 10, color: 'var(--text-secondary)' }}>🔄 Starter når modellen er operativ (estimert 1-2 dager)</p>
+              </div>
             </div>
           )}
         </div>
