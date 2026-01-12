@@ -147,6 +147,92 @@ app.get('/api/mvp/farmer/:farmId?', async (req, res) => {
   }
 })
 
+// Farmer Dashboard: Mine Anlegg with Risk Forecast
+app.get('/api/farmer/my-facilities', async (req, res) => {
+  try {
+    const { assessAllRisks } = require('./utils/risk')
+    const { forecast7Day, shouldSendAlert } = require('./utils/forecast')
+    const db = await readDB()
+    
+    // Get all facilities (day-1: farmer sees all, later filter by userId when auth is in place)
+    const facilities = db.facilities || []
+    
+    if (facilities.length === 0) {
+      return res.json({
+        facilities: [],
+        summary: { total: 0, critical: 0, high: 0, medium: 0, alertCount: 0 },
+        timestamp: new Date().toISOString()
+      })
+    }
+    
+    // Assess risks for all facilities
+    const risks = assessAllRisks(facilities, 70)
+    
+    // Enrich with forecast data
+    const facilitiesWithForecast = risks.risky.map(f => {
+      const forecast = forecast7Day(f, [])
+      return {
+        ...f,
+        forecast: forecast,
+        shouldAlert: shouldSendAlert(f),
+        riskCategory: f.ownRisk >= 85 ? 'CRITICAL' : f.ownRisk >= 75 ? 'HIGH' : 'MEDIUM'
+      }
+    })
+    
+    res.json({
+      facilities: facilitiesWithForecast,
+      summary: {
+        total: facilities.length,
+        critical: facilitiesWithForecast.filter(f => f.riskCategory === 'CRITICAL').length,
+        high: facilitiesWithForecast.filter(f => f.riskCategory === 'HIGH').length,
+        medium: facilitiesWithForecast.filter(f => f.riskCategory === 'MEDIUM').length,
+        alertCount: facilitiesWithForecast.filter(f => f.shouldAlert).length
+      },
+      timestamp: new Date().toISOString()
+    })
+  } catch (err) {
+    console.error('Error fetching farmer facilities:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Farmer Dashboard: Single facility detail
+app.get('/api/farmer/facility/:facilityId', async (req, res) => {
+  try {
+    const { facilityId } = req.params
+    const { getPredictedSpreaders } = require('./utils/risk')
+    const { forecast7Day, generateAlertMessage } = require('./utils/forecast')
+    const db = await readDB()
+    
+    const facilities = db.facilities || []
+    const facility = facilities.find(f => f.id === facilityId)
+    
+    if (!facility) {
+      return res.status(404).json({ error: 'Facility not found' })
+    }
+    
+    // Get transmission risks
+    const spreaders = getPredictedSpreaders(facilities, facilityId)
+    
+    // Get forecast
+    const forecast = forecast7Day(facility, [])
+    const alertMessage = generateAlertMessage(facility, forecast)
+    
+    res.json({
+      facility: {
+        ...facility,
+        forecast,
+        nearbyRisks: spreaders.slice(0, 5) // Top 5 transmission risks
+      },
+      alertMessage,
+      timestamp: new Date().toISOString()
+    })
+  } catch (err) {
+    console.error('Error fetching facility detail:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
 // Gruppe 2: Vessels (Brønnbåter)
 app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
   try {
