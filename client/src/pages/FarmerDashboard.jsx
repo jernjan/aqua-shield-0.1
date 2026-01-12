@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import apiClient from '../lib/apiClient';
 
-// Dashboard with professional improvements: search, alert modal, better UX
+// Dashboard with professional improvements: search, alert widget, better UX
 export default function FarmerDashboard({ token, currentUser }) {
   const [facilities, setFacilities] = useState([]);
   const [selectedFacility, setSelectedFacility] = useState(null);
@@ -9,8 +9,8 @@ export default function FarmerDashboard({ token, currentUser }) {
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState('all'); // all, critical, high, medium
   const [searchQuery, setSearchQuery] = useState(''); // NEW: search functionality
-  const [showAlertModal, setShowAlertModal] = useState(false); // NEW: alert modal
-  const [alertMessage, setAlertMessage] = useState(''); // NEW: alert message
+  const [showAlertsPanel, setShowAlertsPanel] = useState(false); // NEW: alerts side panel
+  const [sendingAlert, setSendingAlert] = useState(null); // NEW: track which alert is being sent
 
   useEffect(() => {
     const fetchFacilities = async () => {
@@ -33,13 +33,8 @@ export default function FarmerDashboard({ token, currentUser }) {
     fetchFacilities();
   }, []);
 
-  // NEW: Alert when facility becomes critical
-  useEffect(() => {
-    if (selectedFacility?.riskCategory === 'CRITICAL' && selectedFacility?.shouldAlert) {
-      setAlertMessage(`🚨 KRITISK: ${selectedFacility.name} har nådd kritisk risiko (${selectedFacility.ownRisk}%)`);
-      setShowAlertModal(true);
-    }
-  }, [selectedFacility?.id, selectedFacility?.riskCategory]);
+  // NEW: Get list of critical/alert facilities
+  const criticalFacilities = facilities.filter(f => f.riskCategory === 'CRITICAL' && f.shouldAlert);
 
   // NEW: Combined filter + search
   const filteredFacilities = facilities.filter(f => {
@@ -54,58 +49,122 @@ export default function FarmerDashboard({ token, currentUser }) {
 
   return (
     <>
-      {/* NEW: Alert Modal */}
-      {showAlertModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0,0,0,0.7)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000
-        }}>
+      {/* NEW: Alerts Widget - Discrete right-corner notification */}
+      <div style={{ position: 'fixed', top: 60, right: 16, zIndex: 500 }}>
+        {criticalFacilities.length > 0 && (
+          <button
+            onClick={() => setShowAlertsPanel(!showAlertsPanel)}
+            style={{
+              padding: '12px 16px',
+              background: criticalFacilities.length > 2 ? '#DC2626' : '#F59E0B',
+              border: 'none',
+              borderRadius: 6,
+              color: '#fff',
+              fontWeight: 700,
+              cursor: 'pointer',
+              fontSize: 14,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+            onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+          >
+            <span style={{ fontSize: 16 }}>⚠️</span>
+            {criticalFacilities.length} varsler
+          </button>
+        )}
+
+        {/* NEW: Alerts Detail Panel */}
+        {showAlertsPanel && criticalFacilities.length > 0 && (
           <div style={{
+            position: 'absolute',
+            top: 50,
+            right: 0,
             background: 'var(--bg-dark)',
-            border: '3px solid #DC2626',
+            border: '1px solid var(--border-color)',
             borderRadius: 8,
-            padding: 24,
-            maxWidth: 400,
-            textAlign: 'center'
+            width: 320,
+            maxHeight: 400,
+            overflowY: 'auto',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+            zIndex: 1000
           }}>
-            <p style={{ margin: 0, fontSize: 36 }}>🚨</p>
-            <h2 style={{ margin: '12px 0', fontSize: 20, fontWeight: 700, color: '#DC2626' }}>
-              KRITISK RISIKO
-            </h2>
-            <p style={{ margin: '12px 0', fontSize: 14, color: 'var(--text-secondary)' }}>
-              {alertMessage}
-            </p>
-            <p style={{ margin: '8px 0', fontSize: 12, color: 'var(--text-secondary)', fontStyle: 'italic' }}>
-              Anbefalinger finner du under "Risikofaktorer" nedenfor.
-            </p>
-            <button
-              onClick={() => setShowAlertModal(false)}
-              style={{
-                marginTop: 16,
-                padding: '10px 20px',
-                background: 'var(--accent-gold)',
-                border: 'none',
-                borderRadius: 4,
-                color: 'var(--bg-dark)',
-                fontWeight: 700,
-                cursor: 'pointer',
-                fontSize: 14
-              }}
-            >
-              Lukk
-            </button>
+            <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color)', background: 'var(--bg-elevated)' }}>
+              <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: 'var(--accent-gold)' }}>
+                Varsler ({criticalFacilities.length})
+              </h3>
+            </div>
+
+            <div style={{ padding: 0 }}>
+              {criticalFacilities.map((facility) => (
+                <div key={facility.id} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color)' }}>
+                  <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: '#DC2626' }}>
+                    🚨 {facility.name}
+                  </p>
+                  <p style={{ margin: '4px 0 0 0', fontSize: 10, color: 'var(--text-secondary)' }}>
+                    Risiko: {facility.ownRisk}% • {facility.municipality}
+                  </p>
+                  <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
+                    <button
+                      onClick={() => {
+                        setSendingAlert(facility.id);
+                        setTimeout(() => setSendingAlert(null), 2000);
+                      }}
+                      style={{
+                        flex: 1,
+                        padding: '6px 10px',
+                        background: 'rgba(59, 130, 246, 0.1)',
+                        border: '1px solid #3B82F6',
+                        borderRadius: 4,
+                        color: '#3B82F6',
+                        fontSize: 10,
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = 'rgba(59, 130, 246, 0.2)'}
+                      onMouseLeave={(e) => e.target.style.background = 'rgba(59, 130, 246, 0.1)'}
+                    >
+                      {sendingAlert === facility.id ? '✓ Sendt' : '📧 Mail'}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSendingAlert(facility.id + '-sms');
+                        setTimeout(() => setSendingAlert(null), 2000);
+                      }}
+                      style={{
+                        flex: 1,
+                        padding: '6px 10px',
+                        background: 'rgba(34, 197, 94, 0.1)',
+                        border: '1px solid #22C55E',
+                        borderRadius: 4,
+                        color: '#22C55E',
+                        fontSize: 10,
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = 'rgba(34, 197, 94, 0.2)'}
+                      onMouseLeave={(e) => e.target.style.background = 'rgba(34, 197, 94, 0.1)'}
+                    >
+                      {sendingAlert === facility.id + '-sms' ? '✓ Sendt' : '📱 SMS'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ padding: '8px 16px', borderTop: '1px solid var(--border-color)', background: 'var(--bg-elevated)', fontSize: 9, color: 'var(--text-secondary)' }}>
+              Kontaktinfo: {currentUser?.email || 'ingen epost'} • {currentUser?.phone || 'ingen telefon'}
+            </div>
           </div>
-        </div>
-      )}
-    <div style={{ display: 'flex', height: 'calc(100vh - 50px)', background: 'var(--bg-dark)' }}>
+        )}
+      </div>
+    
+      <div style={{ display: 'flex', height: 'calc(100vh - 50px)', background: 'var(--bg-dark)' }}>
       {/* Sidebar - Facility List */}
       <div style={{ width: 320, background: 'var(--bg-surface)', borderRight: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
         <div style={{ background: 'var(--bg-dark)', padding: '12px', borderBottom: '1px solid var(--border-color)' }}>
