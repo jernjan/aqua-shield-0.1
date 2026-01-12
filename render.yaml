@@ -13,15 +13,14 @@ services:
       - key: JWT_SECRET
         generateValue: true
 
-  - type: static_site
+  - type: web
     name: aqua-shield-web
+    runtime: node
     region: oregon
     plan: starter
-    buildCommand: "cd client && npm ci && npm run build && rm -rf node_modules"
+    buildCommand: "cd client && npm ci && npm run build"
+    startCommand: "cd client && npm start"
     staticPublishPath: client/dist
-    routes:
-      - path: /
-        destination: /index.html
 
 cron:
   - name: nightly-analysis
