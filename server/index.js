@@ -1911,9 +1911,11 @@ app.get('/api/datalog/export', async (req, res) => {
 })
 
 // ============ SERVE FRONTEND ============
-// If SERVE_FRONTEND is enabled, serve React app from client/dist
-if (process.env.SERVE_FRONTEND === 'true') {
-  const distPath = path.join(__dirname, '../client/dist')
+// Always serve React app from client/dist
+const distPath = path.join(__dirname, '../client/dist')
+
+// Check if dist folder exists
+if (require('fs').existsSync(distPath)) {
   console.log(`📦 Serving frontend from ${distPath}`)
   
   // Serve static files with cache control
@@ -1927,6 +1929,16 @@ if (process.env.SERVE_FRONTEND === 'true') {
   app.get('*', (req, res) => {
     if (!req.path.startsWith('/api/')) {
       res.sendFile(path.join(distPath, 'index.html'))
+    } else {
+      res.status(404).json({ error: 'API endpoint not found' })
+    }
+  })
+} else {
+  console.warn(`⚠️  Client dist folder not found at ${distPath}`)
+  // Still provide API, but no frontend
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api/')) {
+      res.status(503).json({ error: 'Frontend not available' })
     } else {
       res.status(404).json({ error: 'API endpoint not found' })
     }
