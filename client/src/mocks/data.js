@@ -48,6 +48,13 @@ export const MOCK_USERS = {
     role: 'fisher', 
     password: 'demo' 
   },
+  'admin@aquashield.no': {
+    id: 'admin_1',
+    name: 'Administrator',
+    email: 'admin@aquashield.no',
+    role: 'admin',
+    password: 'demo'
+  },
 };
 
 // ============= FALLBACK DATA - Used when APIs unavailable =============
