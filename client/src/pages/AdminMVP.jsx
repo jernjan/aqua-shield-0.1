@@ -37,9 +37,10 @@ const vesselToCSV = (vessels) => {
 };
 
 export default function AdminMVP({ token, currentUser }) {
-  const [activeTab, setActiveTab] = useState('risks');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterRegion, setFilterRegion] = useState('all');
+  const [filterRole, setFilterRole] = useState('all');
   const [outbreakConfirmation, setOutbreakConfirmation] = useState({});
   const [backendAlerts, setBackendAlerts] = useState([]);
   const [realOutbreaks, setRealOutbreaks] = useState([]);
@@ -52,6 +53,7 @@ export default function AdminMVP({ token, currentUser }) {
   const [loadingRisks, setLoadingRisks] = useState(false);
   const [selectedRiskyFacility, setSelectedRiskyFacility] = useState(null);
   const [loadingAlerts, setLoadingAlerts] = useState(false);
+  const [sortBy, setSortBy] = useState('risk');
 
   useEffect(() => {
     const fetchRisks = async () => {
@@ -100,23 +102,30 @@ export default function AdminMVP({ token, currentUser }) {
         </div>
 
         <div style={{ padding: '10px', borderBottom: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <button
-            onClick={() => setActiveTab('risks')}
-            style={{
-              padding: '8px 10px',
-              background: activeTab === 'risks' ? 'rgba(212, 165, 116, 0.2)' : 'transparent',
-              border: activeTab === 'risks' ? '1px solid var(--accent-gold)' : '1px solid transparent',
-              borderRadius: 3,
-              color: activeTab === 'risks' ? 'var(--accent-gold)' : 'var(--text-secondary)',
-              cursor: 'pointer',
-              fontSize: 11,
-              fontWeight: activeTab === 'risks' ? 600 : 400,
-              transition: 'all 0.15s ease',
-              textAlign: 'left'
-            }}
-          >
-            ⚠️ Risiko-analyse
-          </button>
+          {[
+            { id: 'dashboard', label: '📊 Dashboard', color: 'var(--accent-gold)' },
+            { id: 'risks', label: '⚠️ Risiko-analyse', color: '#DC2626' },
+            { id: 'distribution', label: '📦 Fordeling', color: '#3B82F6' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                padding: '8px 10px',
+                background: activeTab === tab.id ? 'rgba(212, 165, 116, 0.2)' : 'transparent',
+                border: activeTab === tab.id ? '1px solid var(--accent-gold)' : '1px solid transparent',
+                borderRadius: 3,
+                color: activeTab === tab.id ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                cursor: 'pointer',
+                fontSize: 11,
+                fontWeight: activeTab === tab.id ? 600 : 400,
+                transition: 'all 0.15s ease',
+                textAlign: 'left'
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -127,6 +136,122 @@ export default function AdminMVP({ token, currentUser }) {
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
+          {/* DASHBOARD TAB */}
+          {activeTab === 'dashboard' && (
+            <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
+              <h2 style={{ color: 'var(--accent-gold)', fontSize: 16, fontWeight: 700, marginBottom: 20, marginTop: 0 }}>Administrativ Oversikt</h2>
+              {riskAssessment ? (
+                <>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12, marginBottom: 24 }}>
+                    <div style={{ background: 'var(--bg-elevated)', border: '2px solid #DC2626', borderRadius: 6, padding: 16, textAlign: 'center' }}>
+                      <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 8, textTransform: 'uppercase' }}>🔴 Kritisk</p>
+                      <p style={{ fontSize: 36, fontWeight: 700, color: '#DC2626', margin: 0 }}>{riskAssessment.summary.critical}</p>
+                      <p style={{ fontSize: 10, color: 'var(--text-secondary)', margin: '6px 0 0 0' }}>Krever øyeblikkelig handling</p>
+                    </div>
+                    <div style={{ background: 'var(--bg-elevated)', border: '2px solid #F59E0B', borderRadius: 6, padding: 16, textAlign: 'center' }}>
+                      <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 8, textTransform: 'uppercase' }}>🟠 Høy</p>
+                      <p style={{ fontSize: 36, fontWeight: 700, color: '#F59E0B', margin: 0 }}>{riskAssessment.summary.high}</p>
+                      <p style={{ fontSize: 10, color: 'var(--text-secondary)', margin: '6px 0 0 0' }}>Trenger oppfølging</p>
+                    </div>
+                    <div style={{ background: 'var(--bg-elevated)', border: '2px solid #3B82F6', borderRadius: 6, padding: 16, textAlign: 'center' }}>
+                      <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 8, textTransform: 'uppercase' }}>🟡 Medium</p>
+                      <p style={{ fontSize: 36, fontWeight: 700, color: '#3B82F6', margin: 0 }}>{riskAssessment.summary.medium}</p>
+                      <p style={{ fontSize: 10, color: 'var(--text-secondary)', margin: '6px 0 0 0' }}>Under observasjon</p>
+                    </div>
+                    <div style={{ background: 'var(--bg-elevated)', border: '2px solid #10B981', borderRadius: 6, padding: 16, textAlign: 'center' }}>
+                      <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 8, textTransform: 'uppercase' }}>📊 Totalt</p>
+                      <p style={{ fontSize: 36, fontWeight: 700, color: 'var(--accent-gold)', margin: 0 }}>{riskAssessment.metadata.total_facilities}</p>
+                      <p style={{ fontSize: 10, color: 'var(--text-secondary)', margin: '6px 0 0 0' }}>Anlegg totalt</p>
+                    </div>
+                  </div>
+                  <h3 style={{ color: 'var(--accent-gold)', fontSize: 14, fontWeight: 600, marginBottom: 12 }}>Regional Status</h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 12 }}>
+                    {[...new Set(riskAssessment.risky.map(f => f.municipality))].map((region, idx) => {
+                      const regionFacilities = riskAssessment.risky.filter(f => f.municipality === region);
+                      const critical = regionFacilities.filter(f => f.riskLevel === 'CRITICAL').length;
+                      const high = regionFacilities.filter(f => f.riskLevel === 'HIGH').length;
+                      const avgRisk = Math.round(regionFacilities.reduce((sum, f) => sum + (f.ownRisk || 0), 0) / regionFacilities.length);
+                      return (
+                        <div key={idx} style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12 }}>
+                          <h4 style={{ margin: '0 0 10px 0', fontSize: 12, fontWeight: 700, color: 'var(--accent-gold)' }}>{region}</h4>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 10 }}>
+                            <div><p style={{ margin: 0, color: 'var(--text-secondary)' }}>Kritisk</p><p style={{ margin: '2px 0 0 0', fontSize: 16, fontWeight: 700, color: '#DC2626' }}>{critical}</p></div>
+                            <div><p style={{ margin: 0, color: 'var(--text-secondary)' }}>Høy</p><p style={{ margin: '2px 0 0 0', fontSize: 16, fontWeight: 700, color: '#F59E0B' }}>{high}</p></div>
+                            <div style={{ gridColumn: '1 / -1' }}><p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: 9 }}>Gjennomsnittlig risiko</p><p style={{ margin: '2px 0 0 0', fontSize: 14, fontWeight: 700, color: 'var(--accent-gold)' }}>{avgRisk}%</p></div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>Laster oversikt...</div>
+              )}
+            </div>
+          )}
+
+          {/* DISTRIBUTION TAB */}
+          {activeTab === 'distribution' && (
+            <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
+              <h2 style={{ color: 'var(--accent-gold)', fontSize: 16, fontWeight: 700, margin: '0 0 16px 0' }}>Fordeling til Undergrupper</h2>
+              {riskAssessment ? (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 12 }}>
+                  <div style={{ background: 'rgba(220, 38, 38, 0.1)', border: '2px solid #DC2626', borderRadius: 6, padding: 16 }}>
+                    <h3 style={{ margin: '0 0 12px 0', fontSize: 13, fontWeight: 700, color: '#DC2626' }}>🔴 Mattilsynet - Kritisk</h3>
+                    <p style={{ fontSize: 10, color: 'var(--text-secondary)', margin: '0 0 10px 0' }}>Anlegg som krever øyeblikkelig tilsyn</p>
+                    <div style={{ background: 'var(--bg-dark)', padding: 10, borderRadius: 4, maxHeight: '300px', overflowY: 'auto' }}>
+                      {riskAssessment.risky.filter(f => f.riskLevel === 'CRITICAL').length > 0 ? (
+                        riskAssessment.risky.filter(f => f.riskLevel === 'CRITICAL').map((f, i) => (
+                          <div key={i} style={{ fontSize: 10, padding: '6px 8px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
+                            <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{f.name}</p>
+                            <p style={{ margin: '2px 0 0 0' }}>{f.municipality} • Risiko: {f.ownRisk}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p style={{ fontSize: 10, color: 'var(--text-secondary)', padding: '10px', margin: 0 }}>Ingen kritiske anlegg</p>
+                      )}
+                    </div>
+                  </div>
+                  <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '2px solid #F59E0B', borderRadius: 6, padding: 16 }}>
+                    <h3 style={{ margin: '0 0 12px 0', fontSize: 13, fontWeight: 700, color: '#F59E0B' }}>🟠 Regionalt Helseteam - Høy</h3>
+                    <p style={{ fontSize: 10, color: 'var(--text-secondary)', margin: '0 0 10px 0' }}>Anlegg som trenger oppfølging</p>
+                    <div style={{ background: 'var(--bg-dark)', padding: 10, borderRadius: 4, maxHeight: '300px', overflowY: 'auto' }}>
+                      {riskAssessment.risky.filter(f => f.riskLevel === 'HIGH').length > 0 ? (
+                        riskAssessment.risky.filter(f => f.riskLevel === 'HIGH').map((f, i) => (
+                          <div key={i} style={{ fontSize: 10, padding: '6px 8px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
+                            <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{f.name}</p>
+                            <p style={{ margin: '2px 0 0 0' }}>{f.municipality} • Risiko: {f.ownRisk}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p style={{ fontSize: 10, color: 'var(--text-secondary)', padding: '10px', margin: 0 }}>Ingen høy-risiko anlegg</p>
+                      )}
+                    </div>
+                  </div>
+                  <div style={{ background: 'rgba(59, 130, 246, 0.1)', border: '2px solid #3B82F6', borderRadius: 6, padding: 16 }}>
+                    <h3 style={{ margin: '0 0 12px 0', fontSize: 13, fontWeight: 700, color: '#3B82F6' }}>🟡 Oppdrettere - Medium</h3>
+                    <p style={{ fontSize: 10, color: 'var(--text-secondary)', margin: '0 0 10px 0' }}>Anlegg under observasjon</p>
+                    <div style={{ background: 'var(--bg-dark)', padding: 10, borderRadius: 4, maxHeight: '300px', overflowY: 'auto' }}>
+                      {riskAssessment.risky.filter(f => f.riskLevel === 'MEDIUM').length > 0 ? (
+                        riskAssessment.risky.filter(f => f.riskLevel === 'MEDIUM').map((f, i) => (
+                          <div key={i} style={{ fontSize: 10, padding: '6px 8px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
+                            <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{f.name}</p>
+                            <p style={{ margin: '2px 0 0 0' }}>{f.municipality} • Risiko: {f.ownRisk}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p style={{ fontSize: 10, color: 'var(--text-secondary)', padding: '10px', margin: 0 }}>Ingen medium-risiko anlegg</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>Laster fordeling...</div>
+              )}
+            </div>
+          )}
+
+          {/* RISK ANALYSIS TAB */}
           {activeTab === 'risks' && (
             <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
               {loadingRisks ? (
