@@ -5,6 +5,7 @@ export default function VesselDashboard() {
   const [vessel, setVessel] = useState(null)
   const [nearbyFacilities, setNearbyFacilities] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [selectedVessel, setSelectedVessel] = useState(null)
   const [vessels, setVessels] = useState([])
 
@@ -15,28 +16,42 @@ export default function VesselDashboard() {
 
   async function loadVessels() {
     try {
-      const res = await fetch('/api/mvp/vessel')
+      setError(null)
+      const res = await fetch('/api/mvp/vessel', { timeout: 10000 })
+      if (!res.ok) {
+        throw new Error(`API error: ${res.status}`)
+      }
       const data = await res.json()
       setVessels(data.vessels || [])
       // Select first vessel by default
       if (data.vessels && data.vessels.length > 0) {
         selectVessel(data.vessels[0].id)
+      } else {
+        setLoading(false)
+        setError('Ingen båter funnet')
       }
     } catch (err) {
-      console.error('Error loading vessels:', err)
+      console.error('[VesselDashboard] Error loading vessels:', err)
+      setError(`Kunne ikke laste båtdata: ${err.message}`)
+      setLoading(false)
     }
   }
 
   async function selectVessel(vesselId) {
     try {
+      setError(null)
       setLoading(true)
       setSelectedVessel(vesselId)
-      const res = await fetch(`/api/vessel/${vesselId}/nearby`)
+      const res = await fetch(`/api/vessel/${vesselId}/nearby`, { timeout: 10000 })
+      if (!res.ok) {
+        throw new Error(`API error: ${res.status}`)
+      }
       const data = await res.json()
       setVessel(data.vessel)
       setNearbyFacilities(data.nearbyFacilities || [])
     } catch (err) {
-      console.error('Error loading vessel nearby facilities:', err)
+      console.error('[VesselDashboard] Error loading vessel nearby facilities:', err)
+      setError(`Kunne ikke laste detaljer: ${err.message}`)
       setNearbyFacilities([])
     } finally {
       setLoading(false)
@@ -58,7 +73,40 @@ export default function VesselDashboard() {
   };
 
   if (loading && vessels.length === 0) {
-    return <div className="vessel-dashboard loading">Laster båtdata...</div>
+    return (
+      <div className="vessel-dashboard loading">
+        {error ? (
+          <div style={{ padding: '40px', textAlign: 'center' }}>
+            <p style={{ color: '#DC2626', fontWeight: 700, marginBottom: '8px' }}>❌ Feil ved lasting</p>
+            <p style={{ color: '#888', fontSize: '14px' }}>{error}</p>
+            <p style={{ color: '#666', fontSize: '12px', marginTop: '12px' }}>Sjekk at API-serveren kjører</p>
+          </div>
+        ) : (
+          'Laster båtdata...'
+        )}
+      </div>
+    )
+  }
+
+  if (error && vessels.length === 0) {
+    return (
+      <div className="vessel-dashboard loading">
+        <div style={{ padding: '40px', textAlign: 'center' }}>
+          <p style={{ color: '#DC2626', fontWeight: 700, marginBottom: '8px' }}>❌ {error}</p>
+          <button onClick={() => window.location.reload()} style={{
+            marginTop: '12px',
+            padding: '8px 16px',
+            background: 'var(--accent-gold)',
+            border: 'none',
+            borderRadius: 4,
+            cursor: 'pointer',
+            fontWeight: 600
+          }}>
+            Prøv på nytt
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
