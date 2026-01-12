@@ -11,7 +11,8 @@ const defaultDB = {
   users: [],
   alerts: [],
   facilities: [],
-  vessels: []
+  vessels: [],
+  forecast_history: []
 };
 
 async function readDB() {

@@ -24,6 +24,10 @@ export default function ValidationDashboard() {
         fetch('/api/admin/validation/pending')
       ])
       
+      if (!metricsRes.ok || !pendingRes.ok) {
+        throw new Error('API error')
+      }
+      
       const metricsData = await metricsRes.json()
       const pendingData = await pendingRes.json()
       
@@ -31,6 +35,18 @@ export default function ValidationDashboard() {
       setPending(pendingData)
     } catch (err) {
       console.error('Error loading dashboard:', err)
+      // Set default empty state on error
+      setMetrics({
+        totalForecasts: 0,
+        validatedForecasts: 0,
+        pendingValidation: 0,
+        accuracy: 0,
+        precision: 0,
+        recall: 0,
+        falsePositiveRate: 0,
+        results: { TP: 0, FP: 0, TN: 0, FN: 0 }
+      })
+      setPending({ count: 0, forecasts: [] })
     } finally {
       setLoading(false)
     }
