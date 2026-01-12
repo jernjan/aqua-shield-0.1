@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, memo } from 'react'
 import Login from './pages/Login'
 import SelectSites from './pages/SelectSites'
 import DashboardSelector from './pages/DashboardSelector'
@@ -12,8 +12,8 @@ import AnalyticsMVP from './pages/AnalyticsMVP'
 import FisherDashboard from './pages/FisherDashboard'
 import Toast from './components/Toast'
 
-// MVP wrapper component for consistent styling
-const MVPWrapper = ({ children, onLogout }) => (
+// MVP wrapper component for consistent styling - memoized
+const MVPWrapper = memo(({ children, onLogout }) => (
   <div style={{ backgroundColor: 'var(--bg-dark)', minHeight: '100vh', paddingTop: 50, position: 'relative' }}>
     <button 
       onClick={onLogout} 
@@ -30,7 +30,7 @@ const MVPWrapper = ({ children, onLogout }) => (
         fontWeight: 600, 
         fontSize: '14px',
         zIndex: 99999, 
-        transition: 'all 0.2s ease',
+        transition: 'transform 0.2s ease',
         pointerEvents: 'auto',
         visibility: 'visible',
         display: 'block',
@@ -43,7 +43,7 @@ const MVPWrapper = ({ children, onLogout }) => (
     </button>
     {children}
   </div>
-)
+))
 
 // Page routing configuration
 const PAGE_CONFIG = {
@@ -148,17 +148,17 @@ function App() {
     showToast(`Velkommen, ${userData.name}!`);
   }
 
-  const handleSitesSelected = () => {
+  const handleSitesSelected = useCallback(() => {
     setPage('dashboard')
     showToast('Anlegg opprettet. Starter overvåking...')
-  }
+  }, [])
 
-  const handleSelectDashboard = (dashboardId) => {
+  const handleSelectDashboard = useCallback((dashboardId) => {
     setPage(dashboardId)
     showToast('Åpner dashbord...')
-  }
+  }, [])
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     console.log('✓ Logout button clicked!')
     setToken(null)
     localStorage.removeItem('token')
@@ -171,9 +171,9 @@ function App() {
       window.location.href = '/'
       window.location.reload()
     }, 300)
-  }
+  }, [])
 
-  const handleMVPLogin = (role) => {
+  const handleMVPLogin = useCallback((role) => {
     const token = `mvp-${role}`
     setToken(token)
     localStorage.setItem('token', token)
@@ -191,7 +191,7 @@ function App() {
     
     setPage(targetPage)
     showToast(`Testet ${role} rolle`)
-  }
+  }, [])
 
   // Render current page
   const renderPage = () => {

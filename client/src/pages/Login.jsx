@@ -1,6 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { MOCK_USERS } from '../mocks/data';
 import styles from './Login.module.css';
+
+// Memoized role button to prevent re-renders
+const RoleButton = memo(({ label, desc, icon, onClick }) => (
+  <button
+    onClick={onClick}
+    className={styles.roleBtn}
+  >
+    <div className={styles.roleIcon}>{icon}</div>
+    <div className={styles.roleLabel}>{label}</div>
+    <div className={styles.roleDesc}>{desc}</div>
+  </button>
+));
 
 function Login({ onLogin, onMVPLogin }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -20,6 +32,11 @@ function Login({ onLogin, onMVPLogin }) {
       onLogin(user.id, user);
     }
   }, [onLogin]);
+
+  // Memoize MVP login handler
+  const handleMVPRole = useCallback((role) => {
+    onMVPLogin(role);
+  }, [onMVPLogin]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -139,50 +156,40 @@ function Login({ onLogin, onMVPLogin }) {
       </div>
 
       <div className={styles.mvpRoles}>
-        <button
-          onClick={() => onMVPLogin('farmer')}
-          className={styles.roleBtn}
-        >
-          <div className={styles.roleIcon}>A</div>
-          <div className={styles.roleLabel}>Anleggseier</div>
-          <div className={styles.roleDesc}>Fiskeoppdrett</div>
-        </button>
+        <RoleButton 
+          label="Anleggseier"
+          desc="Fiskeoppdrett"
+          icon="A"
+          onClick={() => handleMVPRole('farmer')}
+        />
 
-        <button
-          onClick={() => onMVPLogin('vessel')}
-          className={styles.roleBtn}
-        >
-          <div className={styles.roleIcon}>B</div>
-          <div className={styles.roleLabel}>Brønnbåt</div>
-          <div className={styles.roleDesc}>Transportbåt</div>
-        </button>
+        <RoleButton 
+          label="Brønnbåt"
+          desc="Transportbåt"
+          icon="B"
+          onClick={() => handleMVPRole('vessel')}
+        />
 
-        <button
-          onClick={() => onMVPLogin('admin')}
-          className={styles.roleBtn}
-        >
-          <div className={styles.roleIcon}>⚙️</div>
-          <div className={styles.roleLabel}>Admin</div>
-          <div className={styles.roleDesc}>Din private dashboard</div>
-        </button>
+        <RoleButton 
+          label="Admin"
+          desc="Din private dashboard"
+          icon="⚙️"
+          onClick={() => handleMVPRole('admin')}
+        />
 
-        <button
-          onClick={() => onMVPLogin('analytics')}
-          className={styles.roleBtn}
-        >
-          <div className={styles.roleIcon}>📊</div>
-          <div className={styles.roleLabel}>Analytics</div>
-          <div className={styles.roleDesc}>Rapporter & Analyse</div>
-        </button>
+        <RoleButton 
+          label="Analytics"
+          desc="Rapporter & Analyse"
+          icon="📊"
+          onClick={() => handleMVPRole('analytics')}
+        />
 
-        <button
-          onClick={() => onMVPLogin('fisher')}
-          className={styles.roleBtn}
-        >
-          <div className={styles.roleIcon}>🎣</div>
-          <div className={styles.roleLabel}>Yrkesfisker</div>
-          <div className={styles.roleDesc}>Smittesone-kart</div>
-        </button>
+        <RoleButton 
+          label="Yrkesfisker"
+          desc="Smittesone-kart"
+          icon="🎣"
+          onClick={() => handleMVPRole('fisher')}
+        />
       </div>
     </div>
   );
