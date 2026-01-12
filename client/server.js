@@ -3,6 +3,8 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import http from 'http';
 import https from 'https';
+import { execSync } from 'child_process';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,6 +14,19 @@ const PORT = process.env.PORT || 3000;
 
 // API proxy - forward /api requests to the actual API service
 const API_BASE_URL = process.env.API_BASE_URL || 'https://aqua-shield-api-production.onrender.com';
+
+// Ensure dist exists - build if missing
+const distPath = join(__dirname, 'dist');
+if (!fs.existsSync(distPath)) {
+  console.log('📦 dist folder missing, building...');
+  try {
+    execSync('npm run build', { cwd: __dirname, stdio: 'inherit' });
+    console.log('✅ Build complete');
+  } catch (err) {
+    console.error('❌ Build failed:', err.message);
+    process.exit(1);
+  }
+}
 
 // Health check endpoint for frontend server
 app.get('/health', (req, res) => {
