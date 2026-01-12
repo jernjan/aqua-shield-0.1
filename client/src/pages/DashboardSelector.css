@@ -1,0 +1,153 @@
+.dashboard-selector {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.selector-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 50px;
+}
+
+.selector-header h1 {
+  font-size: 36px;
+  margin: 0 0 8px 0;
+  font-weight: 700;
+}
+
+.selector-subtitle {
+  font-size: 16px;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.dashboards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto 50px;
+  padding: 0 20px;
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 24px;
+  border-top: 4px solid;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.card-icon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.dashboard-card h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.dashboard-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  flex-grow: 1;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.arrow {
+  font-size: 24px;
+  color: #667eea;
+  font-weight: 700;
+  transition: transform 0.2s ease;
+}
+
+.dashboard-card:hover .arrow {
+  transform: translateX(4px);
+}
+
+.selector-info {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.info-box {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 30px;
+}
+
+.info-box h4 {
+  margin-top: 0;
+  color: #667eea;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.info-box ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style: none;
+}
+
+.info-box li {
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.info-box strong {
+  color: #667eea;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-selector {
+    padding: 20px 12px;
+  }
+
+  .selector-header {
+    margin-bottom: 30px;
+  }
+
+  .selector-header h1 {
+    font-size: 28px;
+  }
+
+  .dashboards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  .dashboard-card {
+    padding: 24px 16px;
+  }
+}
