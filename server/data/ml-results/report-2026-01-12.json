@@ -1,0 +1,105 @@
+{
+  "timestamp": "2026-01-12T01:01:16.681Z",
+  "duration_ms": 76538,
+  "data_collection": {
+    "success": true,
+    "outbreakCount": 150,
+    "vesselCount": 457,
+    "trainingExamples": 150,
+    "errors": [
+      "Failed to fetch outbreak history: Request failed with status code 404"
+    ]
+  },
+  "model_summary": {
+    "trainingSize": 150,
+    "diseaseCount": 4,
+    "timestamp": "2026-01-12T01:01:16.680Z",
+    "diseases": {
+      "PD": {
+        "count": 45,
+        "avgDuration": 56,
+        "minDuration": 8,
+        "maxDuration": 94,
+        "avgVesselContact": "3.0",
+        "prevalence": "30.0%"
+      },
+      "PRV": {
+        "count": 43,
+        "avgDuration": 59,
+        "minDuration": 7,
+        "maxDuration": 93,
+        "avgVesselContact": "3.2",
+        "prevalence": "28.7%"
+      },
+      "ISA": {
+        "count": 33,
+        "avgDuration": 50,
+        "minDuration": 5,
+        "maxDuration": 87,
+        "avgVesselContact": "2.8",
+        "prevalence": "22.0%"
+      },
+      "SRS": {
+        "count": 29,
+        "avgDuration": 50,
+        "minDuration": 12,
+        "maxDuration": 94,
+        "avgVesselContact": "3.2",
+        "prevalence": "19.3%"
+      }
+    }
+  },
+  "test_results": [
+    {
+      "case": "ISA + high vessel contact",
+      "prediction": {
+        "risk": "kritisk",
+        "riskScore": 77,
+        "confidence": 95,
+        "historicalDuration": 50,
+        "prevalence": "22.0%",
+        "avgVesselContact": "2.8",
+        "details": {
+          "disease": "ISA",
+          "vesselContact": 3,
+          "latitude": 65,
+          "longitude": 12
+        }
+      }
+    },
+    {
+      "case": "PD + low vessel contact",
+      "prediction": {
+        "risk": "høy",
+        "riskScore": 52,
+        "confidence": 95,
+        "historicalDuration": 56,
+        "prevalence": "30.0%",
+        "avgVesselContact": "3.0",
+        "details": {
+          "disease": "PD",
+          "vesselContact": 1,
+          "latitude": 65.5,
+          "longitude": 11.5
+        }
+      }
+    },
+    {
+      "case": "ISA + no vessel contact",
+      "prediction": {
+        "risk": "moderat",
+        "riskScore": 37,
+        "confidence": 95,
+        "historicalDuration": 50,
+        "prevalence": "22.0%",
+        "avgVesselContact": "2.8",
+        "details": {
+          "disease": "ISA",
+          "vesselContact": 0,
+          "latitude": 64.5,
+          "longitude": 13
+        }
+      }
+    }
+  ]
+}

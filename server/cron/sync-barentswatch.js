@@ -2,6 +2,7 @@ require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const { readDB, writeDB } = require('../db.js');
 const { getAllFacilities } = require('../utils/barentswatch.js');
 const { getAllVessels } = require('../utils/ais.js');
+const { getOceanCurrentsForFacilities, enhanceFacilitiesWithCurrents } = require('../utils/metocean.js');
 
 /**
  * Add test data to some facilities for risk assessment demo
@@ -61,6 +62,12 @@ async function syncFromBarentsWatch() {
     
     // ADD TEST DATA FOR DEMO (remove in production)
     allFacilities = addTestRiskData(allFacilities);
+    
+    // Fetch ocean current data for all facilities
+    console.log('🌊 Fetching ocean current data from MET...');
+    const oceaCurrents = await getOceanCurrentsForFacilities(allFacilities);
+    allFacilities = enhanceFacilitiesWithCurrents(allFacilities, oceaCurrents);
+    console.log(`✓ Enhanced ${allFacilities.length} facilities with MET ocean current data`);
     
     // Fetch all vessel positions
     console.log('📡 Fetching vessels from BarentsWatch...');

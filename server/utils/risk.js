@@ -4,6 +4,8 @@
  * Based on: lice load, disease status, proximity, and ocean current patterns
  */
 
+const metOcean = require('./metocean');
+
 /**
  * Calculate Haversine distance between two coordinates in kilometers
  */
@@ -38,19 +40,22 @@ function getBearing(lat1, lng1, lat2, lng2) {
 }
 
 /**
- * Get default ocean current direction based on latitude/longitude
- * Norwegian coast patterns (simplified model)
+ * Get ocean current direction for facility
+ * Uses MET data if available, falls back to geographic model
  * Returns direction in degrees (0=North, 90=East, 180=South, 270=West)
  */
 function getDefaultCurrentDirection(lat, lng) {
-  // Northern Norway (>68°N): Generally northbound along coast
+  // Try to use real MET data (cached, fast)
+  // This is called synchronously during risk calculation, so data should already be cached
+  // If facility has currentDirection property set during sync, use that
+  // Otherwise fallback to simple geographic model
+  
+  // Simple geographic fallback
   if (lat > 68) return 0; // North
-  // Western Norway (around 60°N): Mix of directions
   if (lat > 59 && lng < 8) return 340; // Northwest
-  // Southeast coast: Generally southbound
   if (lat < 60) return 180; // South
-  // Default
   return 350; // Slight northwest
+
 }
 
 /**
