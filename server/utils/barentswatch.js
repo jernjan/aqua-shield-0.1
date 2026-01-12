@@ -64,13 +64,49 @@ async function getUserFacilities(facilityIds) {
   return allFacilities.filter(f => facilityIds.includes(f.id));
 }
 
+// Get AIS-specific OAuth2 token
+async function getAISToken() {
+  try {
+    const clientId = process.env.BARENTSWATCH_AIS_CLIENT_ID;
+    const clientSecret = process.env.BARENTSWATCH_AIS_CLIENT_SECRET;
+    
+    if (!clientId || !clientSecret) {
+      console.warn('⚠️ AIS client credentials not configured, using regular token');
+      return await getBarentsWatchToken();
+    }
+
+    // Use the same auth logic but with AIS credentials
+    const { getBarentsWatchToken: origToken } = require('./auth');
+    
+    const axios_local = require('axios');
+    const p = new URLSearchParams();
+    p.append('grant_type', 'client_credentials');
+    p.append('client_id', clientId);
+    p.append('client_secret', clientSecret);
+    
+    const response = await axios_local.post(
+      'https://id.barentswatch.no/connect/token',
+      p,
+      {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        timeout: 5000
+      }
+    );
+    
+    return response.data.access_token;
+  } catch (err) {
+    console.warn('⚠️ Failed to get AIS token:', err.message);
+    return await getBarentsWatchToken();
+  }
+}
+
 // Fetch AIS data (vessel positions) from BarentsWatch
 async function getVesselPositions(bbox = null) {
   try {
     console.log('🔄 Fetching vessel positions from live AIS API...');
     
-    // Get OAuth2 token
-    const token = await getBarentsWatchToken();
+    // Get AIS-specific OAuth2 token
+    const token = await getAISToken();
     if (!token) {
       console.warn('⚠️ No OAuth2 token, skipping AIS fetch');
       return [];

@@ -1,43 +1,34 @@
 const axios = require('axios');
+const { getVesselPositions } = require('./barentswatch');
 
-// Fetch wellboats and service vessels from Kystverket AIS
+// Fetch all vessels from BarentsWatch AIS API
+// Uses new live AIS endpoint with proper OAuth2 scope
 async function getAllVessels() {
   try {
-    console.log('🚢 Fetching vessels from Kystverket AIS...');
-    const response = await axios.get('https://www.barentswatch.no/bwapi/v2/vessel', {
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'AquaShield/0.1'
-      },
-      timeout: 10000
-    });
+    console.log('🚢 Fetching all vessels from AIS API...');
     
-    const data = Array.isArray(response.data) ? response.data : response.data.items || [];
+    // Use the new getVesselPositions() which has AIS OAuth2 client
+    const vessels = await getVesselPositions();
     
-    // Filter to Norwegian waters + aquaculture-relevant types
-    const norwegian = data.filter(v => 
-      v.latitude >= 59 && v.latitude <= 72 &&
-      v.longitude >= 2 && v.longitude <= 32 &&
-      v.shipType && (
-        v.shipType.includes('Well') || 
-        v.shipType.includes('Service') ||
-        v.shipType.includes('wellboat')
-      )
-    );
+    if (!vessels || vessels.length === 0) {
+      console.warn('⚠️  No vessels returned from AIS API');
+      return [];
+    }
     
-    console.log(`✓ Got ${norwegian.length} relevant vessels from Kystverket`);
+    console.log(`✓ Got ${vessels.length} vessels from AIS API`);
     
-    return norwegian.map(v => ({
-      id: v.mmsi?.toString() || 'unknown',
-      name: v.name || `Vessel ${v.mmsi}`,
+    // Map AIS format to our standard format
+    return vessels.map(v => ({
+      id: v.id || v.mmsi?.toString() || 'unknown',
+      name: v.name || `Vessel ${v.mmsi || 'unknown'}`,
       type: v.shipType || 'Unknown',
-      lat: v.latitude || 0,
-      lng: v.longitude || 0,
-      heading: v.courseOverGround || 0,
-      speed: v.speedOverGround || 0,
-      lastUpdate: v.lastPositionUpdate || new Date().toISOString(),
+      lat: v.lat || v.latitude || 0,
+      lng: v.lng || v.longitude || 0,
+      heading: v.course || v.courseOverGround || 0,
+      speed: v.speed || v.speedOverGround || 0,
+      lastUpdate: v.lastUpdate || v.msgtime || new Date().toISOString(),
       callSign: v.callSign || null,
-      mmsi: v.mmsi
+      mmsi: v.mmsi || null
     }));
   } catch (err) {
     console.error('❌ Failed to fetch vessels:', err.message);
