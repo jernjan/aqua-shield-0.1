@@ -354,38 +354,22 @@ app.post('/api/admin/validation/auto-validate', async (req, res) => {
 app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
   try {
     const { vesselId } = req.params
-    const { userId } = req.query
     
-    console.log(`[VESSEL] GET /api/mvp/vessel${vesselId ? `/${vesselId}` : ''} (userId=${userId || 'none'})`)
-    
-    // Try to get real data from db first, fall back to MVP mock data
-    const db = await readDB()
-    const vessels = db.vessels && db.vessels.length > 0 ? db.vessels : MVP.vessels
-    const tasks = MVP.tasks || []
-    
-    console.log(`[VESSEL] Found ${vessels.length} vessels in DB`)
+    if (!MVP || !MVP.vessels) {
+      return res.status(500).json({ error: 'MVP data not initialized' })
+    }
     
     if (vesselId) {
-      const vessel = vessels.find(v => v.id === vesselId)
+      const vessel = MVP.vessels.find(v => v.id === vesselId)
       if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
-      const vesselTasks = tasks.filter(t => t.vesselId === vesselId)
-      res.json({ vessel, tasks: vesselTasks, taskCount: vesselTasks.length })
+      res.json({ vessel, tasks: [], taskCount: 0 })
     } else {
-      // Optional auth-based filtering by userId
-      const userVessels = userId ? vessels.filter(v => v.userId === userId) : vessels
-      const userTasks = userId ? tasks.filter(t => t.userId === userId) : tasks
-      const stats = {
-        total: userVessels.length,
-        onRoute: userVessels.filter(v => v.status === 'en route').length,
-        inPort: userVessels.filter(v => v.status === 'in port').length,
-        unreadTasks: userTasks.filter(t => !t.isRead).length,
-      }
-      console.log(`[VESSEL] Returning ${userVessels.length} vessels`)
-      res.json({ vessels: userVessels, stats, taskCount: userTasks.length })
+      // Return all vessels
+      res.json({ vessels: MVP.vessels, stats: { total: MVP.vessels.length }, taskCount: 0 })
     }
   } catch (err) {
-    console.error('[VESSEL] Error fetching vessel data:', err);
-    res.status(500).json({ error: 'Failed to fetch vessel data' })
+    console.error('[VESSEL] Error:', err);
+    res.status(500).json({ error: 'Failed to fetch vessel data', message: err.message })
   }
 })
 
