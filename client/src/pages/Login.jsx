@@ -161,9 +161,9 @@ function Login({ onLogin, onMVPLogin }) {
           onClick={() => onMVPLogin('admin')}
           className={styles.roleBtn}
         >
-          <div className={styles.roleIcon}>R</div>
-          <div className={styles.roleLabel}>Regulator</div>
-          <div className={styles.roleDesc}>Mattilsynet</div>
+          <div className={styles.roleIcon}>⚙️</div>
+          <div className={styles.roleLabel}>Admin</div>
+          <div className={styles.roleDesc}>Din private dashboard</div>
         </button>
 
         <button

@@ -37,7 +37,7 @@ const vesselToCSV = (vessels) => {
 };
 
 export default function AdminMVP({ token, currentUser }) {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('risks');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterRegion, setFilterRegion] = useState('all');
   const [outbreakConfirmation, setOutbreakConfirmation] = useState({}); // Track confirmed/denied alerts
@@ -48,6 +48,9 @@ export default function AdminMVP({ token, currentUser }) {
   const [lastOutbreakRefresh, setLastOutbreakRefresh] = useState(null); // Track last refresh time
   const [facilityAlerts, setFacilityAlerts] = useState([]); // Facility risk alerts from alert service
   const [alertStats, setAlertStats] = useState(null) // Alert statistics
+  const [riskAssessment, setRiskAssessment] = useState(null) // Risk assessment data
+  const [loadingRisks, setLoadingRisks] = useState(false) // Risk loading state
+  const [selectedRiskyFacility, setSelectedRiskyFacility] = useState(null) // Selected facility for detail view
   const [loadingAlerts, setLoadingAlerts] = useState(false)
 
   // Fetch alerts from backend on mount
@@ -115,6 +118,32 @@ export default function AdminMVP({ token, currentUser }) {
     fetchFacilityAlerts();
     // Refresh every 1 hour for active monitoring (was 5 min - too aggressive)
     const interval = setInterval(fetchFacilityAlerts, 60 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Fetch Risk Assessment from new risk engine
+  useEffect(() => {
+    const fetchRisks = async () => {
+      try {
+        setLoadingRisks(true);
+        console.log('📊 Fetching risk assessment...');
+        const response = await apiClient.get('/api/admin/risks');
+        const data = await response.json();
+        
+        if (data && data.summary) {
+          setRiskAssessment(data);
+          console.log(`✓ Risk assessment loaded: ${data.summary.risky} risky facilities`);
+        }
+      } catch (err) {
+        console.error('Error fetching risk assessment:', err);
+      } finally {
+        setLoadingRisks(false);
+      }
+    };
+
+    fetchRisks();
+    // Refresh every 30 minutes
+    const interval = setInterval(fetchRisks, 30 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -293,6 +322,7 @@ export default function AdminMVP({ token, currentUser }) {
         {/* Tab Navigation */}
         <div style={{ padding: '10px', borderBottom: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: 4 }}>
           {[
+            { id: 'risks', label: '⚠️ Risiko-analyse', icon: '⚠️' },
             { id: 'overview', label: '📊 Oversikt', icon: '📊' },
             { id: 'facility-alerts', label: '🚨 Risiko-varsler', icon: '🚨' },
             { id: 'outbreaks', label: '🦐 Utbrudd (Real)', icon: '🦐' },
@@ -378,15 +408,155 @@ export default function AdminMVP({ token, currentUser }) {
         {/* Header */}
         <div style={{ background: 'var(--bg-dark)', padding: '12px 16px', borderBottom: '2px solid var(--accent-gold)', position: 'sticky', top: 0, zIndex: 100 }}>
           <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: 'var(--accent-gold)' }}>
-            REGULATOR
+            ADMIN
           </h1>
           <p style={{ margin: '2px 0 0 0', fontSize: 12, color: 'var(--text-secondary)' }}>
-            Mattilsynet - Master dashboard
+            Ditt administratorpanel
           </p>
         </div>
 
         {/* Main Content */}
         <div style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
+          {/* RISK ANALYSIS TAB */}
+          {activeTab === 'risks' && (
+            <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
+              {loadingRisks ? (
+                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
+                  ⏳ Laster risiko-analyse...
+                </div>
+              ) : riskAssessment ? (
+                <>
+                  {/* Summary Cards */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginBottom: 16 }}>
+                    <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
+                      <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 6, textTransform: 'uppercase' }}>Total</p>
+                      <p style={{ fontSize: 28, fontWeight: 700, color: 'var(--accent-gold)', margin: 0 }}>{riskAssessment.metadata.total_facilities}</p>
+                    </div>
+                    <div style={{ background: 'rgba(220, 38, 38, 0.1)', border: '2px solid #DC2626', borderRadius: 6, padding: 12, textAlign: 'center' }}>
+                      <p style={{ fontSize: 10, fontWeight: 600, color: '#DC2626', margin: 0, marginBottom: 6, textTransform: 'uppercase' }}>🔴 Kritisk</p>
+                      <p style={{ fontSize: 28, fontWeight: 700, color: '#DC2626', margin: 0 }}>{riskAssessment.summary.critical}</p>
+                    </div>
+                    <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '2px solid #F59E0B', borderRadius: 6, padding: 12, textAlign: 'center' }}>
+                      <p style={{ fontSize: 10, fontWeight: 600, color: '#F59E0B', margin: 0, marginBottom: 6, textTransform: 'uppercase' }}>🟠 Høy</p>
+                      <p style={{ fontSize: 28, fontWeight: 700, color: '#F59E0B', margin: 0 }}>{riskAssessment.summary.high}</p>
+                    </div>
+                    <div style={{ background: 'rgba(59, 130, 246, 0.1)', border: '2px solid #3B82F6', borderRadius: 6, padding: 12, textAlign: 'center' }}>
+                      <p style={{ fontSize: 10, fontWeight: 600, color: '#3B82F6', margin: 0, marginBottom: 6, textTransform: 'uppercase' }}>🟡 Medium</p>
+                      <p style={{ fontSize: 28, fontWeight: 700, color: '#3B82F6', margin: 0 }}>{riskAssessment.summary.medium}</p>
+                    </div>
+                    <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '2px solid #10B981', borderRadius: 6, padding: 12, textAlign: 'center' }}>
+                      <p style={{ fontSize: 10, fontWeight: 600, color: '#10B981', margin: 0, marginBottom: 6, textTransform: 'uppercase' }}>✓ Grønn</p>
+                      <p style={{ fontSize: 28, fontWeight: 700, color: '#10B981', margin: 0 }}>{riskAssessment.summary.safe}</p>
+                    </div>
+                  </div>
+
+                  {/* Risk Facilities List */}
+                  {riskAssessment.risky.length > 0 ? (
+                    <>
+                      <h3 style={{ color: 'var(--accent-gold)', fontSize: 14, fontWeight: 600, marginBottom: 12, marginTop: 0 }}>⚠️ Risiko-anlegg ({riskAssessment.risky.length})</h3>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 8 }}>
+                        {riskAssessment.risky.map((facility, idx) => (
+                          <div
+                            key={idx}
+                            onClick={() => setSelectedRiskyFacility(selectedRiskyFacility?.id === facility.id ? null : facility)}
+                            style={{
+                              background: 'var(--bg-elevated)',
+                              border: facility.riskLevel === 'CRITICAL' ? '2px solid #DC2626' : facility.riskLevel === 'HIGH' ? '2px solid #F59E0B' : '2px solid #3B82F6',
+                              borderRadius: 6,
+                              padding: 12,
+                              cursor: 'pointer',
+                              transition: 'all 0.15s ease'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(212, 165, 116, 0.1)'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'var(--bg-elevated)'}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <div>
+                                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>
+                                  {facility.name} ({facility.municipality})
+                                </p>
+                                <p style={{ margin: '4px 0 0 0', fontSize: 11, color: 'var(--text-secondary)' }}>
+                                  Lus: {facility.liceCount} | Status: {facility.diseaseStatus || 'OK'}
+                                </p>
+                              </div>
+                              <div style={{ textAlign: 'right' }}>
+                                <p style={{ margin: 0, fontSize: 20, fontWeight: 700, color: facility.riskLevel === 'CRITICAL' ? '#DC2626' : facility.riskLevel === 'HIGH' ? '#F59E0B' : '#3B82F6' }}>
+                                  {facility.ownRisk}
+                                </p>
+                                <p style={{ margin: '2px 0 0 0', fontSize: 10, fontWeight: 600, color: facility.riskLevel === 'CRITICAL' ? '#DC2626' : facility.riskLevel === 'HIGH' ? '#F59E0B' : '#3B82F6' }}>
+                                  {facility.riskLevel}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Expanded detail view */}
+                            {selectedRiskyFacility?.id === facility.id && (
+                              <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--border-color)' }}>
+                                <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', margin: '0 0 8px 0', textTransform: 'uppercase' }}>
+                                  Kan smitte følgende anlegg:
+                                </p>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
+                                  {facility.transmissionTargets.slice(0, 6).map((target, tidx) => (
+                                    <div key={tidx} style={{ background: 'var(--bg-dark)', padding: 8, borderRadius: 4, fontSize: 10 }}>
+                                      <p style={{ margin: '0 0 4px 0', fontWeight: 600, color: 'var(--text-primary)' }}>
+                                        {target.name}
+                                      </p>
+                                      <p style={{ margin: '0 0 2px 0', color: 'var(--text-secondary)' }}>
+                                        Risk: <span style={{ color: '#F59E0B', fontWeight: 600 }}>{target.transmissionRisk.score}</span>
+                                      </p>
+                                      <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
+                                        {target.transmissionRisk.distance.toFixed(1)} km
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                                <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border-color)' }}>
+                                  <button style={{
+                                    background: '#DC2626',
+                                    color: 'white',
+                                    border: 'none',
+                                    padding: '8px 12px',
+                                    borderRadius: 4,
+                                    fontSize: 11,
+                                    fontWeight: 600,
+                                    cursor: 'pointer',
+                                    marginRight: 8
+                                  }}>
+                                    📢 Send varsel til anlegg
+                                  </button>
+                                  <button style={{
+                                    background: '#F59E0B',
+                                    color: 'white',
+                                    border: 'none',
+                                    padding: '8px 12px',
+                                    borderRadius: 4,
+                                    fontSize: 11,
+                                    fontWeight: 600,
+                                    cursor: 'pointer'
+                                  }}>
+                                    ⛵ Send varsel til båter
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div style={{ background: 'var(--bg-elevated)', padding: 40, textAlign: 'center', borderRadius: 6 }}>
+                      <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>✓ Ingen anlegg over risikoterskelen (70+)</p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
+                  Ingen risiko-data tilgjengelig
+                </div>
+              )}
+            </div>
+          )}
+
           {/* OVERVIEW TAB */}
           {activeTab === 'overview' && (
             <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>

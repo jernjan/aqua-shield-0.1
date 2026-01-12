@@ -1,115 +1,233 @@
-function computeRiskForLocality({ locality, nearbyOutbreaks = 0, temperature = 6, currentSpeed = 0.5 }) {
-  // Simple rule-based score: base 20, +30 per nearby outbreak, +temp bonus, -currentSpeed*5
-  let score = 20
-  score += nearbyOutbreaks * 30
-  if (temperature >= 8) score += 10
-  if (temperature >= 12) score += 10
-  score -= currentSpeed * 5
-  score = Math.max(0, Math.min(100, score))
-  return { score }
+/**
+ * Risk Assessment Engine
+ * Calculates disease transmission risk between aquaculture facilities
+ * Based on: lice load, disease status, proximity, and ocean current patterns
+ */
+
+/**
+ * Calculate Haversine distance between two coordinates in kilometers
+ */
+function getDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371; // Earth's radius in km
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLng = (lng2 - lng1) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) *
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
 }
 
-module.exports = { computeRiskForLocality }
-// Distance-weighted rule-based risk calculation
-// Score: 0-100, threshold 60 for alert, 40 for warning
-
-function distanceWeight(distanceKm) {
-  if (distanceKm <= 1) return 1.0;
-  if (distanceKm <= 3) return 0.8;
-  if (distanceKm <= 5) return 0.6;
-  if (distanceKm <= 10) return 0.4;
-  if (distanceKm <= 20) return 0.2;
-  return 0;
+/**
+ * Calculate bearing (compass direction) from facility1 to facility2
+ * Returns degrees 0-360
+ */
+function getBearing(lat1, lng1, lat2, lng2) {
+  const dLng = (lng2 - lng1) * (Math.PI / 180);
+  const y = Math.sin(dLng) * Math.cos(lat2 * (Math.PI / 180));
+  const x =
+    Math.cos(lat1 * (Math.PI / 180)) * Math.sin(lat2 * (Math.PI / 180)) -
+    Math.sin(lat1 * (Math.PI / 180)) *
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.cos(dLng);
+  let bearing = Math.atan2(y, x) * (180 / Math.PI);
+  return (bearing + 360) % 360; // Normalize to 0-360
 }
 
-function degreesToKm(degrees) {
-  // 1 degree lat ≈ 111 km
-  return degrees * 111;
+/**
+ * Get default ocean current direction based on latitude/longitude
+ * Norwegian coast patterns (simplified model)
+ * Returns direction in degrees (0=North, 90=East, 180=South, 270=West)
+ */
+function getDefaultCurrentDirection(lat, lng) {
+  // Northern Norway (>68°N): Generally northbound along coast
+  if (lat > 68) return 0; // North
+  // Western Norway (around 60°N): Mix of directions
+  if (lat > 59 && lng < 8) return 340; // Northwest
+  // Southeast coast: Generally southbound
+  if (lat < 60) return 180; // South
+  // Default
+  return 350; // Slight northwest
 }
 
-// Calculate facility risk (0-100)
-function calculateFacilityRisk(facility, nearbyFacilities, temperature, currentStrength) {
+/**
+ * Calculate risk score for transmission FROM source TO target facility
+ * Risk factors: lice load, disease, proximity, current direction
+ */
+function calculateTransmissionRisk(source, target) {
+  // Factor 1: Source lice load (0-100)
+  // Higher lice = higher transmission risk
+  // Scale: <5 = 10, 5-10 = 30, 10-20 = 60, >20 = 100
+  let liceRisk = 0;
+  if (source.liceCount > 20) liceRisk = 100;
+  else if (source.liceCount > 10) liceRisk = 60;
+  else if (source.liceCount > 5) liceRisk = 30;
+  else if (source.liceCount > 0) liceRisk = 10;
+
+  // Factor 2: Source disease status (0-50 bonus)
+  let diseaseRisk = 0;
+  if (source.diseaseStatus === 'infected') diseaseRisk = 50;
+  else if (source.diseaseStatus === 'suspect') diseaseRisk = 25;
+
+  // Factor 3: Distance decay (0-50)
+  // Lice primarily spread within 5-10km
+  // >10km = minimal risk, 0-2km = maximum risk
+  const distance = getDistance(source.lat, source.lng, target.lat, target.lng);
+  let distanceRisk = 0;
+  if (distance < 2) distanceRisk = 50;
+  else if (distance < 5) distanceRisk = 40;
+  else if (distance < 10) distanceRisk = 20;
+  else if (distance < 15) distanceRisk = 5;
+  // else distanceRisk = 0; (already 0)
+
+  // Factor 4: Ocean current direction alignment
+  // If current flows FROM source TO target, transmission risk increases
+  let currentRisk = 0;
+  const bearing = getBearing(source.lat, source.lng, target.lat, target.lng);
+  const currentDir = source.currentDirection || getDefaultCurrentDirection(source.lat, source.lng);
+  const directionDiff = Math.abs(bearing - currentDir);
+  const normalizedDiff = directionDiff > 180 ? 360 - directionDiff : directionDiff;
+
+  // If current is aligned with bearing (within 45°): HIGH risk bonus
+  // If current is opposite (>135°): risk penalty
+  if (normalizedDiff < 45) {
+    currentRisk = 30; // Current flows toward target
+  } else if (normalizedDiff < 90) {
+    currentRisk = 15; // Partial alignment
+  } else if (normalizedDiff > 135) {
+    currentRisk = -15; // Current flows away
+  }
+
+  // Total risk (0-100 scale)
+  const totalRisk = Math.min(100, Math.max(0, liceRisk + diseaseRisk + distanceRisk + currentRisk));
+
+  return {
+    score: Math.round(totalRisk),
+    factors: {
+      lice: Math.round(liceRisk),
+      disease: Math.round(diseaseRisk),
+      distance: Math.round(distanceRisk),
+      current: Math.round(currentRisk),
+    },
+    distance: Math.round(distance * 10) / 10, // Round to 1 decimal
+  };
+}
+
+/**
+ * Calculate own risk score for a facility
+ * This is the baseline risk level (how infected is this facility?)
+ */
+function calculateFacilityRisk(facility) {
   let score = 0;
-  
-  // Lice load (40% of score)
-  const liceRatio = Math.min(facility.liceCount / 2, 1); // Normalize to 2 lice = max
-  score += liceRatio * 40;
-  
-  // Disease presence (35% of score)
-  if (facility.disease) {
-    score += 35;
-    // Specific disease weights
-    if (facility.disease === 'ILA') score += 15; // High impact
-    if (facility.disease === 'PD') score += 10;
-  }
-  
-  // Nearby diseased facilities (20% of score)
-  let diseasedNearby = 0;
-  nearbyFacilities.forEach(nearby => {
-    if (nearby.disease) {
-      const distKm = degreesToKm(
-        Math.sqrt(Math.pow(facility.lat - nearby.lat, 2) + Math.pow(facility.lng - nearby.lng, 2))
-      );
-      const weight = distanceWeight(distKm);
-      diseasedNearby += weight;
-    }
-  });
-  score += Math.min(diseasedNearby * 20, 20);
-  
-  // Temperature bonus (warm = faster disease spread)
-  if (temperature > 8) score += 5;
-  if (temperature > 10) score += 5;
-  
-  // Current strength (if strong, spreads faster)
-  if (currentStrength > 0.3) score += 5;
-  
-  return Math.min(Math.round(score), 100);
+
+  // Lice load component
+  if (facility.liceCount > 20) score += 60;
+  else if (facility.liceCount > 10) score += 40;
+  else if (facility.liceCount > 5) score += 25;
+  else if (facility.liceCount > 0) score += 10;
+
+  // Disease status component
+  if (facility.diseaseStatus === 'infected') score += 40;
+  else if (facility.diseaseStatus === 'suspect') score += 20;
+
+  return Math.min(100, score);
 }
 
-// Calculate vessel risk (0-100)
-function calculateVesselRisk(vessel, nearbyFacilities, visitsWithin1h) {
-  let score = 0;
-  
-  // Visited high-risk facilities recently
-  let riskyVisits = 0;
-  nearbyFacilities.forEach(facility => {
-    if (facility.disease || facility.liceCount > 1) {
-      riskyVisits += 30;
-    }
-  });
-  score += Math.min(riskyVisits, 60);
-  
-  // Number of visits within 1 hour
-  if (visitsWithin1h > 3) score += 20;
-  else if (visitsWithin1h > 1) score += 10;
-  
-  // Vessel type (wellboats are higher risk)
-  if (vessel.type?.includes('Well') || vessel.type?.includes('well')) {
-    score += 20;
+/**
+ * Find all facilities at risk (score >= threshold)
+ * Calculate transmission risks to nearby facilities
+ */
+function assessAllRisks(facilities, riskThreshold = 70) {
+  if (!facilities || facilities.length === 0) {
+    return { risky: [], safe: [], summary: { critical: 0, high: 0, medium: 0 } };
   }
-  
-  return Math.min(Math.round(score), 100);
+
+  // Calculate own risk for each facility
+  const facilitiesWithRisk = facilities.map(f => ({
+    ...f,
+    ownRisk: calculateFacilityRisk(f),
+  }));
+
+  // Find risky facilities
+  const risky = facilitiesWithRisk
+    .filter(f => f.ownRisk >= riskThreshold)
+    .map(source => {
+      // For each risky facility, find transmission risks to nearby ones
+      const transmissionRisks = facilitiesWithRisk
+        .filter(target => target.id !== source.id)
+        .map(target => {
+          const risk = calculateTransmissionRisk(source, target);
+          return risk.score > 0 ? { ...target, transmissionRisk: risk } : null;
+        })
+        .filter(x => x !== null)
+        .sort((a, b) => b.transmissionRisk.score - a.transmissionRisk.score)
+        .slice(0, 10); // Top 10 transmission targets
+
+      return {
+        ...source,
+        transmissionTargets: transmissionRisks,
+        riskLevel:
+          source.ownRisk >= 85 ? 'CRITICAL' : source.ownRisk >= 75 ? 'HIGH' : 'MEDIUM',
+      };
+    })
+    .sort((a, b) => b.ownRisk - a.ownRisk);
+
+  // Safe facilities
+  const safe = facilitiesWithRisk.filter(f => f.ownRisk < riskThreshold);
+
+  // Summary stats
+  const summary = {
+    total: facilities.length,
+    risky: risky.length,
+    safe: safe.length,
+    critical: risky.filter(f => f.riskLevel === 'CRITICAL').length,
+    high: risky.filter(f => f.riskLevel === 'HIGH').length,
+    medium: risky.filter(f => f.riskLevel === 'MEDIUM').length,
+  };
+
+  return {
+    risky,
+    safe,
+    summary,
+    timestamp: new Date().toISOString(),
+  };
 }
 
-// Get risk level name
-function getRiskLevel(score) {
-  if (score >= 60) return 'kritisk';
-  if (score >= 40) return 'varsel';
-  return 'grønn';
-}
+/**
+ * Get facilities that could be infected by a specific source facility
+ * Within next 2-7 days (simplified: within 15km + good current alignment)
+ */
+function getPredictedSpreaders(facilities, sourceFacilityId, daysAhead = 3) {
+  const source = facilities.find(f => f.id === sourceFacilityId);
+  if (!source) return [];
 
-// Get risk color for UI
-function getRiskColor(level) {
-  switch (level) {
-    case 'kritisk': return '#DC2626'; // Red
-    case 'varsel': return '#F59E0B'; // Amber
-    default: return '#10B981'; // Green
-  }
+  const targets = facilities
+    .filter(f => f.id !== sourceFacilityId)
+    .map(target => {
+      const risk = calculateTransmissionRisk(source, target);
+      return risk.score > 20
+        ? {
+            ...target,
+            spreadRisk: risk,
+            daysToInfection: Math.ceil(20 / Math.max(1, risk.score)),
+          }
+        : null;
+    })
+    .filter(x => x !== null)
+    .sort((a, b) => b.spreadRisk.score - a.spreadRisk.score);
+
+  return targets;
 }
 
 module.exports = {
+  getDistance,
+  getBearing,
+  getDefaultCurrentDirection,
+  calculateTransmissionRisk,
   calculateFacilityRisk,
-  calculateVesselRisk,
-  getRiskLevel,
-  getRiskColor
+  assessAllRisks,
+  getPredictedSpreaders,
 };

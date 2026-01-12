@@ -366,6 +366,69 @@ app.get('/api/mvp/admin/alerts', (req, res) => {
   res.json({ alerts: MVP.adminStats.topAlerts })
 })
 
+// Admin: Risk Assessment Dashboard
+app.get('/api/admin/risks', async (req, res) => {
+  try {
+    const { assessAllRisks } = require('./utils/risk')
+    const db = await readDB()
+    
+    // Get all facilities from database
+    const facilities = db.facilities || []
+    
+    if (facilities.length === 0) {
+      return res.json({
+        risky: [],
+        safe: [],
+        summary: { total: 0, risky: 0, safe: 0, critical: 0, high: 0, medium: 0 },
+        timestamp: new Date().toISOString(),
+        message: 'No facility data available'
+      })
+    }
+    
+    // Calculate risks
+    const risks = assessAllRisks(facilities, 70) // Threshold: 70+
+    
+    res.json({
+      ...risks,
+      metadata: {
+        threshold: 70,
+        total_facilities: facilities.length,
+        last_sync: db.lastSync
+      }
+    })
+  } catch (err) {
+    console.error('❌ Risk assessment failed:', err.message)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Admin: Detail view of a specific facility and its transmission risk
+app.get('/api/admin/risks/:facilityId', async (req, res) => {
+  try {
+    const { getPredictedSpreaders } = require('./utils/risk')
+    const db = await readDB()
+    const facilities = db.facilities || []
+    const facilityId = req.params.facilityId
+    
+    const facility = facilities.find(f => f.id === facilityId)
+    if (!facility) {
+      return res.status(404).json({ error: 'Facility not found' })
+    }
+    
+    // Get predicted spreaders (facilities that could be infected)
+    const spreaders = getPredictedSpreaders(facilities, facilityId)
+    
+    res.json({
+      facility,
+      predictedSpreaders: spreaders,
+      timestamp: new Date().toISOString()
+    })
+  } catch (err) {
+    console.error('❌ Failed to get facility details:', err.message)
+    res.status(500).json({ error: err.message })
+  }
+})
+
 // Admin: vessels overview and per-vessel tasks
 app.get('/api/mvp/admin/vessels', (req, res) => {
   const vessels = MVP.vessels
