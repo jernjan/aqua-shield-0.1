@@ -9,6 +9,17 @@ export default function ValidationDashboard() {
   const [loading, setLoading] = useState(false)
   const [validating, setValidating] = useState(false)
   const [metricsHistory, setMetricsHistory] = useState([]) // NEW: Track metrics over time
+  
+  // BACKTESTING STATE
+  const [activeTab, setActiveTab] = useState('validation') // 'validation' or 'backtesting'
+  const [btStartDate, setBtStartDate] = useState('2024-01-01')
+  const [btEndDate, setBtEndDate] = useState('2024-12-31')
+  const [btStep, setBtStep] = useState('7days')
+  const [btJobId, setBtJobId] = useState(null)
+  const [btJobStatus, setBtJobStatus] = useState(null)
+  const [btResults, setBtResults] = useState(null)
+  const [btLoading, setBtLoading] = useState(false)
+  const [btMode, setBtMode] = useState('setup') // 'setup', 'running', 'results'
 
   // Load metrics and pending forecasts
   useEffect(() => {
@@ -111,6 +122,54 @@ export default function ValidationDashboard() {
     }
   }
 
+  // BACKTESTING FUNCTIONS
+  async function startBacktest() {
+    try {
+      setBtLoading(true)
+      setBtMode('running')
+      setBtResults(null)
+
+      const res = await fetch('/api/admin/backtest/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ startDate: btStartDate, endDate: btEndDate, step: btStep })
+      })
+
+      if (!res.ok) throw new Error('Failed to start backtest')
+      
+      const data = await res.json()
+      setBtJobId(data.jobId)
+      
+      // Start monitoring
+      monitorBacktest(data.jobId)
+    } catch (err) {
+      console.error('Backtest error:', err)
+      setBtMode('setup')
+    } finally {
+      setBtLoading(false)
+    }
+  }
+
+  async function monitorBacktest(jobId) {
+    const checkInterval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/admin/backtest/status/${jobId}`)
+        if (!res.ok) return
+
+        const status = await res.json()
+        setBtJobStatus(status)
+
+        if (status.status === 'completed') {
+          clearInterval(checkInterval)
+          setBtResults(status.result)
+          setBtMode('results')
+        }
+      } catch (err) {
+        console.error('Monitor error:', err)
+      }
+    }, 20000) // Check every 20 seconds
+  }
+
   if (!metrics || !pending) {
     return <div className="validation-dashboard loading">Laster data...</div>
   }
@@ -120,43 +179,331 @@ export default function ValidationDashboard() {
       <h1>🔍 Validerings-Dashboard</h1>
       <p className="subtitle">Sammenlign prognoser mot faktiske BarentsWatch-data</p>
 
-      {/* Metrics Cards */}
-      <div className="metrics-grid">
-        <div className="metric-card accuracy">
-          <div className="metric-label">Nøyaktighet</div>
-          <div className="metric-value">{metrics.accuracy}%</div>
-          <div className="metric-detail">
-            {metrics.results.TP + metrics.results.TN} av {metrics.validatedForecasts} validert
-          </div>
-        </div>
-
-        <div className="metric-card precision">
-          <div className="metric-label">Presisjon</div>
-          <div className="metric-value">{metrics.precision}%</div>
-          <div className="metric-detail">
-            Når vi sier "HØY RISIKO", har vi rett {metrics.precision}% av gangen
-          </div>
-        </div>
-
-        <div className="metric-card recall">
-          <div className="metric-label">Sensitivitet (Recall)</div>
-          <div className="metric-value">{metrics.recall}%</div>
-          <div className="metric-detail">
-            Vi fanger opp {metrics.recall}% av faktiske utbrudd
-          </div>
-        </div>
-
-        <div className="metric-card fpr">
-          <div className="metric-label">False Positive Rate</div>
-          <div className="metric-value">{metrics.falsePositiveRate}%</div>
-          <div className="metric-detail">
-            {metrics.results.FP} falskalarm av {metrics.results.FP + metrics.results.TN} normale dager
-          </div>
-        </div>
+      {/* TAB SELECTOR */}
+      <div style={{
+        display: 'flex',
+        gap: 8,
+        marginBottom: 24,
+        borderBottom: '2px solid #e5e7eb',
+        paddingBottom: 12
+      }}>
+        <button
+          onClick={() => setActiveTab('validation')}
+          style={{
+            padding: '8px 16px',
+            background: activeTab === 'validation' ? '#3B82F6' : 'transparent',
+            color: activeTab === 'validation' ? 'white' : '#6B7280',
+            border: 'none',
+            borderRadius: 4,
+            cursor: 'pointer',
+            fontWeight: 600,
+            fontSize: 14
+          }}
+        >
+          ✅ Validering (Forecast-basert)
+        </button>
+        <button
+          onClick={() => setActiveTab('backtesting')}
+          style={{
+            padding: '8px 16px',
+            background: activeTab === 'backtesting' ? '#3B82F6' : 'transparent',
+            color: activeTab === 'backtesting' ? 'white' : '#6B7280',
+            border: 'none',
+            borderRadius: 4,
+            cursor: 'pointer',
+            fontWeight: 600,
+            fontSize: 14
+          }}
+        >
+          🧪 Backtesting (Historisk data)
+        </button>
       </div>
 
-      {/* Summary Stats */}
-      <div className="summary-box">
+      {/* BACKTESTING TAB */}
+      {activeTab === 'backtesting' && (
+        <div style={{ marginTop: 24 }}>
+          {btMode === 'setup' && (
+            <div style={{
+              background: 'white',
+              border: '1px solid #e5e7eb',
+              borderRadius: 8,
+              padding: 24,
+              marginBottom: 24
+            }}>
+              <h2 style={{ margin: '0 0 16px 0', fontSize: 18, fontWeight: 700 }}>🧪 Backtesting</h2>
+              <p style={{ color: '#666', marginBottom: 20 }}>
+                Velg en historisk periode, kjør algoritmen som om det var på den tiden, og se hvor nøyaktig den ville ha vært.
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 14 }}>Startdato</label>
+                  <input
+                    type="date"
+                    value={btStartDate}
+                    onChange={(e) => setBtStartDate(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: 4,
+                      fontSize: 14
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 14 }}>Sluttdato</label>
+                  <input
+                    type="date"
+                    value={btEndDate}
+                    onChange={(e) => setBtEndDate(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: 4,
+                      fontSize: 14
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 600, marginBottom: 6, fontSize: 14 }}>Tidssteg</label>
+                  <select
+                    value={btStep}
+                    onChange={(e) => setBtStep(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: 4,
+                      fontSize: 14
+                    }}
+                  >
+                    <option value="1day">Daglig</option>
+                    <option value="7days">Ukentlig (7 dager)</option>
+                    <option value="14days">Annenhver uke (14 dager)</option>
+                  </select>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+                  <button
+                    onClick={startBacktest}
+                    disabled={btLoading}
+                    style={{
+                      width: '100%',
+                      padding: '10px 16px',
+                      background: '#3B82F6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: 4,
+                      cursor: btLoading ? 'not-allowed' : 'pointer',
+                      fontWeight: 600,
+                      opacity: btLoading ? 0.6 : 1
+                    }}
+                  >
+                    {btLoading ? '⏳ Starter...' : '🚀 Start'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {btMode === 'running' && btJobStatus && (
+            <div style={{
+              background: 'white',
+              border: '1px solid #e5e7eb',
+              borderRadius: 8,
+              padding: 24,
+              marginBottom: 24
+            }}>
+              <h2 style={{ margin: '0 0 16px 0', fontSize: 18, fontWeight: 700 }}>⏳ Backtesting kjører...</h2>
+              <div style={{ background: '#f3f4f6', borderRadius: 4, padding: 16, marginBottom: 16 }}>
+                <div style={{
+                  background: '#dbeafe',
+                  height: 8,
+                  borderRadius: 4,
+                  overflow: 'hidden'
+                }}>
+                  <div
+                    style={{
+                      width: `${btJobStatus.progress}%`,
+                      height: '100%',
+                      background: '#3B82F6',
+                      transition: 'width 0.3s'
+                    }}
+                  />
+                </div>
+                <p style={{ marginTop: 12, fontWeight: 600, color: '#1f2937' }}>
+                  {btJobStatus.progress}% - Prosesserer {btJobStatus.currentDate}
+                </p>
+                <p style={{ marginTop: 4, fontSize: 12, color: '#6b7280' }}>
+                  Periode: {btJobStatus.startDate} til {btJobStatus.endDate}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {btMode === 'results' && btResults && (
+            <div style={{
+              background: 'white',
+              border: '1px solid #e5e7eb',
+              borderRadius: 8,
+              padding: 24,
+              marginBottom: 24
+            }}>
+              <h2 style={{ margin: '0 0 16px 0', fontSize: 18, fontWeight: 700 }}>✅ Backtesting Fullført!</h2>
+              
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr 1fr 1fr',
+                gap: 16,
+                marginBottom: 24
+              }}>
+                <div style={{
+                  background: '#f0fdf4',
+                  border: '1px solid #dcfce7',
+                  borderRadius: 6,
+                  padding: 16
+                }}>
+                  <div style={{ fontSize: 12, color: '#166534', fontWeight: 600 }}>Nøyaktighet</div>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: '#16a34a', marginTop: 4 }}>
+                    {(btResults.sensitivity * 100).toFixed(1)}%
+                  </div>
+                  <div style={{ fontSize: 11, color: '#6b7280', marginTop: 4 }}>True Positive Rate</div>
+                </div>
+
+                <div style={{
+                  background: '#fef3c7',
+                  border: '1px solid #fcd34d',
+                  borderRadius: 6,
+                  padding: 16
+                }}>
+                  <div style={{ fontSize: 12, color: '#92400e', fontWeight: 600 }}>Spesifisitet</div>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: '#f59e0b', marginTop: 4 }}>
+                    {(btResults.specificity * 100).toFixed(1)}%
+                  </div>
+                  <div style={{ fontSize: 11, color: '#6b7280', marginTop: 4 }}>True Negative Rate</div>
+                </div>
+
+                <div style={{
+                  background: '#dbeafe',
+                  border: '1px solid #93c5fd',
+                  borderRadius: 6,
+                  padding: 16
+                }}>
+                  <div style={{ fontSize: 12, color: '#1e40af', fontWeight: 600 }}>Presisjon</div>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: '#3b82f6', marginTop: 4 }}>
+                    {(btResults.precision * 100).toFixed(1)}%
+                  </div>
+                  <div style={{ fontSize: 11, color: '#6b7280', marginTop: 4 }}>Positive Predictive Value</div>
+                </div>
+
+                <div style={{
+                  background: '#f5e6ff',
+                  border: '1px solid #e9d5ff',
+                  borderRadius: 6,
+                  padding: 16
+                }}>
+                  <div style={{ fontSize: 12, color: '#6b21a8', fontWeight: 600 }}>F1 Score</div>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: '#a855f7', marginTop: 4 }}>
+                    {btResults.f1.toFixed(3)}
+                  </div>
+                  <div style={{ fontSize: 11, color: '#6b7280', marginTop: 4 }}>Harmonisk gjennomsnitt</div>
+                </div>
+              </div>
+
+              <div style={{
+                background: '#f9fafb',
+                borderRadius: 6,
+                padding: 16,
+                marginBottom: 16
+              }}>
+                <h3 style={{ margin: '0 0 12px 0', fontSize: 14, fontWeight: 700 }}>Confusion Matrix</h3>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr 1fr 1fr',
+                  gap: 12
+                }}>
+                  <div style={{ textAlign: 'center', padding: 12, background: '#ecfdf5', borderRadius: 4 }}>
+                    <div style={{ fontSize: 12, color: '#65a30d', fontWeight: 600 }}>TP</div>
+                    <div style={{ fontSize: 20, fontWeight: 700, color: '#16a34a' }}>{btResults.truePositives}</div>
+                    <div style={{ fontSize: 10, color: '#6b7280', marginTop: 4 }}>Korrekt prognose HØY</div>
+                  </div>
+                  <div style={{ textAlign: 'center', padding: 12, background: '#fef2f2', borderRadius: 4 }}>
+                    <div style={{ fontSize: 12, color: '#dc2626', fontWeight: 600 }}>FP</div>
+                    <div style={{ fontSize: 20, fontWeight: 700, color: '#dc2626' }}>{btResults.falsePositives}</div>
+                    <div style={{ fontSize: 10, color: '#6b7280', marginTop: 4 }}>Falskalarm</div>
+                  </div>
+                  <div style={{ textAlign: 'center', padding: 12, background: '#eff6ff', borderRadius: 4 }}>
+                    <div style={{ fontSize: 12, color: '#0369a1', fontWeight: 600 }}>TN</div>
+                    <div style={{ fontSize: 20, fontWeight: 700, color: '#3b82f6' }}>{btResults.trueNegatives}</div>
+                    <div style={{ fontSize: 10, color: '#6b7280', marginTop: 4 }}>Korrekt prognose LAV</div>
+                  </div>
+                  <div style={{ textAlign: 'center', padding: 12, background: '#fef3f2', borderRadius: 4 }}>
+                    <div style={{ fontSize: 12, color: '#ea580c', fontWeight: 600 }}>FN</div>
+                    <div style={{ fontSize: 20, fontWeight: 700, color: '#f97316' }}>{btResults.falseNegatives}</div>
+                    <div style={{ fontSize: 10, color: '#6b7280', marginTop: 4 }}>Misset utbrudd</div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setBtMode('setup')}
+                style={{
+                  padding: '10px 16px',
+                  background: '#3B82F6',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 4,
+                  cursor: 'pointer',
+                  fontWeight: 600
+                }}
+              >
+                Kjør ny test
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* VALIDATION TAB - ORIGINAL CONTENT */}
+      {activeTab === 'validation' && (
+        <div>
+          <div className="metrics-grid">
+            <div className="metric-card accuracy">
+              <div className="metric-label">Nøyaktighet</div>
+              <div className="metric-value">{metrics.accuracy}%</div>
+              <div className="metric-detail">
+                {metrics.results.TP + metrics.results.TN} av {metrics.validatedForecasts} validert
+              </div>
+            </div>
+
+            <div className="metric-card precision">
+              <div className="metric-label">Presisjon</div>
+              <div className="metric-value">{metrics.precision}%</div>
+              <div className="metric-detail">
+                Når vi sier "HØY RISIKO", har vi rett {metrics.precision}% av gangen
+              </div>
+            </div>
+
+            <div className="metric-card recall">
+              <div className="metric-label">Sensitivitet (Recall)</div>
+              <div className="metric-value">{metrics.recall}%</div>
+              <div className="metric-detail">
+                Vi fanger opp {metrics.recall}% av faktiske utbrudd
+              </div>
+            </div>
+
+            <div className="metric-card fpr">
+              <div className="metric-label">False Positive Rate</div>
+              <div className="metric-value">{metrics.falsePositiveRate}%</div>
+              <div className="metric-detail">
+                {metrics.results.FP} falskalarm av {metrics.results.FP + metrics.results.TN} normale dager
+              </div>
+            </div>
+          </div>
+
+        {/* Summary Stats */}
+        <div className="summary-box">
         <div className="summary-stat">
           <span>Totale Prognoser:</span>
           <strong>{metrics.totalForecasts}</strong>
@@ -383,29 +730,39 @@ export default function ValidationDashboard() {
           </div>
         )}
 
-        <button onClick={() => setFacilityHistory(null)} className="btn-small">
-          Tilbake
-        </button>
-      </div>
+            <button onClick={() => setFacilityHistory(null)} className="btn-small">
+              Tilbake
+            </button>
+          </div>
 
-      {/* Info Box */}
-      <div className="info-box">
-        <h4>📝 Hvordan valideringen fungerer:</h4>
-        <ol>
-          <li><strong>Prognose lagres:</strong> Når risiko beregnes, lagres prognosen (eks: "75% risiko om 5 dager")</li>
-          <li><strong>Ventetid:</strong> Systemet venter 24+ timer slik at BarentsWatch har oppdatert data</li>
-          <li><strong>Sammenligning:</strong> Systemet sjekker BarentsWatch mot prognosen</li>
-          <li><strong>Resultat markeres:</strong>
-            <ul>
-              <li><strong>TP:</strong> Prognostiserte HØY risiko → faktisk så HØY risiko ✅</li>
-              <li><strong>FP:</strong> Prognostiserte HØY risiko → faktisk var det LAV ❌ (falskalarm)</li>
-              <li><strong>TN:</strong> Prognostiserte LAV risiko → faktisk var det LAV ✅</li>
-              <li><strong>FN:</strong> Prognostiserte LAV risiko → faktisk så HØY risiko ❌ (misset det)</li>
-            </ul>
-          </li>
-          <li><strong>Metrikker:</strong> Fra disse markene beregner systemet nøyaktighet, presisjon, og sensitivitet</li>
-        </ol>
-      </div>
+          {/* Info Box */}
+          <div className="info-box">
+            <h4>📝 Hvordan valideringen fungerer:</h4>
+            <ol>
+              <li><strong>Prognose lagres:</strong> Når risiko beregnes, lagres prognosen (eks: "75% risiko om 5 dager")</li>
+              <li><strong>Ventetid:</strong> Systemet venter 24+ timer slik at BarentsWatch har oppdatert data</li>
+              <li><strong>Sammenligning:</strong> Systemet sjekker BarentsWatch mot prognosen</li>
+              <li><strong>Resultat markeres:</strong>
+                <ul>
+                  <li><strong>TP:</strong> Prognostiserte HØY risiko → faktisk så HØY risiko ✅</li>
+                  <li><strong>FP:</strong> Prognostiserte HØY risiko → faktisk var det LAV ❌ (falskalarm)</li>
+                  <li><strong>TN:</strong> Prognostiserte LAV risiko → faktisk var det LAV ✅</li>
+                  <li><strong>FN:</strong> Prognostiserte LAV risiko → faktisk så HØY risiko ❌ (misset det)</li>
+                </ul>
+              </li>
+              <li><strong>Metrikker:</strong> Fra disse markene beregner systemet nøyaktighet, presisjon, og sensitivitet</li>
+            </ol>
+          </div>
+        </div>
+      )}
+
+      {/* BACKTESTING TAB */}
+      {activeTab === 'backtesting' && (
+        <div className="backtesting-section">
+          {/* Backtesting content will be here */}
+          <p>Backtesting mode (to be implemented)</p>
+        </div>
+      )}
     </div>
   )
 }
