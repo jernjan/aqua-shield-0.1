@@ -314,32 +314,25 @@ app.post('/api/admin/validation/auto-validate', async (req, res) => {
 
 // ============ ADMIN RISK ASSESSMENT ============
 // Admin: Risk Assessment Dashboard (AdminMVP uses this)
-app.get('/api/admin/risks', async (req, res) => {
+// Return MVP mock data for simplicity
+app.get('/api/admin/risks', (req, res) => {
   try {
-    const { assessAllRisks } = require('./utils/risk')
-    const db = await readDB()
-    
-    const facilities = db.facilities || []
-    
-    if (facilities.length === 0) {
-      return res.json({
-        risky: [],
-        safe: [],
-        summary: { total: 0, risky: 0, safe: 0, critical: 0, high: 0, medium: 0 },
-        timestamp: new Date().toISOString(),
-        message: 'No facility data available'
-      })
-    }
-    
-    const risks = assessAllRisks(facilities, 70)
+    // Get risky facilities from MVP data
+    const risky = MVP.farmers.filter(f => f.riskScore > 60)
+    const safe = MVP.farmers.filter(f => f.riskScore <= 60)
     
     res.json({
-      ...risks,
-      metadata: {
-        threshold: 70,
-        total_facilities: facilities.length,
-        last_sync: db.lastSync
-      }
+      risky: risky,
+      safe: safe,
+      summary: {
+        total: MVP.farmers.length,
+        risky: risky.length,
+        safe: safe.length,
+        critical: risky.filter(f => f.riskScore > 80).length,
+        high: risky.filter(f => f.riskScore > 60 && f.riskScore <= 80).length,
+        medium: safe.filter(f => f.riskScore > 40 && f.riskScore <= 60).length
+      },
+      timestamp: new Date().toISOString()
     })
   } catch (err) {
     console.error('❌ Risk assessment failed:', err.message)
@@ -347,20 +340,19 @@ app.get('/api/admin/risks', async (req, res) => {
   }
 })
 
-// Admin: Detail view of a specific facility and its transmission risk
-app.get('/api/admin/risks/:facilityId', async (req, res) => {
+// Admin: Detail view of a specific facility
+app.get('/api/admin/risks/:facilityId', (req, res) => {
   try {
-    const { getPredictedSpreaders } = require('./utils/risk')
-    const db = await readDB()
-    const facilities = db.facilities || []
-    const facilityId = req.params.facilityId
+    const { facilityId } = req.params
+    const facility = MVP.farmers.find(f => f.id === facilityId)
     
-    const facility = facilities.find(f => f.id === facilityId)
     if (!facility) {
       return res.status(404).json({ error: 'Facility not found' })
     }
     
-    const spreaders = getPredictedSpreaders(facilities, facilityId)
+    // Get nearby facilities as "predicted spreaders"
+    const nearbyData = MVP.nearbyFarmsMap[facilityId] || {}
+    const spreaders = nearbyData.nearby || []
     
     res.json({
       facility,
