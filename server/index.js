@@ -70,6 +70,25 @@ app.get('/api/farmer/my-facilities', async (req, res) => {
   }
 })
 
+// FarmerMVP: Get farms from MVP data
+app.get('/api/mvp/farmer', (req, res) => {
+  try {
+    res.json({
+      farms: MVP.farmers || [],
+      stats: { 
+        total: (MVP.farmers || []).length,
+        risky: (MVP.farmers || []).filter(f => f.riskScore > 60).length,
+        safe: (MVP.farmers || []).filter(f => f.riskScore <= 60).length
+      },
+      alertCount: (MVP.farmers || []).filter(f => f.riskScore > 60).length,
+      timestamp: new Date().toISOString()
+    })
+  } catch (err) {
+    console.error('Error fetching MVP farmer data:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
 // ============ VESSEL DASHBOARD ============
 // Get all vessels (VesselDashboard)
 app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
