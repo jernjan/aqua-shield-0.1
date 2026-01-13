@@ -114,6 +114,20 @@ async function initializeRealData() {
     
     await writeDB(db);
     console.log('✅ Real data initialization complete');
+
+    // Initialize MVP object for /api/mvp/* endpoints
+    global.MVP = {
+      farmers: db.facilities && db.facilities.length > 0 ? db.facilities.map(f => ({
+        id: f.id,
+        name: f.name,
+        lat: f.lat,
+        lng: f.lng,
+        riskScore: Math.floor(Math.random() * 100),
+        liceCount: f.liceCount || 0
+      })) : [],
+      vessels: db.vessels && db.vessels.length > 0 ? db.vessels : []
+    };
+    console.log(`✅ MVP object initialized (${global.MVP.farmers.length} farmers, ${global.MVP.vessels.length} vessels)`);
     
   } catch (err) {
     console.error('❌ Error initializing real data:', err.message);
