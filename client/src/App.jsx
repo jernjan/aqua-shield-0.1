@@ -42,38 +42,55 @@ const MVPWrapper = memo(({ children, onLogout, onSwitchRole, currentRole }) => (
       ← Velg bruker
     </button>
     
-    {/* Role Switcher - Demo only */}
+    {/* Role Switcher - Demo roles */}
     <div style={{
       position: 'fixed',
-      top: 10,
-      right: 10,
+      top: 12,
+      right: 12,
       display: 'flex',
-      gap: '8px',
+      gap: '6px',
       zIndex: 99998,
-      background: 'rgba(0,0,0,0.7)',
-      padding: '8px 12px',
-      borderRadius: 4,
-      border: '1px solid var(--border-color)'
+      background: 'rgba(20, 20, 30, 0.95)',
+      padding: '10px',
+      borderRadius: 6,
+      border: '2px solid var(--accent-gold)',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
     }}>
-      {['farmer', 'brønnbåt', 'admin'].map(role => (
+      {[
+        { role: 'farmer', label: '🌾 Farmer', color: '#8B5CF6' },
+        { role: 'brønnbåt', label: '⛵ Brønnbåt', color: '#06B6D4' },
+        { role: 'admin', label: '⚙️ Admin', color: '#F59E0B' }
+      ].map(({ role, label, color }) => (
         <button
           key={role}
           onClick={() => onSwitchRole(role)}
+          title={`Bytt til ${label}`}
           style={{
-            padding: '6px 12px',
-            background: currentRole === role ? 'var(--accent-gold)' : 'var(--bg-surface)',
+            padding: '8px 14px',
+            background: currentRole === role ? color : 'rgba(255,255,255,0.05)',
             color: currentRole === role ? '#000' : 'var(--text-primary)',
-            border: `1px solid ${currentRole === role ? 'var(--accent-gold)' : 'var(--border-color)'}`,
-            borderRadius: 3,
+            border: `2px solid ${currentRole === role ? color : 'rgba(255,255,255,0.1)'}`,
+            borderRadius: 4,
             cursor: 'pointer',
-            fontWeight: currentRole === role ? 600 : 400,
-            fontSize: '12px',
-            transition: 'all 0.2s ease'
+            fontWeight: currentRole === role ? 700 : 500,
+            fontSize: '13px',
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap'
           }}
-          onMouseEnter={(e) => !['farmer', 'brønnbåt', 'admin'].includes(currentRole) && (e.target.style.background = 'var(--bg-elevated)')}
-          onMouseLeave={(e) => currentRole !== role && (e.target.style.background = 'var(--bg-surface)')}
+          onMouseEnter={(e) => {
+            if (currentRole !== role) {
+              e.target.style.background = 'rgba(255,255,255,0.1)';
+              e.target.style.transform = 'scale(1.05)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (currentRole !== role) {
+              e.target.style.background = 'rgba(255,255,255,0.05)';
+              e.target.style.transform = 'scale(1)';
+            }
+          }}
         >
-          {role === 'farmer' ? '🌾' : role === 'brønnbåt' ? '⛵' : '👨‍💼'} {role}
+          {label}
         </button>
       ))}
     </div>
