@@ -320,6 +320,8 @@ app.get('/api/admin/risks', (req, res) => {
     // Get risky facilities from MVP data
     const risky = MVP.farmers.filter(f => f.riskScore > 60)
     const safe = MVP.farmers.filter(f => f.riskScore <= 60)
+    const critical = risky.filter(f => f.riskScore > 80).length
+    const high = risky.filter(f => f.riskScore > 60 && f.riskScore <= 80).length
     
     res.json({
       risky: risky,
@@ -328,9 +330,16 @@ app.get('/api/admin/risks', (req, res) => {
         total: MVP.farmers.length,
         risky: risky.length,
         safe: safe.length,
-        critical: risky.filter(f => f.riskScore > 80).length,
-        high: risky.filter(f => f.riskScore > 60 && f.riskScore <= 80).length,
+        critical: critical,
+        high: high,
         medium: safe.filter(f => f.riskScore > 40 && f.riskScore <= 60).length
+      },
+      metadata: {
+        total_facilities: MVP.farmers.length,
+        total_risky: risky.length,
+        total_safe: safe.length,
+        critical_count: critical,
+        high_count: high
       },
       timestamp: new Date().toISOString()
     })
