@@ -240,7 +240,7 @@ function App() {
     const pageMap = {
       'farmer': 'farmer-dashboard',
       'brønnbåt': 'vessel-dashboard',
-      'admin': 'mvp-admin'
+      'admin': 'admin-panel'
     }
     const targetPage = pageMap[role]
     if (targetPage) {
