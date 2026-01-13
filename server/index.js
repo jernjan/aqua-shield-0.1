@@ -6,6 +6,7 @@ const cors = require('cors')
 const path = require('path')
 const { readDB, writeDB } = require('./db')
 const mvpData = require('./mvp-data')
+const { initializeVesselTrackingCrons } = require('./cron/vessel-tracking')
 
 // Initialize MVP data (async - load real BarentsWatch and AIS data)
 let MVP = null
@@ -19,6 +20,9 @@ app.use(express.json())
 async function initMVP() {
   MVP = await mvpData.initWithRealData()
   console.log(`🚀 MVP initialized with ${MVP.farmers?.length || 0} farmers and ${MVP.vessels?.length || 0} vessels`)
+  
+  // Start vessel tracking cron jobs
+  initializeVesselTrackingCrons()
 }
 
 // Start initialization
@@ -349,6 +353,88 @@ app.post('/api/admin/validation/auto-validate', async (req, res) => {
     })
   } catch (err) {
     console.error('Error auto-validating forecasts:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// ============ VESSEL TRACKING SYSTEM ============
+// Record vessel positions (called 3x daily: 09:00, 13:00, 15:00)
+app.post('/api/admin/vessel-tracking/record', async (req, res) => {
+  try {
+    const vesselTracking = require('./utils/vessel-tracking')
+    const db = await readDB()
+    
+    const result = await vesselTracking.recordVesselPositions(db)
+    await writeDB(db)
+    
+    res.json({
+      success: true,
+      tracking: result
+    })
+  } catch (err) {
+    console.error('Error recording vessel positions:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Analyze vessel movement patterns
+app.get('/api/admin/vessel-tracking/analysis', async (req, res) => {
+  try {
+    const vesselTracking = require('./utils/vessel-tracking')
+    const db = await readDB()
+    const hoursWindow = parseInt(req.query.hours) || 24
+    
+    const analysis = vesselTracking.analyzeVesselMovement(db, hoursWindow)
+    res.json(analysis)
+  } catch (err) {
+    console.error('Error analyzing vessel movement:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Get facility vessel visit history
+app.get('/api/admin/vessel-tracking/facility/:facilityId', async (req, res) => {
+  try {
+    const { facilityId } = req.params
+    const vesselTracking = require('./utils/vessel-tracking')
+    const db = await readDB()
+    const hoursBack = parseInt(req.query.hours) || 72
+    
+    const history = vesselTracking.getFacilityVesselHistory(db, facilityId, hoursBack)
+    res.json(history)
+  } catch (err) {
+    console.error('Error getting facility vessel history:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Get vessel trajectory
+app.get('/api/admin/vessel-tracking/vessel/:vesselId', async (req, res) => {
+  try {
+    const { vesselId } = req.params
+    const vesselTracking = require('./utils/vessel-tracking')
+    const db = await readDB()
+    const hoursBack = parseInt(req.query.hours) || 72
+    
+    const trajectory = vesselTracking.getVesselTrajectory(db, vesselId, hoursBack)
+    res.json(trajectory)
+  } catch (err) {
+    console.error('Error getting vessel trajectory:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Correlate vessel movement with facility alerts
+app.get('/api/admin/vessel-tracking/correlations', async (req, res) => {
+  try {
+    const vesselTracking = require('./utils/vessel-tracking')
+    const db = await readDB()
+    const hoursWindow = parseInt(req.query.hours) || 72
+    
+    const correlations = vesselTracking.correlateVesselMovementWithAlerts(db, null, hoursWindow)
+    res.json(correlations)
+  } catch (err) {
+    console.error('Error correlating vessel movement:', err)
     res.status(500).json({ error: err.message })
   }
 })
