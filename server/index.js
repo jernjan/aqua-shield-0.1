@@ -7,14 +7,25 @@ const path = require('path')
 const { readDB, writeDB } = require('./db')
 const mvpData = require('./mvp-data')
 
-// Initialize MVP data
-const MVP = mvpData.init()
-
+// Initialize MVP data (async - load real BarentsWatch and AIS data)
+let MVP = null
 const app = express()
 const PORT = process.env.PORT || 3001
 
 app.use(cors())
 app.use(express.json())
+
+// Initialize MVP data on startup
+async function initMVP() {
+  MVP = await mvpData.initWithRealData()
+  console.log(`🚀 MVP initialized with ${MVP.farmers?.length || 0} farmers and ${MVP.vessels?.length || 0} vessels`)
+}
+
+// Start initialization
+initMVP().catch(err => {
+  console.error('Failed to initialize MVP:', err)
+  process.exit(1)
+})
 
 // ============ HEALTH CHECK ============
 app.get('/api/health', (req, res) => {
