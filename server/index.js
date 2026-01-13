@@ -38,6 +38,7 @@ app.get('/api/farmer/my-facilities', async (req, res) => {
   try {
     const { assessAllRisks } = require('./utils/risk')
     const { forecast7Day, shouldSendAlert } = require('./utils/forecast')
+    const { saveForecast } = require('./utils/validation')
     const db = await readDB()
     
     const facilities = db.facilities || []
@@ -53,16 +54,26 @@ app.get('/api/farmer/my-facilities', async (req, res) => {
     // Assess risks for all facilities
     const risks = assessAllRisks(facilities, 70)
     
-    // Enrich with forecast data
+    // Enrich with forecast data and SAVE for validation
     const facilitiesWithForecast = risks.risky.map(f => {
       const forecast = forecast7Day(f, [])
+      const shouldAlert = shouldSendAlert(f)
+      
+      // Save forecast for validation (day 1 data collection)
+      if (shouldAlert) {
+        saveForecast(db, f, forecast)
+      }
+      
       return {
         ...f,
         forecast: forecast,
-        shouldAlert: shouldSendAlert(f),
+        shouldAlert: shouldAlert,
         riskCategory: f.ownRisk >= 85 ? 'CRITICAL' : f.ownRisk >= 75 ? 'HIGH' : 'MEDIUM'
       }
     })
+    
+    // Persist forecasts to database
+    await writeDB(db)
     
     res.json({
       facilities: facilitiesWithForecast,
