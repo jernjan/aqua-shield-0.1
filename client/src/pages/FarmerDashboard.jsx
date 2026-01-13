@@ -288,7 +288,7 @@ export default function FarmerDashboard({ token, currentUser }) {
                 </span>
                 {facility.spreadSource && (
                   <span style={{ color: 'var(--text-secondary)', fontSize: 7, marginLeft: 'auto' }}>
-                    ↗ fra {facility.spreadSource.name} ({facility.spreadSource.lice} lus)
+                    ↗ fra {facility.spreadSource.name} ({facility.spreadSource.lice} lus) - {facility.spreadDistance || 0} km
                   </span>
                 )}
               </div>

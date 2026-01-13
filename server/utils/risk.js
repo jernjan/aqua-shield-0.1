@@ -242,17 +242,20 @@ async function assessAllRisks(facilities, vessels) {
     
     let spreadSource = null;
     let spreadBearing = 0;
+    let spreadDistance = 0;
     
     if (nearbyVessels.length > 0) {
       const riskiest = nearbyVessels.sort((a, b) => 
         (b.liceCount || 0) - (a.liceCount || 0)
       )[0];
+      spreadDistance = getDistance(facility, riskiest);
       spreadSource = { type: 'vessel', name: riskiest.name, lice: riskiest.liceCount || 0 };
-      spreadBearing = getBearing(spreadSource, facility);
+      spreadBearing = getBearing(riskiest, facility);
     } else if (nearbyFacilities.length > 0) {
       const riskiest = nearbyFacilities.sort((a, b) => 
         (b.liceCount || 0) - (a.liceCount || 0)
       )[0];
+      spreadDistance = getDistance(facility, riskiest);
       spreadSource = { type: 'facility', name: riskiest.name, lice: riskiest.liceCount || 0 };
       spreadBearing = getBearing(riskiest, facility);
     }
@@ -265,6 +268,7 @@ async function assessAllRisks(facilities, vessels) {
       nearbyVessels: nearbyVessels.length,
       spreadSource,
       spreadBearing: Math.round(spreadBearing),
+      spreadDistance: Math.round(spreadDistance * 10) / 10, // 1 decimal
       lastAssessed: new Date().toISOString()
     };
   });
