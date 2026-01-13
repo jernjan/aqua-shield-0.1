@@ -59,8 +59,8 @@ async function initializeRealData() {
       let vessels = await getAllVessels();
       
       if (!vessels || vessels.length === 0) {
-        console.log('⚠️ AIS unavailable, using test fallback');
-        vessels = generateTestVessels(30);
+        console.log('⚠️ AIS unavailable, generating test vessels');
+        vessels = generateTestVessels(20); // More vessels for testing
       }
       
       db.vessels = vessels;
@@ -68,6 +68,13 @@ async function initializeRealData() {
       console.log(`✅ Loaded ${vessels.length} vessels`);
     } else {
       console.log(`✅ Using cached vessels (${db.vessels.length} items)`);
+    }
+    
+    // Ensure we have vessels for Aakerblå
+    if (!db.vessels || db.vessels.length === 0) {
+      console.log('⚠️ Still no vessels, forcing test generation');
+      db.vessels = generateTestVessels(20);
+      db.vessels_updated_at = new Date().toISOString();
     }
     
     // Pre-populate demo users with some facilities
@@ -91,7 +98,9 @@ async function initializeRealData() {
     
     // Demo user: Aakerblå (vessel operator) - select one vessel
     if (!db.users['aakerblå']) {
-      const vesselIds = db.vessels.length > 0 ? [db.vessels[0].id] : [];
+      // Make sure we have vessels before assigning
+      const availableVessels = db.vessels && db.vessels.length > 0 ? db.vessels : [];
+      const vesselIds = availableVessels.length > 0 ? [availableVessels[0].id] : [];
       
       db.users['aakerblå'] = {
         id: 'aakerblå',
@@ -100,7 +109,7 @@ async function initializeRealData() {
         selectedVessels: vesselIds,
         createdAt: new Date().toISOString()
       };
-      console.log(`✅ Demo user 'aakerblå' created with ${vesselIds.length} vessel`);
+      console.log(`✅ Demo user 'aakerblå' created with ${vesselIds.length} vessel(s)`);
     }
     
     await writeDB(db);
