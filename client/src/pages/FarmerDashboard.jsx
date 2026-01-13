@@ -273,19 +273,22 @@ export default function FarmerDashboard({ token, currentUser }) {
             >
               <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: 'var(--text-primary)' }}>{facility.name}</p>
               <p style={{ margin: '2px 0 0 0', fontSize: 9, color: 'var(--text-secondary)' }}>{facility.municipality}</p>
-              <div style={{ marginTop: 4, display: 'flex', gap: 6, fontSize: 8 }}>
+              <div style={{ marginTop: 4, display: 'flex', gap: 6, fontSize: 8, alignItems: 'center' }}>
                 <span style={{
-                  background: facility.riskCategory === 'CRITICAL' ? 'rgba(220,38,38,0.3)' : facility.riskCategory === 'HIGH' ? 'rgba(245,158,11,0.3)' : 'rgba(59,130,246,0.3)',
+                  background: facility.riskScore > 70 ? 'rgba(220,38,38,0.3)' : facility.riskScore > 40 ? 'rgba(245,158,11,0.3)' : 'rgba(59,130,246,0.3)',
                   padding: '2px 6px',
                   borderRadius: 2,
-                  color: facility.riskCategory === 'CRITICAL' ? '#DC2626' : facility.riskCategory === 'HIGH' ? '#F59E0B' : '#3B82F6',
+                  color: facility.riskScore > 70 ? '#DC2626' : facility.riskScore > 40 ? '#F59E0B' : '#3B82F6',
                   fontWeight: 600
                 }}>
-                  {facility.ownRisk}%
+                  {facility.riskScore || 0}%
                 </span>
-                {facility.shouldAlert && (
-                  <span style={{ background: 'rgba(220,38,38,0.3)', padding: '2px 6px', borderRadius: 2, color: '#DC2626', fontWeight: 600 }}>
-                    🚨 Alert
+                <span style={{ color: 'var(--text-secondary)', fontSize: 7 }}>
+                  🦐 {facility.liceCount || 0} lus
+                </span>
+                {facility.spreadSource && (
+                  <span style={{ color: 'var(--text-secondary)', fontSize: 7, marginLeft: 'auto' }}>
+                    ↗ fra {facility.spreadSource.name} ({facility.spreadSource.lice} lus)
                   </span>
                 )}
               </div>

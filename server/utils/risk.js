@@ -233,11 +233,38 @@ function getPredictedSpreaders(facilities, sourceFacilityId, daysAhead = 3) {
 async function assessAllRisks(facilities, vessels) {
   return facilities.map(facility => {
     const risk = calculateFacilityRisk(facility, vessels);
+    
+    // Find highest-risk source (spreader)
+    const nearbyVessels = vessels.filter(v => getDistance(facility, v) < 100);
+    const nearbyFacilities = facilities.filter(f => 
+      f.id !== facility.id && getDistance(facility, f) < 50
+    );
+    
+    let spreadSource = null;
+    let spreadBearing = 0;
+    
+    if (nearbyVessels.length > 0) {
+      const riskiest = nearbyVessels.sort((a, b) => 
+        (b.liceCount || 0) - (a.liceCount || 0)
+      )[0];
+      spreadSource = { type: 'vessel', name: riskiest.name, lice: riskiest.liceCount || 0 };
+      spreadBearing = getBearing(spreadSource, facility);
+    } else if (nearbyFacilities.length > 0) {
+      const riskiest = nearbyFacilities.sort((a, b) => 
+        (b.liceCount || 0) - (a.liceCount || 0)
+      )[0];
+      spreadSource = { type: 'facility', name: riskiest.name, lice: riskiest.liceCount || 0 };
+      spreadBearing = getBearing(riskiest, facility);
+    }
+    
     return {
       ...facility,
       riskScore: Math.round(risk.baseRisk * 100),
       riskLevel: risk.baseRisk > 0.7 ? 'CRITICAL' : risk.baseRisk > 0.4 ? 'HIGH' : 'MEDIUM',
-      nearbyVessels: vessels.filter(v => getDistance(facility, v) < 50).length,
+      liceCount: facility.liceCount || 0,
+      nearbyVessels: nearbyVessels.length,
+      spreadSource,
+      spreadBearing: Math.round(spreadBearing),
       lastAssessed: new Date().toISOString()
     };
   });
