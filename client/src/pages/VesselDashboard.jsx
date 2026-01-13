@@ -44,17 +44,20 @@ export default function VesselDashboard() {
       setError(null)
       setLoading(true)
       setSelectedVessel(vesselId)
-      const res = await fetch(`/api/vessel/${vesselId}/nearby`, { timeout: 10000 })
-      if (!res.ok) {
-        throw new Error(`API error: ${res.status}`)
+      
+      // Find the vessel in our list
+      const selectedVesselData = vessels.find(v => v.id === vesselId);
+      
+      if (selectedVesselData) {
+        setVessel(selectedVesselData)
+        // For now, no nearby facilities calculation
+        setNearbyFacilities([])
+      } else {
+        setError('Skip ikke funnet')
       }
-      const data = await res.json()
-      setVessel(data.vessel)
-      setNearbyFacilities(data.nearbyFacilities || [])
     } catch (err) {
-      console.error('[VesselDashboard] Error loading vessel nearby facilities:', err)
-      setError(`Kunne ikke laste detaljer: ${err.message}`)
-      setNearbyFacilities([])
+      console.error('[VesselDashboard] Error selecting vessel:', err)
+      setError(`Feil: ${err.message}`)
     } finally {
       setLoading(false)
     }
