@@ -287,16 +287,24 @@ app.get('/api/farmer/my-facilities', async (req, res) => {
 })
 
 // FarmerMVP: Get farms from MVP data
-app.get('/api/mvp/farmer', (req, res) => {
+app.get('/api/mvp/farmer', async (req, res) => {
   try {
+    // Lazy-load MVP data if not initialized
+    if (!mvpInitialized || !global.MVP || !global.MVP.farmers) {
+      console.log('🔄 Initializing MVP farmer data on demand...');
+      await initializeRealData();
+      mvpInitialized = true;
+    }
+    
+    const farmers = (global.MVP?.farmers || []);
     res.json({
-      farms: MVP.farmers || [],
+      farms: farmers,
       stats: { 
-        total: (MVP.farmers || []).length,
-        risky: (MVP.farmers || []).filter(f => f.riskScore > 60).length,
-        safe: (MVP.farmers || []).filter(f => f.riskScore <= 60).length
+        total: farmers.length,
+        risky: farmers.filter(f => f.riskScore > 60).length,
+        safe: farmers.filter(f => f.riskScore <= 60).length
       },
-      alertCount: (MVP.farmers || []).filter(f => f.riskScore > 60).length,
+      alertCount: farmers.filter(f => f.riskScore > 60).length,
       timestamp: new Date().toISOString()
     })
   } catch (err) {
@@ -311,16 +319,21 @@ app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
   try {
     const { vesselId } = req.params
     
-    if (!MVP || !MVP.vessels) {
-      return res.status(500).json({ error: 'MVP data not initialized' })
+    // Lazy-load MVP data if not initialized
+    if (!mvpInitialized || !global.MVP || !global.MVP.vessels) {
+      console.log('🔄 Initializing MVP vessel data on demand...');
+      await initializeRealData();
+      mvpInitialized = true;
     }
     
+    const vessels = (global.MVP?.vessels || []);
+    
     if (vesselId) {
-      const vessel = MVP.vessels.find(v => v.id === vesselId)
+      const vessel = vessels.find(v => v.id === vesselId)
       if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
       res.json({ vessel, tasks: [], taskCount: 0 })
     } else {
-      res.json({ vessels: MVP.vessels, stats: { total: MVP.vessels.length }, taskCount: 0 })
+      res.json({ vessels: vessels, stats: { total: vessels.length }, taskCount: 0 })
     }
   } catch (err) {
     console.error('[VESSEL] Error:', err)
