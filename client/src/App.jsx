@@ -58,7 +58,7 @@ const MVPWrapper = memo(({ children, onLogout, onSwitchRole, currentRole }) => (
       boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
     }}>
       {[
-        { role: 'farmer', label: '🌾 Farmer', color: '#8B5CF6' },
+        { role: 'farmer', label: '🐟 Farmer', color: '#8B5CF6' },
         { role: 'brønnbåt', label: '⛵ Brønnbåt', color: '#06B6D4' },
         { role: 'admin', label: '⚙️ Admin', color: '#F59E0B' }
       ].map(({ role, label, color }) => (

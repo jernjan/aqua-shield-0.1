@@ -5,10 +5,9 @@ export default function AdminPanel() {
   const [snapshots, setSnapshots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [activeTab, setActiveTab] = useState('snapshots'); // 'snapshots' or 'vessels'
+  const [activeTab, setActiveTab] = useState('snapshots');
   const [vessels, setVessels] = useState(null);
 
-  // Load snapshots on mount
   useEffect(() => {
     loadSnapshots();
   }, []);
@@ -21,6 +20,12 @@ export default function AdminPanel() {
     } catch (err) {
       setMessage(`Error loading snapshots: ${err.message}`);
     }
+  };
+
+  const switchToDemo = (role, name) => {
+    localStorage.setItem('token', `demo-${role}`);
+    localStorage.setItem('user', JSON.stringify({ name, role }));
+    window.location.href = role === 'farmer' ? '/farmer' : role === 'brønnbåt' ? '/vessel' : '/admin';
   };
 
   const runSnapshot = async () => {
@@ -81,10 +86,29 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
+        {/* Header with Demo Buttons */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <h1 className="text-3xl font-bold text-indigo-900 mb-2">AquaShield Model Training</h1>
-          <p className="text-gray-600">Snapshot System & Vessel Tracking Administration</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-indigo-900 mb-2">AquaShield Admin</h1>
+              <p className="text-gray-600">Model Training & Vessel Tracking System</p>
+            </div>
+            
+            <div className="flex gap-2">
+              <button
+                onClick={() => switchToDemo('farmer', 'Movi')}
+                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold text-sm transition-colors"
+              >
+                🐟 Demo: Movi (Farmer)
+              </button>
+              <button
+                onClick={() => switchToDemo('brønnbåt', 'Aakerblå')}
+                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-semibold text-sm transition-colors"
+              >
+                ⛵ Demo: Aakerblå (Brønnbåt)
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Messages */}
@@ -125,7 +149,6 @@ export default function AdminPanel() {
         {/* SNAPSHOTS TAB */}
         {activeTab === 'snapshots' && (
           <div className="space-y-6">
-            {/* Create Snapshot Button */}
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-xl font-bold text-indigo-900 mb-4">Create New Snapshot</h2>
               <button
@@ -139,7 +162,6 @@ export default function AdminPanel() {
               <p className="text-sm text-gray-600 mt-2">Estimated time: 10-30 seconds</p>
             </div>
 
-            {/* Snapshots List */}
             {snapshots.length > 0 ? (
               <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div className="px-6 py-4 bg-indigo-50 border-b">
@@ -220,7 +242,6 @@ export default function AdminPanel() {
           <div className="space-y-6">
             {vessels ? (
               <>
-                {/* Stats */}
                 <div className="grid grid-cols-3 gap-4">
                   <div className="bg-white rounded-lg shadow-lg p-6">
                     <p className="text-gray-600 text-sm mb-2">Total Visits</p>
@@ -236,7 +257,6 @@ export default function AdminPanel() {
                   </div>
                 </div>
 
-                {/* Transmission Paths */}
                 {vessels.transmission_paths && vessels.transmission_paths.length > 0 && (
                   <div className="bg-white rounded-lg shadow-lg p-6">
                     <h2 className="text-xl font-bold text-indigo-900 mb-4">🔗 Transmission Paths</h2>
