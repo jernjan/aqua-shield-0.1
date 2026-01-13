@@ -124,7 +124,21 @@ async function initializeRealData() {
     // Mark vessels as contaminated based on high-risk facility visits
     processVesselVisitsForContamination(db, db.facilities || []);
     
-    const annotatedFacilities = annotateFacilityRisk(db.facilities || [], db.vessels || [], db);
+    // Add realistic test data to some facilities (simulate actual lice counts)
+    // This is to demo the system - in production, BarentsWatch would provide this
+    const facilitiesWithTestData = (db.facilities || []).map((f, idx) => {
+      // ~15% of facilities have some lice counts
+      if (idx % 7 === 0) {
+        return {
+          ...f,
+          liceCount: Math.floor(Math.random() * 30) + 3,
+          diseaseStatus: Math.random() > 0.8 ? 'suspect' : undefined
+        };
+      }
+      return f;
+    });
+    
+    const annotatedFacilities = annotateFacilityRisk(facilitiesWithTestData, db.vessels || [], db);
     
     // Enrich with recent vessel visit history for each facility
     const facilitiesWithHistory = annotatedFacilities.map(facility => {
