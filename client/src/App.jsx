@@ -8,6 +8,7 @@ import ValidationDashboard from './pages/ValidationDashboard'
 import VesselDashboard from './pages/VesselDashboard'
 import VesselMVP from './pages/VesselMVP'
 import AdminMVP from './pages/AdminMVP'
+import AdminPanel from './pages/AdminPanel'
 import AnalyticsMVP from './pages/AnalyticsMVP'
 import FisherDashboard from './pages/FisherDashboard'
 import Toast from './components/Toast'
@@ -110,6 +111,7 @@ const PAGE_CONFIG = {
   'vessel-dashboard': { component: VesselDashboard, requiresAuth: true, wrapper: true },
   'mvp-vessel': { component: VesselMVP, requiresAuth: true, wrapper: true },
   'mvp-admin': { component: AdminMVP, requiresAuth: true, wrapper: true },
+  'admin-panel': { component: AdminPanel, requiresAuth: true, wrapper: true },
   'mvp-analytics': { component: AnalyticsMVP, requiresAuth: true, wrapper: true },
   'mvp-fisher': { component: FisherDashboard, requiresAuth: true, wrapper: true },
 }
@@ -137,6 +139,13 @@ function App() {
       localStorage.setItem('token', 'mvp-admin')
       setUser({ name: 'Admin', role: 'admin' })
       setPage('mvp-admin')
+      return
+    }
+    if (path === '/admin-panel' || path === '/admin-panel/') {
+      setToken('mvp-admin')
+      localStorage.setItem('token', 'mvp-admin')
+      setUser({ name: 'Admin', role: 'admin' })
+      setPage('admin-panel')
       return
     }
     if (path === '/farmer' || path === '/farmer/') {
