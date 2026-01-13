@@ -160,8 +160,8 @@ async function initializeRealData() {
     };
     console.log(`✅ MVP object initialized (${global.MVP.farmers.length} farmers, ${global.MVP.vessels.length} vessels) with annotated risk data + vessel history`);
     
-    // Create first daily snapshot for data collection
-    await createDailySnapshot();
+    // Create first daily snapshot for data collection (disabled temporarily for debugging)
+    // await createDailySnapshot();
     
   } catch (err) {
     console.error('❌ Error initializing real data:', err.message);
@@ -203,11 +203,15 @@ function generateTestVessels(count = 30) {
   return vessels;
 }
 
-// Run initialization
-initializeRealData();
+// Run initialization asynchronously (non-blocking)
+// DISABLED: Issues with async initialization causing shutdown
+// initializeRealData().catch(err => console.error('Init error:', err.message));
+
+// For now, load MVP data manually on first request
+let mvpInitialized = false;
 
 // Start vessel tracking cron jobs
-initializeVesselTrackingCrons()
+// initializeVesselTrackingCrons() // DISABLED: investigate why it may trigger SIGINT
 
 // ============ HEALTH CHECK ============
 app.get('/api/health', (req, res) => {
@@ -760,11 +764,18 @@ app.get('/api/admin/snapshot/validation/:snapshotId', async (req, res) => {
 // ============ ADMIN RISK ASSESSMENT ============
 // Admin: Risk Assessment Dashboard (AdminMVP uses this)
 // Return MVP mock data for simplicity
-app.get('/api/admin/risks', (req, res) => {
+app.get('/api/admin/risks', async (req, res) => {
   try {
+    // Lazy-load MVP data on first request if not initialized
+    if (!mvpInitialized || !global.MVP || !global.MVP.farmers) {
+      console.log('🔄 Initializing MVP data on demand...');
+      await initializeRealData();
+      mvpInitialized = true;
+    }
+    
     // Get risky facilities from MVP data
-    const risky = MVP.farmers.filter(f => f.riskScore > 60)
-    const safe = MVP.farmers.filter(f => f.riskScore <= 60)
+    const risky = (global.MVP?.farmers || []).filter(f => f.riskScore > 60)
+    const safe = (global.MVP?.farmers || []).filter(f => f.riskScore <= 60)
     const critical = risky.filter(f => f.riskScore > 80).length
     const high = risky.filter(f => f.riskScore > 60 && f.riskScore <= 80).length
     
@@ -772,7 +783,7 @@ app.get('/api/admin/risks', (req, res) => {
       risky: risky,
       safe: safe,
       summary: {
-        total: MVP.farmers.length,
+        total: global.MVP?.farmers?.length || 0,
         risky: risky.length,
         safe: safe.length,
         critical: critical,
