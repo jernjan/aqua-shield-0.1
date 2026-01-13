@@ -6,6 +6,9 @@
  * Gruppe 4: Public (anonymous regional data) - Anonyme varsler, regionale trender
  */
 
+// Ensure .env is loaded
+require('dotenv').config();
+
 // Test user accounts for MVP demo
 const MOCK_USERS = {
   farmer1: { id: 'user_1', name: 'Arne Anleggmann', email: 'arne@farms.no', role: 'farmer' },
