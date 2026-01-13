@@ -1,160 +1,34 @@
-﻿// FISHER ENDPOINTS VERIFIED - Force Render rebuild
+﻿// AquaShield MVP 0.1 - Simplified Backend
+// Only endpoints that are actually used by frontend
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
-const { getAlerts, addAlert } = require('./storage')
-const { runNightlyAnalysis } = require('./cron/nightly')
 const { readDB, writeDB } = require('./db')
 const mvpData = require('./mvp-data')
-const logger = require('./datalogger')
-const { startAISPolling } = require('./ais-poller')
-const barentswatch = require('./utils/barentswatch')
-const RiskPredictionModel = require('./ml/risk-model')
-const alertService = require('./services/alerts')
-const notifier = require('./services/notifier')
-const scheduler = require('./scheduler')
-const diseaseZones = require('./services/disease-zones')
 
-// Initialize MVP data on startup
+// Initialize MVP data
 const MVP = mvpData.init()
-
-// Initialize ML Risk Model
-const riskModel = new RiskPredictionModel()
-const modelPath = path.join(__dirname, 'data/risk-model.json')
-riskModel.load(modelPath)
-
-// Initialize Disease Zones on startup
-diseaseZones.getAllZones().catch(err => console.warn('Disease zones load warning:', err.message))
-
-// Auto-sync BarentsWatch data on startup
-async function autoSyncOnStartup() {
-  try {
-    const { syncFromBarentsWatch } = require('./cron/sync-barentswatch.js');
-    console.log('🔄 Starting BarentsWatch sync on server startup...');
-    const result = await syncFromBarentsWatch();
-    if (result.success) {
-      console.log(`✅ Startup sync complete: ${result.facilities} facilities, ${result.vessels} vessels`);
-    } else {
-      console.warn(`⚠️  Startup sync had issues: ${result.error}`);
-    }
-  } catch (err) {
-    console.warn('⚠️  Startup sync error (will use mock data):', err.message);
-  }
-}
 
 const app = express()
 const PORT = process.env.PORT || 3001
-const RENDER_HEALTH_PORT = process.env.RENDER_HEALTH_PORT || 10000
-
 
 app.use(cors())
 app.use(express.json())
 
-// Simple alerts endpoints
-app.get('/api/alerts', async (req, res) => {
-  try {
-    const alerts = await getAlerts()
-    res.json(alerts)
-  } catch (err) {
-    console.error('GET /api/alerts error', err)
-    res.status(500).json({ ok: false, error: err.message })
-  }
-})
-
-app.post('/api/alerts/test', async (req, res) => {
-  try {
-    const { facilityName } = req.body || {}
-    const a = await addAlert({
-      title: `Test-varsel: ${facilityName || 'Demo Anlegg'}`,
-      message: 'Dette er et test-varsel generert av serveren',
-      riskLevel: 'varsel'
-    })
-    res.json({ ok: true, alert: a })
-  } catch (err) {
-    console.error('POST /api/alerts/test error', err)
-    res.status(500).json({ ok: false, error: err.message })
-  }
-})
-
-app.post('/api/admin/run-cron', async (req, res) => {
-  try {
-    const result = await runNightlyAnalysis()
-    res.json({ ok: true, result })
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ ok: false, error: err.message })
-  }
-})
-
-// Manual sync with BarentsWatch - can be called anytime
-app.post('/api/admin/sync-barentswatch', async (req, res) => {
-  try {
-    const { syncFromBarentsWatch } = require('./cron/sync-barentswatch.js');
-    console.log('📡 Sync endpoint called');
-    const result = await syncFromBarentsWatch()
-    console.log('📡 Sync result:', result);
-    res.json({ ok: result.success, result })
-  } catch (err) {
-    console.error('❌ Sync error:', err)
-    res.status(500).json({ ok: false, error: err.message })
-  }
-})
-
-// Alternative route for sync
-app.get('/api/admin/sync-status', async (req, res) => {
-  const db = await readDB()
-  res.json({ lastSync: db.lastSync, facilities: db.facilities?.length || 0, vessels: db.vessels?.length || 0 })
-})
-
+// ============ HEALTH CHECK ============
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
-// ============ MVP ENDPOINTS ============
-
-// Gruppe 1: Farmers (Anlegg)
-app.get('/api/mvp/farmer/:farmId?', async (req, res) => {
-  try {
-    const { farmId } = req.params
-    const { userId } = req.query
-    
-    // Try to get real data from db first, fall back to MVP mock data
-    const db = await readDB()
-    const facilities = db.facilities && db.facilities.length > 0 ? db.facilities : MVP.farmers
-    const alerts = db.alerts && db.alerts.length > 0 ? db.alerts : MVP.alerts
-    
-    if (farmId) {
-      const farm = facilities.find(f => f.id === farmId)
-      if (!farm) return res.status(404).json({ error: 'Farm not found' })
-      const farmAlerts = alerts.filter(a => a.farmId === farmId)
-      res.json({ farm, alerts: farmAlerts, totalAlerts: farmAlerts.length })
-    } else {
-      // Optional auth-based filtering by userId
-      const farms = userId ? facilities.filter(f => f.userId === userId) : facilities
-      const userAlerts = userId ? alerts.filter(a => a.userId === userId) : alerts
-      const stats = {
-        total: farms.length,
-        risikofylt: farms.filter(f => f.riskScore > 60).length,
-        hoyOppmerksomhet: farms.filter(f => f.riskScore > 40 && f.riskScore <= 60).length,
-        unreadAlerts: userAlerts.filter(a => !a.isRead).length,
-      }
-      res.json({ farms, stats, alertCount: userAlerts.length })
-    }
-  } catch (err) {
-    console.error('Error fetching farmer data:', err);
-    res.status(500).json({ error: 'Failed to fetch farmer data' })
-  }
-})
-
-// Farmer Dashboard: Mine Anlegg with Risk Forecast
+// ============ FARMER DASHBOARD ============
+// Get all facilities with risk forecast (FarmerDashboard)
 app.get('/api/farmer/my-facilities', async (req, res) => {
   try {
     const { assessAllRisks } = require('./utils/risk')
     const { forecast7Day, shouldSendAlert } = require('./utils/forecast')
     const db = await readDB()
     
-    // Get all facilities (day-1: farmer sees all, later filter by userId when auth is in place)
     const facilities = db.facilities || []
     
     if (facilities.length === 0) {
@@ -196,45 +70,135 @@ app.get('/api/farmer/my-facilities', async (req, res) => {
   }
 })
 
-// Farmer Dashboard: Single facility detail
-app.get('/api/farmer/facility/:facilityId', async (req, res) => {
+// ============ VESSEL DASHBOARD ============
+// Get all vessels (VesselDashboard)
+app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
   try {
-    const { facilityId } = req.params
-    const { getPredictedSpreaders } = require('./utils/risk')
-    const { forecast7Day, generateAlertMessage } = require('./utils/forecast')
-    const db = await readDB()
+    const { vesselId } = req.params
     
-    const facilities = db.facilities || []
-    const facility = facilities.find(f => f.id === facilityId)
-    
-    if (!facility) {
-      return res.status(404).json({ error: 'Facility not found' })
+    if (!MVP || !MVP.vessels) {
+      return res.status(500).json({ error: 'MVP data not initialized' })
     }
     
-    // Get transmission risks
-    const spreaders = getPredictedSpreaders(facilities, facilityId)
+    if (vesselId) {
+      const vessel = MVP.vessels.find(v => v.id === vesselId)
+      if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
+      res.json({ vessel, tasks: [], taskCount: 0 })
+    } else {
+      res.json({ vessels: MVP.vessels, stats: { total: MVP.vessels.length }, taskCount: 0 })
+    }
+  } catch (err) {
+    console.error('[VESSEL] Error:', err)
+    res.status(500).json({ error: 'Failed to fetch vessel data', message: err.message })
+  }
+})
+
+// Get nearby facilities for a vessel (VesselDashboard proximity warnings)
+app.get('/api/vessel/:vesselId/nearby', async (req, res) => {
+  try {
+    const { vesselId } = req.params
+    const db = await readDB()
     
-    // Get forecast
-    const forecast = forecast7Day(facility, [])
-    const alertMessage = generateAlertMessage(facility, forecast)
+    const vessels = db.vessels && db.vessels.length > 0 ? db.vessels : MVP.vessels
+    const vessel = vessels.find(v => v.id === vesselId)
+    
+    if (!vessel) {
+      return res.status(404).json({ error: 'Vessel not found' })
+    }
+    
+    const facilities = db.facilities || []
+    
+    const { getNearbyFacilities } = require('./utils/vessel-proximity')
+    const nearbyFacilities = getNearbyFacilities(vessel, facilities, 3)
     
     res.json({
-      facility: {
-        ...facility,
-        forecast,
-        nearbyRisks: spreaders.slice(0, 5) // Top 5 transmission risks
+      vessel: {
+        id: vessel.id,
+        name: vessel.name,
+        mmsi: vessel.mmsi,
+        latitude: vessel.latitude,
+        longitude: vessel.longitude,
+        status: vessel.status
       },
-      alertMessage,
-      timestamp: new Date().toISOString()
+      nearbyFacilities: nearbyFacilities,
+      lastUpdate: new Date().toISOString()
     })
   } catch (err) {
-    console.error('Error fetching facility detail:', err)
+    console.error('Error getting nearby facilities:', err)
     res.status(500).json({ error: err.message })
   }
 })
 
-// ===== VALIDATION SYSTEM =====
-// Get validation metrics (accuracy, precision, recall, etc)
+// ============ FISHER DASHBOARD ============
+// Get all fishers (FisherDashboard)
+app.get('/api/mvp/fisher/:fisherId?', (req, res) => {
+  const { fisherId } = req.params
+  if (fisherId) {
+    const fisher = MVP.fishers.find(f => f.id === fisherId)
+    res.json(fisher || { error: 'Fisher not found' })
+  } else {
+    res.json(MVP.fishers)
+  }
+})
+
+// Get fisher tasks
+app.get('/api/mvp/fisher/:fisherId/tasks', (req, res) => {
+  const { fisherId } = req.params
+  const fisher = MVP.fishers.find(f => f.id === fisherId)
+  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
+  const tasks = MVP.fisherTasks.filter(t => t.fisherId === fisherId)
+  res.json({ fisherId, tasks })
+})
+
+// Get fisher zone avoidances (FisherDashboard disease zones)
+app.get('/api/mvp/fisher/:fisherId/zone-avoidances', (req, res) => {
+  const { fisherId } = req.params
+  const fisher = MVP.fishers.find(f => f.id === fisherId)
+  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
+  const avoidances = MVP.fisherZoneAvoidances.filter(a => a.fisherId === fisherId)
+  res.json({ fisherId, avoidances })
+})
+
+// Post fisher tasks
+app.post('/api/mvp/fisher/:fisherId/task', (req, res) => {
+  const { fisherId } = req.params
+  const fisher = MVP.fishers.find(f => f.id === fisherId)
+  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
+  const { name, dueDate, duration, type } = req.body || {}
+  if (!name || !dueDate) return res.status(400).json({ error: 'Missing name or dueDate' })
+  const id = `task_${Date.now()}`
+  const task = {
+    id,
+    fisherId,
+    name,
+    type: type || 'kontroll',
+    dueDate,
+    duration: duration || 7,
+    completed: false,
+    completedAt: null,
+    createdAt: new Date().toISOString(),
+  }
+  if (!MVP.fisherTasks) MVP.fisherTasks = []
+  MVP.fisherTasks.push(task)
+  res.json({ ok: true, task })
+})
+
+// Patch fisher tasks
+app.patch('/api/mvp/fisher/:fisherId/task/:taskId', (req, res) => {
+  const { fisherId, taskId } = req.params
+  const { completed } = req.body
+  const fisher = MVP.fishers.find(f => f.id === fisherId)
+  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
+  if (!MVP.fisherTasks) MVP.fisherTasks = []
+  const task = MVP.fisherTasks.find(t => t.id === taskId && t.fisherId === fisherId)
+  if (!task) return res.status(404).json({ error: 'Task not found' })
+  task.completed = completed
+  task.completedAt = completed ? new Date().toISOString() : null
+  res.json({ ok: true, task })
+})
+
+// ============ VALIDATION DASHBOARD ============
+// Get validation metrics
 app.get('/api/admin/validation/metrics', async (req, res) => {
   try {
     const validation = require('./utils/validation')
@@ -247,7 +211,7 @@ app.get('/api/admin/validation/metrics', async (req, res) => {
   }
 })
 
-// Get forecasts pending validation (older than 24h)
+// Get pending forecasts
 app.get('/api/admin/validation/pending', async (req, res) => {
   try {
     const validation = require('./utils/validation')
@@ -255,7 +219,7 @@ app.get('/api/admin/validation/pending', async (req, res) => {
     const pending = validation.getPendingValidation(db, 24)
     res.json({
       count: pending.length,
-      forecasts: pending.slice(0, 50) // Return last 50 for review
+      forecasts: pending.slice(0, 50)
     })
   } catch (err) {
     console.error('Error getting pending validations:', err)
@@ -263,7 +227,7 @@ app.get('/api/admin/validation/pending', async (req, res) => {
   }
 })
 
-// Get forecast history for a specific facility
+// Get facility forecast history
 app.get('/api/admin/validation/facility/:facilityId', async (req, res) => {
   try {
     const { facilityId } = req.params
@@ -281,7 +245,7 @@ app.get('/api/admin/validation/facility/:facilityId', async (req, res) => {
   }
 })
 
-// Validate a specific forecast against actual BarentsWatch data
+// Validate a forecast
 app.post('/api/admin/validation/validate/:forecastId', async (req, res) => {
   try {
     const { forecastId } = req.params
@@ -297,7 +261,6 @@ app.post('/api/admin/validation/validate/:forecastId', async (req, res) => {
       return res.status(404).json({ error: 'Forecast not found' })
     }
     
-    // Get actual data from BarentsWatch
     const facilities = db.facilities || []
     const facility = facilities.find(f => f.locId === entry.facilityId)
     
@@ -305,7 +268,6 @@ app.post('/api/admin/validation/validate/:forecastId', async (req, res) => {
       return res.status(404).json({ error: 'Facility not found' })
     }
     
-    // Validate
     const validated = validation.validateForecast(entry, facility)
     await writeDB(db)
     
@@ -319,7 +281,7 @@ app.post('/api/admin/validation/validate/:forecastId', async (req, res) => {
   }
 })
 
-// Auto-validate all pending forecasts (run manually or via cron)
+// Auto-validate all pending forecasts
 app.post('/api/admin/validation/auto-validate', async (req, res) => {
   try {
     const validation = require('./utils/validation')
@@ -350,383 +312,30 @@ app.post('/api/admin/validation/auto-validate', async (req, res) => {
   }
 })
 
-// Gruppe 2: Vessels (Brønnbåter)
-app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
-  try {
-    const { vesselId } = req.params
-    
-    if (!MVP || !MVP.vessels) {
-      return res.status(500).json({ error: 'MVP data not initialized' })
-    }
-    
-    if (vesselId) {
-      const vessel = MVP.vessels.find(v => v.id === vesselId)
-      if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
-      res.json({ vessel, tasks: [], taskCount: 0 })
-    } else {
-      // Return all vessels
-      res.json({ vessels: MVP.vessels, stats: { total: MVP.vessels.length }, taskCount: 0 })
-    }
-  } catch (err) {
-    console.error('[VESSEL] Error:', err);
-    res.status(500).json({ error: 'Failed to fetch vessel data', message: err.message })
+// ============ COMPONENT ENDPOINTS ============
+// Algae calendar (AlgaeCalendar component)
+app.get('/api/mvp/farm/:farmId/algae-alerts', (req, res) => {
+  const { farmId } = req.params
+  const farm = MVP.farmers.find(f => f.id === farmId)
+  
+  if (!farm) {
+    return res.status(404).json({ error: 'Farm not found' })
   }
-})
-
-// Get nearby facilities for a vessel (for proximity warnings)
-app.get('/api/vessel/:vesselId/nearby', async (req, res) => {
-  try {
-    const { vesselId } = req.params
-    const db = await readDB()
-    
-    // Get vessel from db or MVP
-    const vessels = db.vessels && db.vessels.length > 0 ? db.vessels : MVP.vessels
-    const vessel = vessels.find(v => v.id === vesselId)
-    
-    if (!vessel) {
-      return res.status(404).json({ error: 'Vessel not found' })
-    }
-    
-    // Get all facilities
-    const facilities = db.facilities || []
-    
-    // Calculate nearby facilities with risk
-    const { getNearbyFacilities } = require('./utils/vessel-proximity')
-    const nearbyFacilities = getNearbyFacilities(vessel, facilities, 3)
-    
-    // Get risk scores
-    const { assessAllRisks } = require('./utils/risk')
-    const risksMap = {}
-    try {
-      const risks = await assessAllRisks()
-      risks.forEach(r => {
-        risksMap[r.locId] = r.ownRisk
-      })
-    } catch (err) {
-      console.warn('Risk assessment failed:', err.message)
-    }
-    
-    // Enrich nearby facilities with current risk scores
-    const enriched = nearbyFacilities.map(f => ({
-      ...f,
-      riskScore: risksMap[f.id] || f.riskScore
-    }))
-    
-    res.json({
-      vessel: {
-        id: vessel.id,
-        name: vessel.name,
-        mmsi: vessel.mmsi,
-        latitude: vessel.latitude,
-        longitude: vessel.longitude,
-        status: vessel.status
-      },
-      nearbyFacilities: enriched,
-      lastUpdate: new Date().toISOString()
-    })
-  } catch (err) {
-    console.error('Error getting nearby facilities:', err)
-    res.status(500).json({ error: err.message })
-  }
-})
-
-// Vessel tasks APIs
-app.get('/api/mvp/vessel/:vesselId/tasks', (req, res) => {
-  const { vesselId } = req.params
-  const vessel = MVP.vessels.find(v => v.id === vesselId)
-  if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
-  const tasks = MVP.tasks.filter(t => t.vesselId === vesselId)
-  res.json({ vesselId, tasks })
-})
-
-app.post('/api/mvp/vessel/:vesselId/task', (req, res) => {
-  const { vesselId } = req.params
-  const vessel = MVP.vessels.find(v => v.id === vesselId)
-  if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
-  const { type, name, dueDate, duration, chemicals, notes } = req.body || {}
-  const id = `task_${Date.now()}`
-  const task = {
-    id,
-    vesselId,
-    userId: vessel.userId,
-    type: type || 'vedlikehold',
-    name: name || 'Planlagt vedlikehold',
-    status: 'planned',
-    dueDate: dueDate || new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString(),
-    daysUntil: Math.floor((new Date(dueDate || Date.now() + 7 * 24 * 3600 * 1000) - new Date()) / (24 * 3600 * 1000)),
-    duration: duration || 2,
-    chemicals: chemicals || [],
-    notes: notes || `Opprettet for ${vessel.name}`,
-    createdDate: new Date().toISOString(),
-    completedDate: null,
-  }
-  MVP.tasks.push(task)
-  res.json({ ok: true, task })
-})
-
-// Update a vessel task (status, dates, notes)
-app.patch('/api/mvp/vessel/:vesselId/task/:taskId', (req, res) => {
-  const { vesselId, taskId } = req.params
-  const vessel = MVP.vessels.find(v => v.id === vesselId)
-  if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
-  const task = MVP.tasks.find(t => t.id === taskId && t.vesselId === vesselId)
-  if (!task) return res.status(404).json({ error: 'Task not found' })
-  const { status, dueDate, duration, chemicals, notes } = req.body || {}
-  if (status) {
-    task.status = status
-    if (status === 'fullført') {
-      task.completedDate = new Date().toISOString()
-    } else {
-      task.completedDate = null
-    }
-  }
-  if (dueDate) task.dueDate = dueDate
-  if (typeof duration === 'number') task.duration = duration
-  if (Array.isArray(chemicals)) task.chemicals = chemicals
-  if (typeof notes === 'string') task.notes = notes
-  res.json({ ok: true, task })
-})
-
-// Disinfection APIs
-app.get('/api/mvp/vessel/:vesselId/disinfections', (req, res) => {
-  const { vesselId } = req.params
-  const vessel = MVP.vessels.find(v => v.id === vesselId)
-  if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
-  const disinfections = MVP.disinfections.filter(d => d.vesselId === vesselId)
-  res.json({ vesselId, disinfections })
-})
-
-app.post('/api/mvp/vessel/:vesselId/disinfection', (req, res) => {
-  const { vesselId } = req.params
-  const vessel = MVP.vessels.find(v => v.id === vesselId)
-  if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
-  const { date, chemical, operator, comment, reportedBy } = req.body || {}
-  if (!date || !chemical || !operator) {
-    return res.status(400).json({ error: 'Missing required fields: date, chemical, operator' })
-  }
-  const id = `disinfect_${Date.now()}`
-  const disinfection = {
-    id,
-    vesselId,
-    userId: vessel.userId,
-    date,
-    chemical,
-    operator,
-    comment: comment || '',
-    reportedBy: reportedBy || 'unknown',
-    reportedAt: new Date().toISOString(),
-  }
-  MVP.disinfections.push(disinfection)
-  res.json({ ok: true, disinfection })
-})
-
-// Gruppe 2b: Fisher tracking (identical to vessel for now - data aggregation)
-app.get('/api/mvp/fisher/:fisherId?', (req, res) => {
-  const { fisherId } = req.params
-  if (fisherId) {
-    const fisher = MVP.fishers.find(f => f.id === fisherId)
-    res.json(fisher || { error: 'Fisher not found' })
-  } else {
-    res.json(MVP.fishers)
-  }
-})
-
-app.get('/api/mvp/fisher/:fisherId/tasks', (req, res) => {
-  const { fisherId } = req.params
-  const fisher = MVP.fishers.find(f => f.id === fisherId)
-  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
-  const tasks = MVP.fisherTasks.filter(t => t.fisherId === fisherId)
-  res.json({ fisherId, tasks })
-})
-
-app.post('/api/mvp/fisher/:fisherId/task', (req, res) => {
-  const { fisherId } = req.params
-  const fisher = MVP.fishers.find(f => f.id === fisherId)
-  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
-  const { name, dueDate, duration, type } = req.body || {}
-  if (!name || !dueDate) return res.status(400).json({ error: 'Missing name or dueDate' })
-  const id = `task_${Date.now()}`
-  const task = {
-    id,
-    fisherId,
-    name,
-    type: type || 'kontroll',
-    dueDate,
-    duration: duration || 7,
-    completed: false,
-    completedAt: null,
-    createdAt: new Date().toISOString(),
-  }
-  if (!MVP.fisherTasks) MVP.fisherTasks = []
-  MVP.fisherTasks.push(task)
-  res.json({ ok: true, task })
-})
-
-app.patch('/api/mvp/fisher/:fisherId/task/:taskId', (req, res) => {
-  const { fisherId, taskId } = req.params
-  const { completed } = req.body
-  const fisher = MVP.fishers.find(f => f.id === fisherId)
-  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
-  if (!MVP.fisherTasks) MVP.fisherTasks = []
-  const task = MVP.fisherTasks.find(t => t.id === taskId && t.fisherId === fisherId)
-  if (!task) return res.status(404).json({ error: 'Task not found' })
-  task.completed = completed
-  task.completedAt = completed ? new Date().toISOString() : null
-  res.json({ ok: true, task })
-})
-
-app.get('/api/mvp/fisher/:fisherId/zone-avoidances', (req, res) => {
-  const { fisherId } = req.params
-  const fisher = MVP.fishers.find(f => f.id === fisherId)
-  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
-  const avoidances = MVP.fisherZoneAvoidances.filter(a => a.fisherId === fisherId)
-  res.json({ fisherId, avoidances })
-})
-
-app.post('/api/mvp/fisher/:fisherId/zone-avoidance', (req, res) => {
-  const { fisherId } = req.params
-  const fisher = MVP.fishers.find(f => f.id === fisherId)
-  if (!fisher) return res.status(404).json({ error: 'Fisher not found' })
-  const { zoneName, disease, lat, lon, reason, timestamp } = req.body || {}
-  if (!zoneName || !disease) return res.status(400).json({ error: 'Missing zoneName or disease' })
-  const id = `avoid_${Date.now()}`
-  const avoidance = {
-    id,
-    fisherId,
-    zoneName,
-    disease,
-    lat: lat || null,
-    lon: lon || null,
-    reason: reason || '',
-    timestamp: timestamp || new Date().toISOString(),
-    recordedAt: new Date().toISOString(),
-  }
-  if (!MVP.fisherZoneAvoidances) MVP.fisherZoneAvoidances = []
-  MVP.fisherZoneAvoidances.push(avoidance)
-  res.json({ ok: true, avoidance })
-})
-
-// Gruppe 3: Admin/Regulators (Statistikk og oversight)
-app.get('/api/mvp/admin/stats', (req, res) => {
-  res.json(MVP.adminStats)
-})
-
-app.get('/api/mvp/admin/alerts', (req, res) => {
-  res.json({ alerts: MVP.adminStats.topAlerts })
-})
-
-// Admin: Risk Assessment Dashboard
-app.get('/api/admin/risks', async (req, res) => {
-  try {
-    const { assessAllRisks } = require('./utils/risk')
-    const db = await readDB()
-    
-    // Get all facilities from database
-    const facilities = db.facilities || []
-    
-    if (facilities.length === 0) {
-      return res.json({
-        risky: [],
-        safe: [],
-        summary: { total: 0, risky: 0, safe: 0, critical: 0, high: 0, medium: 0 },
-        timestamp: new Date().toISOString(),
-        message: 'No facility data available'
-      })
-    }
-    
-    // Calculate risks
-    const risks = assessAllRisks(facilities, 70) // Threshold: 70+
-    
-    res.json({
-      ...risks,
-      metadata: {
-        threshold: 70,
-        total_facilities: facilities.length,
-        last_sync: db.lastSync
-      }
-    })
-  } catch (err) {
-    console.error('❌ Risk assessment failed:', err.message)
-    res.status(500).json({ error: err.message })
-  }
-})
-
-// Admin: Detail view of a specific facility and its transmission risk
-app.get('/api/admin/risks/:facilityId', async (req, res) => {
-  try {
-    const { getPredictedSpreaders } = require('./utils/risk')
-    const db = await readDB()
-    const facilities = db.facilities || []
-    const facilityId = req.params.facilityId
-    
-    const facility = facilities.find(f => f.id === facilityId)
-    if (!facility) {
-      return res.status(404).json({ error: 'Facility not found' })
-    }
-    
-    // Get predicted spreaders (facilities that could be infected)
-    const spreaders = getPredictedSpreaders(facilities, facilityId)
-    
-    res.json({
-      facility,
-      predictedSpreaders: spreaders,
-      timestamp: new Date().toISOString()
-    })
-  } catch (err) {
-    console.error('❌ Failed to get facility details:', err.message)
-    res.status(500).json({ error: err.message })
-  }
-})
-
-// Admin: vessels overview and per-vessel tasks
-app.get('/api/mvp/admin/vessels', (req, res) => {
-  const vessels = MVP.vessels
-  const metrics = {
-    total: vessels.length,
-    expiredCerts: vessels.filter(v => v.certificates.some(c => new Date(c.expires) < new Date())).length,
-    recentPositions24h: vessels.filter(v => (Date.now() - new Date(v.lastPosition.timestamp)) / (3600*1000) <= 24).length,
-    riskZones: {
-      high: vessels.reduce((sum, v) => sum + v.riskZonesEntered.filter(z => z.riskLevel === 'høy oppmerksomhet').length, 0),
-      moderate: vessels.reduce((sum, v) => sum + v.riskZonesEntered.filter(z => z.riskLevel === 'moderat').length, 0),
-      low: vessels.reduce((sum, v) => sum + v.riskZonesEntered.filter(z => z.riskLevel === 'lav').length, 0),
+  
+  const algaeAlerts = MVP.algaeAlerts.filter(a => a.farmId === farmId)
+  
+  res.json({
+    farm: {
+      id: farm.id,
+      name: farm.name,
+      region: farm.region,
     },
-  }
-  res.json({ vessels, metrics })
-})
-
-app.get('/api/mvp/admin/vessel/:vesselId', (req, res) => {
-  const { vesselId } = req.params
-  const vessel = MVP.vessels.find(v => v.id === vesselId)
-  if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
-  const tasks = MVP.tasks.filter(t => t.vesselId === vesselId)
-  res.json({ vessel, tasks, taskCount: tasks.length })
-})
-
-// Gruppe 4: Public (Anonymous regional data)
-app.get('/api/mvp/public', (req, res) => {
-  res.json(MVP.publicData)
-})
-
-// Public: aggregated vessel metrics (anonymous)
-app.get('/api/mvp/public/vessels', (req, res) => {
-  const vessels = MVP.vessels
-  const metrics = {
-    total: vessels.length,
-    expiredCerts: vessels.filter(v => v.certificates.some(c => new Date(c.expires) < new Date())).length,
-    recentPositions24h: vessels.filter(v => (Date.now() - new Date(v.lastPosition.timestamp)) / (3600*1000) <= 24).length,
-    riskZones: {
-      high: vessels.reduce((sum, v) => sum + v.riskZonesEntered.filter(z => z.riskLevel === 'høy oppmerksomhet').length, 0),
-      moderate: vessels.reduce((sum, v) => sum + v.riskZonesEntered.filter(z => z.riskLevel === 'moderat').length, 0),
-      low: vessels.reduce((sum, v) => sum + v.riskZonesEntered.filter(z => z.riskLevel === 'lav').length, 0),
-    },
+    algaeAlerts: algaeAlerts.sort((a, b) => new Date(a.startDate) - new Date(b.startDate)),
     timestamp: new Date().toISOString(),
-  }
-  res.json(metrics)
+  })
 })
 
-// ============ FARM OCEAN CURRENT & ALGAE ENDPOINTS ============
-
-// GET /api/mvp/farm/:farmId/nearby - Nærliggende anlegg sortert etter strøm-smitterisiko
+// Nearby farms (NearbyFarmsRisk component)
 app.get('/api/mvp/farm/:farmId/nearby', (req, res) => {
   const { farmId } = req.params
   const farm = MVP.farmers.find(f => f.id === farmId)
@@ -749,36 +358,14 @@ app.get('/api/mvp/farm/:farmId/nearby', (req, res) => {
     },
     nearby: nearbyData.nearby,
     currentConditions: {
-      direction: farm.currentDirection, // e.g., 'vestlig' (westerly)
-      strength: 'moderat', // placeholder
+      direction: farm.currentDirection,
+      strength: 'moderat',
       lastUpdated: new Date().toISOString(),
     },
   })
 })
 
-// GET /api/mvp/farm/:farmId/algae-alerts - Alge-varsler for anlegg
-app.get('/api/mvp/farm/:farmId/algae-alerts', (req, res) => {
-  const { farmId } = req.params
-  const farm = MVP.farmers.find(f => f.id === farmId)
-  
-  if (!farm) {
-    return res.status(404).json({ error: 'Farm not found' })
-  }
-  
-  const algaeAlerts = MVP.algaeAlerts.filter(a => a.farmId === farmId)
-  
-  res.json({
-    farm: {
-      id: farm.id,
-      name: farm.name,
-      region: farm.region,
-    },
-    algaeAlerts: algaeAlerts.sort((a, b) => new Date(a.startDate) - new Date(b.startDate)),
-    timestamp: new Date().toISOString(),
-  })
-})
-
-// GET /api/mvp/farm/:farmId/current-conditions - Nåværende strøm- og alge-forhold
+// Current sea conditions (CurrentSeaConditions component)
 app.get('/api/mvp/farm/:farmId/current-conditions', (req, res) => {
   const { farmId } = req.params
   const farm = MVP.farmers.find(f => f.id === farmId)
@@ -790,7 +377,6 @@ app.get('/api/mvp/farm/:farmId/current-conditions', (req, res) => {
   const nearby = MVP.nearbyFarmsMap[farmId]?.nearby || []
   const algaeAlerts = MVP.algaeAlerts.filter(a => a.farmId === farmId)
   
-  // Get active algae alerts (current)
   const activeAlgae = algaeAlerts.filter(a => {
     const start = new Date(a.startDate)
     const end = new Date(a.endDate)
@@ -798,7 +384,6 @@ app.get('/api/mvp/farm/:farmId/current-conditions', (req, res) => {
     return start <= now && now <= end
   })
   
-  // Count infected downstream neighbors
   const downstreamInfected = nearby.filter(n => n.riskCategory === 'downstream' && n.currentState === 'infected-risk').length
   
   res.json({
@@ -822,299 +407,17 @@ app.get('/api/mvp/farm/:farmId/current-conditions', (req, res) => {
   })
 })
 
-// GET /api/mvp/farm/:farmId/visiting-vessels - Báter som har vært på anlegget
-app.get('/api/mvp/farm/:farmId/visiting-vessels', (req, res) => {
-  const { farmId } = req.params
-  const farm = MVP.farmers.find(f => f.id === farmId)
-  if (!farm) return res.status(404).json({ error: 'Farm not found' })
-  
-  // Find vessels that have been close to this farm (within 5km radius)
-  const visitingVessels = MVP.vessels.filter(vessel => {
-    const distance = Math.sqrt(
-      Math.pow(vessel.lastPosition.lat - farm.coordinates.lat, 2) +
-      Math.pow(vessel.lastPosition.lng - farm.coordinates.lng, 2)
-    ) * 111; // Rough km conversion
-    return distance < 5; // Within 5km
-  }).map(vessel => {
-    // Get disinfections for this vessel
-    const disinfections = MVP.disinfections.filter(d => d.vesselId === vessel.id);
-    const lastDisinfection = disinfections.length > 0 ? disinfections[0] : null;
-    
-    return {
-      id: vessel.id,
-      name: vessel.name,
-      mmsi: vessel.mmsi,
-      owner: vessel.owner,
-      lastPosition: vessel.lastPosition,
-      disinfectionReported: disinfections.length > 0,
-      lastDisinfection: lastDisinfection,
-      allDisinfections: disinfections,
-      verified: false, // Farmer can mark as verified
-    };
-  });
-  
-  res.json({ farmId, farm: farm.name, visitingVessels, timestamp: new Date().toISOString() })
-})
-
-// GET /api/mvp/admin/quarantine-recommendations - Auto-quarantine triggers
-app.get('/api/mvp/admin/quarantine-recommendations', (req, res) => {
-  const recommendations = [];
-  const DAYS_THRESHOLD = 7; // Quarantine if disinfection older than 7 days
-  
-  // Check each farm for non-compliant visiting vessels
-  MVP.farmers.forEach(farm => {
-    const visitingVessels = MVP.vessels.filter(vessel => {
-      const distance = Math.sqrt(
-        Math.pow(vessel.lastPosition.lat - farm.coordinates.lat, 2) +
-        Math.pow(vessel.lastPosition.lng - farm.coordinates.lng, 2)
-      ) * 111;
-      return distance < 5;
-    });
-    
-    visitingVessels.forEach(vessel => {
-      const disinfections = MVP.disinfections.filter(d => d.vesselId === vessel.id);
-      const lastDisinfection = disinfections.length > 0 ? disinfections[0] : null;
-      
-      // Recommendation if no disinfection or older than threshold
-      let status = 'compliant';
-      let daysAgo = null;
-      
-      if (!lastDisinfection) {
-        status = 'critical';
-        daysAgo = null;
-      } else {
-        daysAgo = Math.floor((Date.now() - new Date(lastDisinfection.date)) / (24 * 3600 * 1000));
-        if (daysAgo > DAYS_THRESHOLD) {
-          status = 'outdated';
-        }
-      }
-      
-      if (status !== 'compliant') {
-        // Check if quarantine already exists
-        const existingQuarantine = MVP.quarantines.find(q => 
-          q.farmId === farm.id && q.vesselId === vessel.id && q.status === 'active'
-        );
-        
-        recommendations.push({
-          id: existingQuarantine?.id || `qrec_${farm.id}_${vessel.id}`,
-          farmId: farm.id,
-          farmName: farm.name,
-          vesselId: vessel.id,
-          vesselName: vessel.name,
-          vesselMmsi: vessel.mmsi,
-          status: status, // 'critical', 'outdated', 'compliant'
-          daysAgo: daysAgo,
-          lastDisinfection: lastDisinfection,
-          severity: status === 'critical' ? 'høy' : 'moderat',
-          action: status === 'critical' ? 'Bruk karantene' : 'Kjør desinfeksjon',
-          isActive: !!existingQuarantine,
-          createdAt: existingQuarantine?.createdAt || new Date().toISOString(),
-        });
-      }
-    });
-  });
-  
-  res.json({ 
-    recommendations,
-    total: recommendations.length,
-    critical: recommendations.filter(r => r.status === 'critical').length,
-    outdated: recommendations.filter(r => r.status === 'outdated').length,
-    timestamp: new Date().toISOString()
-  });
-})
-
-// POST /api/mvp/admin/quarantine-trigger - Manually trigger quarantine for a farm/vessel
-app.post('/api/mvp/admin/quarantine-trigger', (req, res) => {
-  const { farmId, vesselId, reason, durationDays } = req.body;
-  
-  const farm = MVP.farmers.find(f => f.id === farmId);
-  const vessel = MVP.vessels.find(v => v.id === vesselId);
-  
-  if (!farm || !vessel) {
-    return res.status(404).json({ error: 'Farm or vessel not found' });
-  }
-  
-  const quarantine = {
-    id: `quarantine_${Date.now()}`,
-    farmId,
-    farmName: farm.name,
-    vesselId,
-    vesselName: vessel.name,
-    vesselMmsi: vessel.mmsi,
-    status: 'active',
-    reason: reason || 'Automatisk karantene - manglende desinfeksjon',
-    startDate: new Date().toISOString(),
-    dueDate: new Date(Date.now() + (durationDays || 7) * 24 * 3600 * 1000).toISOString(),
-    durationDays: durationDays || 7,
-    createdAt: new Date().toISOString(),
-    createdBy: 'admin',
-  };
-  
-  MVP.quarantines.push(quarantine);
-  res.json({ ok: true, quarantine });
-});
-
-// GET /api/mvp/admin/quarantines - Get active quarantines
-app.get('/api/mvp/admin/quarantines', (req, res) => {
-  const activeQuarantines = MVP.quarantines.filter(q => q.status === 'active');
-  
-  res.json({ 
-    quarantines: activeQuarantines,
-    total: activeQuarantines.length,
-    timestamp: new Date().toISOString()
-  });
-});
-
-// GET /api/mvp/farm/:farmId/disease-risks - Disease risk based on boat traffic & currents
-app.get('/api/mvp/farm/:farmId/disease-risks', (req, res) => {
-  const { farmId } = req.params;
-  const farm = MVP.farmers.find(f => f.id === farmId);
-  if (!farm) return res.status(404).json({ error: 'Farm not found' });
-
-  const risks = [];
-
-  // Disease database with incubation times and treatments
-  const diseaseDb = [
-    {
-      name: 'Infeksiøs lakseanemi (ILA)',
-      incubationDays: [7, 14], // Min/Max days
-      treatments: ['Vaksinasjon av smolter', 'Isolering av syke fisk', 'Reduksjon av tetthet', 'Bedre vannkvalitet'],
-      fatality: 'høy'
-    },
-    {
-      name: 'Pancreas Disease (PD)',
-      incubationDays: [5, 10],
-      treatments: ['Antiviral medisin', 'Fôr med immunstimulanter', 'Karantene av nye smolter', 'Observasjon'],
-      fatality: 'moderat'
-    },
-    {
-      name: 'Hjerte- og skjelettmuskelinflammasjon (HSMB)',
-      incubationDays: [10, 20],
-      treatments: ['Probiotikabehandling', 'Optimal vannkvalitet', 'Redusert stressfaktorer', 'Laksekillverkurs-forbud'],
-      fatality: 'lav'
-    },
-    {
-      name: 'Gyrodactylus salaris',
-      incubationDays: [3, 7],
-      treatments: ['Ferskvannsspyling', 'Parasittbekjempelse', 'Mekanisk fjerning', 'Karantene'],
-      fatality: 'høy'
-    }
-  ];
-
-  // Check 1: Boat traffic from potentially infected farms
-  const nearbyFarms = MVP.farmers.filter(f => {
-    if (f.id === farm.id) return false;
-    const distance = Math.sqrt(
-      Math.pow(f.coordinates.lat - farm.coordinates.lat, 2) +
-      Math.pow(f.coordinates.lng - farm.coordinates.lng, 2)
-    ) * 111; // km
-    return distance < 20; // Within 20km
-  });
-
-  // Check boats from these farms visiting our farm
-  nearbyFarms.forEach(upstreamFarm => {
-    if (upstreamFarm.riskScore > 50) { // If nearby farm has higher risk
-      const boatsFromThatFarm = MVP.vessels.filter(v => {
-        // Simulated: assume boats visit farms in their region
-        return v.homePort?.includes(upstreamFarm.region) || Math.random() > 0.7;
-      });
-
-      boatsFromThatFarm.slice(0, 2).forEach(boat => {
-        const disease = diseaseDb[Math.floor(Math.random() * diseaseDb.length)];
-        const incubationDays = disease.incubationDays[0] + Math.floor(Math.random() * (disease.incubationDays[1] - disease.incubationDays[0]));
-
-        risks.push({
-          id: `risk_boat_${upstreamFarm.id}_${boat.id}`,
-          disease: disease.name,
-          source: `Båt ${boat.name} fra risikabelt anlegg (${upstreamFarm.name})`,
-          sourceType: 'boat_traffic',
-          riskScore: 65 + Math.floor(Math.random() * 20), // 65-85
-          severity: 'høy',
-          manifestationDaysMin: incubationDays - 2,
-          manifestationDaysMax: incubationDays + 3,
-          manifestationDay: new Date(Date.now() + incubationDays * 24 * 3600 * 1000).toISOString(),
-          treatments: disease.treatments,
-          fatality: disease.fatality,
-          recommendedActions: [
-            '⚠️ Øk overvåking av fiskehelse',
-            '💉 Forbered vaksinasjon av nye smolter',
-            '🧪 Daglig prøvetaking og observasjon',
-            '🚢 Fortsett desinfeksjonskontroll av båter',
-            ...disease.treatments.map(t => `✓ ${t}`)
-          ]
-        });
-      });
-    }
-  });
-
-  // Check 2: Havstrøm risk - are we downstream of infected areas?
-  if (farm.downstreamRisk === 'nedstrøms') {
-    // This farm is downstream - check for infections upstreamfarm
-    const upstreamInfections = MVP.farmers.filter(f => {
-      if (f.downstreamRisk !== 'oppstrøms') return false;
-      const distance = Math.sqrt(
-        Math.pow(f.coordinates.lat - farm.coordinates.lat, 2) +
-        Math.pow(f.coordinates.lng - farm.coordinates.lng, 2)
-      ) * 111;
-      return distance < 15 && f.riskScore > 55; // Upstream + high risk
-    });
-
-    upstreamInfections.forEach(upFarm => {
-      const disease = diseaseDb[Math.floor(Math.random() * diseaseDb.length)];
-      risks.push({
-        id: `risk_current_${upFarm.id}`,
-        disease: disease.name,
-        source: `Havstrøm fra ${upFarm.name} (upstream)`,
-        sourceType: 'ocean_current',
-        riskScore: 40 + Math.floor(Math.random() * 25), // 40-65
-        severity: 'moderat',
-        manifestationDaysMin: 10,
-        manifestationDaysMax: 20,
-        manifestationDay: new Date(Date.now() + 14 * 24 * 3600 * 1000).toISOString(),
-        treatments: disease.treatments,
-        fatality: disease.fatality,
-        recommendedActions: [
-          '🌊 Øk overvåking av vannkvalitet',
-          '🧬 Genetisk testing av vill fiskebestand',
-          '📊 Regional situasjonsanalyse',
-          '🚫 Vurder sesongmessig drift',
-          ...disease.treatments.map(t => `✓ ${t}`)
-        ]
-      });
-    });
-  }
-
-  // Sort by risk score descending
-  risks.sort((a, b) => b.riskScore - a.riskScore);
-
-  res.json({
-    farmId,
-    farmName: farm.name,
-    risks,
-    summary: {
-      totalRisks: risks.length,
-      highRisk: risks.filter(r => r.severity === 'høy').length,
-      moderateRisk: risks.filter(r => r.severity === 'moderat').length
-    },
-    timestamp: new Date().toISOString()
-  });
-});
-
-
-// GET /api/mvp/admin/infection-chain - Smitte-kjede visualisering for Admin
+// Infection chain visualization (InfectionChainVisualization component)
 app.get('/api/mvp/admin/infection-chain', (req, res) => {
   const chain = MVP.infectionGraph || {}
   
-  // Find all farms that are at risk or could spread infection
   const criticalChain = Object.values(chain)
     .filter(farm => farm.riskLevel === 'risikofylt' || farm.downstreamFarms.length > 0)
     .sort((a, b) => {
-      // Sort by risk level and downstream exposure
       const riskOrder = { risikofylt: 0, 'høy oppmerksomhet': 1, moderat: 2, lav: 3 }
       return (riskOrder[a.riskLevel] || 99) - (riskOrder[b.riskLevel] || 99)
     })
   
-  // Build infection paths
   const infectionPaths = []
   criticalChain.forEach(farm => {
     if (farm.downstreamFarms.length > 0) {
@@ -1145,789 +448,27 @@ app.get('/api/mvp/admin/infection-chain', (req, res) => {
   })
 })
 
-// ============ END MVP ENDPOINTS ============
-
-// ============ DATA LOGGING ENDPOINTS ============
-
-// POST /api/datalog/alert - Log an alert with context
-app.post('/api/datalog/alert', async (req, res) => {
-  try {
-    const data = req.body
-    const alert = await logger.logAlert({
-      facility_id: data.facility_id,
-      disease_type: data.disease_type,
-      severity: data.severity,
-      region: data.region,
-      title: data.title,
-      risk_score: data.risk_score,
-      vessel_traffic_nearby: data.vessel_traffic_nearby,
-      environmental_data: data.environmental_data,
-      notes: data.notes
-    })
-    res.json({ ok: true, alert })
-  } catch (err) {
-    console.error('POST /api/datalog/alert error:', err)
-    res.status(500).json({ ok: false, error: err.message })
-  }
-})
-
-// GET /api/datalog/alerts - Get alert history
-app.get('/api/datalog/alerts', async (req, res) => {
-  try {
-    const { facility_id, disease_type, days } = req.query
-    const alerts = await logger.getAlertsHistory({
-      facility_id,
-      disease_type,
-      days: days ? parseInt(days) : null
-    })
-    res.json({ ok: true, alerts, count: alerts.length })
-  } catch (err) {
-    console.error('GET /api/datalog/alerts error:', err)
-    res.status(500).json({ ok: false, error: err.message })
-  }
-})
-
-// POST /api/datalog/vessel-position - Log vessel position
-app.post('/api/datalog/vessel-position', async (req, res) => {
-  try {
-    const data = req.body
-    const movement = await logger.logVesselPosition({
-      mmsi: data.mmsi,
-      vessel_name: data.vessel_name,
-      lat: data.lat,
-      lon: data.lon,
-      nearest_facility: data.nearest_facility,
-      distance_km: data.distance_km,
-      heading: data.heading,
-      speed_knots: data.speed_knots
-    })
-    res.json({ ok: true, movement })
-  } catch (err) {
-    console.error('POST /api/datalog/vessel-position error:', err)
-    res.status(500).json({ ok: false, error: err.message })
-  }
-})
-
-// GET /api/datalog/vessel-movements - Get vessel movement history
-app.get('/api/datalog/vessel-movements', async (req, res) => {
-  try {
-    const { mmsi, facility_id, days } = req.query
-    const movements = await logger.getVesselMovements({
-      mmsi,
-      facility_id,
-      days: days ? parseInt(days) : null
-    })
-    res.json({ ok: true, movements, count: movements.length })
-  } catch (err) {
-    console.error('GET /api/datalog/vessel-movements error:', err)
-    res.status(500).json({ ok: false, error: err.message })
-  }
-})
-
-// ============================================================================
-// BarentsWatch Fishhealth API Integration - REAL OUTBREAK DATA
-// ============================================================================
-
-// GET /api/barentswatch/outbreaks - Get real disease outbreaks from Fishhealth API
-app.get('/api/barentswatch/outbreaks', async (req, res) => {
-  try {
-    const { weeks } = req.query
-    console.log('📊 Fetching outbreak data from BarentsWatch Fishhealth API...')
-    
-    const outbreaks = await barentswatch.getOutbreakHistory(weeks ? parseInt(weeks) : 52)
-    
-    res.json({
-      ok: true,
-      outbreaks,
-      count: outbreaks.length,
-      source: 'BarentsWatch Fishhealth API',
-      timestamp: new Date().toISOString()
-    })
-  } catch (err) {
-    console.error('❌ GET /api/barentswatch/outbreaks error:', err.message)
-    res.status(500).json({
-      ok: false,
-      error: err.message,
-      message: 'Failed to fetch outbreak data from BarentsWatch API'
-    })
-  }
-})
-
-// GET /api/barentswatch/facility/:facilityNo/lice - Get sea lice data for facility
-app.get('/api/barentswatch/facility/:facilityNo/lice', async (req, res) => {
-  try {
-    const { facilityNo } = req.params
-    console.log(`🦐 Fetching lice data for facility ${facilityNo}...`)
-    
-    const liceData = await barentswatch.getFacilityLiceData(facilityNo)
-    
-    if (!liceData) {
-      return res.status(404).json({
-        ok: false,
-        error: 'Facility not found or no lice data available'
-      })
-    }
-    
-    res.json({
-      ok: true,
-      liceData,
-      source: 'BarentsWatch Fishhealth API',
-      timestamp: new Date().toISOString()
-    })
-  } catch (err) {
-    console.error(`❌ GET /api/barentswatch/facility/:facilityNo/lice error:`, err.message)
-    res.status(500).json({
-      ok: false,
-      error: err.message,
-      message: 'Failed to fetch lice data from BarentsWatch API'
-    })
-  }
-})
-
-// GET /api/barentswatch/stats - Get statistics about outbreaks
-app.get('/api/barentswatch/stats', async (req, res) => {
-  try {
-    const { weeks } = req.query
-    const outbreaks = await barentswatch.getOutbreakHistory(weeks ? parseInt(weeks) : 52)
-    
-    // Calculate statistics
-    const stats = {
-      total: outbreaks.length,
-      byDisease: {},
-      bySeverity: {
-        'kritisk': 0,
-        'høy': 0,
-        'moderat': 0,
-        'lav': 0
-      },
-      activeCount: 0,
-      dataCollectionPeriod: `${weeks || 52} weeks`,
-      timestamp: new Date().toISOString()
-    }
-    
-    outbreaks.forEach(outbreak => {
-      // Count by disease
-      const disease = outbreak.diseaseName || outbreak.diseaseCode
-      stats.byDisease[disease] = (stats.byDisease[disease] || 0) + 1
-      
-      // Count by severity
-      if (stats.bySeverity[outbreak.severity] !== undefined) {
-        stats.bySeverity[outbreak.severity]++
-      }
-      
-      // Count active outbreaks
-      if (outbreak.status === 'active') {
-        stats.activeCount++
-      }
-    })
-    
-    res.json({
-      ok: true,
-      stats,
-      source: 'BarentsWatch Fishhealth API'
-    })
-  } catch (err) {
-    console.error('❌ GET /api/barentswatch/stats error:', err.message)
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    })
-  }
-})
-
-// ============================================================================
-// ML RISK PREDICTION
-// ============================================================================
-
-// POST /api/ml/predict-risk - Predict outbreak risk for a facility
-app.post('/api/ml/predict-risk', (req, res) => {
-  try {
-    const { diseaseCode, vesselContactCount, latitude, longitude } = req.body;
-    
-    if (!diseaseCode) {
-      return res.status(400).json({
-        ok: false,
-        error: 'diseaseCode is required'
-      });
-    }
-
-    if (!riskModel.model) {
-      return res.status(503).json({
-        ok: false,
-        error: 'ML model not yet trained',
-        message: 'Run: node server/ml/pipeline.js'
-      });
-    }
-
-    const prediction = riskModel.predictRisk({
-      diseaseCode,
-      vesselContactCount: vesselContactCount || 0,
-      latitude: latitude || 0,
-      longitude: longitude || 0
-    });
-
-    res.json({
-      ok: true,
-      prediction,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ POST /api/ml/predict-risk error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// GET /api/ml/model - Get model summary
-app.get('/api/ml/model', (req, res) => {
-  try {
-    if (!riskModel.model) {
-      return res.status(503).json({
-        ok: false,
-        error: 'ML model not yet trained',
-        message: 'Run: node server/ml/pipeline.js'
-      });
-    }
-
-    const summary = riskModel.getSummary();
-    res.json({
-      ok: true,
-      model: summary,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ GET /api/ml/model error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// ============================================================================
-// ALERT SERVICE - Varsler til Anlegg (Facilities)
-// ============================================================================
-
-// POST /api/alerts/check-risk - Check facility risk and create alerts if needed
-app.post('/api/alerts/check-risk', (req, res) => {
-  try {
-    const { facilityId, diseaseCode, vesselContactCount, latitude, longitude, facilityName } = req.body;
-    
-    if (!facilityId || !diseaseCode) {
-      return res.status(400).json({
-        ok: false,
-        error: 'facilityId and diseaseCode are required'
-      });
-    }
-
-    // Get risk prediction from ML model
-    const prediction = riskModel.predictRisk({
-      diseaseCode,
-      vesselContactCount: vesselContactCount || 0,
-      latitude: latitude || 0,
-      longitude: longitude || 0
-    });
-
-    // Check if alert should be created
-    const alert = alertService.checkAndCreateAlert(
-      facilityId,
-      prediction.riskScore,
-      diseaseCode,
-      {
-        vesselContactCount,
-        latitude,
-        longitude,
-        facilityName
-      }
-    );
-
-    res.json({
-      ok: true,
-      prediction,
-      alert: alert ? {
-        id: alert.id,
-        status: alert.status,
-        message: alert.message,
-        severity: alert.severity
-      } : null,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ POST /api/alerts/check-risk error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// GET /api/alerts/facility/:facilityId - Get alerts for specific facility
-app.get('/api/alerts/facility/:facilityId', (req, res) => {
-  try {
-    const { facilityId } = req.params;
-    const { limit } = req.query;
-    
-    const alerts = alertService.getAlertsForFacility(
-      facilityId,
-      limit ? parseInt(limit) : 50
-    );
-
-    res.json({
-      ok: true,
-      facilityId,
-      alerts,
-      count: alerts.length,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ GET /api/alerts/facility error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// GET /api/alerts/active - Get all active (unresolved) alerts
-app.get('/api/alerts/active', (req, res) => {
-  try {
-    const alerts = alertService.getActiveAlerts();
-    
-    res.json({
-      ok: true,
-      alerts,
-      count: alerts.length,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ GET /api/alerts/active error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// GET /api/alerts/stats - Get alert statistics
-app.get('/api/alerts/stats', (req, res) => {
-  try {
-    const stats = alertService.getAlertStats();
-    
-    res.json({
-      ok: true,
-      stats,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ GET /api/alerts/stats error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// PATCH /api/alerts/:alertId/acknowledge - Mark alert as acknowledged by facility
-app.patch('/api/alerts/:alertId/acknowledge', (req, res) => {
-  try {
-    const { alertId } = req.params;
-    const { acknowledgedBy } = req.body;
-    
-    if (!acknowledgedBy) {
-      return res.status(400).json({
-        ok: false,
-        error: 'acknowledgedBy is required'
-      });
-    }
-
-    const alert = alertService.acknowledgeAlert(alertId, acknowledgedBy);
-    
-    if (!alert) {
-      return res.status(404).json({
-        ok: false,
-        error: 'Alert not found'
-      });
-    }
-
-    res.json({
-      ok: true,
-      alert,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ PATCH /api/alerts/:alertId/acknowledge error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// PATCH /api/alerts/:alertId/resolve - Mark alert as resolved
-app.patch('/api/alerts/:alertId/resolve', (req, res) => {
-  try {
-    const { alertId } = req.params;
-    
-    const alert = alertService.resolveAlert(alertId);
-    
-    if (!alert) {
-      return res.status(404).json({
-        ok: false,
-        error: 'Alert not found'
-      });
-    }
-
-    res.json({
-      ok: true,
-      alert,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ PATCH /api/alerts/:alertId/resolve error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// POST /api/alerts/send-test - Send test alert email
-app.post('/api/alerts/send-test', async (req, res) => {
-  try {
-    const { email } = req.body;
-    
-    if (!email) {
-      return res.status(400).json({
-        ok: false,
-        error: 'email is required'
-      });
-    }
-
-    const result = await notifier.sendTestNotification(email);
-
-    res.json({
-      ok: result.success,
-      result,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ POST /api/alerts/send-test error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// ============ END ALERT SERVICE ENDPOINTS ============
-
-// ============================================================================
-// SCHEDULER ENDPOINTS
-// ============================================================================
-
-// GET /api/scheduler/status - Get scheduler status
-app.get('/api/scheduler/status', (req, res) => {
-  try {
-    const status = scheduler.getStatus();
-    res.json({
-      ok: true,
-      scheduler: status,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ GET /api/scheduler/status error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// POST /api/scheduler/run-retraining - Manually trigger ML retraining
-app.post('/api/scheduler/run-retraining', async (req, res) => {
-  try {
-    if (scheduler.isRetraining) {
-      return res.status(409).json({
-        ok: false,
-        error: 'Retraining already in progress'
-      });
-    }
-
-    console.log('🤖 [MANUAL] Starting ML model retraining...');
-    
-    // Run pipeline (don't await, return immediately)
-    scheduler.runMLPipeline().then(() => {
-      console.log('✓ [MANUAL] ML retraining completed');
-      // Reload model
-      scheduler.riskModel.load(path.join(__dirname, 'data/risk-model.json'));
-    }).catch(err => {
-      console.error('✗ [MANUAL] ML retraining failed:', err.message);
-    });
-
-    res.json({
-      ok: true,
-      message: 'ML retraining started',
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ POST /api/scheduler/run-retraining error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// POST /api/scheduler/run-risk-check - Manually trigger risk monitoring
-app.post('/api/scheduler/run-risk-check', async (req, res) => {
-  try {
-    console.log('📡 [MANUAL] Starting risk monitoring...');
-    
-    const facilities = [
-      { id: 'FARM-001', name: 'Anlegg Nord-Trøndelag', latitude: 64.1466, longitude: 11.4871 },
-      { id: 'FARM-002', name: 'Anlegg Troms', latitude: 69.6492, longitude: 18.9553 },
-      { id: 'FARM-003', name: 'Anlegg Hordaland', latitude: 60.9711, longitude: 5.1913 }
-    ];
-
-    let alertsCreated = 0;
-    const alertsData = [];
-
-    for (const facility of facilities) {
-      for (const disease of ['ISA', 'PD', 'PRV', 'SRS']) {
-        const vesselContacts = Math.floor(Math.random() * 5);
-        const prediction = riskModel.predictRisk({
-          diseaseCode: disease,
-          vesselContactCount: vesselContacts,
-          latitude: facility.latitude,
-          longitude: facility.longitude
-        });
-
-        const alert = alertService.checkAndCreateAlert(
-          facility.id,
-          prediction.riskScore,
-          disease,
-          {
-            vesselContactCount: vesselContacts,
-            latitude: facility.latitude,
-            longitude: facility.longitude,
-            facilityName: facility.name,
-            source: 'MANUAL_CHECK'
-          }
-        );
-
-        if (alert) {
-          alertsCreated++;
-          alertsData.push({
-            facilityId: facility.id,
-            facilityName: facility.name,
-            disease: disease,
-            riskLevel: alert.riskLevel,
-            riskScore: prediction.riskScore
-          });
-        }
-      }
-    }
-
-    res.json({
-      ok: true,
-      message: 'Risk monitoring completed',
-      alertsCreated,
-      alerts: alertsData,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ POST /api/scheduler/run-risk-check error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// ============ END SCHEDULER ENDPOINTS ============
-
-// ============================================================================
-// DISEASE ZONES API - For Professional Fishers
-// ============================================================================
-
-// GET /api/disease-zones/all - Get all disease zones
-app.get('/api/disease-zones/all', (req, res) => {
-  try {
-    const zones = diseaseZones.zones;
-    const stats = diseaseZones.getStats();
-    
-    res.json({
-      ok: true,
-      zones,
-      stats,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ GET /api/disease-zones/all error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// POST /api/disease-zones/refresh - Manually refresh zones from BarentsWatch
-app.post('/api/disease-zones/refresh', async (req, res) => {
-  try {
-    const { year, week } = req.body;
-    console.log('🔄 [MANUAL] Refreshing disease zones...');
-    
-    const zones = await diseaseZones.getAllZones(year, week);
-    const stats = diseaseZones.getStats();
-    
-    res.json({
-      ok: true,
-      message: `Loaded ${zones.length} disease zones`,
-      zones,
-      stats,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ POST /api/disease-zones/refresh error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// POST /api/disease-zones/nearby - Get zones near vessel position
-app.post('/api/disease-zones/nearby', (req, res) => {
-  try {
-    const { latitude, longitude, radiusKm } = req.body;
-    
-    if (latitude === undefined || longitude === undefined) {
-      return res.status(400).json({
-        ok: false,
-        error: 'latitude and longitude required'
-      });
-    }
-
-    const nearbyZones = diseaseZones.getNearbyZones(
-      latitude,
-      longitude,
-      radiusKm || 50
-    );
-
-    const isInZone = diseaseZones.isInZone(latitude, longitude);
-
-    res.json({
-      ok: true,
-      vessel: {
-        latitude,
-        longitude,
-        inZone: isInZone
-      },
-      nearbyZones,
-      count: nearbyZones.length,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ POST /api/disease-zones/nearby error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// GET /api/disease-zones/stats - Get zone statistics
-app.get('/api/disease-zones/stats', (req, res) => {
-  try {
-    const stats = diseaseZones.getStats();
-    
-    res.json({
-      ok: true,
-      stats,
-      timestamp: new Date().toISOString()
-    });
-  } catch (err) {
-    console.error('❌ GET /api/disease-zones/stats error:', err.message);
-    res.status(500).json({
-      ok: false,
-      error: err.message
-    });
-  }
-});
-
-// ============ END DISEASE ZONES API ============
-
-app.patch('/api/datalog/alert/:alertId/outbreak', async (req, res) => {
-  try {
-    const { alertId } = req.params
-    const { confirmed, notes } = req.body
-    const alert = await logger.updateAlertOutbreak(alertId, confirmed, notes)
-    if (!alert) {
-      return res.status(404).json({ ok: false, error: 'Alert not found' })
-    }
-    res.json({ ok: true, alert })
-  } catch (err) {
-    console.error('PATCH /api/datalog/alert/:alertId/outbreak error:', err)
-    res.status(500).json({ ok: false, error: err.message })
-  }
-})
-
-// GET /api/datalog/stats - Get datalogger statistics
-app.get('/api/datalog/stats', async (req, res) => {
-  try {
-    const stats = await logger.getStats()
-    res.json({ ok: true, stats })
-  } catch (err) {
-    console.error('GET /api/datalog/stats error:', err)
-    res.status(500).json({ ok: false, error: err.message })
-  }
-})
-
-// GET /api/datalog/export - Export training data for ML
-app.get('/api/datalog/export', async (req, res) => {
-  try {
-    const { days } = req.query
-    const exportData = await logger.exportTrainingData({
-      days: days ? parseInt(days) : null
-    })
-    res.json({ ok: true, data: exportData })
-  } catch (err) {
-    console.error('GET /api/datalog/export error:', err)
-    res.status(500).json({ ok: false, error: err.message })
-  }
-})
-
 // ============ SERVE FRONTEND ============
-// Always serve React app from client/dist
 const distPath = path.join(__dirname, '../client/dist')
 
-// Check if dist folder exists
 if (require('fs').existsSync(distPath)) {
   console.log(`📦 Serving frontend from ${distPath}`)
   
-  // Serve static files with cache control
   app.use(express.static(distPath, {
     maxAge: '1h',
     etag: false,
-    index: false // Don't auto-serve index.html for /api routes
+    index: false
   }))
   
-  // SPA fallback: serve index.html for non-API routes (but NOT for /api routes)
   app.get('*', (req, res) => {
     if (req.path.startsWith('/api/')) {
-      // Don't handle API routes here - let Express return 404
-      // This means the API route above didn't match, so return error
       console.error(`[404] API route not found: ${req.path}`)
       return res.status(404).json({ error: 'API endpoint not found', path: req.path })
     }
-    // Non-API routes get the React app (for SPA routing)
     res.sendFile(path.join(distPath, 'index.html'))
   })
 } else {
   console.warn(`⚠️  Client dist folder not found at ${distPath}`)
-  // Still provide API, but no frontend
   app.get('*', (req, res) => {
     if (req.path.startsWith('/api/')) {
       console.error(`[404] API route not found: ${req.path}`)
@@ -1937,37 +478,11 @@ if (require('fs').existsSync(distPath)) {
   })
 }
 
-// ============ END DATA LOGGING ENDPOINTS ============
-// leave ports bound (prevents EADDRINUSE loops when files change rapidly).
+// ============ START SERVER ============
 const server = app.listen(PORT, () => {
   console.log(`🐟 AquaShield API running on port ${PORT}`)
-  
-  // Sync BarentsWatch data on startup
-  autoSyncOnStartup()
-  
-  // Start AIS polling for data logging
-  // MVP: 1440 minutes (24 hours) = once daily to save CPU/memory
-  // Phase 2: Change to 5 minutes for real-time production vessel tracking
-  startAISPolling(1440)
-  
-  // Start scheduler for ML retraining and risk monitoring
-  scheduler.start()
+  console.log(`📊 Available endpoints: /api/health, /api/farmer/*, /api/mvp/vessel/*, /api/mvp/fisher/*, /api/admin/validation/*`)
 })
-
-// If Render (or other host) expects the internal health check on port 10000,
-// also bind the same app to that port so health checks succeed. This keeps
-// local development behaviour unchanged while preventing health-check timeouts
-// on Render where the platform probes :10000 by default.
-let healthServer
-if (Number(RENDER_HEALTH_PORT) !== Number(PORT)) {
-  try {
-    healthServer = app.listen(RENDER_HEALTH_PORT, () => {
-      console.log(`🔎 Health endpoint also listening on port ${RENDER_HEALTH_PORT}`)
-    })
-  } catch (err) {
-    console.warn('Could not bind health port', RENDER_HEALTH_PORT, err && err.message)
-  }
-}
 
 function shutdown(signal) {
   console.log(`Received ${signal} — shutting down server...`)
@@ -1976,23 +491,13 @@ function shutdown(signal) {
       console.error('Error during server close', err)
       process.exit(1)
     }
-    if (healthServer) {
-      healthServer.close(() => {
-        // Allow nodemon to restart with SIGUSR2
-        if (signal === 'SIGUSR2') {
-          process.kill(process.pid, 'SIGUSR2')
-        } else {
-          process.exit(0)
-        }
-      })
+    if (signal === 'SIGUSR2') {
+      process.kill(process.pid, 'SIGUSR2')
     } else {
-      if (signal === 'SIGUSR2') {
-        process.kill(process.pid, 'SIGUSR2')
-      } else {
-        process.exit(0)
-      }
+      process.exit(0)
     }
   })
 }
 
 process.on('SIGINT', () => shutdown('SIGINT'))
+process.on('SIGTERM', () => shutdown('SIGTERM'))
