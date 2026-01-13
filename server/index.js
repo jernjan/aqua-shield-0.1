@@ -312,6 +312,67 @@ app.post('/api/admin/validation/auto-validate', async (req, res) => {
   }
 })
 
+// ============ ADMIN RISK ASSESSMENT ============
+// Admin: Risk Assessment Dashboard (AdminMVP uses this)
+app.get('/api/admin/risks', async (req, res) => {
+  try {
+    const { assessAllRisks } = require('./utils/risk')
+    const db = await readDB()
+    
+    const facilities = db.facilities || []
+    
+    if (facilities.length === 0) {
+      return res.json({
+        risky: [],
+        safe: [],
+        summary: { total: 0, risky: 0, safe: 0, critical: 0, high: 0, medium: 0 },
+        timestamp: new Date().toISOString(),
+        message: 'No facility data available'
+      })
+    }
+    
+    const risks = assessAllRisks(facilities, 70)
+    
+    res.json({
+      ...risks,
+      metadata: {
+        threshold: 70,
+        total_facilities: facilities.length,
+        last_sync: db.lastSync
+      }
+    })
+  } catch (err) {
+    console.error('❌ Risk assessment failed:', err.message)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Admin: Detail view of a specific facility and its transmission risk
+app.get('/api/admin/risks/:facilityId', async (req, res) => {
+  try {
+    const { getPredictedSpreaders } = require('./utils/risk')
+    const db = await readDB()
+    const facilities = db.facilities || []
+    const facilityId = req.params.facilityId
+    
+    const facility = facilities.find(f => f.id === facilityId)
+    if (!facility) {
+      return res.status(404).json({ error: 'Facility not found' })
+    }
+    
+    const spreaders = getPredictedSpreaders(facilities, facilityId)
+    
+    res.json({
+      facility,
+      predictedSpreaders: spreaders,
+      timestamp: new Date().toISOString()
+    })
+  } catch (err) {
+    console.error('❌ Failed to get facility details:', err.message)
+    res.status(500).json({ error: err.message })
+  }
+})
+
 // ============ COMPONENT ENDPOINTS ============
 // Algae calendar (AlgaeCalendar component)
 app.get('/api/mvp/farm/:farmId/algae-alerts', (req, res) => {
