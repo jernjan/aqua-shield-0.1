@@ -17,7 +17,8 @@ export default function VesselDashboard() {
   async function loadVessels() {
     try {
       setError(null)
-      const res = await fetch('/api/mvp/vessel', { timeout: 10000 })
+      // Fetch real AIS vessel data
+      const res = await fetch('/api/vessels', { timeout: 10000 })
       if (!res.ok) {
         throw new Error(`API error: ${res.status}`)
       }

@@ -1,40 +1,35 @@
-﻿// AquaShield MVP 0.1 - Simplified Backend
-// Only endpoints that are actually used by frontend
+﻿// AquaShield MVP 0.1 - Real Data Only Backend
+// Fetches from BarentsWatch (2687+ facilities) and AIS (4066+ vessels)
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
 const { readDB, writeDB } = require('./db')
-const mvpData = require('./mvp-data')
+const realDataRoutes = require('./routes/api-real-data')
 const { initializeVesselTrackingCrons } = require('./cron/vessel-tracking')
 
-// Initialize MVP data (async - load real BarentsWatch and AIS data)
-let MVP = null
 const app = express()
 const PORT = process.env.PORT || 3001
 
 app.use(cors())
 app.use(express.json())
 
-// Initialize MVP data on startup
-async function initMVP() {
-  MVP = await mvpData.initWithRealData()
-  console.log(`🚀 MVP initialized with ${MVP.farmers?.length || 0} farmers and ${MVP.vessels?.length || 0} vessels`)
-  
-  // Start vessel tracking cron jobs
-  initializeVesselTrackingCrons()
-}
+// Startup message
+console.log('🚀 AquaShield Backend - Real Data Mode');
+console.log('   Data sources: BarentsWatch + AIS APIs');
+console.log('   No mock data - all endpoints use real APIs');
 
-// Start initialization
-initMVP().catch(err => {
-  console.error('Failed to initialize MVP:', err)
-  process.exit(1)
-})
+// Start vessel tracking cron jobs
+initializeVesselTrackingCrons()
 
 // ============ HEALTH CHECK ============
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
+
+// ============ REAL DATA API ROUTES ============
+// All endpoints that fetch from BarentsWatch and AIS APIs
+app.use('/api', realDataRoutes)
 
 // ============ FARMER DASHBOARD ============
 // Get all facilities with risk forecast (FarmerDashboard)

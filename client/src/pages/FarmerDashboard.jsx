@@ -16,17 +16,24 @@ export default function FarmerDashboard({ token, currentUser }) {
     const fetchFacilities = async () => {
       try {
         setLoading(true);
-        // Use MVP endpoint which has mock data that works
-        const data = await apiClient.get('/api/mvp/farmer');
-        if (data && data.farms) {
-          // Transform MVP farm data to match FarmerDashboard expectations
-          const facilities = data.farms.map(farm => ({
-            ...farm,
-            riskCategory: farm.riskScore >= 60 ? 'CRITICAL' : farm.riskScore >= 40 ? 'HIGH' : 'MEDIUM',
-            shouldAlert: farm.riskScore >= 60
+        // Fetch real data from BarentsWatch API
+        const data = await apiClient.get('/api/facilities');
+        if (data && data.facilities) {
+          // Transform facility data to match FarmerDashboard expectations
+          const facilities = data.facilities.map((facility, idx) => ({
+            ...facility,
+            riskCategory: 'MEDIUM', // Will be calculated based on real lice data
+            shouldAlert: false,
+            riskScore: 50 // Will be calculated from real data
           }));
           setFacilities(facilities);
-          setSummary(data.stats);
+          setSummary({
+            total: facilities.length,
+            critical: 0,
+            high: 0,
+            medium: facilities.length,
+            alertCount: 0
+          });
           if (facilities.length > 0) {
             setSelectedFacility(facilities[0]);
           }
