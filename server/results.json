@@ -1,0 +1,89 @@
+{
+  "timestamp": "2026-01-13T19:37:32.677Z",
+  "summary": {
+    "sensitivity": 0,
+    "specificity": 1,
+    "f1Score": 0,
+    "precision": 1,
+    "accuracy": 1,
+    "avgLeadTime": 0
+  },
+  "predictions": {
+    "contaminationEvents": 0,
+    "correctPredictions": 0,
+    "falsePredictions": 0,
+    "missedEvents": 1115
+  },
+  "perDate": [
+    {
+      "date": "2024-01-01",
+      "predictions": 0,
+      "correct": 0,
+      "false": 0,
+      "missed": 12
+    },
+    {
+      "date": "2024-01-08",
+      "predictions": 0,
+      "correct": 0,
+      "false": 0,
+      "missed": 24
+    },
+    {
+      "date": "2024-01-15",
+      "predictions": 0,
+      "correct": 0,
+      "false": 0,
+      "missed": 24
+    },
+    {
+      "date": "2024-01-22",
+      "predictions": 0,
+      "correct": 0,
+      "false": 0,
+      "missed": 14
+    },
+    {
+      "date": "2024-01-29",
+      "predictions": 0,
+      "correct": 0,
+      "false": 0,
+      "missed": 18
+    },
+    {
+      "date": "2024-02-05",
+      "predictions": 0,
+      "correct": 0,
+      "false": 0,
+      "missed": 30
+    },
+    {
+      "date": "2024-02-12",
+      "predictions": 0,
+      "correct": 0,
+      "false": 0,
+      "missed": 27
+    },
+    {
+      "date": "2024-02-19",
+      "predictions": 0,
+      "correct": 0,
+      "false": 0,
+      "missed": 31
+    },
+    {
+      "date": "2024-02-26",
+      "predictions": 0,
+      "correct": 0,
+      "false": 0,
+      "missed": 27
+    },
+    {
+      "date": "2024-03-04",
+      "predictions": 0,
+      "correct": 0,
+      "false": 0,
+      "missed": 29
+    }
+  ]
+}

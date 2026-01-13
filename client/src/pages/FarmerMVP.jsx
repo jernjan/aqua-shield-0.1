@@ -1,31 +1,23 @@
 import { useEffect, useState } from 'react';
-import { getMockFarmData } from '../mocks/data';
-import { severityCompare } from '../lib/riskTerms';
-
 import apiClient from '../lib/apiClient';
 
 export default function FarmerMVP({ token, currentUser }) {
   const [farms, setFarms] = useState([]);
   const [selectedFarm, setSelectedFarm] = useState(null);
-  const [alerts, setAlerts] = useState([]);
-  const [visitingVessels, setVisitingVessels] = useState([]);
-  const [activeQuarantines, setActiveQuarantines] = useState([]);
-  const [diseaseRisks, setDiseaseRisks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [expandAllDiseases, setExpandAllDiseases] = useState(false);
-  const [allFarmAlerts, setAllFarmAlerts] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterAlertType, setFilterAlertType] = useState('all');
 
-
+  // Fetch real annotated farm data from backend
   useEffect(() => {
     const fetchFarms = async () => {
       try {
         const response = await apiClient.get('/api/mvp/farmer');
         // API returns { farms: [...], stats: {...}, alertCount: ... }
+        // Each farm now has: ownRisk, riskCategory, upstreamSources, nearbyVessels, spreadSource, etc.
         if (response && response.farms && Array.isArray(response.farms)) {
           setFarms(response.farms);
           setSelectedFarm(response.farms[0] || null);
+          console.log('✅ Loaded', response.farms.length, 'annotated farms from backend');
         }
       } catch (error) {
         console.error('Error fetching farms:', error);
@@ -38,38 +30,18 @@ export default function FarmerMVP({ token, currentUser }) {
     fetchFarms();
   }, []);
 
-  useEffect(() => {
-    if (!selectedFarm) return;
-    
-    const mockFarmData = getMockFarmData(selectedFarm.id);
-
-    setAlerts(mockFarmData.alerts);
-    setVisitingVessels(mockFarmData.visitingVessels);
-    setActiveQuarantines(mockFarmData.quarantines);
-    setDiseaseRisks(mockFarmData.diseases);
-  }, [selectedFarm]);
 
   const handleMarkAsRead = (alertId) => {
-    setAlerts(prev => prev.map(a => a.id === alertId ? { ...a, isRead: true } : a));
+    // No longer needed - real data doesn't have isRead status
   };
 
-  const sortedAlerts = [...alerts].sort((a, b) => severityCompare(a.severity, b.severity));
-
-  const filteredAlerts = filterAlertType === 'all' 
-    ? sortedAlerts 
-    : sortedAlerts.filter(a => a.type === filterAlertType);
+  // Calculate portfolio stats from real farm data
+  const criticalFarms = farms.filter(f => f.riskScore > 80).length;
+  const highFarms = farms.filter(f => f.riskScore > 60 && f.riskScore <= 80).length;
+  const mediumFarms = farms.filter(f => f.riskScore > 30 && f.riskScore <= 60).length;
 
   const filteredFarms = farms.filter(f => 
-    f.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    f.region.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Calculate portfolio stats
-  const criticalFarms = farms.filter(f => f.riskScore > 60).length;
-  const warningFarms = farms.filter(f => f.riskScore > 40 && f.riskScore <= 60).length;
-  const totalAlerts = Object.values(allFarmAlerts).reduce((sum, arr) => sum + arr.length, 0);
-  const criticalAlerts = Object.values(allFarmAlerts).reduce((sum, arr) => 
-    sum + arr.filter(a => a.severity === 'risikofylt').length, 0
+    f.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading) return <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-secondary)' }}>Laster...</div>;
@@ -86,19 +58,19 @@ export default function FarmerMVP({ token, currentUser }) {
         overflowY: 'auto',
         overflowX: 'hidden'
       }}>
-        {/* Portfolio Stats Banner */}
-        <div style={{ background: 'var(--bg-elevated)', padding: '10px', borderBottom: '1px solid var(--border-color)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4, fontSize: 9 }}>
+      {/* Portfolio Stats Banner */}
+        <div style={{ background: 'var(--bg-elevated)', padding: '10px', borderBottom: '1px solid var(--border-color)', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 4, fontSize: 9 }}>
           <div style={{ textAlign: 'center' }}>
             <p style={{ margin: 0, color: 'var(--text-secondary)', fontWeight: 600 }}>Kritisk</p>
             <p style={{ margin: '2px 0 0 0', fontSize: 14, fontWeight: 700, color: 'var(--accent-red)' }}>{criticalFarms}</p>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <p style={{ margin: 0, color: 'var(--text-secondary)', fontWeight: 600 }}>Advarsel</p>
-            <p style={{ margin: '2px 0 0 0', fontSize: 14, fontWeight: 700, color: 'var(--accent-orange)' }}>{warningFarms}</p>
+            <p style={{ margin: 0, color: 'var(--text-secondary)', fontWeight: 600 }}>Høy</p>
+            <p style={{ margin: '2px 0 0 0', fontSize: 14, fontWeight: 700, color: 'var(--accent-orange)' }}>{highFarms}</p>
           </div>
-          <div style={{ textAlign: 'center', gridColumn: '1 / -1' }}>
-            <p style={{ margin: 0, color: 'var(--text-secondary)', fontWeight: 600 }}>Varsler</p>
-            <p style={{ margin: '2px 0 0 0', fontSize: 14, fontWeight: 700, color: 'var(--accent-red)' }}>{totalAlerts} {criticalAlerts > 0 && `(${criticalAlerts}🔴)`}</p>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ margin: 0, color: 'var(--text-secondary)', fontWeight: 600 }}>Medium</p>
+            <p style={{ margin: '2px 0 0 0', fontSize: 14, fontWeight: 700, color: 'var(--accent-blue)' }}>{mediumFarms}</p>
           </div>
         </div>
 
@@ -127,17 +99,9 @@ export default function FarmerMVP({ token, currentUser }) {
         {/* Farms List */}
         <div style={{ flex: 1, overflowY: 'auto' }}>
           {farms.map(farm => {
-            const farmAlerts = allFarmAlerts[farm.id] || [];
-            const criticalAlerts = farmAlerts.filter(a => a.severity === 'risikofylt').length;
-            const status = farm.riskScore > 60 ? 'kritisk' : farm.riskScore > 40 ? 'advarsel' : 'ok';
-            const statusColor = status === 'kritisk' ? 'var(--accent-red)' : status === 'advarsel' ? 'var(--accent-orange)' : 'var(--accent-green)';
-            const statusEmoji = status === 'kritisk' ? '🔴' : status === 'advarsel' ? '🟠' : '🟢';
-            
-            // Check for expiring licenses
-            const expiringLicense = farm.licenses && farm.licenses.some(lic => {
-              const daysLeft = Math.floor((new Date(lic.expires) - new Date()) / (24 * 3600 * 1000));
-              return daysLeft < 60 && daysLeft > 0;
-            });
+            const status = farm.riskCategory || (farm.riskScore > 80 ? 'CRITICAL' : farm.riskScore > 60 ? 'HIGH' : 'MEDIUM');
+            const statusColor = status === 'CRITICAL' ? 'var(--accent-red)' : status === 'HIGH' ? 'var(--accent-orange)' : 'var(--accent-blue)';
+            const statusEmoji = status === 'CRITICAL' ? '🔴' : status === 'HIGH' ? '🟠' : '🔵';
             
             return (
               <div
@@ -166,27 +130,24 @@ export default function FarmerMVP({ token, currentUser }) {
                       {farm.name}
                     </p>
                     <p style={{ margin: 0, fontSize: 9, color: 'var(--text-secondary)' }}>
-                      {farm.region}
+                      {farm.municipality || 'Ukjent'}
                     </p>
                   </div>
-                  <div style={{ display: 'flex', gap: 3, alignItems: 'center' }}>
-                    {expiringLicense && <span style={{ fontSize: 12 }}>🟡</span>}
-                    <span style={{ fontSize: 14 }}>
-                      {statusEmoji}
-                    </span>
-                  </div>
+                  <span style={{ fontSize: 14 }}>
+                    {statusEmoji}
+                  </span>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4, fontSize: 10 }}>
                   <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 3, padding: '4px 6px' }}>
                     <p style={{ margin: 0, fontSize: 9, color: 'var(--text-secondary)' }}>Risiko</p>
                     <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: statusColor }}>
-                      {farm.riskScore}%
+                      {farm.riskScore || farm.ownRisk || 0}%
                     </p>
                   </div>
                   <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 3, padding: '4px 6px' }}>
-                    <p style={{ margin: 0, fontSize: 9, color: 'var(--text-secondary)' }}>Varsler</p>
-                    <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: farmAlerts.length > 0 ? 'var(--accent-red)' : 'var(--text-secondary)' }}>
-                      {farmAlerts.length} {criticalAlerts > 0 && `(${criticalAlerts} 🔴)`}
+                    <p style={{ margin: 0, fontSize: 9, color: 'var(--text-secondary)' }}>Lus</p>
+                    <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: farm.liceCount > 5 ? 'var(--accent-red)' : 'var(--text-secondary)' }}>
+                      {farm.liceCount || 0}
                     </p>
                   </div>
                 </div>
@@ -204,7 +165,7 @@ export default function FarmerMVP({ token, currentUser }) {
             {selectedFarm?.name || 'Velg anlegg'}
           </h1>
           <p style={{ margin: '2px 0 0 0', fontSize: 12, color: 'var(--text-secondary)' }}>
-            {selectedFarm?.region || ''}
+            {selectedFarm?.municipality || ''}
           </p>
         </div>
 
@@ -213,111 +174,7 @@ export default function FarmerMVP({ token, currentUser }) {
           {selectedFarm ? (
             <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '12px 16px' }}>
 
-
-              {/* ===== VARSLER - TOP PRIORITY ===== */}
-              {alerts.length > 0 && (
-                <div style={{ marginBottom: 14 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                    <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-red)', margin: 0, paddingBottom: 6, borderBottom: '2px solid var(--accent-red)' }}>
-                      🚨 VARSLER ({alerts.length})
-                    </h3>
-                    {/* Filter buttons */}
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                      {['all', 'lus-risiko', 'alger', 'båtkontakt', 'temperatur', 'dødeligheit'].map(type => {
-                        const count = type === 'all' ? alerts.length : alerts.filter(a => a.type === type).length;
-                        const isActive = filterAlertType === type;
-                        return (
-                          <button
-                            key={type}
-                            onClick={() => setFilterAlertType(type)}
-                            style={{
-                              padding: '4px 10px',
-                              borderRadius: 3,
-                              border: isActive ? '2px solid var(--accent-gold)' : '1px solid var(--border-color)',
-                              background: isActive ? 'rgba(212, 165, 116, 0.2)' : 'transparent',
-                              color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
-                              fontSize: 10,
-                              fontWeight: isActive ? 600 : 500,
-                              cursor: 'pointer',
-                              transition: 'all 0.15s ease'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background = 'var(--bg-elevated)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = isActive ? 'rgba(212, 165, 116, 0.2)' : 'transparent';
-                            }}
-                          >
-                            {type === 'all' ? 'Alle' : type.charAt(0).toUpperCase() + type.slice(1)} ({count})
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  
-                  <div style={{ display: 'grid', gap: 4, maxHeight: '220px', overflowY: 'auto' }}>
-                    {sortedAlerts
-                      .filter(a => filterAlertType === 'all' || a.type === filterAlertType)
-                      .map((alert, idx) => {
-                      // Determine color based on source and severity
-                      const isInfoSource = ['Met.no', 'Kystvarsling'].includes(alert.dataSource);
-                      const isCritical = alert.severity === 'risikofylt' && !isInfoSource;
-                      const isWarning = alert.severity === 'høy oppmerksomhet' && !isInfoSource;
-                      
-                      let bgColor, borderColor, badgeColor;
-                      if (isCritical) {
-                        bgColor = 'rgba(220, 38, 38, 0.15)';
-                        borderColor = '1.5px solid var(--accent-red)';
-                        badgeColor = 'var(--accent-red)';
-                      } else if (isWarning) {
-                        bgColor = 'rgba(251, 146, 60, 0.12)';
-                        borderColor = '1px solid var(--accent-orange)';
-                        badgeColor = 'var(--accent-orange)';
-                      } else {
-                        bgColor = 'var(--bg-surface)';
-                        borderColor = '1px solid var(--border-color)';
-                        badgeColor = 'var(--accent-green)';
-                      }
-
-                      return (
-                        <div key={idx} style={{
-                          background: bgColor,
-                          border: borderColor,
-                          borderRadius: 4,
-                          padding: 8,
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'flex-start',
-                          gap: 8
-                        }}>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 2 }}>
-                              {alert.title} {alert.dataSource && `(${alert.dataSource})`}
-                            </p>
-                            <p style={{ margin: 0, fontSize: 10, color: 'var(--text-secondary)' }}>
-                              {new Date(alert.timestamp).toLocaleDateString('no-NO')} • {alert.type}
-                            </p>
-                          </div>
-                          <div style={{
-                            background: badgeColor,
-                            color: '#fff',
-                            padding: '3px 6px',
-                            borderRadius: 3,
-                            fontSize: 9,
-                            fontWeight: 600,
-                            whiteSpace: 'nowrap',
-                            textAlign: 'center'
-                          }}>
-                            {isCritical ? '🔴' : isWarning ? '🟠' : '🔵'}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* ===== RISIKO & STATUS - 4 columns ===== */}
+              {/* ===== RISIKO & STATUS - Grid ===== */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 14 }}>
                 {/* Risk Score */}
                 <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
@@ -327,10 +184,10 @@ export default function FarmerMVP({ token, currentUser }) {
                   <div style={{
                     fontSize: 32,
                     fontWeight: 700,
-                    color: selectedFarm?.riskScore > 60 ? 'var(--accent-red)' : selectedFarm?.riskScore > 40 ? 'var(--accent-orange)' : 'var(--accent-green)',
+                    color: selectedFarm.riskScore > 80 ? 'var(--accent-red)' : selectedFarm.riskScore > 60 ? 'var(--accent-orange)' : 'var(--accent-blue)',
                     marginBottom: 6
                   }}>
-                    {selectedFarm?.riskScore || 0}%
+                    {selectedFarm.riskScore || selectedFarm.ownRisk || 0}%
                   </div>
                   <div style={{
                     height: 3,
@@ -340,259 +197,176 @@ export default function FarmerMVP({ token, currentUser }) {
                   }}>
                     <div style={{
                       height: '100%',
-                      width: `${selectedFarm?.riskScore || 0}%`,
-                      background: selectedFarm?.riskScore > 60 ? 'var(--accent-red)' : selectedFarm?.riskScore > 40 ? 'var(--accent-orange)' : 'var(--accent-green)'
+                      width: `${selectedFarm.riskScore || selectedFarm.ownRisk || 0}%`,
+                      background: selectedFarm.riskScore > 80 ? 'var(--accent-red)' : selectedFarm.riskScore > 60 ? 'var(--accent-orange)' : 'var(--accent-blue)'
                     }} />
                   </div>
                 </div>
 
-                {/* Active Alerts */}
+                {/* Lice Count */}
                 <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
                   <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase' }}>
-                    Varsler
+                    🦐 Lus
                   </div>
-                  <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--accent-red)', marginBottom: 4 }}>
-                    {alerts.length}
+                  <div style={{ fontSize: 32, fontWeight: 700, color: selectedFarm.liceCount > 5 ? 'var(--accent-red)' : 'var(--accent-green)', marginBottom: 4 }}>
+                    {selectedFarm.liceCount || 0}
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
-                    {alerts.filter(a => !a.isRead).length} nye
+                    {selectedFarm.liceCount > 10 ? 'kritisk' : selectedFarm.liceCount > 5 ? 'høy' : 'kontrollert'}
                   </div>
                 </div>
 
-                {/* Disease Risks */}
+                {/* Disease Status */}
                 <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
                   <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase' }}>
-                    Sykdom
+                    🦠 Sykdom
                   </div>
-                  <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--accent-orange)', marginBottom: 4 }}>
-                    {diseaseRisks.length}
+                  <div style={{ fontSize: 20, fontWeight: 700, color: selectedFarm.diseaseStatus === 'infected' ? 'var(--accent-red)' : 'var(--accent-green)', marginBottom: 4 }}>
+                    {selectedFarm.diseaseStatus ? selectedFarm.diseaseStatus.charAt(0).toUpperCase() + selectedFarm.diseaseStatus.slice(1) : 'OK'}
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
                     påvist
                   </div>
                 </div>
 
-                {/* Visiting Vessels */}
+                {/* Category */}
                 <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 12, textAlign: 'center' }}>
                   <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase' }}>
-                    Båter
+                    Kategori
                   </div>
-                  <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--accent-gold)', marginBottom: 4 }}>
-                    {visitingVessels.length}
+                  <div style={{ fontSize: 18, fontWeight: 700, color: selectedFarm.riskCategory === 'CRITICAL' ? 'var(--accent-red)' : selectedFarm.riskCategory === 'HIGH' ? 'var(--accent-orange)' : 'var(--accent-blue)', marginBottom: 4 }}>
+                    {selectedFarm.riskCategory || 'MEDIUM'}
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
-                    uke
+                    ekte data
                   </div>
                 </div>
               </div>
 
-              {/* ===== DØDELIGHEIT TREND ===== */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10, marginBottom: 14 }}>
-                <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 10 }}>
-                  <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 6, textTransform: 'uppercase' }}>
-                    📊 Dødeligheit
-                  </p>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                    <div style={{ fontSize: 26, fontWeight: 700, color: selectedFarm?.mortalities?.thisWeek > 500 ? 'var(--accent-red)' : 'var(--accent-orange)' }}>
-                      {selectedFarm?.mortalities?.thisWeek || 0}
-                    </div>
-                    <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
-                      denne uke
-                      <p style={{ margin: '2px 0 0 0', fontSize: 9 }}>
-                        {selectedFarm?.mortalities?.trend === 'opp' ? '📈' : '📉'} {selectedFarm?.mortalities?.trend === 'opp' ? 'opp' : 'ned'} vs forrige
-                      </p>
-                    </div>
-                  </div>
-                  
-                  {/* Simple trend bars */}
-                  <div style={{ marginTop: 8, display: 'flex', alignItems: 'flex-end', gap: 3, height: 40 }}>
-                    {[
-                      selectedFarm?.mortalities?.thisWeek || 0,
-                      Math.max(0, (selectedFarm?.mortalities?.thisWeek || 0) * (selectedFarm?.mortalities?.trend === 'opp' ? 0.7 : 1.3)),
-                      Math.max(0, (selectedFarm?.mortalities?.thisWeek || 0) * (selectedFarm?.mortalities?.trend === 'opp' ? 0.5 : 1.6)),
-                      Math.max(0, (selectedFarm?.mortalities?.thisWeek || 0) * (selectedFarm?.mortalities?.trend === 'opp' ? 0.3 : 2.0))
-                    ].map((val, i) => (
-                      <div
-                        key={i}
-                        style={{
-                          flex: 1,
-                          height: `${Math.max(3, (val / (selectedFarm?.mortalities?.thisWeek || 1)) * 100)}%`,
-                          background: val > 500 ? 'var(--accent-red)' : val > 200 ? 'var(--accent-orange)' : 'var(--accent-green)',
-                          borderRadius: 2,
-                          opacity: 0.7 + (i * 0.075)
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* ===== HAVSTRØM & SMITTE-RISIKO ===== */}
-                <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 10 }}>
-                  <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 6, textTransform: 'uppercase' }}>
-                    🌊 Havstrøm
-                  </p>
-                  <div style={{ fontSize: 12, color: 'var(--text-primary)', fontWeight: 600, marginBottom: 4 }}>
-                    {selectedFarm?.currentDirection || 'Ukjent'}
-                  </div>
-                  <div style={{
-                    display: 'inline-block',
-                    background: selectedFarm?.downstreamRisk === 'nedstrøms' ? 'rgba(220, 38, 38, 0.2)' : selectedFarm?.downstreamRisk === 'samme-område' ? 'rgba(251, 146, 60, 0.2)' : 'rgba(34, 197, 94, 0.2)',
-                    color: selectedFarm?.downstreamRisk === 'nedstrøms' ? 'var(--accent-red)' : selectedFarm?.downstreamRisk === 'samme-område' ? 'var(--accent-orange)' : 'var(--accent-green)',
-                    padding: '4px 8px',
-                    borderRadius: 3,
-                    fontSize: 10,
-                    fontWeight: 600
-                  }}>
-                    {selectedFarm?.downstreamRisk === 'nedstrøms' ? '⚠️ Nedstrøms' : selectedFarm?.downstreamRisk === 'samme-område' ? '⚠ Samme område' : '✓ Oppstrøms'}
-                  </div>
-                </div>
-
-                {/* ===== SMITTE-RISIKO (Upstream critical farms) ===== */}
-                {selectedFarm?.downstreamRisk !== 'oppstrøms' && (
-                  <div style={{ background: 'var(--bg-elevated)', border: '1.5px solid var(--accent-orange)', borderRadius: 6, padding: 10 }}>
-                    <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--accent-orange)', margin: 0, marginBottom: 6, textTransform: 'uppercase' }}>
-                      ⚠️ Smitte-risiko fra oppstrøms
-                    </p>
-                    {farms.length > 0 ? (
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
-                        {farms
-                          .filter(f => f.id !== selectedFarm.id && f.riskScore > 60 && f.riskScore > selectedFarm.riskScore * 0.8)
-                          .slice(0, 4)
-                          .map(f => (
-                            <div
-                              key={f.id}
-                              onClick={() => setSelectedFarm(f)}
-                              style={{
-                                background: f.riskScore > 60 ? 'rgba(220, 38, 38, 0.1)' : 'rgba(251, 146, 60, 0.1)',
-                                border: `1px solid ${f.riskScore > 60 ? 'var(--accent-red)' : 'var(--accent-orange)'}`,
-                                borderRadius: 4,
-                                padding: 6,
-                                cursor: 'pointer',
-                                transition: 'all 0.15s ease'
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.background = 'rgba(212, 165, 116, 0.15)';
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.background = f.riskScore > 60 ? 'rgba(220, 38, 38, 0.1)' : 'rgba(251, 146, 60, 0.1)';
-                              }}
-                            >
-                              <p style={{ margin: 0, fontSize: 10, fontWeight: 600, color: 'var(--text-primary)' }}>
-                                {f.name}
-                              </p>
-                              <p style={{ margin: 0, fontSize: 9, color: 'var(--text-secondary)' }}>
-                                🔴 Risiko: {f.riskScore}%
-                              </p>
-                            </div>
-                          ))}
-                        {farms.filter(f => f.id !== selectedFarm.id && f.riskScore > 60).length === 0 && (
-                          <p style={{ fontSize: 10, color: 'var(--text-secondary)', gridColumn: '1 / -1' }}>
-                            ✓ Ingen kritiske anlegg oppstrøms
-                          </p>
-                        )}
-                      </div>
-                    ) : (
-                      <p style={{ fontSize: 10, color: 'var(--text-secondary)' }}>Laster data...</p>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* ===== INSPEKSJONER & LISENSER ===== */}
-              {selectedFarm?.inspectionHistory && selectedFarm.inspectionHistory.length > 0 && (
+              {/* ===== KRITISK: KONTAMINERTE BÅTER ===== */}
+              {selectedFarm.contaminatedVisitors && selectedFarm.contaminatedVisitors.length > 0 && (
                 <div style={{ marginBottom: 14 }}>
-                  <h3 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 8px 0', paddingBottom: 6, borderBottom: '1px solid var(--border-color)' }}>
-                    📋 Sist inspeksjon
-                  </h3>
-                  <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: 4, padding: 8 }}>
-                    <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 3 }}>
-                      {new Date(selectedFarm.inspectionHistory[0].date).toLocaleDateString('no-NO')} - {selectedFarm.inspectionHistory[0].inspector}
-                    </p>
-                    <p style={{ margin: 0, fontSize: 10, color: 'var(--text-secondary)' }}>
-                      {selectedFarm.inspectionHistory[0].findings} funn • Status: {selectedFarm.inspectionHistory[0].status}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {selectedFarm?.licenses && selectedFarm.licenses.length > 0 && (
-                <div style={{ marginBottom: 14 }}>
-                  <h3 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 8px 0', paddingBottom: 6, borderBottom: '1px solid var(--border-color)' }}>
-                    🎫 Lisenser
-                  </h3>
-                  <div style={{ display: 'grid', gap: 4 }}>
-                    {selectedFarm.licenses.map((lic, idx) => {
-                      const daysLeft = Math.floor((new Date(lic.expires) - new Date()) / (24 * 3600 * 1000));
-                      const isExpiring = daysLeft < 60;
-                      return (
-                        <div key={idx} style={{ background: 'var(--bg-surface)', border: isExpiring ? '1px solid var(--accent-orange)' : '1px solid var(--border-color)', borderRadius: 4, padding: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 10 }}>
-                          <div>
-                            <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>{lic.type}</p>
-                            <p style={{ margin: 0, color: 'var(--text-secondary)' }}>{new Date(lic.expires).toLocaleDateString('no-NO')}</p>
-                          </div>
-                          <div style={{ background: isExpiring ? 'var(--accent-orange)' : 'var(--accent-green)', color: '#fff', padding: '3px 6px', borderRadius: 2, fontSize: 9, fontWeight: 600 }}>
-                            {isExpiring ? `${daysLeft}d` : '✓'}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* ALERTS STATUS BANNER - Compact */}
-              {alerts.length > 0 && (
-                <div style={{ marginBottom: 14 }}>
-                  <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 6, textTransform: 'uppercase', paddingBottom: 6, borderBottom: '1px solid var(--border-color)' }}>
-                    Detaljer
-                  </p>
-                </div>
-              )}
-
-              {/* Disease Risks - Compact */}
-              {diseaseRisks.length > 0 && (
-                <div style={{ marginBottom: 12 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, paddingBottom: 6, borderBottom: '1px solid var(--accent-orange)' }}>
-                    <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-                      🦠 Sykdomsrisiko
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, paddingBottom: 6, borderBottom: '3px solid #DC2626' }}>
+                    <h3 style={{ fontSize: 14, fontWeight: 700, color: '#DC2626', margin: 0 }}>
+                      🚨 KRITISK: KONTAMINERTE BÅTER - Vektor for smitte ({selectedFarm.contaminatedVisitors.length})
                     </h3>
-                    {diseaseRisks.length > 3 && (
-                      <button
-                        onClick={() => setExpandAllDiseases(!expandAllDiseases)}
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
+                    {selectedFarm.contaminatedVisitors.map((visitor, idx) => (
+                      <div
+                        key={idx}
                         style={{
-                          background: expandAllDiseases ? 'var(--accent-orange)' : 'var(--bg-elevated)',
-                          color: expandAllDiseases ? '#fff' : 'var(--accent-orange)',
-                          border: '1px solid var(--accent-orange)',
-                          borderRadius: 3,
-                          padding: '4px 8px',
-                          cursor: 'pointer',
-                          fontSize: 11,
-                          fontWeight: 600
+                          background: 'rgba(220, 38, 38, 0.15)',
+                          border: '2px solid #DC2626',
+                          borderRadius: 8,
+                          padding: 12
                         }}
                       >
-                        {expandAllDiseases ? '⇧ Færre' : `⇩ Alle (${diseaseRisks.length})`}
-                      </button>
-                    )}
-                  </div>
-                  <div style={{ display: 'grid', gap: 8, maxHeight: '300px', overflowY: 'auto' }}>
-                    {(expandAllDiseases ? diseaseRisks : diseaseRisks.slice(0, 3)).map((risk, idx) => (
-                      <div key={idx} style={{
-                        background: risk.riskScore > 70 ? 'rgba(220, 38, 38, 0.1)' : 'rgba(251, 146, 60, 0.1)',
-                        border: risk.riskScore > 70 ? '1px solid var(--accent-red)' : '1px solid var(--accent-orange)',
-                        borderRadius: 6,
-                        padding: 10
-                      }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 8, gap: 8 }}>
                           <div style={{ flex: 1 }}>
-                            <h4 style={{ margin: 0, fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2 }}>
-                              {risk.disease}
+                            <h4 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: '#DC2626', marginBottom: 2 }}>
+                              {visitor.vesselName}
                             </h4>
-                            <p style={{ margin: 0, fontSize: 10, color: 'var(--text-secondary)' }}>
-                              {risk.sourceType === 'boat_traffic' ? '🚢' : '🌊'} {risk.source || 'Ukjent'}
+                            <p style={{ margin: 0, fontSize: 10, color: 'var(--text-secondary)', marginBottom: 4 }}>
+                              {visitor.vesselType || 'Båt'}
                             </p>
                           </div>
                           <div style={{
-                            background: risk.riskScore > 70 ? 'var(--accent-red)' : 'var(--accent-orange)',
+                            background: '#DC2626',
+                            color: '#fff',
+                            padding: '8px 12px',
+                            borderRadius: 4,
+                            fontSize: 12,
+                            fontWeight: 700,
+                            textAlign: 'center',
+                            whiteSpace: 'nowrap'
+                          }}>
+                            HØY FARE
+                          </div>
+                        </div>
+
+                        {/* Contamination details */}
+                        {visitor.contaminationStatus.records && visitor.contaminationStatus.records.length > 0 && (
+                          <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 6, padding: 10, marginBottom: 8 }}>
+                            <p style={{ margin: 0, fontSize: 10, fontWeight: 600, color: 'var(--accent-gold)', marginBottom: 6 }}>
+                              Var på smittet anlegg:
+                            </p>
+                            {visitor.contaminationStatus.records.slice(0, 2).map((source, i) => (
+                              <div key={i} style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 4, paddingBottom: 4, borderBottom: i < 1 ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
+                                <p style={{ margin: 0, fontWeight: 600, color: '#DC2626' }}>
+                                  📍 {source.facility_name}
+                                </p>
+                                <p style={{ margin: '2px 0 0 0' }}>
+                                  Risiko: {source.facility_risk_score}% • {new Date(source.timestamp).toLocaleDateString('no-NO')}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Days remaining in contamination window */}
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                          <div style={{ flex: 1, fontSize: 10, color: 'var(--text-secondary)' }}>
+                            <p style={{ margin: 0, marginBottom: 2 }}>Besøkt: {new Date(visitor.lastVisitTimestamp).toLocaleDateString('no-NO')}</p>
+                            <p style={{ margin: 0 }}>Aktivt i: {visitor.contaminationStatus.hoursRemaining} timer</p>
+                          </div>
+                          <div style={{
+                            background: 'rgba(255,255,255,0.1)',
+                            padding: '6px 10px',
+                            borderRadius: 3,
+                            fontSize: 9,
+                            fontWeight: 600,
+                            color: 'var(--accent-gold)'
+                          }}>
+                            ⏱️ {Math.ceil(visitor.contaminationStatus.hoursRemaining / 24)}d left
+                          </div>
+                        </div>
+
+                        {/* Action for farm */}
+                        <div style={{ marginTop: 8, padding: 8, background: 'rgba(0,0,0,0.3)', borderRadius: 4, fontSize: 10, color: 'var(--text-secondary)' }}>
+                          <p style={{ margin: 0, marginBottom: 4 }}>
+                            ✓ <strong>Tiltak:</strong> Avstand & desinfeksjon ved besøk
+                          </p>
+                          <p style={{ margin: 0 }}>
+                            💬 Kontakt båtoperatør for info om besøket
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ===== POTENSIELLE SMITTE-KILDER (upstream facilities) ===== */}
+              {selectedFarm.upstreamSources && selectedFarm.upstreamSources.length > 0 && (
+                <div style={{ marginBottom: 14 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, paddingBottom: 6, borderBottom: '2px solid var(--accent-orange)' }}>
+                    <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-orange)', margin: 0 }}>
+                      🚨 POTENSIELLE SMITTE-KILDER - Anlegg ({selectedFarm.upstreamSources.length})
+                    </h3>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
+                    {selectedFarm.upstreamSources.map((source, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          background: source.riskScore > 60 ? 'rgba(220, 38, 38, 0.12)' : 'rgba(251, 146, 60, 0.12)',
+                          border: `1.5px solid ${source.riskScore > 60 ? 'var(--accent-red)' : 'var(--accent-orange)'}`,
+                          borderRadius: 6,
+                          padding: 10
+                        }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 6, gap: 8 }}>
+                          <div style={{ flex: 1 }}>
+                            <h4 style={{ margin: 0, fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2 }}>
+                              {source.name}
+                            </h4>
+                            <p style={{ margin: 0, fontSize: 9, color: 'var(--text-secondary)', marginBottom: 4 }}>
+                              {source.type === 'facility' ? '🏭' : '🚢'} {source.type === 'facility' ? 'Anlegg' : 'Båt'}
+                            </p>
+                          </div>
+                          <div style={{
+                            background: source.riskScore > 60 ? 'var(--accent-red)' : 'var(--accent-orange)',
                             color: '#fff',
                             padding: '4px 8px',
                             borderRadius: 3,
@@ -600,12 +374,36 @@ export default function FarmerMVP({ token, currentUser }) {
                             fontWeight: 600,
                             whiteSpace: 'nowrap'
                           }}>
-                            {risk.riskScore}%
+                            {source.riskScore}%
                           </div>
                         </div>
-                        <div style={{ fontSize: 10, color: 'var(--text-secondary)', lineHeight: '1.3' }}>
-                          <p style={{ margin: 0, marginBottom: 3 }}>⏱️ {risk.manifestationDaysMin}-{risk.manifestationDaysMax} dager</p>
-                          <p style={{ margin: 0 }}>💀 {risk.fatality === 'høy' ? 'Høy' : risk.fatality === 'moderat' ? 'Moderat' : 'Lav'} dødlighet</p>
+                        
+                        {/* Risk Type Badge */}
+                        <div style={{ marginBottom: 6 }}>
+                          <span style={{
+                            display: 'inline-block',
+                            background: source.riskType === 'disease' ? 'rgba(220, 38, 38, 0.2)' : source.riskType === 'lice' ? 'rgba(251, 146, 60, 0.2)' : 'rgba(59, 130, 246, 0.2)',
+                            color: source.riskType === 'disease' ? 'var(--accent-red)' : source.riskType === 'lice' ? 'var(--accent-orange)' : '#3B82F6',
+                            padding: '3px 8px',
+                            borderRadius: 3,
+                            fontSize: 9,
+                            fontWeight: 600,
+                            marginRight: 4
+                          }}>
+                            {source.riskType === 'disease' ? '🦠 Sykdom' : source.riskType === 'lice' ? '🦐 Lus' : '⚠️ Generell'}
+                          </span>
+                        </div>
+
+                        {/* Distance & Direction */}
+                        <div style={{ fontSize: 10, color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+                          <p style={{ margin: 0 }}>
+                            📏 <strong>{source.distanceKm} km</strong> {source.direction || 'ukjent retning'}
+                          </p>
+                          {source.liceCount !== undefined && (
+                            <p style={{ margin: '2px 0 0 0' }}>
+                              🦐 {source.liceCount} lus
+                            </p>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -613,40 +411,44 @@ export default function FarmerMVP({ token, currentUser }) {
                 </div>
               )}
 
-              {/* Visiting Vessels - Compact */}
-              {visitingVessels.length > 0 && (
-                <div style={{ marginBottom: 12 }}>
-                  <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 8px 0', paddingBottom: 6, borderBottom: '1px solid var(--accent-gold)' }}>
-                    🚢 Besøkende båter
-                  </h3>
-                  <div style={{ display: 'grid', gap: 4, maxHeight: '200px', overflowY: 'auto' }}>
-                    {visitingVessels.slice(0, 5).map((vessel, idx) => {
-                      const daysSinceDisinfection = vessel.dayseSinceDisinfection || 0;
-                      const isHighRisk = daysSinceDisinfection > 7 || activeQuarantines.some(q => q.vessel_id === vessel.id);
-                      
-                      return (
-                        <div key={idx} style={{
-                          background: isHighRisk ? 'rgba(220, 38, 38, 0.08)' : 'var(--bg-surface)',
-                          border: isHighRisk ? '1px solid var(--accent-red)' : '1px solid var(--border-color)',
-                          borderRadius: 4,
-                          padding: 8,
+              {/* ===== SENESTE BÅT-BESØK (siste 2 uker) ===== */}
+              {selectedFarm.recentVisits && selectedFarm.recentVisits.length > 0 && (
+                <div style={{ marginBottom: 14 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, paddingBottom: 6, borderBottom: '2px solid var(--accent-gold)' }}>
+                    <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-gold)', margin: 0 }}>
+                      🚢 SENESTE BÅT-BESØK - Siste 2 uker ({selectedFarm.recentVisits.length})
+                    </h3>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 8 }}>
+                    {selectedFarm.recentVisits.map((visit, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          background: 'rgba(14, 182, 210, 0.12)',
+                          border: '1px solid #06B6D4',
+                          borderRadius: 6,
+                          padding: 10,
                           display: 'flex',
                           justifyContent: 'space-between',
-                          alignItems: 'center',
-                          gap: 8,
-                          fontSize: 11
-                        }}>
-                          <div>
-                            <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: 'var(--text-primary)' }}>
-                              {vessel.name} {isHighRisk && '🚨'}
-                            </p>
-                            <p style={{ margin: '2px 0 0 0', fontSize: 9, color: 'var(--text-secondary)' }}>
-                              {vessel.id}
-                            </p>
-                          </div>
+                          alignItems: 'start',
+                          gap: 12
+                        }}
+                      >
+                        <div style={{ flex: 1 }}>
+                          <h4 style={{ margin: 0, fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2 }}>
+                            {visit.vesselName}
+                          </h4>
+                          <p style={{ margin: 0, fontSize: 9, color: 'var(--text-secondary)', marginBottom: 4 }}>
+                            {visit.vesselType || 'Ukjent type'}
+                          </p>
+                          <p style={{ margin: 0, fontSize: 10, color: 'var(--accent-gold)', fontWeight: 600 }}>
+                            📅 {new Date(visit.timestamp).toLocaleDateString('no-NO')} {new Date(visit.timestamp).toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
+                        {visit.distanceKm && (
                           <div style={{
-                            background: daysSinceDisinfection > 7 ? 'rgba(220, 38, 38, 0.2)' : 'rgba(34, 197, 94, 0.2)',
-                            color: daysSinceDisinfection > 7 ? 'var(--accent-red)' : 'var(--accent-green)',
+                            background: '#06B6D4',
+                            color: '#fff',
                             padding: '4px 8px',
                             borderRadius: 3,
                             fontSize: 10,
@@ -654,19 +456,30 @@ export default function FarmerMVP({ token, currentUser }) {
                             whiteSpace: 'nowrap',
                             textAlign: 'center'
                           }}>
-                            {daysSinceDisinfection > 7 ? '⚠️' : '✓'}<br />{daysSinceDisinfection}d
+                            📏<br />{visit.distanceKm} km
                           </div>
-                        </div>
-                      );
-                    })}
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
+
+              {/* Empty state - if no sources or visits */}
+              {(!selectedFarm.contaminatedVisitors || selectedFarm.contaminatedVisitors.length === 0) && 
+               (!selectedFarm.upstreamSources || selectedFarm.upstreamSources.length === 0) && 
+               (!selectedFarm.recentVisits || selectedFarm.recentVisits.length === 0) && (
+                <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 20, textAlign: 'center', color: 'var(--text-secondary)' }}>
+                  <p style={{ margin: 0, fontSize: 12 }}>✓ Ingen kjente smitte-kilder eller seneste båt-besøk</p>
+                  <p style={{ margin: '4px 0 0 0', fontSize: 10 }}>Ekte data fra BarentsWatch + AIS</p>
+                </div>
+              )}
+
             </div>
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-secondary)' }}>
               <div style={{ textAlign: 'center' }}>
-                <p style={{ fontSize: 16, marginBottom: 16 }}>👈 Velg et anlegg fra listen til venstre for å se detaljer</p>
+                <p style={{ fontSize: 16, marginBottom: 16 }}>👈 Velg et anlegg fra listen til venstre</p>
               </div>
             </div>
           )}

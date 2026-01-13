@@ -4,7 +4,7 @@
  */
 
 const { readDB, writeDB } = require('../db');
-const { assessAllRisks } = require('./risk');
+const { annotateFacilityRisk } = require('./risk');
 
 /**
  * Create daily snapshot of all facilities with their risk scores
@@ -19,7 +19,7 @@ async function createDailySnapshot() {
     }
 
     // Calculate risk for all facilities
-    const facilitiesWithRisk = await assessAllRisks(db.facilities, db.vessels || []);
+    const facilitiesWithRisk = annotateFacilityRisk(db.facilities, db.vessels || []);
     
     const snapshot = {
       id: `snapshot_${Date.now()}`,

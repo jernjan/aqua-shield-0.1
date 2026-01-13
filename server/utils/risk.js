@@ -1,10 +1,11 @@
 /**
  * Risk Assessment Engine
  * Calculates disease transmission risk between aquaculture facilities
- * Based on: lice load, disease status, proximity, and ocean current patterns
+ * Based on: lice load, disease status, proximity, ocean current patterns, and vessel contamination
  */
 
 const metOcean = require('./metocean');
+const { getContaminatedVesselsNearFacility } = require('./contamination');
 
 /**
  * Calculate Haversine distance between two coordinates in kilometers
@@ -37,6 +38,12 @@ function getBearing(lat1, lng1, lat2, lng2) {
       Math.cos(dLng);
   let bearing = Math.atan2(y, x) * (180 / Math.PI);
   return (bearing + 360) % 360; // Normalize to 0-360
+}
+
+function bearingToCompass(bearing) {
+  const directions = ['N', 'NØ', 'Ø', 'SØ', 'S', 'SV', 'V', 'NV'];
+  const index = Math.round(bearing / 45) % 8;
+  return directions[index];
 }
 
 /**
@@ -227,48 +234,94 @@ function getPredictedSpreaders(facilities, sourceFacilityId, daysAhead = 3) {
   return targets;
 }
 
-/**
- * Assess risk for all facilities
- */
-async function assessAllRisks(facilities, vessels) {
-  return facilities.map(facility => {
-    const risk = calculateFacilityRisk(facility, vessels);
-    
-    // Find highest-risk source (spreader)
-    const nearbyVessels = vessels.filter(v => getDistance(facility, v) < 100);
-    const nearbyFacilities = facilities.filter(f => 
-      f.id !== facility.id && getDistance(facility, f) < 50
-    );
-    
+function annotateFacilityRisk(facilities = [], vessels = [], db = null, options = {}) {
+  const maxFacilitySources = options.maxFacilitySources || 5;
+  const maxVesselSources = options.maxVesselSources || 5;
+  const maxVesselDistance = options.maxVesselDistanceKm || 50;
+
+  return (facilities || []).map(facility => {
+    const ownRisk = calculateFacilityRisk(facility);
+    const riskCategory = ownRisk >= 85 ? 'CRITICAL' : ownRisk >= 60 ? 'HIGH' : ownRisk >= 30 ? 'MEDIUM' : 'LOW';
+
+    const potentialFacilitySources = (facilities || [])
+      .filter(src => src.id !== facility.id && src.lat && src.lng && facility.lat && facility.lng)
+      .map(src => {
+        const transmission = calculateTransmissionRisk(src, facility);
+        if (!transmission || transmission.score <= 0) return null;
+        const bearing = getBearing(src.lat, src.lng, facility.lat, facility.lng);
+        return {
+          type: 'facility',
+          id: src.id,
+          name: src.name,
+          liceCount: src.liceCount || 0,
+          diseaseStatus: src.diseaseStatus || 'unknown',
+          riskType: src.diseaseStatus === 'infected' ? 'disease' : src.liceCount > 5 ? 'lice' : 'general',
+          riskScore: transmission.score,
+          distanceKm: transmission.distance,
+          bearingDeg: Math.round(bearing),
+          direction: bearingToCompass(bearing)
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.riskScore - a.riskScore)
+      .slice(0, maxFacilitySources);
+
+    const potentialVesselSources = (vessels || [])
+      .filter(v => v.lat && v.lng && facility.lat && facility.lng)
+      .map(v => {
+        const distance = getDistance(v.lat, v.lng, facility.lat, facility.lng);
+        if (distance > maxVesselDistance) return null;
+        const bearing = getBearing(v.lat, v.lng, facility.lat, facility.lng);
+        const riskScore = Math.max(0, 80 - distance * 2);
+        return {
+          type: 'vessel',
+          id: v.id,
+          name: v.name,
+          liceCount: 0,
+          diseaseStatus: null,
+          riskType: 'vessel',
+          riskScore: Math.round(riskScore),
+          distanceKm: Math.round(distance * 10) / 10,
+          bearingDeg: Math.round(bearing),
+          direction: bearingToCompass(bearing),
+          lastUpdate: v.lastUpdate,
+          mmsi: v.mmsi,
+          heading: v.heading,
+          speed: v.speed
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.riskScore - a.riskScore)
+      .slice(0, maxVesselSources);
+
+    // Get contaminated vessels that have visited this facility recently
+    const contaminatedVisitors = db ? getContaminatedVesselsNearFacility(db, facility.id, vessels) : [];
+
+    const bestFacilitySource = potentialFacilitySources[0];
+    const bestVesselSource = potentialVesselSources[0];
     let spreadSource = null;
-    let spreadBearing = 0;
-    let spreadDistance = 0;
-    
-    if (nearbyVessels.length > 0) {
-      const riskiest = nearbyVessels.sort((a, b) => 
-        (b.liceCount || 0) - (a.liceCount || 0)
-      )[0];
-      spreadDistance = getDistance(facility, riskiest);
-      spreadSource = { type: 'vessel', name: riskiest.name, lice: riskiest.liceCount || 0 };
-      spreadBearing = getBearing(riskiest, facility);
-    } else if (nearbyFacilities.length > 0) {
-      const riskiest = nearbyFacilities.sort((a, b) => 
-        (b.liceCount || 0) - (a.liceCount || 0)
-      )[0];
-      spreadDistance = getDistance(facility, riskiest);
-      spreadSource = { type: 'facility', name: riskiest.name, lice: riskiest.liceCount || 0 };
-      spreadBearing = getBearing(riskiest, facility);
+
+    if (bestFacilitySource && bestVesselSource) {
+      spreadSource = bestFacilitySource.riskScore >= bestVesselSource.riskScore ? bestFacilitySource : bestVesselSource;
+    } else {
+      spreadSource = bestFacilitySource || bestVesselSource || null;
     }
-    
+
     return {
       ...facility,
-      riskScore: Math.round(risk.baseRisk * 100),
-      riskLevel: risk.baseRisk > 0.7 ? 'CRITICAL' : risk.baseRisk > 0.4 ? 'HIGH' : 'MEDIUM',
+      ownRisk,
+      riskScore: ownRisk,
+      riskCategory,
       liceCount: facility.liceCount || 0,
-      nearbyVessels: nearbyVessels.length,
+      diseaseStatus: facility.diseaseStatus || 'unknown',
+      upstreamSources: potentialFacilitySources,
+      nearbyVessels: potentialVesselSources,
+      contaminatedVisitors: contaminatedVisitors, // Vessels that were in contamination zone
       spreadSource,
-      spreadBearing: Math.round(spreadBearing),
-      spreadDistance: Math.round(spreadDistance * 10) / 10, // 1 decimal
+      spreadDistance: spreadSource ? spreadSource.distanceKm : null,
+      spreadBearing: spreadSource ? spreadSource.bearingDeg : null,
+      spreadDirection: spreadSource ? spreadSource.direction : null,
+      spreadRiskType: spreadSource ? spreadSource.riskType : null,
       lastAssessed: new Date().toISOString()
     };
   });
@@ -277,9 +330,11 @@ async function assessAllRisks(facilities, vessels) {
 module.exports = {
   getDistance,
   getBearing,
+  bearingToCompass,
   getDefaultCurrentDirection,
   calculateTransmissionRisk,
   calculateFacilityRisk,
   assessAllRisks,
   getPredictedSpreaders,
+  annotateFacilityRisk,
 };

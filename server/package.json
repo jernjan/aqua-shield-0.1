@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon --config nodemon.json",
+    "backtest": "node ../scripts/backtesting.js",
+    "backtest:full": "node ../scripts/backtesting.js --start 2024-01-01 --end 2024-12-31 --interval week --output results.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

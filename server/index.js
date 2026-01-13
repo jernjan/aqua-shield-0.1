@@ -10,6 +10,7 @@ const userDataRoutes = require('./routes/user-data')
 const { getAllFacilities } = require('./utils/barentswatch')
 const { createDailySnapshot, getLatestSnapshot } = require('./utils/snapshot-data')
 const { getAllVessels } = require('./utils/ais')
+const { annotateFacilityRisk } = require('./utils/risk')
 const { initializeVesselTrackingCrons } = require('./cron/vessel-tracking')
 
 const app = express()
@@ -116,19 +117,34 @@ async function initializeRealData() {
     await writeDB(db);
     console.log('✅ Real data initialization complete');
 
-    // Initialize MVP object for /api/mvp/* endpoints
+    // Initialize MVP object for /api/mvp/* endpoints with real risk annotations + vessel visit history
+    const { getFacilityVesselHistory } = require('./utils/vessel-tracking');
+    const { processVesselVisitsForContamination } = require('./utils/contamination');
+    
+    // Mark vessels as contaminated based on high-risk facility visits
+    processVesselVisitsForContamination(db, db.facilities || []);
+    
+    const annotatedFacilities = annotateFacilityRisk(db.facilities || [], db.vessels || [], db);
+    
+    // Enrich with recent vessel visit history for each facility
+    const facilitiesWithHistory = annotatedFacilities.map(facility => {
+      const history = getFacilityVesselHistory(db, facility.id, 336); // 2 weeks
+      return {
+        ...facility,
+        recentVisits: (history.visits || []).slice(0, 10).map(visit => ({
+          vesselName: visit.vessel_name,
+          vesselType: visit.vessel_type,
+          timestamp: visit.timestamp,
+          distanceKm: visit.facility?.distance_km ? Number(visit.facility.distance_km) : null
+        }))
+      };
+    });
+    
     global.MVP = {
-      farmers: db.facilities && db.facilities.length > 0 ? db.facilities.map(f => ({
-        id: f.id,
-        name: f.name,
-        lat: f.lat,
-        lng: f.lng,
-        riskScore: Math.floor(Math.random() * 100),
-        liceCount: f.liceCount || 0
-      })) : [],
+      farmers: facilitiesWithHistory,
       vessels: db.vessels && db.vessels.length > 0 ? db.vessels : []
     };
-    console.log(`✅ MVP object initialized (${global.MVP.farmers.length} farmers, ${global.MVP.vessels.length} vessels)`);
+    console.log(`✅ MVP object initialized (${global.MVP.farmers.length} farmers, ${global.MVP.vessels.length} vessels) with annotated risk data + vessel history`);
     
     // Create first daily snapshot for data collection
     await createDailySnapshot();
@@ -326,6 +342,43 @@ app.get('/api/vessel/:vesselId/nearby', async (req, res) => {
     })
   } catch (err) {
     console.error('Error getting nearby facilities:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Get vessel contamination status (VesselDashboard)
+app.get('/api/vessel/contamination', async (req, res) => {
+  try {
+    const { mmsi } = req.query
+    if (!mmsi) {
+      return res.status(400).json({ error: 'MMSI required' })
+    }
+    
+    const db = await readDB()
+    const { getVesselContaminationStatus } = require('./utils/contamination')
+    
+    // Find vessel by MMSI
+    const vessels = db.vessels && db.vessels.length > 0 ? db.vessels : MVP.vessels
+    const vessel = vessels.find(v => v.mmsi === parseInt(mmsi) || v.mmsi === mmsi)
+    
+    if (!vessel) {
+      return res.status(404).json({ error: 'Vessel not found' })
+    }
+    
+    // Get contamination status
+    const contamStatus = getVesselContaminationStatus(db, vessel.id)
+    
+    res.json({
+      vesselId: vessel.id,
+      mmsi: vessel.mmsi,
+      name: vessel.name,
+      isContaminated: contamStatus.isContaminated,
+      hoursRemaining: contamStatus.hoursRemaining,
+      contaminationSeverity: contamStatus.contaminationSeverity,
+      records: contamStatus.records || []
+    })
+  } catch (err) {
+    console.error('Error getting vessel contamination:', err)
     res.status(500).json({ error: err.message })
   }
 })
@@ -751,6 +804,91 @@ app.get('/api/admin/risks/:facilityId', (req, res) => {
     res.status(500).json({ error: err.message })
   }
 })
+
+// ============ ADMIN BACKTESTING ============
+// Start a new backtest job (runs in background)
+app.post('/api/admin/backtest/start', async (req, res) => {
+  try {
+    const { startDate = '2024-01-01', endDate = '2024-12-31', step = '7days' } = req.body;
+    
+    const { startBacktestJob } = require('./utils/backtest-job');
+    const jobId = startBacktestJob(startDate, endDate, step);
+    
+    res.json({
+      jobId,
+      message: `Backtest started (${startDate} to ${endDate}, step: ${step})`,
+      statusUrl: `/api/admin/backtest/status/${jobId}`
+    });
+  } catch (err) {
+    console.error('Failed to start backtest:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get current backtest job status
+app.get('/api/admin/backtest/status/:jobId?', async (req, res) => {
+  try {
+    const { jobId } = req.params;
+    const { getJobStatus } = require('./utils/backtest-job');
+    
+    const status = getJobStatus(jobId);
+    
+    if (!status) {
+      return res.status(404).json({ error: 'Job not found or no job running' });
+    }
+    
+    res.json(status);
+  } catch (err) {
+    console.error('Failed to get backtest status:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get completed backtest results
+app.get('/api/admin/backtest/results/:jobId?', async (req, res) => {
+  try {
+    const { jobId } = req.params;
+    const { getJobStatus, getJobResult } = require('./utils/backtest-job');
+    
+    const status = getJobStatus(jobId);
+    
+    if (!status) {
+      return res.status(404).json({ error: 'Job not found' });
+    }
+    
+    if (status.status !== 'completed') {
+      return res.status(400).json({ 
+        error: `Job not completed (status: ${status.status})`,
+        status
+      });
+    }
+    
+    const result = getJobResult(jobId);
+    res.json({
+      jobId: status.id,
+      period: `${status.startDate} to ${status.endDate}`,
+      step: status.step,
+      completedAt: status.completedAt,
+      duration: status.completedAt && status.startedAt 
+        ? `${Math.round((new Date(status.completedAt) - new Date(status.startedAt)) / 1000 / 60)} minutes`
+        : 'N/A',
+      metrics: result ? {
+        sensitivity: (result.sensitivity * 100).toFixed(1) + '%',
+        specificity: (result.specificity * 100).toFixed(1) + '%',
+        precision: (result.precision * 100).toFixed(1) + '%',
+        f1: result.f1.toFixed(3),
+        truePositives: result.truePositives,
+        falsePositives: result.falsePositives,
+        falseNegatives: result.falseNegatives,
+        trueNegatives: result.trueNegatives,
+        totalPredictions: result.truePositives + result.falsePositives + result.falseNegatives + result.trueNegatives
+      } : null
+    });
+  } catch (err) {
+    console.error('Failed to get backtest results:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // ============ COMPONENT ENDPOINTS ============
 // Algae calendar (AlgaeCalendar component)

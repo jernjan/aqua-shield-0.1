@@ -5,7 +5,8 @@
 const express = require('express');
 const router = express.Router();
 const { readDB, writeDB } = require('../db');
-const { assessAllRisks } = require('../utils/risk');
+const { annotateFacilityRisk } = require('../utils/risk');
+const { getFacilityVesselHistory } = require('../utils/vessel-tracking');
 
 // ============ FACILITY SELECTION ============
 
@@ -24,14 +25,28 @@ router.get('/user/facilities', async (req, res) => {
     
     // Get all facilities
     let allFacilities = db.facilities || [];
-    
-    // Calculate risk scores
-    allFacilities = await assessAllRisks(allFacilities, db.vessels || []);
+    const annotatedFacilities = annotateFacilityRisk(allFacilities, db.vessels || []);
     
     // Filter to only user's facilities
-    const userFacilities = allFacilities.filter(f => 
+    const includeVisitHistory = selectedIds.length > 0 && selectedIds.length <= 50;
+    
+    const userFacilities = annotatedFacilities.filter(f => 
       selectedIds.includes(f.id) || selectedIds.length === 0 // Show all if none selected (first time)
-    );
+    ).map(facility => {
+      if (!includeVisitHistory) return facility;
+      const history = getFacilityVesselHistory(db, facility.id, 168);
+      return {
+        ...facility,
+        recentVesselVisits: (history.visits || []).slice(0, 5).map(visit => ({
+          vesselId: visit.vessel_id,
+          vesselName: visit.vessel_name,
+          vesselType: visit.vessel_type,
+          timestamp: visit.timestamp,
+          distanceKm: visit.facility?.distance_km ? Number(visit.facility.distance_km) : null,
+          speed: visit.vessel_speed
+        }))
+      };
+    });
     
     res.json({
       userId,

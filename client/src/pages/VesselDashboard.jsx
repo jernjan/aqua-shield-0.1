@@ -3,6 +3,7 @@ import './VesselDashboard.css'
 
 export default function VesselDashboard() {
   const [vessel, setVessel] = useState(null)
+  const [contamination, setContamination] = useState(null)
   const [nearbyFacilities, setNearbyFacilities] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -54,6 +55,18 @@ export default function VesselDashboard() {
         setVessel(selectedVesselData)
         // For now, no nearby facilities calculation
         setNearbyFacilities([])
+        
+        // Fetch contamination status for this vessel
+        try {
+          const contRes = await fetch(`/api/vessel/contamination?mmsi=${selectedVesselData.mmsi}`)
+          if (contRes.ok) {
+            const contData = await contRes.json()
+            setContamination(contData)
+          }
+        } catch (err) {
+          console.log('[VesselDashboard] No contamination data available')
+          setContamination(null)
+        }
       } else {
         setError('Skip ikke funnet')
       }
@@ -173,24 +186,73 @@ export default function VesselDashboard() {
 
       {/* Vessel Info */}
       {vessel && (
-        <div className="vessel-info">
-          <div className="info-card">
-            <div className="info-label">Båtnavn</div>
-            <div className="info-value">{vessel.name}</div>
+        <>
+          {/* CONTAMINATION STATUS - CRITICAL ALERT */}
+          {contamination && contamination.isContaminated && (
+            <div style={{
+              background: 'rgba(220, 38, 38, 0.15)',
+              border: '2px solid #DC2626',
+              borderRadius: 8,
+              padding: 16,
+              marginBottom: 20
+            }}>
+              <h2 style={{ margin: '0 0 12px 0', fontSize: 16, fontWeight: 700, color: '#DC2626' }}>
+                🚨 BÅTEN ER KONTAMINERT
+              </h2>
+              <p style={{ margin: '0 0 12px 0', color: 'var(--text-secondary)', fontSize: 14 }}>
+                Du besøkte et smittet anlegg. Båten kan være vektor for smitte i {contamination.hoursRemaining} timer.
+              </p>
+              {contamination.records && contamination.records.length > 0 && (
+                <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 6, padding: 12, marginBottom: 12 }}>
+                  <p style={{ margin: '0 0 8px 0', fontWeight: 600, color: 'var(--accent-gold)' }}>
+                    Var på smittet anlegg:
+                  </p>
+                  {contamination.records.map((source, i) => (
+                    <div key={i} style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 4 }}>
+                      <p style={{ margin: 0, fontWeight: 600, color: '#DC2626' }}>
+                        📍 {source.facility_name} ({source.facility_risk_score}% risiko)
+                      </p>
+                      <p style={{ margin: '2px 0 0 0' }}>
+                        📅 {new Date(source.timestamp).toLocaleDateString('no-NO')}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: 6, padding: 12 }}>
+                <p style={{ margin: 0, fontWeight: 600, color: 'var(--accent-orange)', marginBottom: 8 }}>
+                  ✓ PÅKREVD TILTAK:
+                </p>
+                <ul style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: 'var(--text-secondary)' }}>
+                  <li>IKKE arbeid på nye anlegg nå</li>
+                  <li>Gjør full desinfeksjon av båten</li>
+                  <li>Vask alt utstyr og drenering</li>
+                  <li>Vent {contamination.hoursRemaining} timer før neste arbeid</li>
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {/* Normal Vessel Info */}
+          <div className="vessel-info">
+            <div className="info-card">
+              <div className="info-label">Båtnavn</div>
+              <div className="info-value">{vessel.name}</div>
+            </div>
+            <div className="info-card">
+              <div className="info-label">MMSI</div>
+              <div className="info-value">{vessel.mmsi}</div>
+            </div>
+            <div className="info-card">
+              <div className="info-label">Status</div>
+              <div className="info-value">{contamination?.isContaminated ? '🚨 KONTAMINERT' : '✅ Ren'}</div>
+            </div>
+            <div className="info-card">
+              <div className="info-label">Posisjon</div>
+              <div className="info-value">{vessel.latitude?.toFixed(3)}, {vessel.longitude?.toFixed(3)}</div>
+            </div>
           </div>
-          <div className="info-card">
-            <div className="info-label">MMSI</div>
-            <div className="info-value">{vessel.mmsi}</div>
-          </div>
-          <div className="info-card">
-            <div className="info-label">Status</div>
-            <div className="info-value">{vessel.status}</div>
-          </div>
-          <div className="info-card">
-            <div className="info-label">Posisjon</div>
-            <div className="info-value">{vessel.latitude?.toFixed(3)}, {vessel.longitude?.toFixed(3)}</div>
-          </div>
-        </div>
+        </>
       )}
 
       {/* Nearby Facilities */}
