@@ -39,7 +39,7 @@ async function initializeRealData() {
       // Fallback if API fails
       if (!facilities || facilities.length === 0) {
         console.log('⚠️ BarentsWatch unavailable, using test fallback');
-        facilities = generateTestFacilities(50);
+        facilities = generateTestFacilities(2687);
       }
       
       db.facilities = facilities;
@@ -60,7 +60,7 @@ async function initializeRealData() {
       
       if (!vessels || vessels.length === 0) {
         console.log('⚠️ AIS unavailable, generating test vessels');
-        vessels = generateTestVessels(20); // More vessels for testing
+        vessels = generateTestVessels(4066); // Full set of test vessels for testing
       }
       
       db.vessels = vessels;
@@ -73,7 +73,7 @@ async function initializeRealData() {
     // Ensure we have vessels for Aakerblå
     if (!db.vessels || db.vessels.length === 0) {
       console.log('⚠️ Still no vessels, forcing test generation');
-      db.vessels = generateTestVessels(20);
+      db.vessels = generateTestVessels(4066);
       db.vessels_updated_at = new Date().toISOString();
     }
     
