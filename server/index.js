@@ -353,6 +353,101 @@ app.post('/api/admin/validation/auto-validate', async (req, res) => {
   }
 })
 
+// ============ SNAPSHOT SYSTEM (Model Training) ============
+// Create a new snapshot (all 2687 facilities × 4 scenarios)
+app.post('/api/admin/snapshot/create', async (req, res) => {
+  try {
+    const snapshot = require('./utils/snapshot')
+    const db = await readDB()
+    
+    const result = await snapshot.createSnapshot(db)
+    await writeDB(db)
+    
+    res.json({
+      success: true,
+      snapshot: result
+    })
+  } catch (err) {
+    console.error('Error creating snapshot:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Get all snapshot metadata
+app.get('/api/admin/snapshot/list', async (req, res) => {
+  try {
+    const snapshot = require('./utils/snapshot')
+    const db = await readDB()
+    
+    const metadata = snapshot.getSnapshotMetadata(db)
+    res.json({
+      count: metadata.length,
+      snapshots: metadata.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    })
+  } catch (err) {
+    console.error('Error listing snapshots:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Get forecasts from a snapshot
+app.get('/api/admin/snapshot/:snapshotId', async (req, res) => {
+  try {
+    const { snapshotId } = req.params
+    const scenario = req.query.scenario ? parseInt(req.query.scenario) : null
+    const snapshot = require('./utils/snapshot')
+    const db = await readDB()
+    
+    const forecasts = snapshot.getSnapshotForecasts(db, snapshotId, scenario)
+    res.json({
+      snapshot_id: snapshotId,
+      count: forecasts.length,
+      forecasts: forecasts.slice(0, 100) // Return first 100 for preview
+    })
+  } catch (err) {
+    console.error('Error getting snapshot:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// Validate a snapshot (must wait 3+ days)
+app.post('/api/admin/snapshot/:snapshotId/validate', async (req, res) => {
+  try {
+    const { snapshotId } = req.params
+    const snapshot = require('./utils/snapshot')
+    const db = await readDB()
+    
+    const result = await snapshot.validateSnapshot(db, snapshotId)
+    await writeDB(db)
+    
+    res.json({
+      success: true,
+      validation: result
+    })
+  } catch (err) {
+    console.error('Error validating snapshot:', err)
+    res.status(400).json({ error: err.message })
+  }
+})
+
+// Get validation results
+app.get('/api/admin/snapshot/validation/:snapshotId', async (req, res) => {
+  try {
+    const { snapshotId } = req.params
+    const db = await readDB()
+    
+    const validation = db.snapshot_validation?.find(v => v.snapshot_id === snapshotId)
+    if (!validation) {
+      return res.status(404).json({ error: 'Validation not found' })
+    }
+    
+    res.json(validation)
+  } catch (err) {
+    console.error('Error getting validation results:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
 // ============ ADMIN RISK ASSESSMENT ============
 // Admin: Risk Assessment Dashboard (AdminMVP uses this)
 // Return MVP mock data for simplicity
