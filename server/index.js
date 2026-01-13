@@ -8,6 +8,7 @@ const { readDB, writeDB } = require('./db')
 const realDataRoutes = require('./routes/api-real-data')
 const userDataRoutes = require('./routes/user-data')
 const { getAllFacilities } = require('./utils/barentswatch')
+const { createDailySnapshot, getLatestSnapshot } = require('./utils/snapshot-data')
 const { getAllVessels } = require('./utils/ais')
 const { initializeVesselTrackingCrons } = require('./cron/vessel-tracking')
 
@@ -128,6 +129,9 @@ async function initializeRealData() {
       vessels: db.vessels && db.vessels.length > 0 ? db.vessels : []
     };
     console.log(`✅ MVP object initialized (${global.MVP.farmers.length} farmers, ${global.MVP.vessels.length} vessels)`);
+    
+    // Create first daily snapshot for data collection
+    await createDailySnapshot();
     
   } catch (err) {
     console.error('❌ Error initializing real data:', err.message);

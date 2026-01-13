@@ -5,12 +5,13 @@
 const express = require('express');
 const router = express.Router();
 const { readDB, writeDB } = require('../db');
+const { assessAllRisks } = require('../utils/risk');
 
 // ============ FACILITY SELECTION ============
 
 /**
  * GET /api/user/facilities
- * Get user's selected facilities (filtered from all 2687)
+ * Get user's selected facilities with risk scores
  */
 router.get('/user/facilities', async (req, res) => {
   try {
@@ -22,7 +23,10 @@ router.get('/user/facilities', async (req, res) => {
     const selectedIds = user.selectedFacilities || [];
     
     // Get all facilities
-    const allFacilities = db.facilities || [];
+    let allFacilities = db.facilities || [];
+    
+    // Calculate risk scores
+    allFacilities = await assessAllRisks(allFacilities, db.vessels || []);
     
     // Filter to only user's facilities
     const userFacilities = allFacilities.filter(f => 

@@ -227,6 +227,22 @@ function getPredictedSpreaders(facilities, sourceFacilityId, daysAhead = 3) {
   return targets;
 }
 
+/**
+ * Assess risk for all facilities
+ */
+async function assessAllRisks(facilities, vessels) {
+  return facilities.map(facility => {
+    const risk = calculateFacilityRisk(facility, vessels);
+    return {
+      ...facility,
+      riskScore: Math.round(risk.baseRisk * 100),
+      riskLevel: risk.baseRisk > 0.7 ? 'CRITICAL' : risk.baseRisk > 0.4 ? 'HIGH' : 'MEDIUM',
+      nearbyVessels: vessels.filter(v => getDistance(facility, v) < 50).length,
+      lastAssessed: new Date().toISOString()
+    };
+  });
+}
+
 module.exports = {
   getDistance,
   getBearing,
