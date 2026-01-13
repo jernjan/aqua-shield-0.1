@@ -6,6 +6,9 @@ const cors = require('cors')
 const path = require('path')
 const { readDB, writeDB } = require('./db')
 const realDataRoutes = require('./routes/api-real-data')
+const userDataRoutes = require('./routes/user-data')
+const { getAllFacilities } = require('./utils/barentswatch')
+const { getAllVessels } = require('./utils/ais')
 const { initializeVesselTrackingCrons } = require('./cron/vessel-tracking')
 
 const app = express()
@@ -17,7 +20,134 @@ app.use(express.json())
 // Startup message
 console.log('🚀 AquaShield Backend - Real Data Mode');
 console.log('   Data sources: BarentsWatch + AIS APIs');
-console.log('   No mock data - all endpoints use real APIs');
+console.log('   Loading real facilities and vessels at startup...');
+
+// Initialize real data from APIs on startup
+async function initializeRealData() {
+  try {
+    const db = await readDB();
+    
+    // Check if we need to refresh (cache older than 24 hours)
+    const facilitiesCacheAge = db.facilities_updated_at ? 
+      Date.now() - new Date(db.facilities_updated_at).getTime() : 
+      Infinity;
+    
+    if (!db.facilities || db.facilities.length === 0 || facilitiesCacheAge > 86400000) {
+      console.log('📡 Fetching facilities from BarentsWatch...');
+      let facilities = await getAllFacilities();
+      
+      // Fallback if API fails
+      if (!facilities || facilities.length === 0) {
+        console.log('⚠️ BarentsWatch unavailable, using test fallback');
+        facilities = generateTestFacilities(50);
+      }
+      
+      db.facilities = facilities;
+      db.facilities_updated_at = new Date().toISOString();
+      console.log(`✅ Loaded ${facilities.length} facilities`);
+    } else {
+      console.log(`✅ Using cached facilities (${db.facilities.length} items)`);
+    }
+    
+    // Same for vessels
+    const vesselsCacheAge = db.vessels_updated_at ? 
+      Date.now() - new Date(db.vessels_updated_at).getTime() : 
+      Infinity;
+    
+    if (!db.vessels || db.vessels.length === 0 || vesselsCacheAge > 1800000) {
+      console.log('📡 Fetching vessels from AIS...');
+      let vessels = await getAllVessels();
+      
+      if (!vessels || vessels.length === 0) {
+        console.log('⚠️ AIS unavailable, using test fallback');
+        vessels = generateTestVessels(30);
+      }
+      
+      db.vessels = vessels;
+      db.vessels_updated_at = new Date().toISOString();
+      console.log(`✅ Loaded ${vessels.length} vessels`);
+    } else {
+      console.log(`✅ Using cached vessels (${db.vessels.length} items)`);
+    }
+    
+    // Pre-populate demo users with some facilities
+    if (!db.users) db.users = {};
+    
+    // Demo user: Movi (farmer) - select some facilities
+    if (!db.users['movi']) {
+      const facilityIds = db.facilities
+        .slice(0, 3) // First 3 facilities
+        .map(f => f.id);
+      
+      db.users['movi'] = {
+        id: 'movi',
+        name: 'Movi',
+        role: 'farmer',
+        selectedFacilities: facilityIds,
+        createdAt: new Date().toISOString()
+      };
+      console.log(`✅ Demo user 'movi' created with ${facilityIds.length} facilities`);
+    }
+    
+    // Demo user: Aakerblå (vessel operator) - select one vessel
+    if (!db.users['aakerblå']) {
+      const vesselIds = db.vessels.length > 0 ? [db.vessels[0].id] : [];
+      
+      db.users['aakerblå'] = {
+        id: 'aakerblå',
+        name: 'Aakerblå',
+        role: 'brønnbåt',
+        selectedVessels: vesselIds,
+        createdAt: new Date().toISOString()
+      };
+      console.log(`✅ Demo user 'aakerblå' created with ${vesselIds.length} vessel`);
+    }
+    
+    await writeDB(db);
+    console.log('✅ Real data initialization complete');
+    
+  } catch (err) {
+    console.error('❌ Error initializing real data:', err.message);
+  }
+}
+
+// Fallback generators
+function generateTestFacilities(count = 50) {
+  const names = ['Nordvik', 'Tromsøfarm', 'Barents', 'Polarmarin', 'Lyngen'];
+  const facilities = [];
+  for (let i = 1; i <= count; i++) {
+    facilities.push({
+      id: `farm_${i}`,
+      name: `${names[i % names.length]} ${i}`,
+      lat: 68 + Math.random() * 4,
+      lng: 16 + Math.random() * 8,
+      municipality: 'Test',
+      species: 'Atlantisk laks',
+      liceCount: Math.floor(Math.random() * 50),
+      lastUpdate: new Date().toISOString()
+    });
+  }
+  return facilities;
+}
+
+function generateTestVessels(count = 30) {
+  const names = ['Aakerblå', 'Settefisk I', 'Brønnbåt 1'];
+  const vessels = [];
+  for (let i = 1; i <= count; i++) {
+    vessels.push({
+      id: `vessel_${i}`,
+      name: `${names[i % names.length]} ${i}`,
+      type: ['Settefiskbåt', 'Brønnbåt'][i % 2],
+      lat: 68 + Math.random() * 4,
+      lng: 16 + Math.random() * 8,
+      lastUpdate: new Date().toISOString()
+    });
+  }
+  return vessels;
+}
+
+// Run initialization
+initializeRealData();
 
 // Start vessel tracking cron jobs
 initializeVesselTrackingCrons()
@@ -30,6 +160,10 @@ app.get('/api/health', (req, res) => {
 // ============ REAL DATA API ROUTES ============
 // All endpoints that fetch from BarentsWatch and AIS APIs
 app.use('/api', realDataRoutes)
+
+// ============ USER DATA ROUTES ============
+// User facility/vessel selection
+app.use('/api', userDataRoutes)
 
 // ============ FARMER DASHBOARD ============
 // Get all facilities with risk forecast (FarmerDashboard)

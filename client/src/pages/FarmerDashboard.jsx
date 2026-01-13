@@ -16,15 +16,16 @@ export default function FarmerDashboard({ token, currentUser }) {
     const fetchFacilities = async () => {
       try {
         setLoading(true);
-        // Fetch real data from BarentsWatch API
-        const data = await apiClient.get('/api/facilities');
+        // Fetch user's selected facilities (filtered list)
+        const userId = 'movi'; // Demo user
+        const data = await apiClient.get(`/api/user/facilities?userId=${userId}`);
         if (data && data.facilities) {
-          // Transform facility data to match FarmerDashboard expectations
+          // Transform facility data
           const facilities = data.facilities.map((facility, idx) => ({
             ...facility,
-            riskCategory: 'MEDIUM', // Will be calculated based on real lice data
+            riskCategory: 'MEDIUM',
             shouldAlert: false,
-            riskScore: 50 // Will be calculated from real data
+            riskScore: 50
           }));
           setFacilities(facilities);
           setSummary({
