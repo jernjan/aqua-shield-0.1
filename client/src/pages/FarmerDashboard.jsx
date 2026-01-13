@@ -16,8 +16,10 @@ export default function FarmerDashboard({ token, currentUser }) {
     const fetchFacilities = async () => {
       try {
         setLoading(true);
-        // Fetch user's selected facilities (filtered list)
-        const userId = 'movi'; // Demo user
+        // Get userId from localStorage or default to 'movi'
+        const stored = localStorage.getItem('user');
+        const user = stored ? JSON.parse(stored) : { name: 'Movi' };
+        const userId = user.name?.toLowerCase() || 'movi';
         const data = await apiClient.get(`/api/user/facilities?userId=${userId}`);
         if (data && data.facilities) {
           // Transform facility data

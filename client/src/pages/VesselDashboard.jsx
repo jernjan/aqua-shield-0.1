@@ -17,8 +17,10 @@ export default function VesselDashboard() {
   async function loadVessels() {
     try {
       setError(null)
-      // Fetch user's selected vessels
-      const userId = 'aakerblå'; // Demo user
+      // Get userId from localStorage or default to 'aakerblå'
+      const stored = localStorage.getItem('user');
+      const user = stored ? JSON.parse(stored) : { name: 'Aakerblå' };
+      const userId = user.name?.toLowerCase() || 'aakerblå';
       const res = await fetch(`/api/user/vessels?userId=${userId}`, { timeout: 10000 })
       if (!res.ok) {
         throw new Error(`API error: ${res.status}`)
