@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AquaShield Backtesting</title>
+    <style>
+        body { font-family: monospace; background: #1e1e1e; color: #d4d4d4; padding: 20px; }
+        .section { margin: 20px 0; border: 1px solid #444; padding: 15px; background: #252526; }
+        button { background: #007acc; color: white; padding: 10px 20px; border: none; cursor: pointer; font-size: 14px; }
+        button:hover { background: #005a9e; }
+        .success { color: #4ec9b0; }
+        .error { color: #f48771; }
+        .info { color: #9cdcfe; }
+        #output { white-space: pre-wrap; font-size: 12px; max-height: 400px; overflow-y: auto; background: #1e1e1e; border: 1px solid #666; padding: 10px; margin-top: 10px; }
+        .metric { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #444; }
+    </style>
+</head>
+<body>
+    <h1>🧪 AquaShield Backtesting Test</h1>
+    
+    <div class="section">
+        <h2>API Endpoint Test</h2>
+        <label>
+            API URL: 
+            <input type="text" id="apiUrl" value="https://aquashield.onrender.com" style="width: 400px; padding: 5px;">
+        </label>
+        <br><br>
+        <button onclick="startBacktest()">▶️ Start Backtesting</button>
+        <button onclick="clearOutput()">Clear Output</button>
+    </div>
+
+    <div class="section">
+        <h2>Output</h2>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        const apiUrl = document.getElementById('apiUrl');
+        const output = document.getElementById('output');
+
+        function log(msg, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = {
+                'info': '📋',
+                'success': '✅',
+                'error': '❌',
+                'progress': '⏳'
+            }[type] || '→';
+            
+            const color = {'success': 'success', 'error': 'error'}[type] || 'info';
+            const html = `<div class="${color}">${prefix} [${timestamp}] ${msg}</div>`;
+            output.innerHTML += html;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearOutput() {
+            output.innerHTML = '';
+        }
+
+        async function startBacktest() {
+            clearOutput();
+            log('Starting backtesting workflow...', 'progress');
+            
+            const baseUrl = apiUrl.value;
+            const payload = {
+                startDate: '2024-01-01',
+                endDate: '2024-12-31',
+                step: '7days'
+            };
+
+            try {
+                // Check health
+                log('Checking API health...', 'info');
+                const healthResp = await fetch(`${baseUrl}/api/health`);
+                if (!healthResp.ok) {
+                    throw new Error(`Health check failed: ${healthResp.status}`);
+                }
+                const health = await healthResp.json();
+                log(`API healthy: ${health.status}`, 'success');
+
+                // Start backtest
+                log('Starting backtest job...', 'info');
+                log(`Payload: ${JSON.stringify(payload, null, 2)}`, 'info');
+                
+                const startResp = await fetch(`${baseUrl}/api/admin/backtest/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!startResp.ok) {
+                    const error = await startResp.text();
+                    throw new Error(`Start failed (${startResp.status}): ${error}`);
+                }
+
+                const startData = await startResp.json();
+                log(`Backtest started!`, 'success');
+                log(`Job ID: ${startData.jobId}`, 'info');
+                log(`Message: ${startData.message}`, 'info');
+
+                const jobId = startData.jobId;
+
+                // Poll status
+                log('Polling job status every 5 seconds...', 'info');
+                let completed = false;
+                let attempts = 0;
+                const maxAttempts = 120; // 10 minutes
+
+                while (!completed && attempts < maxAttempts) {
+                    await new Promise(r => setTimeout(r, 5000));
+                    attempts++;
+
+                    try {
+                        const statusResp = await fetch(`${baseUrl}/api/admin/backtest/status/${jobId}`);
+                        if (!statusResp.ok) {
+                            log(`Status check failed: ${statusResp.status}`, 'error');
+                            continue;
+                        }
+
+                        const status = await statusResp.json();
+                        log(`Progress: ${status.progress}% - ${status.currentDate} (attempt ${attempts})`, 'progress');
+
+                        if (status.status === 'completed') {
+                            completed = true;
+                            log('Backtesting completed!', 'success');
+
+                            // Get results
+                            const resultsResp = await fetch(`${baseUrl}/api/admin/backtest/results/${jobId}`);
+                            if (!resultsResp.ok) {
+                                throw new Error(`Results fetch failed: ${resultsResp.status}`);
+                            }
+
+                            const results = await resultsResp.json();
+                            log('\n📊 BACKTESTING RESULTS:', 'success');
+                            log(`Period: ${results.period}`, 'info');
+                            log(`Duration: ${results.duration}ms`, 'info');
+                            log('\n📈 METRICS:', 'success');
+                            log(`  Sensitivity (TPR): ${results.metrics.sensitivity}`, 'info');
+                            log(`  Specificity (TNR): ${results.metrics.specificity}`, 'info');
+                            log(`  Precision (PPV): ${results.metrics.precision}`, 'info');
+                            log(`  F1 Score: ${results.metrics.f1}`, 'info');
+                            log('\n🎯 CONFUSION MATRIX:', 'success');
+                            log(`  True Positives: ${results.metrics.truePositives}`, 'info');
+                            log(`  False Positives: ${results.metrics.falsePositives}`, 'info');
+                            log(`  True Negatives: ${results.metrics.trueNegatives}`, 'info');
+                            log(`  False Negatives: ${results.metrics.falseNegatives}`, 'info');
+                            log(`  Total: ${results.metrics.totalPredictions}`, 'info');
+                        } else if (status.status === 'failed') {
+                            log('Backtesting failed!', 'error');
+                            completed = true;
+                        }
+                    } catch (err) {
+                        log(`Status check error: ${err.message}`, 'error');
+                    }
+                }
+
+                if (!completed) {
+                    log('Backtesting timeout (10 minutes exceeded)', 'error');
+                }
+
+            } catch (err) {
+                log(`Error: ${err.message}`, 'error');
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>

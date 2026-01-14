@@ -204,10 +204,9 @@ function generateTestVessels(count = 30) {
 }
 
 // Run initialization asynchronously (non-blocking)
-// DISABLED: Issues with async initialization causing shutdown
-// initializeRealData().catch(err => console.error('Init error:', err.message));
+initializeRealData().catch(err => console.error('Init error:', err.message));
 
-// For now, load MVP data manually on first request
+// Track MVP initialization state
 let mvpInitialized = false;
 
 // Start vessel tracking cron jobs
