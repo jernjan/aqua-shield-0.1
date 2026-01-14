@@ -14,6 +14,8 @@ services:
         value: "true"
       - key: JWT_SECRET
         generateValue: true
+      - key: DATABASE_URL
+        value: postgresql://postgres:x5BccVHm_-gsE2&@db.eiokuofueqsmhcglnhsv.supabase.co:5432/postgres
 
 cron:
   - name: nightly-analysis
