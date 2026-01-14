@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, memo } from 'react'
 import Login from './pages/Login'
+import SelectRole from './pages/SelectRole'
 import SelectSites from './pages/SelectSites'
 import DashboardSelector from './pages/DashboardSelector'
 import FarmerMVP from './pages/FarmerMVP'
@@ -103,6 +104,7 @@ const MVPWrapper = memo(({ children, onLogout, onSwitchRole, currentRole }) => (
 // Page routing configuration
 const PAGE_CONFIG = {
   'login': { component: Login, requiresAuth: false },
+  'selectRole': { component: SelectRole, requiresAuth: true },
   'selectSites': { component: SelectSites, requiresAuth: true },
   'dashboard': { component: DashboardSelector, requiresAuth: true, wrapper: true },
   'mvp-farmer': { component: FarmerMVP, requiresAuth: true, wrapper: true },
@@ -236,6 +238,20 @@ function App() {
     }, 300)
   }, [])
 
+  const handleRoleSelected = useCallback((role) => {
+    setUser(prev => ({ ...prev, role: role }))
+    
+    // Route to correct dashboard based on role
+    const pageMap = {
+      'farmer': 'mvp-farmer',
+      'brønnbåt': 'vessel-dashboard',
+      'admin': 'admin-panel'
+    }
+    
+    const targetPage = pageMap[role] || 'dashboard'
+    setPage(targetPage)
+    showToast(`Bytta til ${role}`)
+  }, [])
   const handleSwitchRole = useCallback((role) => {
     const pageMap = {
       'farmer': 'mvp-farmer',
@@ -255,18 +271,9 @@ function App() {
     localStorage.setItem('token', token)
     setUser({ name: `MVP ${role}`, role: role })
     
-    // Route directly to role-specific dashboard
-    let targetPage = 'dashboard'
-    if (role === 'brønnbåt' || role === 'vessel') {
-      targetPage = 'vessel-dashboard'
-    } else if (role === 'anleggsseler' || role === 'farmer') {
-      targetPage = 'farmer-dashboard'
-    } else if (role === 'admin') {
-      targetPage = 'mvp-admin'
-    }
-    
-    setPage(targetPage)
-    showToast(`Testet ${role} rolle`)
+    // Go to role selector first
+    setPage('selectRole')
+    showToast(`Velg rolle: ${role}`)
   }, [])
 
   // Render current page
@@ -281,14 +288,8 @@ function App() {
     
     if (page === 'login') {
       element = <Component onLogin={handleLogin} onMVPLogin={handleMVPLogin} {...commonProps} />
-    } else if (page === 'selectSites') {
-      element = <Component onSitesSelected={handleSitesSelected} {...commonProps} />
-    } else if (page === 'dashboard') {
-      element = <Component onSelectDashboard={handleSelectDashboard} user={user} {...commonProps} />
-    } else {
-      element = <Component currentUser={user} {...commonProps} />
-    }
-    
+    } else if (page === 'selectRole') {
+      element = <Component onRoleSelected={handleRoleSelected} {...commonProps} />
     if (config.wrapper) {
       return <MVPWrapper onLogout={handleLogout} onSwitchRole={handleSwitchRole} currentRole={user?.role}>{element}</MVPWrapper>
     }
