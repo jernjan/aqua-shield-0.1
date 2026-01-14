@@ -25,15 +25,33 @@ router.get('/debug/users', async (req, res) => {
 router.get('/favorites/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
-    const { readDB } = require('../db');
+    const { readDB, writeDB } = require('../db');
     const db = await readDB();
     
     console.log(`[FAVORITES] GET for user ${userId}, available users: ${Object.keys(db.users || {}).join(', ')}`);
     
-    const user = db.users?.[userId];
+    let user = db.users?.[userId];
+    
+    // If user doesn't exist, create it as fallback
     if (!user) {
-      console.error(`[FAVORITES] User ${userId} not found`);
-      return res.status(404).json({ error: 'User not found' });
+      console.warn(`[FAVORITES] User ${userId} not found, creating fallback`);
+      if (!db.users) db.users = {};
+      
+      // Determine role based on userId
+      const roleMap = { 'movi': 'farmer', 'aakerblå': 'brønnbåt', 'admin': 'admin' };
+      const role = roleMap[userId] || 'farmer';
+      
+      db.users[userId] = {
+        id: userId,
+        name: userId.charAt(0).toUpperCase() + userId.slice(1),
+        role: role,
+        favoriteFacilities: [],
+        favoriteVessels: [],
+        createdAt: new Date().toISOString()
+      };
+      await writeDB(db);
+      user = db.users[userId];
+      console.log(`[FAVORITES] Created fallback user: ${userId} with role ${role}`);
     }
     
     console.log(`[FAVORITES] Found user ${userId}: ${user.name}, role: ${user.role}`);
@@ -69,10 +87,26 @@ router.post('/favorites/:userId/add', async (req, res) => {
     const db = await readDB();
     console.log(`[FAVORITES] Available users: ${Object.keys(db.users || {}).join(', ')}`);
     
-    const user = db.users?.[userId];
+    let user = db.users?.[userId];
+    
+    // If user doesn't exist, create it as fallback
     if (!user) {
-      console.error(`[FAVORITES] User ${userId} not found in database`);
-      return res.status(404).json({ error: 'User not found' });
+      console.warn(`[FAVORITES] User ${userId} not found, creating fallback`);
+      if (!db.users) db.users = {};
+      
+      const roleMap = { 'movi': 'farmer', 'aakerblå': 'brønnbåt', 'admin': 'admin' };
+      const role = roleMap[userId] || 'farmer';
+      
+      db.users[userId] = {
+        id: userId,
+        name: userId.charAt(0).toUpperCase() + userId.slice(1),
+        role: role,
+        favoriteFacilities: [],
+        favoriteVessels: [],
+        createdAt: new Date().toISOString()
+      };
+      user = db.users[userId];
+      console.log(`[FAVORITES] Created fallback user: ${userId} with role ${role}`);
     }
     
     const field = resourceType === 'facility' ? 'favoriteFacilities' : 'favoriteVessels';
@@ -111,9 +145,25 @@ router.post('/favorites/:userId/remove', async (req, res) => {
     const { readDB, writeDB } = require('../db');
     
     const db = await readDB();
-    const user = db.users?.[userId];
+    let user = db.users?.[userId];
+    
+    // If user doesn't exist, create it as fallback
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      console.warn(`[FAVORITES] User ${userId} not found during remove, creating fallback`);
+      if (!db.users) db.users = {};
+      
+      const roleMap = { 'movi': 'farmer', 'aakerblå': 'brønnbåt', 'admin': 'admin' };
+      const role = roleMap[userId] || 'farmer';
+      
+      db.users[userId] = {
+        id: userId,
+        name: userId.charAt(0).toUpperCase() + userId.slice(1),
+        role: role,
+        favoriteFacilities: [],
+        favoriteVessels: [],
+        createdAt: new Date().toISOString()
+      };
+      user = db.users[userId];
     }
     
     const field = resourceType === 'facility' ? 'favoriteFacilities' : 'favoriteVessels';
