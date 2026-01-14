@@ -290,6 +290,14 @@ function App() {
       element = <Component onLogin={handleLogin} onMVPLogin={handleMVPLogin} {...commonProps} />
     } else if (page === 'selectRole') {
       element = <Component onRoleSelected={handleRoleSelected} {...commonProps} />
+    } else if (page === 'selectSites') {
+      element = <Component onSitesSelected={handleSitesSelected} {...commonProps} />
+    } else if (page === 'dashboard') {
+      element = <Component onSelectDashboard={handleSelectDashboard} user={user} {...commonProps} />
+    } else {
+      element = <Component currentUser={user} {...commonProps} />
+    }
+    
     if (config.wrapper) {
       return <MVPWrapper onLogout={handleLogout} onSwitchRole={handleSwitchRole} currentRole={user?.role}>{element}</MVPWrapper>
     }
