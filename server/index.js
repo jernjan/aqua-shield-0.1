@@ -295,19 +295,9 @@ app.get('/api/mvp/farmer', async (req, res) => {
       mvpInitialized = true;
     }
     
-    const db = await readDB();
-    
-    // Filter to only show current user's farms (hard-coded to 'movi' for now)
-    const userId = 'movi';
-    const user = db.users?.[userId];
-    const selectedFarmIds = user?.selectedFacilities || [];
-    
-    const farmers = (global.MVP?.farmers || []).filter(f => selectedFarmIds.includes(f.id));
-    
+    const farmers = (global.MVP?.farmers || []);
     res.json({
       farms: farmers,
-      userId: userId,
-      selectedFarmIds: selectedFarmIds,
       stats: { 
         total: farmers.length,
         risky: farmers.filter(f => f.riskScore > 60).length,

@@ -238,7 +238,7 @@ function App() {
 
   const handleSwitchRole = useCallback((role) => {
     const pageMap = {
-      'farmer': 'farmer-dashboard',
+      'farmer': 'mvp-farmer',
       'brønnbåt': 'vessel-dashboard',
       'admin': 'admin-panel'
     }
