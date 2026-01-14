@@ -295,9 +295,19 @@ app.get('/api/mvp/farmer', async (req, res) => {
       mvpInitialized = true;
     }
     
-    const farmers = (global.MVP?.farmers || []);
+    const db = await readDB();
+    
+    // Filter to only show current user's farms (hard-coded to 'movi' for now)
+    const userId = 'movi';
+    const user = db.users?.[userId];
+    const selectedFarmIds = user?.selectedFacilities || [];
+    
+    const farmers = (global.MVP?.farmers || []).filter(f => selectedFarmIds.includes(f.id));
+    
     res.json({
       farms: farmers,
+      userId: userId,
+      selectedFarmIds: selectedFarmIds,
       stats: { 
         total: farmers.length,
         risky: farmers.filter(f => f.riskScore > 60).length,
@@ -924,6 +934,39 @@ app.get('/api/admin/backtest/results/:jobId?', async (req, res) => {
     });
   } catch (err) {
     console.error('Failed to get backtest results:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============ CONTAMINATION TRACKING ============
+// Get contamination sources for a facility (vessels that visited high-risk farms)
+app.get('/api/farm/:farmId/contamination-sources', async (req, res) => {
+  try {
+    const { farmId } = req.params;
+    const db = await readDB();
+    const { getContaminatedVesselsNearFacility } = require('./utils/contamination');
+    
+    // Get contaminated vessels near this facility
+    const contaminatedVessels = getContaminatedVesselsNearFacility(db, farmId);
+    
+    res.json({
+      farmId,
+      contaminationSources: contaminatedVessels.map(v => ({
+        vesselId: v.id,
+        vesselName: v.name || `Vessel ${v.id}`,
+        lastLocation: v.lastPosition ? {
+          lat: v.lastPosition.lat,
+          lng: v.lastPosition.lng,
+          timestamp: v.lastPosition.timestamp
+        } : null,
+        contaminationStatus: v.contaminationStatus,
+        lastVisited: v.lastVisited,
+        riskLevel: v.contaminationStatus === 'contaminated' ? 'HIGH' : 'MEDIUM'
+      })),
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('Failed to get contamination sources:', err);
     res.status(500).json({ error: err.message });
   }
 });

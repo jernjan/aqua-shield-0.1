@@ -4,6 +4,7 @@ import apiClient from '../lib/apiClient';
 export default function FarmerMVP({ token, currentUser }) {
   const [farms, setFarms] = useState([]);
   const [selectedFarm, setSelectedFarm] = useState(null);
+  const [contaminationSources, setContaminationSources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -30,6 +31,22 @@ export default function FarmerMVP({ token, currentUser }) {
     fetchFarms();
   }, []);
 
+  // Fetch contamination sources when farm is selected
+  useEffect(() => {
+    if (selectedFarm?.id) {
+      const fetchContaminationSources = async () => {
+        try {
+          const response = await apiClient.get(`/api/farm/${selectedFarm.id}/contamination-sources`);
+          setContaminationSources(response.contaminationSources || []);
+          console.log('🦠 Smittekilder for', selectedFarm.name, ':', response.contaminationSources?.length || 0);
+        } catch (error) {
+          console.error('Error fetching contamination sources:', error);
+          setContaminationSources([]);
+        }
+      };
+      fetchContaminationSources();
+    }
+  }, [selectedFarm?.id]);
 
   const handleMarkAsRead = (alertId) => {
     // No longer needed - real data doesn't have isRead status
@@ -459,6 +476,84 @@ export default function FarmerMVP({ token, currentUser }) {
                             📏<br />{visit.distanceKm} km
                           </div>
                         )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ===== DETECTEDE SMITTEKILDER - Kontaminerte båter som besøkt høyrisikoet anlegg ===== */}
+              {contaminationSources && contaminationSources.length > 0 && (
+                <div style={{ marginBottom: 14 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, paddingBottom: 6, borderBottom: '2px solid #DC2626' }}>
+                    <h3 style={{ fontSize: 13, fontWeight: 700, color: '#DC2626', margin: 0 }}>
+                      🦠 DETECTEDE SMITTEKILDER - Båter fra smittede anlegg ({contaminationSources.length})
+                    </h3>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: contaminationSources.length > 2 ? 'repeat(2, 1fr)' : '1fr', gap: 8 }}>
+                    {contaminationSources.map((source, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          background: source.riskLevel === 'HIGH' ? 'rgba(220, 38, 38, 0.12)' : 'rgba(251, 146, 60, 0.12)',
+                          border: source.riskLevel === 'HIGH' ? '1px solid #DC2626' : '1px solid #FB923C',
+                          borderRadius: 6,
+                          padding: 12,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 8
+                        }}
+                      >
+                        {/* Vessel name and risk level */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: 8 }}>
+                          <div>
+                            <h4 style={{ margin: 0, fontSize: 11, fontWeight: 700, color: '#FFF' }}>
+                              🚢 {source.vesselName || `Vessel ${source.vesselId}`}
+                            </h4>
+                            <p style={{ margin: '2px 0 0 0', fontSize: 9, color: 'var(--text-secondary)' }}>
+                              ID: {source.vesselId}
+                            </p>
+                          </div>
+                          <div style={{
+                            background: source.riskLevel === 'HIGH' ? '#DC2626' : '#FB923C',
+                            color: '#fff',
+                            padding: '6px 12px',
+                            borderRadius: 4,
+                            fontSize: 10,
+                            fontWeight: 700,
+                            whiteSpace: 'nowrap'
+                          }}>
+                            {source.riskLevel}
+                          </div>
+                        </div>
+
+                        {/* Status */}
+                        <div style={{
+                          background: 'rgba(0, 0, 0, 0.3)',
+                          padding: '8px 10px',
+                          borderRadius: 4,
+                          fontSize: 10,
+                          color: source.contaminationStatus === 'contaminated' ? '#FCA5A5' : '#FED7AA'
+                        }}>
+                          <p style={{ margin: 0, fontWeight: 600 }}>
+                            {source.contaminationStatus === 'contaminated' ? '🔴 KONTAMINERT' : '🟡 MISTENKT'}
+                          </p>
+                          <p style={{ margin: '4px 0 0 0', fontSize: 9, color: 'var(--text-secondary)' }}>
+                            Sist kjent lokasjon: {source.lastLocation ? `${source.lastLocation.lat.toFixed(2)}°N, ${source.lastLocation.lng.toFixed(2)}°E` : 'Ukjent'}
+                          </p>
+                        </div>
+
+                        {/* Warning message */}
+                        <div style={{
+                          background: 'rgba(220, 38, 38, 0.2)',
+                          padding: '8px 10px',
+                          borderRadius: 4,
+                          fontSize: 9,
+                          color: '#FCA5A5',
+                          borderLeft: '3px solid #DC2626'
+                        }}>
+                          ⚠️ <strong>Varsling:</strong> Denne båten kan være smittevektor. Implementer økte hygieniske tiltak ved besøk.
+                        </div>
                       </div>
                     ))}
                   </div>
