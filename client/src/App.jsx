@@ -3,9 +3,11 @@ import Login from './pages/Login'
 import SelectRole from './pages/SelectRole'
 import SelectSites from './pages/SelectSites'
 import DashboardSelector from './pages/DashboardSelector'
+import FarmerDashboardOverview from './pages/FarmerDashboardOverview'
 import FarmerMVP from './pages/FarmerMVP'
 import FarmerDashboard from './pages/FarmerDashboard'
 import ValidationDashboard from './pages/ValidationDashboard'
+import VesselDashboardOverview from './pages/VesselDashboardOverview'
 import VesselDashboard from './pages/VesselDashboard'
 import VesselMVP from './pages/VesselMVP'
 import AdminMVP from './pages/AdminMVP'
@@ -109,10 +111,12 @@ const PAGE_CONFIG = {
   'selectRole': { component: SelectRole, requiresAuth: true },
   'selectSites': { component: SelectSites, requiresAuth: true },
   'dashboard': { component: DashboardSelector, requiresAuth: true, wrapper: true },
+  'farmer-overview': { component: FarmerDashboardOverview, requiresAuth: true, wrapper: true },
   'mvp-farmer': { component: FarmerMVP, requiresAuth: true, wrapper: true },
   'farm-selector': { component: FarmSelector, requiresAuth: true, wrapper: true },
   'farmer-dashboard': { component: FarmerDashboard, requiresAuth: true, wrapper: true },
   'validation-dashboard': { component: ValidationDashboard, requiresAuth: true, wrapper: true },
+  'vessel-overview': { component: VesselDashboardOverview, requiresAuth: true, wrapper: true },
   'vessel-dashboard': { component: VesselDashboard, requiresAuth: true, wrapper: true },
   'mvp-vessel': { component: VesselMVP, requiresAuth: true, wrapper: true },
   'vessel-selector': { component: VesselSelector, requiresAuth: true, wrapper: true },
@@ -140,8 +144,9 @@ function App() {
         
         // Route based on user role
         const rolePageMap = {
-          'farmer': 'mvp-farmer',
-          'vessel': 'mvp-vessel',
+          'farmer': 'farmer-overview',
+          'brønnbåt': 'vessel-overview',
+          'vessel': 'vessel-overview',
           'admin': 'mvp-admin'
         }
         
@@ -167,11 +172,11 @@ function App() {
     setUser(userData);
     localStorage.setItem('aquashield_user', JSON.stringify(userData));
     
-    // Route based on role
+    // Route based on role - go to overview pages
     if (userData.role === 'farmer') {
-      setPage('mvp-farmer');
-    } else if (userData.role === 'vessel_operator') {
-      setPage('mvp-vessel');
+      setPage('farmer-overview');
+    } else if (userData.role === 'brønnbåt' || userData.role === 'vessel') {
+      setPage('vessel-overview');
     } else if (userData.role === 'admin') {
       setPage('mvp-admin');
     } else {
@@ -211,8 +216,9 @@ function App() {
     
     // Route to correct dashboard based on role
     const pageMap = {
-      'farmer': 'mvp-farmer',
-      'vessel': 'mvp-vessel',
+      'farmer': 'farmer-overview',
+      'brønnbåt': 'vessel-overview',
+      'vessel': 'vessel-overview',
       'admin': 'mvp-admin'
     }
     
@@ -220,6 +226,7 @@ function App() {
     setPage(targetPage)
     showToast(`Bytta til ${role} rolle`)
   }, [user])
+
   const handleSwitchRole = useCallback((role) => {
     // Update user role
     const updatedUser = { ...user, role: role }
@@ -227,8 +234,9 @@ function App() {
     localStorage.setItem('aquashield_user', JSON.stringify(updatedUser))
     
     const pageMap = {
-      'farmer': 'mvp-farmer',
-      'vessel': 'mvp-vessel',
+      'farmer': 'farmer-overview',
+      'brønnbåt': 'vessel-overview',
+      'vessel': 'vessel-overview',
       'admin': 'mvp-admin'
     }
     const targetPage = pageMap[role]
@@ -255,10 +263,14 @@ function App() {
       element = <Component onSitesSelected={handleSitesSelected} {...commonProps} />
     } else if (page === 'dashboard') {
       element = <Component onSelectDashboard={handleSelectDashboard} user={user} {...commonProps} />
+    } else if (page === 'farmer-overview') {
+      element = <Component userId={user?.id} currentUser={user} {...commonProps} />
+    } else if (page === 'vessel-overview') {
+      element = <Component userId={user?.id} currentUser={user} {...commonProps} />
     } else if (page === 'farm-selector') {
-      element = <Component userId={user?.id} currentUser={user} onBack={() => setPage('mvp-farmer')} {...commonProps} />
+      element = <Component userId={user?.id} currentUser={user} onBack={() => setPage('farmer-overview')} {...commonProps} />
     } else if (page === 'vessel-selector') {
-      element = <Component userId={user?.id} currentUser={user} onBack={() => setPage('mvp-vessel')} {...commonProps} />
+      element = <Component userId={user?.id} currentUser={user} onBack={() => setPage('vessel-overview')} {...commonProps} />
     } else {
       element = <Component currentUser={user} {...commonProps} />
     }
