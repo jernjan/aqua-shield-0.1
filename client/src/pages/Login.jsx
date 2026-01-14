@@ -8,7 +8,7 @@ function Login({ onLogin }) {
   // Demo users from server
   const DEMO_USERS = [
     { id: 'movi', name: 'Movi Anleggsbruker', role: 'farmer', icon: '🐟' },
-    { id: 'aakerblå', name: 'Aakerblå Båtrederi', role: 'vessel', icon: '⛵' },
+    { id: 'aakerblå', name: 'Aakerblå Båtrederi', role: 'brønnbåt', icon: '⛵' },
     { id: 'admin', name: 'Administrator', role: 'admin', icon: '⚙️' }
   ];
 

@@ -35,13 +35,18 @@ router.post('/favorites/:userId/add', async (req, res) => {
     const { resourceId, resourceType } = req.body; // resourceType: 'facility' | 'vessel'
     const { readDB, writeDB } = require('../db');
     
+    console.log(`[FAVORITES] Adding ${resourceType} ${resourceId} for user ${userId}`);
+    
     if (!resourceType || !resourceId) {
       return res.status(400).json({ error: 'resourceId and resourceType required' });
     }
     
     const db = await readDB();
+    console.log(`[FAVORITES] Available users: ${Object.keys(db.users || {}).join(', ')}`);
+    
     const user = db.users?.[userId];
     if (!user) {
+      console.error(`[FAVORITES] User ${userId} not found in database`);
       return res.status(404).json({ error: 'User not found' });
     }
     
@@ -60,6 +65,8 @@ router.post('/favorites/:userId/add', async (req, res) => {
     
     user[field].push(resourceId);
     await writeDB(db);
+    
+    console.log(`[FAVORITES] Successfully added. Count: ${user[field].length}`);
     
     res.json({ 
       message: 'Added to favorites',

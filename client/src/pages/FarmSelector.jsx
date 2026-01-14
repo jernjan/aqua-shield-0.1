@@ -49,20 +49,27 @@ export default function FarmSelector({ userId, currentUser, onBack }) {
       const isFav = favorites.includes(facilityId);
       const endpoint = isFav ? '/remove' : '/add';
       
-      await apiClient.post(`/api/user/favorites/${userId}${endpoint}`, {
+      console.log(`Toggling favorite: ${facilityId}, userId: ${userId}, endpoint: ${endpoint}`);
+      
+      const result = await apiClient.post(`/api/user/favorites/${userId}${endpoint}`, {
         resourceId: facilityId,
         resourceType: 'facility'
       });
+      
+      console.log('Toggle result:', result);
 
       if (isFav) {
         setFavorites(favorites.filter(id => id !== facilityId));
       } else {
         if (favorites.length < 10) {
           setFavorites([...favorites, facilityId]);
+        } else {
+          console.warn('Max 10 favoritter nådd');
         }
       }
     } catch (err) {
       console.error('Error toggling favorite:', err);
+      alert(`Feil ved lagring: ${err.message}`);
     }
   };
 
