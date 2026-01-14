@@ -352,8 +352,19 @@ app.get('/api/mvp/farmer', async (req, res) => {
       console.log(`   → Found ${farmers.length} farms for user ${userId}`);
     }
     
+    // Slim down data for overview - return only essential fields to avoid timeout
+    const slimmed = farmers.map(f => ({
+      id: f.id,
+      name: f.name,
+      riskScore: f.riskScore,
+      riskCategory: f.riskCategory,
+      liceCount: f.liceCount,
+      diseaseStatus: f.diseaseStatus,
+      municipality: f.municipality
+    }));
+    
     res.json({
-      farms: farmers,
+      farms: slimmed,
       stats: { 
         total: farmers.length,
         risky: farmers.filter(f => f.riskScore > 60).length,
@@ -396,7 +407,17 @@ app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
       if (!vessel) return res.status(404).json({ error: 'Vessel not found' })
       res.json({ vessel, tasks: [], taskCount: 0 })
     } else {
-      res.json({ vessels: vessels, stats: { total: vessels.length }, taskCount: 0 })
+      // Slim down data for overview - return only essential fields to avoid timeout
+      const slimmed = vessels.map(v => ({
+        id: v.id,
+        name: v.name,
+        callSign: v.callSign,
+        vesselType: v.vesselType,
+        length: v.length,
+        contaminated: v.contaminated,
+        certificateExpiry: v.certificateExpiry
+      }));
+      res.json({ vessels: slimmed, stats: { total: vessels.length }, taskCount: 0 })
     }
   } catch (err) {
     console.error('[VESSEL] Error:', err)
