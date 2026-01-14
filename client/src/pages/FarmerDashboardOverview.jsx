@@ -4,6 +4,7 @@ import apiClient from '../lib/apiClient';
 export default function FarmerDashboardOverview({ userId, currentUser, onNavigate }) {
   const [favorites, setFavorites] = useState([]);
   const [facilitiesDetail, setFacilitiesDetail] = useState({});
+  const [riskSources, setRiskSources] = useState({});
   const [loading, setLoading] = useState(true);
 
   // Load favorites and calculate stats
@@ -25,6 +26,18 @@ export default function FarmerDashboardOverview({ userId, currentUser, onNavigat
           detailMap[f.id] = f;
         });
         setFacilitiesDetail(detailMap);
+
+        // Load risk sources for each favorite
+        const sourcesMap = {};
+        for (const favId of favIds) {
+          try {
+            const detailedRes = await apiClient.get(`/api/user/facility/${favId}/detailed`);
+            sourcesMap[favId] = detailedRes;
+          } catch (err) {
+            console.error(`Error loading details for ${favId}:`, err);
+          }
+        }
+        setRiskSources(sourcesMap);
       } catch (err) {
         console.error('Error loading overview:', err);
       } finally {
@@ -245,83 +258,106 @@ export default function FarmerDashboardOverview({ userId, currentUser, onNavigat
                 <th style={{ padding: 12, textAlign: 'center', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Lus</th>
                 <th style={{ padding: 12, textAlign: 'center', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Sykdom</th>
                 <th style={{ padding: 12, textAlign: 'center', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Smittet</th>
+                <th style={{ padding: 12, textAlign: 'left', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Risikokilde</th>
               </tr>
             </thead>
             <tbody>
-              {favFacilities.map((facility, idx) => (
-                <tr
-                  key={facility.id}
-                  onClick={() => onNavigate?.('farm-selector')}
-                  style={{
-                    borderBottom: '1px solid var(--border-color)',
-                    background: idx % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(212, 165, 116, 0.1)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = idx % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)'}
-                >
-                  <td style={{ padding: 12, color: 'var(--text-primary)', fontWeight: 500 }}>
-                    <div>
-                      <p style={{ margin: 0, fontSize: 13, fontWeight: 600 }}>{facility.name}</p>
-                      <p style={{ margin: '2px 0 0 0', fontSize: 11, color: 'var(--text-secondary)' }}>
-                        {facility.municipality}
-                      </p>
-                    </div>
-                  </td>
-                  <td style={{ padding: 12, textAlign: 'center' }}>
-                    <div style={{
-                      display: 'inline-block',
-                      background: facility.riskScore > 80 ? 'rgba(220,38,38,0.2)' : 
-                                  facility.riskScore > 60 ? 'rgba(245,158,11,0.2)' : 
-                                  'rgba(59,130,246,0.2)',
-                      border: `2px solid ${facility.riskScore > 80 ? 'var(--accent-red)' : 
-                                           facility.riskScore > 60 ? 'var(--accent-orange)' : 
-                                           'var(--accent-blue)'}`,
-                      borderRadius: 4,
-                      padding: '4px 8px',
-                      fontSize: 12,
-                      fontWeight: 700,
-                      color: facility.riskScore > 80 ? 'var(--accent-red)' : 
-                             facility.riskScore > 60 ? 'var(--accent-orange)' : 
-                             'var(--accent-blue)'
-                    }}>
-                      {facility.riskScore || 0}%
-                    </div>
-                  </td>
-                  <td style={{ padding: 12, textAlign: 'center', color: 'var(--text-primary)', fontWeight: 500 }}>
-                    {facility.liceCount || 0}
-                  </td>
-                  <td style={{ padding: 12, textAlign: 'center' }}>
-                    <span style={{
-                      padding: '4px 8px',
-                      background: facility.diseaseStatus === 'OK' ? 'rgba(34,197,94,0.2)' : 'rgba(220,38,38,0.2)',
-                      color: facility.diseaseStatus === 'OK' ? 'var(--accent-green)' : 'var(--accent-red)',
-                      borderRadius: 4,
-                      fontSize: 11,
-                      fontWeight: 600
-                    }}>
-                      {facility.diseaseStatus || 'OK'}
-                    </span>
-                  </td>
-                  <td style={{ padding: 12, textAlign: 'center' }}>
-                    {facility.contaminatedVisitors && facility.contaminatedVisitors.length > 0 ? (
+              {favFacilities.map((facility, idx) => {
+                const details = riskSources[facility.id] || {};
+                const contaminatedVessels = details.contamination?.sources || [];
+                const nearbyRiskyFacilities = (details.distances || []).filter(d => d.risk === 'HIGH').slice(0, 2);
+                
+                // Build risk source string
+                const riskSourceParts = [];
+                if (contaminatedVessels.length > 0) {
+                  riskSourceParts.push(`${contaminatedVessels.length} båt${contaminatedVessels.length !== 1 ? 'er' : ''}`);
+                }
+                if (nearbyRiskyFacilities.length > 0) {
+                  riskSourceParts.push(`${nearbyRiskyFacilities.length} nabo(er)`);
+                }
+                if (facility.diseaseStatus && facility.diseaseStatus !== 'OK') {
+                  riskSourceParts.push(facility.diseaseStatus);
+                }
+                const riskSource = riskSourceParts.length > 0 ? riskSourceParts.join(' • ') : 'Egen risiko';
+                
+                return (
+                  <tr
+                    key={facility.id}
+                    onClick={() => onNavigate?.('farm-selector')}
+                    style={{
+                      borderBottom: '1px solid var(--border-color)',
+                      background: idx % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(212, 165, 116, 0.1)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = idx % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)'}
+                  >
+                    <td style={{ padding: 12, color: 'var(--text-primary)', fontWeight: 500 }}>
+                      <div>
+                        <p style={{ margin: 0, fontSize: 13, fontWeight: 600 }}>{facility.name}</p>
+                        <p style={{ margin: '2px 0 0 0', fontSize: 11, color: 'var(--text-secondary)' }}>
+                          {facility.municipality}
+                        </p>
+                      </div>
+                    </td>
+                    <td style={{ padding: 12, textAlign: 'center' }}>
+                      <div style={{
+                        display: 'inline-block',
+                        background: facility.riskScore > 80 ? 'rgba(220,38,38,0.2)' : 
+                                    facility.riskScore > 60 ? 'rgba(245,158,11,0.2)' : 
+                                    'rgba(59,130,246,0.2)',
+                        border: `2px solid ${facility.riskScore > 80 ? 'var(--accent-red)' : 
+                                             facility.riskScore > 60 ? 'var(--accent-orange)' : 
+                                             'var(--accent-blue)'}`,
+                        borderRadius: 4,
+                        padding: '4px 8px',
+                        fontSize: 12,
+                        fontWeight: 700,
+                        color: facility.riskScore > 80 ? 'var(--accent-red)' : 
+                               facility.riskScore > 60 ? 'var(--accent-orange)' : 
+                               'var(--accent-blue)'
+                      }}>
+                        {facility.riskScore || 0}%
+                      </div>
+                    </td>
+                    <td style={{ padding: 12, textAlign: 'center', color: 'var(--text-primary)', fontWeight: 500 }}>
+                      {facility.liceCount || 0}
+                    </td>
+                    <td style={{ padding: 12, textAlign: 'center' }}>
                       <span style={{
                         padding: '4px 8px',
-                        background: 'rgba(220,38,38,0.2)',
-                        color: 'var(--accent-red)',
+                        background: facility.diseaseStatus === 'OK' ? 'rgba(34,197,94,0.2)' : 'rgba(220,38,38,0.2)',
+                        color: facility.diseaseStatus === 'OK' ? 'var(--accent-green)' : 'var(--accent-red)',
                         borderRadius: 4,
                         fontSize: 11,
                         fontWeight: 600
                       }}>
-                        {facility.contaminatedVisitors.length} båt{facility.contaminatedVisitors.length !== 1 ? 'er' : ''}
+                        {facility.diseaseStatus || 'OK'}
                       </span>
-                    ) : (
-                      <span style={{ color: 'var(--text-secondary)', fontSize: 12 }}>-</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td style={{ padding: 12, textAlign: 'center' }}>
+                      {facility.contaminatedVisitors && facility.contaminatedVisitors.length > 0 ? (
+                        <span style={{
+                          padding: '4px 8px',
+                          background: 'rgba(220,38,38,0.2)',
+                          color: 'var(--accent-red)',
+                          borderRadius: 4,
+                          fontSize: 11,
+                          fontWeight: 600
+                        }}>
+                          {facility.contaminatedVisitors.length} båt{facility.contaminatedVisitors.length !== 1 ? 'er' : ''}
+                        </span>
+                      ) : (
+                        <span style={{ color: 'var(--text-secondary)', fontSize: 12 }}>-</span>
+                      )}
+                    </td>
+                    <td style={{ padding: 12, color: 'var(--text-primary)', fontSize: 12 }}>
+                      <span style={{ opacity: 0.8 }}>{riskSource}</span>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
