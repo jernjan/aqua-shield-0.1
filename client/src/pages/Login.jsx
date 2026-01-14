@@ -1,8 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import styles from './Login.module.css';
 
-function Login({ onLogin, onMVPLogin }) {
-  const [selectedUser, setSelectedUser] = useState('movi');
+function Login({ onLogin }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -119,138 +118,6 @@ function Login({ onLogin, onMVPLogin }) {
         }}>
           <strong>Demo-brukere:</strong> Velg bruker over for å logge inn. Ingen passord nødvendig.
         </div>
-      </div>
-    </div>
-  );
-}
-
-export default Login;
-
-  return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>AQUASHIELD</h1>
-        <p className={styles.subtitle}>Varslingssystem for norsk akvakultur</p>
-      </div>
-
-      <div className={styles.card}>
-        <div className={styles.tabs}>
-          <button
-            className={`${styles.tab} ${isLogin ? styles.active : ''}`}
-            onClick={() => setIsLogin(true)}
-          >
-            Logg inn
-          </button>
-          <button
-            className={`${styles.tab} ${!isLogin ? styles.active : ''}`}
-            onClick={() => setIsLogin(false)}
-          >
-            Registrer
-          </button>
-        </div>
-  {error && <div style={{ color: '#ff6b6b', marginBottom: '1rem', padding: '0.75rem', backgroundColor: 'rgba(255,107,107,0.1)', borderRadius: '4px' }}>{error}</div>}
-
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.formGroup}>
-            <label className={styles.label}>E-post</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className={styles.input}
-              placeholder="din@email.no"
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Passord</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className={styles.input}
-              placeholder="••••••••"
-            />
-          </div>
-
-          {!isLogin && (
-            <>
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Navn</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className={styles.input}
-                  placeholder="Ditt navn"
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Telefon</label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className={styles.input}
-                  placeholder="+47 XXX XX XXX"
-                />
-              </div>
-            </>
-          )}
-
-          <button
-            type="submit"
-            className={styles.submitBtn}
-            disabled={loading}
-          >
-            {loading ? 'Behandler...' : isLogin ? 'Logg inn' : 'Registrer'}
-          </button>
-        </form>
-      </div>
-
-      <div className={styles.divider}>
-        <span>Eller velg rolle for demo</span>
-      </div>
-
-      <div className={styles.mvpRoles}>
-        <RoleButton 
-          label="Anleggseier"
-          desc="Fiskeoppdrett"
-          icon="A"
-          onClick={() => handleMVPRole('farmer')}
-        />
-
-        <RoleButton 
-          label="Brønnbåt"
-          desc="Transportbåt"
-          icon="B"
-          onClick={() => handleMVPRole('vessel')}
-        />
-
-        <RoleButton 
-          label="Admin"
-          desc="Din private dashboard"
-          icon="⚙️"
-          onClick={() => handleMVPRole('admin')}
-        />
-
-        <RoleButton 
-          label="Analytics"
-          desc="Rapporter & Analyse"
-          icon="📊"
-          onClick={() => handleMVPRole('analytics')}
-        />
-
-        <RoleButton 
-          label="Yrkesfisker"
-          desc="Smittesone-kart"
-          icon="🎣"
-          onClick={() => handleMVPRole('fisher')}
-        />
       </div>
     </div>
   );
