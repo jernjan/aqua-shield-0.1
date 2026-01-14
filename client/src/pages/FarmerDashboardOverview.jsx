@@ -15,8 +15,8 @@ export default function FarmerDashboardOverview({ userId, currentUser, onNavigat
         const favIds = favRes.favorites?.facilities || [];
         setFavorites(favIds);
 
-        // Fetch all facilities for quick stats
-        const allRes = await apiClient.get(`/api/mvp/farmer?userId=${userId}`);
+        // Fetch ALL facilities (not filtered by user)
+        const allRes = await apiClient.get(`/api/mvp/farmer`);
         const facilities = allRes.farms || [];
         
         // Build detail map indexed by ID

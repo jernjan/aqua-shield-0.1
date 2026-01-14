@@ -15,8 +15,8 @@ export default function VesselDashboardOverview({ userId, currentUser, onNavigat
         const favIds = favRes.favorites?.vessels || [];
         setFavorites(favIds);
 
-        // Fetch all vessels
-        const allRes = await apiClient.get(`/api/mvp/vessel?userId=${userId}`);
+        // Fetch ALL vessels (not filtered by user)
+        const allRes = await apiClient.get(`/api/mvp/vessel`);
         const vessels = allRes.vessels || [];
         
         // Build detail map indexed by ID
