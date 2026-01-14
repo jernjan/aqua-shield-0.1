@@ -618,6 +618,108 @@ Mål år 1: 20–50 betalende kunder = 10–30 mill kr ARR
 
 ---
 
+---
+
+## API Connections & Credentials
+
+### External APIs (Open Data - No Auth Required)
+
+```
+BarentsWatch API
+├─ URL: https://www.barentswatch.no/api/v2/
+├─ Endpoint: /aquaculture/facilities (2,687 farms)
+├─ Data: Facility locations, lice counts, diseases, company info
+└─ Rate limit: Reasonable limits for public data
+
+Kystverket AIS (Coastal Administration)
+├─ URL: https://www.barentswatch.no/api/v2/
+├─ Endpoint: /ais (all Norwegian vessels)
+├─ Data: Vessel positions, call signs, types, sizes
+└─ Rate limit: Reasonable for public tracking
+```
+
+### Supabase PostgreSQL (Persistent Favorites Database)
+
+```yaml
+Supabase Project:
+  Project ID: eiokuofueqsmhcglnhsv
+  Database: postgres
+
+Database Connection String (PostgreSQL):
+  postgresql://postgres:x5BccVHm_-gsE2&@db.eiokuofueqsmhcglnhsv.supabase.co:5432/postgres
+
+Table: users_favorites
+  - id (uuid, primary key)
+  - user_id (string) → "movi", "aakerblå", etc.
+  - resource_id (integer) → facility or vessel ID
+  - resource_type (string) → "facility" or "vessel"
+  - created_at (timestamp)
+  - UNIQUE(user_id, resource_id, resource_type)
+
+Environment Variable (render.yaml):
+  DATABASE_URL: postgresql://postgres:x5BccVHm_-gsE2&@db.eiokuofueqsmhcglnhsv.supabase.co:5432/postgres
+```
+
+### Local Development
+
+Create `.env.local` in server directory:
+```
+DATABASE_URL=postgresql://postgres:x5BccVHm_-gsE2&@db.eiokuofueqsmhcglnhsv.supabase.co:5432/postgres
+JWT_SECRET=your-secret-key-here
+TWILIO_ACCOUNT_SID=optional-for-sms
+TWILIO_AUTH_TOKEN=optional-for-sms
+SMTP_USER=optional-for-email
+SMTP_PASS=optional-for-email
+```
+
+### Render Deployment
+
+```yaml
+Service: aqua-shield-api
+Branch: main
+Build Command: npm install && npm run build (in root)
+Start Command: node server/index.js
+Port: 10000
+
+Environment Variables (set via Render UI):
+  - DATABASE_URL: postgresql://postgres:x5BccVHm_-gsE2&@db.eiokuofueqsmhcglnhsv.supabase.co:5432/postgres
+  - JWT_SECRET: [your-secret]
+  - TWILIO_ACCOUNT_SID: [optional]
+  - TWILIO_AUTH_TOKEN: [optional]
+```
+
+### Live Endpoints (Production)
+
+```
+Frontend: https://kyst-monitor.onrender.com
+Backend API: https://aqua-shield-api.onrender.com
+
+Key Endpoints:
+  GET  /api/health                          → Server status + data counts
+  GET  /api/mvp/farmer                      → All 2,687 facilities
+  GET  /api/mvp/vessel                      → All 4,142 vessels
+  POST /api/auth/register                   → Create user account
+  POST /api/auth/login                      → JWT token
+  GET  /api/user/favorites/:userId          → Get user's favorite facilities/vessels
+  POST /api/user/favorites/:userId/add      → Add favorite
+  POST /api/user/favorites/:userId/remove   → Remove favorite
+  GET  /api/user/facility/:facilityId/detailed → Risk sources for facility
+  GET  /api/user/vessel/:vesselId/detailed  → Risk profile for vessel
+```
+
+### GitHub Repository
+
+```
+Repository: https://github.com/jernjan/aqua-shield-0.1.git
+Main Branch: main
+
+Deploy Trigger:
+  Push to main → GitHub Actions → Render auto-deploy
+  ~2-3 min build time, ~30 sec cold start on first request
+```
+
+---
+
 ## Henvendelser / support
 
 Denne MVPen er designd for raskt iterasjon med pilot-kunder. Alle data-kilder er open, ingen lisenser-kostnad.
