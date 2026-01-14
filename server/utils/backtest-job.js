@@ -9,8 +9,9 @@ const { runBacktest } = require('./backtesting');
 let currentJob = null;
 
 class BacktestJob {
-  constructor(startDate, endDate, step = '1day') {
+  constructor(db, startDate, endDate, step = '1day') {
     this.id = Date.now();
+    this.db = db;
     this.startDate = startDate;
     this.endDate = endDate;
     this.step = step;
@@ -39,12 +40,22 @@ class BacktestJob {
         this.currentDate = current;
       };
 
-      // Run the backtest
+      // Run the backtest with database
+      // runBacktest(db, startDate, endDate, options)
+      const parseStep = (step) => {
+        if (step === '1day') return { interval: 'day', step: 24 };
+        if (step === '7days') return { interval: 'week', step: 168 };
+        if (step === '14days') return { interval: 'fortnight', step: 336 };
+        return { interval: 'week', step: 168 };
+      };
+
+      const stepOptions = parseStep(this.step);
+      
       this.result = await runBacktest(
-        this.startDate,
-        this.endDate,
-        this.step,
-        onProgress
+        this.db,
+        new Date(this.startDate),
+        new Date(this.endDate),
+        { ...stepOptions, verbose: true, onProgress }
       );
 
       this.status = 'completed';
@@ -95,13 +106,13 @@ class BacktestJob {
 /**
  * Start a new backtest job
  */
-function startBacktestJob(startDate, endDate, step = '1day') {
+function startBacktestJob(db, startDate, endDate, step = '1day') {
   // Kill previous job if still running
   if (currentJob && currentJob.status === 'running') {
     console.warn('⚠️ Previous backtest job still running, will replace');
   }
 
-  const job = new BacktestJob(startDate, endDate, step);
+  const job = new BacktestJob(db, startDate, endDate, step);
   currentJob = job;
 
   // Run asynchronously (don't await)

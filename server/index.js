@@ -849,8 +849,9 @@ app.post('/api/admin/backtest/start', async (req, res) => {
   try {
     const { startDate = '2024-01-01', endDate = '2024-12-31', step = '7days' } = req.body;
     
+    const db = await readDB();
     const { startBacktestJob } = require('./utils/backtest-job');
-    const jobId = startBacktestJob(startDate, endDate, step);
+    const jobId = startBacktestJob(db, startDate, endDate, step);
     
     res.json({
       jobId,
