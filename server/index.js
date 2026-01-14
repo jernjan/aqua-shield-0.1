@@ -299,7 +299,16 @@ app.get('/api/mvp/farmer', async (req, res) => {
       mvpInitialized = true;
     }
     
-    const farmers = (global.MVP?.farmers || []);
+    const userId = req.query.userId;  // Get user ID from query parameter
+    let farmers = (global.MVP?.farmers || []);
+    
+    // Filter by user if userId is provided
+    if (userId) {
+      console.log(`📊 Filtering farms for user: ${userId}`);
+      farmers = farmers.filter(f => f.userId === userId);
+      console.log(`   → Found ${farmers.length} farms for user ${userId}`);
+    }
+    
     res.json({
       farms: farmers,
       stats: { 
@@ -321,6 +330,7 @@ app.get('/api/mvp/farmer', async (req, res) => {
 app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
   try {
     const { vesselId } = req.params
+    const userId = req.query.userId;  // Get user ID from query parameter
     
     // Lazy-load MVP data if not initialized
     if (!mvpInitialized || !global.MVP || !global.MVP.vessels) {
@@ -329,7 +339,14 @@ app.get('/api/mvp/vessel/:vesselId?', async (req, res) => {
       mvpInitialized = true;
     }
     
-    const vessels = (global.MVP?.vessels || []);
+    let vessels = (global.MVP?.vessels || []);
+    
+    // Filter by user if userId is provided
+    if (userId) {
+      console.log(`📊 Filtering vessels for user: ${userId}`);
+      vessels = vessels.filter(v => v.userId === userId);
+      console.log(`   → Found ${vessels.length} vessels for user ${userId}`);
+    }
     
     if (vesselId) {
       const vessel = vessels.find(v => v.id === vesselId)

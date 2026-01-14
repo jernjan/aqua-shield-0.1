@@ -24,11 +24,15 @@ export default function VesselMVP({ token, currentUser }) {
   useEffect(() => {
     const fetchVessels = async () => {
       try {
-        const response = await apiClient.get('/api/mvp/vessel');
+        // Send userId to backend to filter vessels
+        const userId = currentUser?.id;
+        const params = userId ? `?userId=${userId}` : '';
+        const response = await apiClient.get(`/api/mvp/vessel${params}`);
         // API returns { vessels: [...], stats: {...} }
         if (response && response.vessels && Array.isArray(response.vessels)) {
           setVessels(response.vessels);
           setSelectedVessel(response.vessels[0] || null);
+          console.log('✅ Loaded', response.vessels.length, 'vessels for user', userId);
         }
       } catch (error) {
         console.error('Error fetching vessels:', error);

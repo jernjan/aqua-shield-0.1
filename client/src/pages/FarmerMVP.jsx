@@ -12,13 +12,16 @@ export default function FarmerMVP({ token, currentUser }) {
   useEffect(() => {
     const fetchFarms = async () => {
       try {
-        const response = await apiClient.get('/api/mvp/farmer');
+        // Send userId to backend to filter farms
+        const userId = currentUser?.id;
+        const params = userId ? `?userId=${userId}` : '';
+        const response = await apiClient.get(`/api/mvp/farmer${params}`);
         // API returns { farms: [...], stats: {...}, alertCount: ... }
         // Each farm now has: ownRisk, riskCategory, upstreamSources, nearbyVessels, spreadSource, etc.
         if (response && response.farms && Array.isArray(response.farms)) {
           setFarms(response.farms);
           setSelectedFarm(response.farms[0] || null);
-          console.log('✅ Loaded', response.farms.length, 'annotated farms from backend');
+          console.log('✅ Loaded', response.farms.length, 'farms for user', userId);
         }
       } catch (error) {
         console.error('Error fetching farms:', error);
@@ -29,7 +32,7 @@ export default function FarmerMVP({ token, currentUser }) {
     };
     
     fetchFarms();
-  }, []);
+  }, [currentUser?.id]);
 
   // Fetch contamination sources when farm is selected
   useEffect(() => {
