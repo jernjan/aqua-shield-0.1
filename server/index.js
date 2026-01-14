@@ -28,14 +28,15 @@ console.log('   Loading real facilities and vessels at startup...');
 async function initializeRealData() {
   try {
     const db = await readDB();
+    const forceReinit = process.env.FORCE_REINIT === 'true' || process.env.NODE_ENV === 'production';
     
     // Check if we need to refresh (cache older than 24 hours)
     const facilitiesCacheAge = db.facilities_updated_at ? 
       Date.now() - new Date(db.facilities_updated_at).getTime() : 
       Infinity;
     
-    if (!db.facilities || db.facilities.length === 0 || facilitiesCacheAge > 86400000) {
-      console.log('📡 Fetching facilities from BarentsWatch...');
+    if (forceReinit || !db.facilities || db.facilities.length === 0 || facilitiesCacheAge > 86400000) {
+      console.log(forceReinit ? '🔄 FORCE reinitialize (production)' : '📡 Fetching facilities from BarentsWatch...');
       let facilities = await getAllFacilities();
       
       // Fallback if API fails
@@ -56,8 +57,8 @@ async function initializeRealData() {
       Date.now() - new Date(db.vessels_updated_at).getTime() : 
       Infinity;
     
-    if (!db.vessels || db.vessels.length === 0 || vesselsCacheAge > 1800000) {
-      console.log('📡 Fetching vessels from AIS...');
+    if (forceReinit || !db.vessels || db.vessels.length === 0 || vesselsCacheAge > 1800000) {
+      console.log(forceReinit ? '🔄 FORCE reinitialize vessels' : '📡 Fetching vessels from AIS...');
       let vessels = await getAllVessels();
       
       if (!vessels || vessels.length === 0) {
