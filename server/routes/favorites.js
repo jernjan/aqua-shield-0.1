@@ -1,6 +1,26 @@
 const express = require('express');
 const router = express.Router();
 
+// DEBUG: List all users
+router.get('/debug/users', async (req, res) => {
+  try {
+    const { readDB } = require('../db');
+    const db = await readDB();
+    
+    const userList = Object.entries(db.users || {}).map(([id, user]) => ({
+      id,
+      name: user.name,
+      role: user.role,
+      favoriteFacilities: user.favoriteFacilities?.length || 0,
+      favoriteVessels: user.favoriteVessels?.length || 0
+    }));
+    
+    res.json({ users: userList });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get user's favorite facilities/vessels
 router.get('/favorites/:userId', async (req, res) => {
   try {
@@ -8,10 +28,15 @@ router.get('/favorites/:userId', async (req, res) => {
     const { readDB } = require('../db');
     const db = await readDB();
     
+    console.log(`[FAVORITES] GET for user ${userId}, available users: ${Object.keys(db.users || {}).join(', ')}`);
+    
     const user = db.users?.[userId];
     if (!user) {
+      console.error(`[FAVORITES] User ${userId} not found`);
       return res.status(404).json({ error: 'User not found' });
     }
+    
+    console.log(`[FAVORITES] Found user ${userId}: ${user.name}, role: ${user.role}`);
     
     res.json({
       userId,

@@ -239,8 +239,29 @@ const favoritesRoutes = require('./routes/favorites')
 app.use('/api/user', favoritesRoutes)
 
 // ============ HEALTH CHECK ============
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+app.get('/api/health', async (req, res) => {
+  try {
+    const db = await readDB();
+    const userIds = Object.keys(db.users || {});
+    const facilityCount = (db.facilities || []).length;
+    const vesselCount = (db.vessels || []).length;
+    
+    res.json({ 
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      database: {
+        users: userIds,
+        facilities: facilityCount,
+        vessels: vesselCount
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ 
+      status: 'error', 
+      error: err.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 })
 
 // ============ REAL DATA API ROUTES ============
