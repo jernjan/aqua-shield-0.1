@@ -25,43 +25,26 @@ router.get('/debug/users', async (req, res) => {
 router.get('/favorites/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
-    const { readDB, writeDB } = require('../db');
-    const db = await readDB();
     
-    console.log(`[FAVORITES] GET for user ${userId}, available users: ${Object.keys(db.users || {}).join(', ')}`);
+    console.log(`[FAVORITES] GET for user ${userId}`);
     
-    let user = db.users?.[userId];
-    
-    // If user doesn't exist, create it as fallback
-    if (!user) {
-      console.warn(`[FAVORITES] User ${userId} not found, creating fallback`);
-      if (!db.users) db.users = {};
-      
-      // Determine role based on userId
-      const roleMap = { 'movi': 'farmer', 'aakerblå': 'brønnbåt', 'admin': 'admin' };
-      const role = roleMap[userId] || 'farmer';
-      
-      db.users[userId] = {
-        id: userId,
-        name: userId.charAt(0).toUpperCase() + userId.slice(1),
-        role: role,
-        favoriteFacilities: [],
-        favoriteVessels: [],
-        createdAt: new Date().toISOString()
-      };
-      await writeDB(db);
-      user = db.users[userId];
-      console.log(`[FAVORITES] Created fallback user: ${userId} with role ${role}`);
+    // Use in-memory store (survives dyno restarts, not persisted)
+    if (!global.userFavorites) global.userFavorites = {};
+    if (!global.userFavorites[userId]) {
+      global.userFavorites[userId] = { facilities: [], vessels: [] };
     }
     
-    console.log(`[FAVORITES] Found user ${userId}: ${user.name}, role: ${user.role}`);
+    const favorites = global.userFavorites[userId];
+    const roleMap = { 'movi': 'farmer', 'aakerblå': 'brønnbåt', 'admin': 'admin' };
+    
+    console.log(`[FAVORITES] Returning ${favorites.facilities.length} facilities, ${favorites.vessels.length} vessels`);
     
     res.json({
       userId,
-      role: user.role,
+      role: roleMap[userId] || 'farmer',
       favorites: {
-        facilities: user.favoriteFacilities || [],
-        vessels: user.favoriteVessels || []
+        facilities: favorites.facilities || [],
+        vessels: favorites.vessels || []
       },
       maxFavorites: 10
     });
@@ -76,7 +59,6 @@ router.post('/favorites/:userId/add', async (req, res) => {
   try {
     const { userId } = req.params;
     const { resourceId, resourceType } = req.body; // resourceType: 'facility' | 'vessel'
-    const { readDB, writeDB } = require('../db');
     
     console.log(`[FAVORITES] Adding ${resourceType} ${resourceId} for user ${userId}`);
     
@@ -84,52 +66,32 @@ router.post('/favorites/:userId/add', async (req, res) => {
       return res.status(400).json({ error: 'resourceId and resourceType required' });
     }
     
-    const db = await readDB();
-    console.log(`[FAVORITES] Available users: ${Object.keys(db.users || {}).join(', ')}`);
-    
-    let user = db.users?.[userId];
-    
-    // If user doesn't exist, create it as fallback
-    if (!user) {
-      console.warn(`[FAVORITES] User ${userId} not found, creating fallback`);
-      if (!db.users) db.users = {};
-      
-      const roleMap = { 'movi': 'farmer', 'aakerblå': 'brønnbåt', 'admin': 'admin' };
-      const role = roleMap[userId] || 'farmer';
-      
-      db.users[userId] = {
-        id: userId,
-        name: userId.charAt(0).toUpperCase() + userId.slice(1),
-        role: role,
-        favoriteFacilities: [],
-        favoriteVessels: [],
-        createdAt: new Date().toISOString()
-      };
-      user = db.users[userId];
-      console.log(`[FAVORITES] Created fallback user: ${userId} with role ${role}`);
+    // Use in-memory store
+    if (!global.userFavorites) global.userFavorites = {};
+    if (!global.userFavorites[userId]) {
+      global.userFavorites[userId] = { facilities: [], vessels: [] };
     }
     
-    const field = resourceType === 'facility' ? 'favoriteFacilities' : 'favoriteVessels';
-    if (!user[field]) user[field] = [];
+    const field = resourceType === 'facility' ? 'facilities' : 'vessels';
+    const favorites = global.userFavorites[userId][field];
     
     // Check max 10
-    if (user[field].length >= 10) {
+    if (favorites.length >= 10) {
       return res.status(400).json({ error: 'Maximum 10 favorites allowed' });
     }
     
     // Check duplicate
-    if (user[field].includes(resourceId)) {
+    if (favorites.includes(resourceId)) {
       return res.status(400).json({ error: 'Already in favorites' });
     }
     
-    user[field].push(resourceId);
-    await writeDB(db);
+    favorites.push(resourceId);
     
-    console.log(`[FAVORITES] Successfully added. Count: ${user[field].length}`);
+    console.log(`[FAVORITES] Successfully added. Count: ${favorites.length}`);
     
     res.json({ 
       message: 'Added to favorites',
-      count: user[field].length
+      count: favorites.length
     });
   } catch (err) {
     console.error('Error adding favorite:', err);
@@ -142,39 +104,24 @@ router.post('/favorites/:userId/remove', async (req, res) => {
   try {
     const { userId } = req.params;
     const { resourceId, resourceType } = req.body;
-    const { readDB, writeDB } = require('../db');
     
-    const db = await readDB();
-    let user = db.users?.[userId];
+    console.log(`[FAVORITES] Removing ${resourceType} ${resourceId} for user ${userId}`);
     
-    // If user doesn't exist, create it as fallback
-    if (!user) {
-      console.warn(`[FAVORITES] User ${userId} not found during remove, creating fallback`);
-      if (!db.users) db.users = {};
-      
-      const roleMap = { 'movi': 'farmer', 'aakerblå': 'brønnbåt', 'admin': 'admin' };
-      const role = roleMap[userId] || 'farmer';
-      
-      db.users[userId] = {
-        id: userId,
-        name: userId.charAt(0).toUpperCase() + userId.slice(1),
-        role: role,
-        favoriteFacilities: [],
-        favoriteVessels: [],
-        createdAt: new Date().toISOString()
-      };
-      user = db.users[userId];
+    // Use in-memory store
+    if (!global.userFavorites) global.userFavorites = {};
+    if (!global.userFavorites[userId]) {
+      global.userFavorites[userId] = { facilities: [], vessels: [] };
     }
     
-    const field = resourceType === 'facility' ? 'favoriteFacilities' : 'favoriteVessels';
-    if (user[field]) {
-      user[field] = user[field].filter(id => id !== resourceId);
-      await writeDB(db);
-    }
+    const field = resourceType === 'facility' ? 'facilities' : 'vessels';
+    const favorites = global.userFavorites[userId][field];
+    
+    // Remove the item
+    global.userFavorites[userId][field] = favorites.filter(id => id !== resourceId);
     
     res.json({ 
       message: 'Removed from favorites',
-      count: user[field]?.length || 0
+      count: global.userFavorites[userId][field].length
     });
   } catch (err) {
     console.error('Error removing favorite:', err);

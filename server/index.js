@@ -221,6 +221,14 @@ function generateTestVessels(count = 30) {
   return vessels;
 }
 
+// ============ IN-MEMORY FAVORITES STORE ============
+// On Render, filesystem is ephemeral, so keep favorites in memory
+global.userFavorites = {
+  movi: { facilities: [], vessels: [] },
+  aakerblå: { facilities: [], vessels: [] },
+  admin: { facilities: [], vessels: [] }
+};
+
 // Run initialization asynchronously (non-blocking)
 initializeRealData().catch(err => console.error('Init error:', err.message));
 
