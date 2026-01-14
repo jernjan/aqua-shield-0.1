@@ -4,7 +4,7 @@ import QuarantineCalendar from '../components/QuarantineCalendar';
 import { generateICSFromQuarantine } from '../lib/ics';
 import apiClient from '../lib/apiClient';
 
-export default function VesselMVP({ token, currentUser }) {
+export default function VesselMVP({ token, currentUser, onNavigate }) {
   const [vessels, setVessels] = useState([]);
   const [selectedVessel, setSelectedVessel] = useState(null);
   const [tasks, setTasks] = useState([]);
@@ -193,12 +193,35 @@ export default function VesselMVP({ token, currentUser }) {
               border: '1px solid var(--border-color)',
               borderRadius: 3,
               color: 'var(--text-primary)',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              marginBottom: 8
             }}
           />
           <p style={{ margin: '4px 0 0 0', fontSize: 9, color: 'var(--text-secondary)' }}>
             {filteredVessels.length} båt{filteredVessels.length !== 1 ? 'er' : ''}
           </p>
+          {onNavigate && (
+            <button
+              onClick={() => onNavigate('vessel-selector')}
+              style={{
+                width: '100%',
+                padding: '8px',
+                background: 'var(--accent-gold)',
+                color: '#000',
+                border: 'none',
+                borderRadius: 4,
+                cursor: 'pointer',
+                fontWeight: 600,
+                fontSize: 11,
+                marginTop: 8,
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+            >
+              ⭐ Mine ressurser (10)
+            </button>
+          )}
         </div>
 
         {/* Vessels List */}

@@ -12,6 +12,8 @@ import AdminMVP from './pages/AdminMVP'
 import AdminPanel from './pages/AdminPanel'
 import AnalyticsMVP from './pages/AnalyticsMVP'
 import FisherDashboard from './pages/FisherDashboard'
+import FarmSelector from './pages/FarmSelector'
+import VesselSelector from './pages/VesselSelector'
 import Toast from './components/Toast'
 
 // MVP wrapper component for consistent styling - memoized
@@ -108,10 +110,12 @@ const PAGE_CONFIG = {
   'selectSites': { component: SelectSites, requiresAuth: true },
   'dashboard': { component: DashboardSelector, requiresAuth: true, wrapper: true },
   'mvp-farmer': { component: FarmerMVP, requiresAuth: true, wrapper: true },
+  'farm-selector': { component: FarmSelector, requiresAuth: true, wrapper: true },
   'farmer-dashboard': { component: FarmerDashboard, requiresAuth: true, wrapper: true },
   'validation-dashboard': { component: ValidationDashboard, requiresAuth: true, wrapper: true },
   'vessel-dashboard': { component: VesselDashboard, requiresAuth: true, wrapper: true },
   'mvp-vessel': { component: VesselMVP, requiresAuth: true, wrapper: true },
+  'vessel-selector': { component: VesselSelector, requiresAuth: true, wrapper: true },
   'mvp-admin': { component: AdminMVP, requiresAuth: true, wrapper: true },
   'admin-panel': { component: AdminPanel, requiresAuth: true, wrapper: true },
   'mvp-analytics': { component: AnalyticsMVP, requiresAuth: true, wrapper: true },
@@ -241,7 +245,7 @@ function App() {
     
     const config = PAGE_CONFIG[page]
     const Component = config.component
-    const commonProps = { token, user, onLogout: handleLogout, onToast: showToast }
+    const commonProps = { token, user, onLogout: handleLogout, onToast: showToast, onNavigate: setPage }
     
     let element = null
     
@@ -251,6 +255,10 @@ function App() {
       element = <Component onSitesSelected={handleSitesSelected} {...commonProps} />
     } else if (page === 'dashboard') {
       element = <Component onSelectDashboard={handleSelectDashboard} user={user} {...commonProps} />
+    } else if (page === 'farm-selector') {
+      element = <Component userId={user?.id} currentUser={user} onBack={() => setPage('mvp-farmer')} {...commonProps} />
+    } else if (page === 'vessel-selector') {
+      element = <Component userId={user?.id} currentUser={user} onBack={() => setPage('mvp-vessel')} {...commonProps} />
     } else {
       element = <Component currentUser={user} {...commonProps} />
     }

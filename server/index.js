@@ -94,6 +94,8 @@ async function initializeRealData() {
         name: 'Movi',
         role: 'farmer',
         selectedFacilities: facilityIds,
+        favoriteFacilities: [],
+        favoriteVessels: [],
         createdAt: new Date().toISOString()
       };
       console.log(`✅ Demo user 'movi' created with ${facilityIds.length} facilities`);
@@ -110,9 +112,24 @@ async function initializeRealData() {
         name: 'Aakerblå',
         role: 'brønnbåt',
         selectedVessels: vesselIds,
+        favoriteFacilities: [],
+        favoriteVessels: [],
         createdAt: new Date().toISOString()
       };
       console.log(`✅ Demo user 'aakerblå' created with ${vesselIds.length} vessel(s)`);
+    }
+
+    // Demo user: Admin
+    if (!db.users['admin']) {
+      db.users['admin'] = {
+        id: 'admin',
+        name: 'Admin',
+        role: 'admin',
+        favoriteFacilities: [],
+        favoriteVessels: [],
+        createdAt: new Date().toISOString()
+      };
+      console.log(`✅ Demo user 'admin' created`);
     }
     
     await writeDB(db);
@@ -216,6 +233,10 @@ let mvpInitialized = false;
 // ============ AUTH ROUTES ============
 const authRoutes = require('./routes/auth')
 app.use('/api/auth', authRoutes)
+
+// ============ FAVORITES ROUTES ============
+const favoritesRoutes = require('./routes/favorites')
+app.use('/api/user', favoritesRoutes)
 
 // ============ HEALTH CHECK ============
 app.get('/api/health', (req, res) => {

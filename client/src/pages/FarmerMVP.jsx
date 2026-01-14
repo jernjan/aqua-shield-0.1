@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import apiClient from '../lib/apiClient';
 
-export default function FarmerMVP({ token, currentUser }) {
+export default function FarmerMVP({ token, currentUser, onNavigate }) {
   const [farms, setFarms] = useState([]);
   const [selectedFarm, setSelectedFarm] = useState(null);
   const [contaminationSources, setContaminationSources] = useState([]);
@@ -111,9 +111,31 @@ export default function FarmerMVP({ token, currentUser }) {
               border: '1px solid var(--border-color)',
               borderRadius: 4,
               color: 'var(--text-primary)',
-              fontSize: 11
+              fontSize: 11,
+              marginBottom: 8
             }}
           />
+          {onNavigate && (
+            <button
+              onClick={() => onNavigate('farm-selector')}
+              style={{
+                width: '100%',
+                padding: '8px',
+                background: 'var(--accent-gold)',
+                color: '#000',
+                border: 'none',
+                borderRadius: 4,
+                cursor: 'pointer',
+                fontWeight: 600,
+                fontSize: 11,
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+            >
+              ⭐ Mine ressurser (10)
+            </button>
+          )}
         </div>
 
         {/* Farms List */}
