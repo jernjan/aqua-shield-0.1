@@ -63,6 +63,38 @@ router.post('/register', async (req, res) => {
   }
 });
 
+// Demo Login - accepts userId like 'movi', 'aakerblå', 'admin'
+router.post('/demo-login', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({ error: 'userId required' });
+    }
+    
+    // Read user from db
+    const db = require('../db').readDB;
+    const dbData = await db();
+    const user = dbData.users.find(u => u.id === userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Return user data
+    res.json({ 
+      user: {
+        id: user.id,
+        name: user.name,
+        role: user.role
+      }
+    });
+  } catch (err) {
+    console.error('Demo login error:', err);
+    res.status(500).json({ error: 'Login failed' });
+  }
+});
+
 // Login
 router.post('/login', async (req, res) => {
   try {

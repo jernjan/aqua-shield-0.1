@@ -60,7 +60,7 @@ const MVPWrapper = memo(({ children, onLogout, onSwitchRole, currentRole }) => (
     }}>
       {[
         { role: 'farmer', label: '🐟 Farmer', color: '#8B5CF6' },
-        { role: 'brønnbåt', label: '⛵ Brønnbåt', color: '#06B6D4' },
+        { role: 'vessel', label: '⛵ Vessel', color: '#06B6D4' },
         { role: 'admin', label: '⚙️ Admin', color: '#F59E0B' }
       ].map(({ role, label, color }) => (
         <button
@@ -125,70 +125,33 @@ function App() {
   const [toast, setToast] = useState(null)
 
   useEffect(() => {
-    // Only do path-based auto-login if token is explicitly requested (not on logout)
-    // Logout sets token to null, so we should not auto-login from path in that case
-    const path = window.location.pathname
+    // Check if user is logged in via localStorage
+    const savedUser = localStorage.getItem('aquashield_user')
     
-    // Skip auto-login from path if user just logged out (token is null but page might still show old path)
-    // Instead, check if there's a saved token in localStorage
-    const savedToken = localStorage.getItem('token')
-    
-    // Only auto-login from path if explicitly enabled (future feature)
-    // For now, if token exists in localStorage, use it; otherwise go to login
-    
-    if (path === '/admin' || path === '/admin/') {
-      setToken('mvp-admin')
-      localStorage.setItem('token', 'mvp-admin')
-      setUser({ name: 'Admin', role: 'admin' })
-      setPage('mvp-admin')
-      return
-    }
-    if (path === '/admin-panel' || path === '/admin-panel/') {
-      setToken('mvp-admin')
-      localStorage.setItem('token', 'mvp-admin')
-      setUser({ name: 'Admin', role: 'admin' })
-      setPage('admin-panel')
-      return
-    }
-    if (path === '/farmer' || path === '/farmer/') {
-      setToken('mvp-farmer')
-      localStorage.setItem('token', 'mvp-farmer')
-      setUser({ name: 'Farmer', role: 'farmer' })
-      setPage('mvp-farmer')
-      return
-    }
-    if (path === '/fisher' || path === '/fisher/') {
-      setToken('mvp-fisher')
-      localStorage.setItem('token', 'mvp-fisher')
-      setUser({ name: 'Yrkesfisker', role: 'fisher' })
-      setPage('mvp-fisher')
-      return
-    }
-    if (path === '/analytics' || path === '/analytics/') {
-      setToken('mvp-analytics')
-      localStorage.setItem('token', 'mvp-analytics')
-      setUser({ name: 'Analyst', role: 'analyst' })
-      setPage('mvp-analytics')
-      return
-    }
-
-    if (token) {
-      // Demo token goes straight to dashboard; real tokens to selectSites
-      if (token === 'demo') {
-        setPage('dashboard')
-      } else if (token.startsWith('mvp-')) {
-        // MVP role-based routing
-        const role = token.replace('mvp-', '')
-        setPage(`mvp-${role}`)
-      } else {
-        setPage('selectSites')
+    if (savedUser) {
+      try {
+        const userData = JSON.parse(savedUser)
+        setUser(userData)
+        setToken('authenticated')
+        
+        // Route based on user role
+        const rolePageMap = {
+          'farmer': 'mvp-farmer',
+          'vessel': 'mvp-vessel',
+          'admin': 'mvp-admin'
+        }
+        
+        const targetPage = rolePageMap[userData.role] || 'login'
+        setPage(targetPage)
+      } catch (e) {
+        console.error('Failed to load user:', e)
+        setPage('login')
       }
-      // Could verify token here
     } else {
-      // No token, ensure we're on login page
+      // No user saved, go to login
       setPage('login')
     }
-  }, [token])
+  }, [])
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type })
@@ -225,13 +188,11 @@ function App() {
 
   const handleLogout = useCallback(() => {
     console.log('✓ Logout button clicked!')
-    setToken(null)
-    localStorage.removeItem('token')
     localStorage.removeItem('aquashield_user')
     setUser(null)
+    setToken(null)
     setPage('login')
     showToast('Logget ut')
-    // Clear all state before redirect to prevent re-login
     setTimeout(() => {
       window.location.href = '/'
       window.location.reload()
@@ -239,42 +200,40 @@ function App() {
   }, [])
 
   const handleRoleSelected = useCallback((role) => {
-    setUser(prev => ({ ...prev, role: role }))
+    // Update user role
+    const updatedUser = { ...user, role: role }
+    setUser(updatedUser)
+    localStorage.setItem('aquashield_user', JSON.stringify(updatedUser))
     
     // Route to correct dashboard based on role
     const pageMap = {
       'farmer': 'mvp-farmer',
-      'brønnbåt': 'vessel-dashboard',
-      'admin': 'admin-panel'
+      'vessel': 'mvp-vessel',
+      'admin': 'mvp-admin'
     }
     
-    const targetPage = pageMap[role] || 'dashboard'
+    const targetPage = pageMap[role] || 'login'
     setPage(targetPage)
-    showToast(`Bytta til ${role}`)
-  }, [])
+    showToast(`Bytta til ${role} rolle`)
+  }, [user])
   const handleSwitchRole = useCallback((role) => {
+    // Update user role
+    const updatedUser = { ...user, role: role }
+    setUser(updatedUser)
+    localStorage.setItem('aquashield_user', JSON.stringify(updatedUser))
+    
     const pageMap = {
       'farmer': 'mvp-farmer',
-      'brønnbåt': 'vessel-dashboard',
-      'admin': 'admin-panel'
+      'vessel': 'mvp-vessel',
+      'admin': 'mvp-admin'
     }
     const targetPage = pageMap[role]
     if (targetPage) {
       setPage(targetPage)
       showToast(`Bytta til ${role} rolle`)
     }
-  }, [])
+  }, [user])
 
-  const handleMVPLogin = useCallback((role) => {
-    const token = `mvp-${role}`
-    setToken(token)
-    localStorage.setItem('token', token)
-    setUser({ name: `MVP ${role}`, role: role })
-    
-    // Go to role selector first
-    setPage('selectRole')
-    showToast(`Velg rolle: ${role}`)
-  }, [])
 
   // Render current page
   const renderPage = () => {
@@ -287,9 +246,7 @@ function App() {
     let element = null
     
     if (page === 'login') {
-      element = <Component onLogin={handleLogin} onMVPLogin={handleMVPLogin} {...commonProps} />
-    } else if (page === 'selectRole') {
-      element = <Component onRoleSelected={handleRoleSelected} {...commonProps} />
+      element = <Component onLogin={handleLogin} {...commonProps} />
     } else if (page === 'selectSites') {
       element = <Component onSitesSelected={handleSitesSelected} {...commonProps} />
     } else if (page === 'dashboard') {

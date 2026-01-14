@@ -212,6 +212,10 @@ let mvpInitialized = false;
 // Start vessel tracking cron jobs
 // initializeVesselTrackingCrons() // DISABLED: investigate why it may trigger SIGINT
 
+// ============ AUTH ROUTES ============
+const authRoutes = require('./routes/auth')
+app.use('/api/auth', authRoutes)
+
 // ============ HEALTH CHECK ============
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
