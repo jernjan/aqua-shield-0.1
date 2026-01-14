@@ -18,6 +18,7 @@ export default function VesselMVP({ token, currentUser }) {
   const [dChemical, setDChemical] = useState('');
   const [dOperator, setDOperator] = useState('');
   const [dComment, setDComment] = useState('');
+  const [vesselContaminationStatus, setVesselContaminationStatus] = useState(null);
 
   // Load all vessels
   useEffect(() => {
@@ -48,6 +49,19 @@ export default function VesselMVP({ token, currentUser }) {
 
     setTasks(mockVesselData.tasks);
     setDisinfections(mockVesselData.disinfections);
+    
+    // Fetch contamination status from server
+    const fetchContaminationStatus = async () => {
+      try {
+        const response = await apiClient.get(`/api/vessel/${selectedVessel.id}/contamination-status`);
+        setVesselContaminationStatus(response);
+      } catch (error) {
+        console.error('Error fetching contamination status:', error);
+        setVesselContaminationStatus(null);
+      }
+    };
+    
+    fetchContaminationStatus();
   }, [selectedVessel]);
 
   const exportICS = () => {
@@ -264,9 +278,14 @@ export default function VesselMVP({ token, currentUser }) {
                   </p>
                 </div>
                 <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 10 }}>
-                  <p style={{ fontSize: 9, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 6, textTransform: 'uppercase' }}>IMO</p>
-                  <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-gold)', margin: 0, fontFamily: 'monospace' }}>
-                    {selectedVessel.imoNumber}
+                  <p style={{ fontSize: 9, fontWeight: 600, color: 'var(--text-secondary)', margin: 0, marginBottom: 6, textTransform: 'uppercase' }}>Status</p>
+                  <p style={{ 
+                    fontSize: 13, 
+                    fontWeight: 700, 
+                    color: vesselContaminationStatus?.riskLevel === 'HIGH' ? 'var(--accent-red)' : 'var(--accent-green)', 
+                    margin: 0 
+                  }}>
+                    {vesselContaminationStatus?.contaminationStatus === 'potentially_contaminated' ? '⚠️ RISIKO' : '✓ CLEAN'}
                   </p>
                 </div>
                 <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: 6, padding: 10 }}>
@@ -282,6 +301,34 @@ export default function VesselMVP({ token, currentUser }) {
                   </p>
                 </div>
               </div>
+
+              {/* ===== CONTAMINATION STATUS ===== */}
+              {vesselContaminationStatus?.contaminationStatus === 'potentially_contaminated' && (
+                <div style={{ 
+                  marginBottom: 14, 
+                  background: 'rgba(220, 38, 38, 0.15)',
+                  border: '2px solid var(--accent-red)',
+                  borderRadius: 6,
+                  padding: 12
+                }}>
+                  <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-red)', margin: '0 0 8px 0' }}>
+                    ⚠️ CONTAMINATION ALERT
+                  </h3>
+                  <p style={{ fontSize: 12, color: 'var(--text-primary)', margin: 0 }}>
+                    Denne båten har potensielt kontakt med smittede anlegg.
+                  </p>
+                  {vesselContaminationStatus?.lastContaminatedFacility && (
+                    <div style={{ marginTop: 8, padding: 8, background: 'rgba(0,0,0,0.3)', borderRadius: 4 }}>
+                      <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--accent-orange)', margin: 0 }}>
+                        Sist besøkt: {vesselContaminationStatus.lastContaminatedFacility.name}
+                      </p>
+                      <p style={{ fontSize: 10, color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>
+                        {new Date(vesselContaminationStatus.lastContaminatedFacility.visitDate).toLocaleDateString('no-NO')}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* ===== SERTIFIKATER ===== */}
               {selectedVessel.certificates && selectedVessel.certificates.length > 0 && (

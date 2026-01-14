@@ -965,6 +965,61 @@ app.get('/api/farm/:farmId/contamination-sources', async (req, res) => {
   }
 });
 
+// Get vessel contamination status
+app.get('/api/vessel/:vesselId/contamination-status', async (req, res) => {
+  try {
+    const { vesselId } = req.params;
+    const db = await readDB();
+    
+    // Find vessel
+    const vessels = db.vessels && db.vessels.length > 0 ? db.vessels : (global.MVP?.vessels || []);
+    const vessel = vessels.find(v => v.id === vesselId);
+    
+    if (!vessel) {
+      return res.status(404).json({ error: 'Vessel not found' });
+    }
+    
+    // Get contamination status
+    const { getContaminatedVesselsNearFacility } = require('./utils/contamination');
+    const facilities = db.facilities || [];
+    
+    // Check if this vessel has visited any contaminated facilities
+    let hasBeenContaminated = false;
+    let lastContaminatedFacility = null;
+    
+    facilities.forEach(facility => {
+      const contaminatedVessels = getContaminatedVesselsNearFacility(db, facility.id);
+      const isContaminated = contaminatedVessels.some(v => v.id === vesselId);
+      if (isContaminated) {
+        hasBeenContaminated = true;
+        if (!lastContaminatedFacility || new Date(facility.lastInspection) > new Date(lastContaminatedFacility.lastInspection)) {
+          lastContaminatedFacility = facility;
+        }
+      }
+    });
+    
+    res.json({
+      vessel: {
+        id: vessel.id,
+        name: vessel.name,
+        mmsi: vessel.mmsi,
+        lastPosition: vessel.lastPosition
+      },
+      contaminationStatus: hasBeenContaminated ? 'potentially_contaminated' : 'clean',
+      lastContaminatedFacility: lastContaminatedFacility ? {
+        id: lastContaminatedFacility.id,
+        name: lastContaminatedFacility.name,
+        visitDate: lastContaminatedFacility.lastInspection
+      } : null,
+      riskLevel: hasBeenContaminated ? 'HIGH' : 'LOW',
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('Failed to get vessel contamination status:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ============ COMPONENT ENDPOINTS ============
 // Algae calendar (AlgaeCalendar component)
 app.get('/api/mvp/farm/:farmId/algae-alerts', (req, res) => {
