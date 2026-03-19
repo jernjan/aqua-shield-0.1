@@ -104,6 +104,11 @@ _fdir_locality_metadata_cache_timestamp = None
 _fdir_b_survey_cache = None
 _fdir_b_survey_cache_timestamp = None
 
+# AIS vessels in-memory cache (avoids repeated 25s BarentsWatch calls)
+_vessels_cache: Optional[dict] = None
+_vessels_cache_ts: float = 0.0
+_VESSELS_CACHE_TTL: int = 90     # 90-second in-memory cache
+
 # Facility dashboard snapshot cache
 _dashboard_snapshot: Optional[dict] = None
 _dashboard_snapshot_ts: float = 0.0
@@ -2762,27 +2767,48 @@ async def get_vessels(limit: int = Query(100, ge=1, le=10000)):
     
     Returns up to 9,731 vessels with real-time position data
     
-    Falls back to confirmed plans if BarentsWatch AIS is unavailable
+    Falls back to confirmed plans if BarentsWatch AIS is unavailable.
+    Results are cached server-side for 90 seconds to avoid repeated 25s upstream calls.
     """
+    global _vessels_cache, _vessels_cache_ts
+    import asyncio, time
+
+    # --- Server-side cache: serve stale if fresh enough ---
+    now_ts = time.monotonic()
+    if _vessels_cache is not None and (now_ts - _vessels_cache_ts) < _VESSELS_CACHE_TTL:
+        cached = dict(_vessels_cache)
+        # Apply limit to cached result without re-fetching
+        if limit < len(cached.get("vessels", [])):
+            cached = {**cached, "vessels": cached["vessels"][:limit], "count": limit, "limit": limit}
+        cached["cached"] = True
+        return cached
+
     try:
         # Try to get AIS vessels with a timeout
-        import asyncio
         bw = get_bw_client()
         
         # Run get_ais_vessels in a thread with timeout
         try:
             loop = asyncio.get_event_loop()
             vessels = await asyncio.wait_for(
-                loop.run_in_executor(None, lambda: bw.get_ais_vessels(limit=limit)),
-                timeout=35  # Increased from 15 to 35 seconds for external API
+                loop.run_in_executor(None, lambda: bw.get_ais_vessels(limit=10000)),
+                timeout=35  # Fetch full set once; limit applied from cache
             )
-            return {
+            result = {
                 "count": len(vessels),
                 "total": 9731,
                 "limit": limit,
                 "vessels": vessels,
-                "source": "barentswatch_ais"
+                "source": "barentswatch_ais",
+                "cached": False
             }
+            # Store full result in cache regardless of requested limit
+            _vessels_cache = result
+            _vessels_cache_ts = now_ts
+            # Return limit-applied slice
+            if limit < len(vessels):
+                result = {**result, "vessels": vessels[:limit], "count": limit}
+            return result
         except asyncio.TimeoutError as te:
             print(f"ERROR: BarentsWatch AIS API timeout after 35 seconds")
             raise Exception(f"BarentsWatch timeout: {str(te)}")

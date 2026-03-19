@@ -24,8 +24,10 @@ const VESSEL_DEMO_OPS_KEY = 'pilotLiteVesselDemoOpsV1';
 const DEMO_RESET_KEY_PREFIXES = ['pilotlite', 'facility'];
 const API_BASE_OVERRIDE_KEY = 'pilotLiteApiBaseOverrideV1';
 function resolveApiBase() {
+    // On Render: API service name is "kyst-monitor-api" → https://kyst-monitor-api.onrender.com
+    // Override with ?apiBase=<url> or via system-check.html if the name differs.
     const fallback = window.location.hostname.includes('render.com')
-        ? 'https://kyst-api.render.com'
+        ? 'https://kyst-monitor-api.onrender.com'
         : `${window.location.protocol}//${window.location.hostname}:8000`;
 
     const normalize = (value) => String(value || '').trim().replace(/\/$/, '');

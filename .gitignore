@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Env files
+.env
+.env.*
+!.env.*.example
+
+# Node
+node_modules/
+npm-debug.log
+
+# VS Code
+.vscode/settings.json
+
+# Data / large files
+*.csv
+*.sqlite
+*.db
+
+# Python bundled interpreter
+Python-3.10.19/
+
+# Old builds
+VS code/
+Kyst 16.01.2026/
+AquaShield-v2/
+
+# Runtime artifacts
+PREFLIGHT_REPORT.md
+quarantine_breach_report.json

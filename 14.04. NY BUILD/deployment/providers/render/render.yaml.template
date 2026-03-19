@@ -1,6 +1,9 @@
-# Template for senere bruk på Render
-# Ikke aktiv før du oppretter service i Render.
+# Render deployment manifest
+# 1. Copy this file to render.yaml in the repo root
+# 2. Connect repo in Render Dashboard → New → Blueprint
+# 3. Set DATABASE_URL, JWT_SECRET, COLLECT_TOKEN as Render secrets (sync: false)
 services:
+  # ── Backend (FastAPI) ──────────────────────────────────────────────────────
   - type: web
     name: kyst-monitor-api
     env: python
@@ -8,10 +11,32 @@ services:
     rootDir: EKTE_API
     buildCommand: pip install -r requirements.txt
     startCommand: python -m uvicorn src.api.main:app --host 0.0.0.0 --port $PORT --log-level info
+    healthCheckPath: /health
     envVars:
       - key: ENV
         value: production
       - key: DATABASE_URL
-        sync: false
+        sync: false          # Set in Render Dashboard → Secret Files or Env Vars
       - key: JWT_SECRET
         sync: false
+      - key: COLLECT_TOKEN
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: "*"           # Restrict after launch: https://kyst-pilot-lite.onrender.com
+
+  # ── Frontend (Pilot Lite – static site) ───────────────────────────────────
+  - type: web
+    name: kyst-pilot-lite
+    env: static
+    plan: free
+    rootDir: 14.04. NY BUILD/pilot-lite
+    buildCommand: ""        # No build step – pure static HTML/JS/CSS
+    staticPublishPath: .    # Serve the pilot-lite folder root
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache, no-store, must-revalidate
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
