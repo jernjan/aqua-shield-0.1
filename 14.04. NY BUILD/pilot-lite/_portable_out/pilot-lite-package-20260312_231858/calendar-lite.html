@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="nb">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kalender Lite</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .muted { color: #555; }
+        .toolbar { display: flex; gap: 10px; align-items: center; margin: 12px 0; flex-wrap: wrap; }
+        table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; }
+        th { background: #f5f5f5; }
+        .top-links a { margin-right: 12px; }
+    </style>
+</head>
+<body>
+    <h1>Kalender Lite</h1>
+    <p id="profileMeta" class="muted">Laster profil...</p>
+
+    <div class="top-links">
+        <a href="./ops-lite.html">Ops Lite</a>
+        <a href="./calendar-lite.html">Kalender Lite</a>
+    </div>
+
+    <div class="toolbar">
+        <label for="vesselFilter">Filtrer båt:</label>
+        <select id="vesselFilter">
+            <option value="">Alle</option>
+        </select>
+
+        <button id="exportIcsBtn" type="button">Eksporter iCal (.ics)</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tittel</th>
+                <th>Båt</th>
+                <th>Anlegg</th>
+                <th>Start</th>
+                <th>Slutt</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="eventTableBody"></tbody>
+    </table>
+
+    <script type="module" src="./app/calendar-lite.js"></script>
+</body>
+</html>

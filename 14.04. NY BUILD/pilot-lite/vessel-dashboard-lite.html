@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="nb">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vessel Dashboard Lite</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="./app/dashboard-lite.css?v=20260319al" />
+</head>
+<body class="vessel-dashboard-page">
+    <header class="topbar">
+        <h1>Vessel Dashboard Lite</h1>
+        <nav class="links">
+            <a href="./index.html">Startside</a>
+            <a href="./ops-lite.html">Ops Lite</a>
+            <a href="./calendar-lite.html">Kalender Lite</a>
+            <a href="./facility-dashboard-lite.html">Facility Lite</a>
+            <a href="./system-check.html">System Check</a>
+            <a href="./feedback-inbox.html">Feedback Inbox</a>
+            <button id="demoResetBtn" type="button" class="topbar-link-btn" title="Nullstill lokal demo-state">Demo reset</button>
+            <span id="companyScopeBadge" style="font-size:11px;color:var(--muted);margin-left:8px;">Scope: -</span>
+        </nav>
+    </header>
+
+    <main class="container">
+        <p id="profileMeta" class="meta">Laster profil...</p>
+        <p id="apiHealthNote" class="meta"></p>
+        <p id="dataStatus" class="data-status"></p>
+
+        <section class="cards" id="overviewCardsSection">
+            <article class="card"><div class="label">Båter (filter)</div><div id="cardVessels" class="value">-</div></article>
+            <article class="card"><div class="label">AIS-sporbare båter</div><div id="cardTrackable" class="value">-</div></article>
+            <article class="card"><div class="label">Klarerte båter</div><div id="cardCleared" class="value">-</div></article>
+            <article class="card"><div class="label">Planlagte hendelser</div><div id="cardEvents" class="value">-</div></article>
+            <article class="card"><div class="label">Ventende forespørsler</div><div id="cardPendingRequests" class="value">-</div></article>
+            <article class="card"><div class="label">Bekreftede ruter</div><div id="cardConfirmedRoutes" class="value">-</div></article>
+        </section>
+
+        <section class="filters" id="overviewFiltersSection">
+            <select id="companyFilter">
+                <option value="">Alle selskaper</option>
+            </select>
+            <select id="trackFilter">
+                <option value="">Alle båter</option>
+                <option value="trackable">Kun AIS-sporbare (har MMSI)</option>
+                <option value="non-trackable">Kun uten AIS-sporbarhet</option>
+            </select>
+            <select id="vesselCategoryFilter">
+                <option value="">Alle kategorier</option>
+            </select>
+            <select id="vesselFocusSelect">
+                <option value="">Velg båt</option>
+            </select>
+            <button id="goUpcomingVisitBtn" type="button">Gå til første planlagte</button>
+        </section>
+
+        <p id="facilitySourceNote" class="meta facility-source-note">Anleggskilde: laster...</p>
+
+        <div class="vessel-wide-layout">
+        <div class="facility-map-layout vessel-facility-layout">
+            <div class="facility-tools-col vessel-left-col">
+                <section class="panel vessel-summary-panel" id="fleetSection">
+                    <div class="vessel-summary-header">
+                        <div>
+                            <p id="selectedVesselMeta" class="meta vessel-meta-compact">Ingen båt valgt</p>
+                        </div>
+                        <div id="selectedVesselStatus" class="status-pill neutral">Ikke valgt</div>
+                    </div>
+
+                    <div class="vessel-top-cards vessel-top-cards-compact">
+                        <article class="mini-stat-card">
+                            <div class="label">Neste besøk</div>
+                            <div id="selectedNextVisit" class="value small">-</div>
+                        </article>
+                        <article class="mini-stat-card">
+                            <div class="label">Aktive ruter</div>
+                            <div id="selectedRouteCount" class="value small">-</div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="panel facility-picker-panel">
+                    <button id="toggleFleetTableBtn" type="button" class="panel-toggle" aria-expanded="true">
+                        <span class="panel-heading heading-box">Mine båter</span>
+                        <span class="panel-toggle-icon">▾</span>
+                    </button>
+                    <div id="fleetTableBodyWrap" class="panel-body-wrap">
+                        <p class="panel-source">Velg båt i listen eller via filteret over for å styre kalender og planlegger.</p>
+                        <p class="vessel-mode-hint">Klikk <strong>Tilgjengelighet</strong> for å bytte <strong>Auto → Ledig → Ikke ledig</strong>. Status/AIS vises med fargekoder.
+                            <span class="vessel-mode-legend">
+                                <span class="status-pill ok">OK</span>
+                                <span class="status-pill warn">Venter</span>
+                                <span class="status-pill danger">Avvik</span>
+                                <span class="status-pill neutral">Auto</span>
+                            </span>
+                        </p>
+                        <div class="table-wrap vessel-table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Båt</th>
+                                        <th>Status</th>
+                                        <th>Kalender</th>
+                                        <th>Tilgjengelighet</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="vesselBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="facility-center-col vessel-center-col">
+                <section class="panel vessel-map-panel" id="mapSection">
+                    <div class="vessel-section-header">
+                        <div>
+                            <h2 class="section-title">Kart og anleggsvalg</h2>
+                            <p class="meta" id="mapMeta">Klikk anlegg for å legge til/fjerne fra rute.</p>
+                        </div>
+                        <div class="map-filter-inline">
+                            <label class="checkbox-inline"><input type="checkbox" id="showNormalFacilities" checked /> Normal</label>
+                            <label class="checkbox-inline"><input type="checkbox" id="showRiskFacilities" checked /> Risiko</label>
+                            <label class="checkbox-inline"><input type="checkbox" id="showInfectedFacilities" checked /> Smittet</label>
+                        </div>
+                    </div>
+                    <div class="fmap-panel vessel-map-frame">
+                        <div id="facilityMap" class="vessel-map"></div>
+                    </div>
+                    <div class="facility-legend-grid">
+                        <div class="facility-legend-box">
+                            <div class="subsection-title">Produksjon</div>
+                            <div class="legend-chip-row">
+                                <span class="production-badge prod-matfisk">Matfisk</span>
+                                <span class="production-badge prod-smolt">Smolt</span>
+                                <span class="production-badge prod-stamfisk">Stamfisk</span>
+                                <span class="production-badge prod-shell">Skjell / annen</span>
+                            </div>
+                        </div>
+                        <div class="facility-legend-box">
+                            <div class="subsection-title">Kartfarger (som original)</div>
+                            <div class="legend-chip-row">
+                                <span class="risk-legend risk-normal">Ekstern (ikke i systemet)</span>
+                                <span class="risk-legend risk-severe">Risiko</span>
+                                <span class="risk-legend risk-infected">Smittet</span>
+                                <span class="risk-legend risk-selected">Valgt</span>
+                                <span class="risk-legend risk-demo">Kalender aktiv</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="selectedFacilitiesChips" class="selected-chip-row"></div>
+                </section>
+
+                <section class="panel cue-blue" id="calendarSection">
+                    <button id="toggleCalendarBtn" type="button" class="panel-toggle" aria-expanded="true">
+                        <span class="panel-heading heading-box">Båtens kalender</span>
+                        <span class="panel-toggle-icon">▾</span>
+                    </button>
+                    <div id="calendarBodyWrap" class="panel-body-wrap">
+                        <div class="vessel-section-header">
+                            <div>
+                                <h2 class="section-title">Båtens kalender</h2>
+                                <p id="calendarMeta" class="meta">Kalenderen følger valgt båt og synker ruteforespørsler mot anlegg.</p>
+                            </div>
+                            <div class="calendar-toolbar-row">
+                                <button id="prevCalendarMonthBtn" type="button" class="mini-btn">←</button>
+                                <strong id="calendarMonthLabel">Måned</strong>
+                                <button id="nextCalendarMonthBtn" type="button" class="mini-btn">→</button>
+                                <input id="calendarJumpMonth" type="month" class="text-input compact-input" style="min-width:140px" />
+                                <button id="calendarJumpBtn" type="button" class="mini-btn">Gå til</button>
+                                <button id="calendarTodayBtn" type="button" class="mini-btn">I dag</button>
+                            </div>
+                        </div>
+
+                        <div class="calendar-layout-grid">
+                            <div>
+                                <div id="vesselCalendarGrid" class="mini-calendar-grid vessel-calendar-grid"></div>
+                                <p id="calendarSelectedDayMeta" class="panel-source" style="margin:8px 0 0 0;">Valgt dag: -</p>
+                                <div class="calendar-mark-row" style="margin-top:8px;">
+                                    <button type="button" class="mark-btn mark-green" data-day-mark="green">Grønn</button>
+                                    <button type="button" class="mark-btn mark-yellow" data-day-mark="yellow">Gul</button>
+                                    <button type="button" class="mark-btn mark-red" data-day-mark="red">Rød</button>
+                                    <button type="button" class="mark-btn mark-clear" data-day-mark="clear">Nullstill</button>
+                                </div>
+                                <div id="calendarDayInfoMount" style="margin-top:10px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="facility-info-col vessel-right-col">
+                <aside class="panel planner-sidebar cue-orange" id="plannerSection">
+                    <div class="vessel-section-header">
+                        <div>
+                            <h2 class="section-title">Planlegg rute</h2>
+                            <p id="plannerMeta" class="meta">Velg anlegg, beregn rute og del enkeltbesøk med anlegg.</p>
+                        </div>
+                        <button id="togglePlannerFacilitiesBtn" type="button" class="mini-btn" style="display:none">Vis anlegg</button>
+                    </div>
+
+                    <div class="planner-summary-box" id="plannerSummaryBox"></div>
+
+                    <div class="form-grid-compact planner-form-grid">
+                        <label class="field-label">
+                            <span>Søk anlegg</span>
+                            <input id="facilitySearchInput" type="text" class="text-input compact-input" placeholder="Søk etter anlegg..." />
+                        </label>
+                        <label class="field-label">
+                            <span>Rutevalg</span>
+                            <select id="routeModeSelect">
+                                <option value="safe">Sikreste rute</option>
+                                <option value="fast">Kjappeste rute</option>
+                            </select>
+                        </label>
+                        <label class="field-label">
+                            <span>Startdato</span>
+                            <input id="routePlanDate" type="date" class="text-input compact-input" />
+                        </label>
+                        <label class="field-label">
+                            <span>Avreise</span>
+                            <input id="routeDepartureTime" type="time" value="07:30" class="text-input compact-input" />
+                        </label>
+                        <label class="field-label">
+                            <span>Kjørefart (km/t)</span>
+                            <input id="routeSpeedKmh" type="number" min="6" max="45" step="0.5" value="18.5" class="text-input compact-input" />
+                        </label>
+                    </div>
+
+                    <div class="planner-selected-box" id="plannerSelectedBox">
+                        <div class="subsection-title">Valgte anlegg</div>
+                        <div id="selectedFacilityList" class="selected-facility-list"></div>
+                    </div>
+
+                    <div class="planner-facility-list" id="plannerFacilityList"></div>
+
+                    <div class="route-action-row">
+                        <button id="calculateRouteBtn" type="button">Beregn rute</button>
+                        <button id="clearRouteBtn" type="button" class="secondary">Nullstill</button>
+                    </div>
+
+                </aside>
+
+            </div>
+        </div>
+
+        <aside class="vessel-route-preview-rail cue-orange" id="routePreviewRail">
+            <button id="toggleRoutePreviewBtn" type="button" class="panel-toggle" aria-expanded="true">
+                <span class="panel-heading heading-box">Generert rute</span>
+                <span class="panel-toggle-icon">▾</span>
+            </button>
+            <div id="routePreviewBodyWrap" class="panel-body-wrap">
+                <div class="vessel-section-header">
+                    <div>
+                        <h2 class="section-title">Generert rute</h2>
+                        <p class="meta">Ruteoversikt vises her etter «Beregn rute».</p>
+                    </div>
+                </div>
+                <div id="routePreviewPanel" class="route-preview-panel"></div>
+            </div>
+
+        </aside>
+
+        <aside class="vessel-info-rail" id="vesselInfoRail">
+
+            <section class="panel cue-gray" id="selectedVesselInfoRailSection">
+                <div class="vessel-section-header">
+                    <div>
+                        <h2 class="section-title">Operativ båtstatus</h2>
+                        <p class="meta">Valgt båt, posisjon og planstatus.</p>
+                    </div>
+                    <div id="selectedVesselStatusRail" class="status-pill neutral">Ikke valgt</div>
+                </div>
+                <p id="selectedVesselMetaRail" class="meta vessel-meta-compact" hidden>Ingen båt valgt</p>
+                <div id="selectedVesselRailCard" class="vessel-hero-card empty">Velg en båt for å se operativ status.</div>
+            </section>
+
+            <div id="calendarDayInfoHeader" class="vessel-section-header">
+                <div>
+                    <h2 class="section-title">Dagsinfo</h2>
+                    <p class="meta">Informasjon for anlegg og planlagte ting for valgt dag.</p>
+                </div>
+            </div>
+
+            <section class="panel cue-blue" id="calendarDayInfoSection">
+                <button id="toggleSelectedDayBtn" type="button" class="panel-toggle" aria-expanded="true">
+                    <span class="panel-heading heading-box">Valgt dag</span>
+                    <span class="panel-toggle-icon">▾</span>
+                </button>
+                <div id="calendarDayInfoBodyWrap" class="panel-body-wrap">
+                    <div class="vessel-section-header">
+                        <div>
+                            <h2 class="section-title">Valgt dag</h2>
+                            <p class="meta">Planlagte hendelser og anleggsinfo for valgt dato.</p>
+                        </div>
+                    </div>
+
+                    <div class="calendar-side-panel">
+                        <div class="selected-day-label" id="selectedDayLabel">Velg en dag</div>
+                        <div id="selectedDaySummary" class="meta" style="margin-bottom:8px;">Ingen hendelser valgt.</div>
+                        <div id="calendarDayRoutePlan" class="calendar-day-plan"></div>
+                        <div id="calendarDayEvents" class="calendar-day-events"></div>
+                        <div class="calendar-form-box">
+                            <h3 class="subsection-title">Legg til manuell hendelse</h3>
+                            <div class="form-grid-compact">
+                                <select id="manualEventType">
+                                    <option value="visit">Besøk</option>
+                                    <option value="operation">Operasjon</option>
+                                    <option value="disinfection">Desinfeksjon</option>
+                                    <option value="quarantine">Karantene</option>
+                                </select>
+                                <select id="manualEventFacility">
+                                    <option value="">Velg anlegg</option>
+                                </select>
+                                <input id="manualEventTime" type="time" value="09:00" class="text-input compact-input" />
+                                <input id="manualEventTitle" type="text" placeholder="Tittel / kommentar" class="text-input compact-input" />
+                                <button id="addManualEventBtn" type="button">Legg til</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel cue-green" id="matchingSuggestionsSection">
+                <button id="toggleMatchingSuggestionsBtn" type="button" class="panel-toggle" aria-expanded="true">
+                    <span class="panel-heading heading-box">Jobbetterspørsler fra anlegg</span>
+                    <span class="panel-toggle-icon">▾</span>
+                </button>
+                <div id="matchingSuggestionsBodyWrap" class="panel-body-wrap">
+                    <div class="vessel-section-header" style="margin-bottom:6px;">
+                        <p class="meta">Se alle jobbetterspørsler fra anlegg, filtrer på kommune og nærhet.</p>
+                        <button id="refreshMatchingSuggestionsBtn" type="button" class="mini-btn">Oppdater</button>
+                    </div>
+                    <div class="filters compact-inline-filters" style="border:none; padding:0; margin-bottom:6px;">
+                        <select id="matchingMunicipalityFilter" class="filter-inline" title="Filtrer på kommune">
+                            <option value="">Alle kommuner</option>
+                        </select>
+                        <label class="checkbox-inline"><input type="checkbox" id="matchingNearbyOnly" /> Kun nærliggende (120 km)</label>
+                    </div>
+                    <div id="matchingSuggestionsList" class="stack-list"></div>
+                </div>
+            </section>
+
+            <section class="panel cue-blue" id="requestsSection">
+                <button id="toggleRequestsBtn" type="button" class="panel-toggle" aria-expanded="false">
+                    <span class="panel-heading heading-box">Mine forespørsler</span>
+                    <span class="panel-toggle-icon">▾</span>
+                </button>
+                <div id="requestsBodyWrap" class="panel-body-wrap">
+                    <div class="vessel-section-header" style="margin-bottom:6px;">
+                        <p class="meta">Besøksforespørsler sendt til anlegg fra denne båten.</p>
+                        <button id="refreshRequestsBtn" type="button" class="mini-btn">Oppdater</button>
+                    </div>
+                    <div id="requestList" class="stack-list"></div>
+                </div>
+            </section>
+
+            <section class="panel cue-blue" id="confirmedSection">
+                <button id="toggleConfirmedBtn" type="button" class="panel-toggle" aria-expanded="false">
+                    <span class="panel-heading heading-box">Bekreftede ruter</span>
+                    <span class="panel-toggle-icon">▾</span>
+                </button>
+                <div id="confirmedBodyWrap" class="panel-body-wrap">
+                    <div class="vessel-section-header" style="margin-bottom:6px;">
+                        <p class="meta">Ruter som er bekreftet og lagret for valgt båt.</p>
+                        <button id="refreshConfirmedBtn" type="button" class="mini-btn">Oppdater</button>
+                    </div>
+                    <div id="confirmedRouteList" class="stack-list"></div>
+                </div>
+            </section>
+
+            <section class="panel cue-gray" id="healthPassSection">
+                <div id="healthPassBox" class="risk-mini-box"></div>
+                <div class="demo-ops-box">
+                    <div class="subsection-title">Demo: mannskap og dokumentasjon</div>
+                    <div class="form-grid-compact">
+                        <input id="demoCrewCount" type="number" min="0" step="1" class="text-input compact-input" placeholder="Mannskap" />
+                        <input id="demoContactName" type="text" class="text-input compact-input" placeholder="Kontaktperson" />
+                        <input id="demoContactPhone" type="text" class="text-input compact-input" placeholder="Telefon / vakt" />
+                        <input id="demoHealthCertFile" type="file" class="text-input compact-input" accept=".pdf,.png,.jpg,.jpeg" />
+                    </div>
+                    <div class="route-action-row" style="margin-top:8px;">
+                        <button id="demoSaveVesselOpsBtn" type="button" class="mini-btn">Lagre demo-info</button>
+                        <span id="demoHealthCertMeta" class="meta" style="margin:0;">Ingen helseattest lastet opp.</span>
+                    </div>
+                </div>
+                <details class="vessel-clearance-details" id="healthPanelBody">
+                    <summary class="vessel-detail-summary">Signer klarering</summary>
+                    <div class="vessel-detail-content">
+                        <div class="filters compact-inline-filters" style="margin-top:8px; border:none; padding:0;">
+                            <select id="signVesselSelect">
+                                <option value="">Velg båt</option>
+                            </select>
+                            <select id="signRouteSelect">
+                                <option value="">Velg rute/hendelse</option>
+                            </select>
+                            <input id="signByInput" type="text" placeholder="Signert av (navn)" class="text-input compact-input" />
+                        </div>
+                        <div class="filters compact-inline-filters" style="border:none; padding:0; margin-top:6px;">
+                            <label class="checkbox-inline"><input type="checkbox" id="signQuarantineDone" /> Karantene fullført</label>
+                            <label class="checkbox-inline"><input type="checkbox" id="signDisinfectionDone" /> Desinfeksjon fullført</label>
+                            <button id="signClearanceBtn" type="button">Signer klarering</button>
+                        </div>
+                        <p id="signStatus" class="meta" style="margin:8px 0 0;">Grønn status settes kun ved signert rute med fullført karantene + desinfeksjon.</p>
+                    </div>
+                </details>
+            </section>
+        </aside>
+        </div>
+    </main>
+
+    <div id="shareRequestModal" class="simple-modal hidden">
+        <div class="simple-modal-card">
+            <div class="vessel-section-header" style="margin-bottom:10px;">
+                <div>
+                    <h2 class="section-title">Del besøksforespørsel</h2>
+                    <p id="shareModalMeta" class="meta">Send valgt besøk til anleggets kalender.</p>
+                </div>
+                <button id="closeShareModalBtn" type="button" class="mini-btn">✕</button>
+            </div>
+            <div class="form-grid-compact">
+                <input id="shareFacilityInput" type="text" class="text-input compact-input" readonly />
+                <input id="shareDateInput" type="date" class="text-input compact-input" />
+                <input id="shareTimeInput" type="time" class="text-input compact-input" value="10:00" />
+                <input id="shareContactInput" type="text" class="text-input compact-input" placeholder="Kontaktperson" />
+                <textarea id="shareNotesInput" class="text-input compact-input" rows="4" placeholder="Notater til anlegget"></textarea>
+            </div>
+            <div class="route-action-row" style="margin-top:12px;">
+                <button id="confirmShareRequestBtn" type="button">Send forespørsel</button>
+                <button id="cancelShareRequestBtn" type="button" class="secondary">Avbryt</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="eventEditModal" class="simple-modal hidden">
+        <div class="simple-modal-card event-edit-modal-card">
+            <div class="vessel-section-header" style="margin-bottom:10px;">
+                <div>
+                    <h2 class="section-title">Rediger Hendelse</h2>
+                </div>
+                <button id="closeEventEditModalBtn" type="button" class="mini-btn danger">✕</button>
+            </div>
+            <div class="form-grid-compact">
+                <label class="field-label">
+                    <span>Anlegg</span>
+                    <input id="editEventFacility" type="text" class="text-input compact-input" readonly />
+                </label>
+                <label class="field-label">
+                    <span>Dato</span>
+                    <input id="editEventDate" type="date" class="text-input compact-input" />
+                </label>
+                <label class="field-label">
+                    <span>Kommentar</span>
+                    <textarea id="editEventComment" class="text-input compact-input" rows="3" placeholder="Legg til kommentar"></textarea>
+                </label>
+                <label class="field-label">
+                    <span>Operasjon</span>
+                    <input id="editEventOperation" type="text" class="text-input compact-input" placeholder="F.eks. Vedlikehold, inspeksjon" />
+                </label>
+                <label class="field-label">
+                    <span>Varighet (min)</span>
+                    <input id="editEventDuration" type="number" min="5" step="5" class="text-input compact-input" placeholder="30" />
+                </label>
+                <label class="field-label" id="disinfectionChemicalGroup" style="display:none;">
+                    <span>Desinfeksjonsmiddel *</span>
+                    <select id="editEventChemicalSelect" class="text-input compact-input">
+                        <option value="">Velg desinfeksjonsmiddel</option>
+                    </select>
+                    <div class="meta">Hurtigvalg bygger på tidligere bruk og anbefalte midler</div>
+                </label>
+                <label class="field-label" id="responsiblePartyGroup" style="display:none;">
+                    <span>Firma/Person Ansvarlig *</span>
+                    <input id="editEventResponsibleParty" type="text" class="text-input compact-input" placeholder="Navn på firma eller person som utfører desinfeksjon" />
+                    <div class="meta">Obligatorisk for desinfeksjonshendelser</div>
+                </label>
+                <div class="field-label" id="eventAttachmentGroup" style="display:none;">
+                    <span>Attest</span>
+                    <button id="editEventAttachBtn" type="button" class="mini-btn">Legg ved fil (kommer)</button>
+                </div>
+            </div>
+            <div class="route-action-row" style="margin-top:12px;">
+                <button id="confirmEventEditBtn" type="button">Bekreft</button>
+                <button id="deleteEventEditBtn" type="button" class="mini-btn danger">Slett</button>
+                <button id="cancelEventEditBtn" type="button" class="secondary">Avbryt</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./app/vessel-dashboard-lite.js?v=20260319al"></script>
+    <script type="module" src="./app/feedback-widget.js?v=20260319aa"></script>
+</body>
+</html>

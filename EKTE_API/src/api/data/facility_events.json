@@ -1,0 +1,22 @@
+[
+  {
+    "id": "12345-1773100123.45552",
+    "facility": "Test Anlegg",
+    "facility_code": "12345",
+    "timestamp": "2026-03-09T23:48:41.0222085Z",
+    "type": "Test",
+    "responsible": "Test User",
+    "notes": "Sprint 2 test",
+    "logged_at": "2026-03-10T00:48:43.455543"
+  },
+  {
+    "id": "10335-1773104566.569652",
+    "facility": "API test",
+    "facility_code": "10335",
+    "timestamp": "2026-03-10T01:02:46.5581211Z",
+    "type": "Status test",
+    "responsible": "Copilot",
+    "notes": "Connectivity check",
+    "logged_at": "2026-03-10T02:02:46.569664"
+  }
+]

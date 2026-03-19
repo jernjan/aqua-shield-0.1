@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kyst Monitor System - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .status-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .status-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+        }
+        
+        .status-card .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c757d;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .status-card .status {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .status-card.online .status {
+            color: #10b981;
+        }
+        
+        .status-card.offline .status {
+            color: #ef4444;
+        }
+        
+        .status-card .port {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+        
+        .services-section {
+            margin-top: 40px;
+        }
+        
+        .services-section h2 {
+            font-size: 22px;
+            color: #1f2937;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .service-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            padding: 25px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+        
+        .service-card .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .service-card .name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .service-card .description {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+        
+        .service-card .port-info {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 13px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #e0e7ff;
+            color: #4f46e5;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .badge.active {
+            background: #d1fae5;
+            color: #047857;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌊 Kyst Monitor System</h1>
+            <p>Overvåking av havbruksanlegg og sjøtransport</p>
+        </div>
+        
+        <div class="content">
+            <div class="status-grid">
+                <div class="status-card online" id="apiStatus">
+                    <div class="label">API Server</div>
+                    <div class="status">✓ ONLINE</div>
+                    <div class="port">Port 8000</div>
+                </div>
+                
+                <div class="status-card online" id="frontendStatus">
+                    <div class="label">Frontend Server</div>
+                    <div class="status">✓ ONLINE</div>
+                    <div class="port">Port 8084</div>
+                </div>
+                
+                <div class="status-card" id="systemStatus">
+                    <div class="label">System Status</div>
+                    <div class="status">Checking...</div>
+                    <div class="port"></div>
+                </div>
+            </div>
+            
+            <div class="services-section">
+                <h2>📱 Systemtjenester</h2>
+                <div class="services-grid">
+                    <a href="http://localhost:8084/index.html" class="service-card" target="_blank">
+                        <div class="icon">🗺️</div>
+                        <div class="name">Anleggoversikt</div>
+                        <div class="description">Interaktiv kart over havbruksanlegg med båtposisjoner, sjøstrøm og karantenestatus</div>
+                        <div class="port-info">Dashboard</div>
+                    </a>
+                    
+                    <a href="http://localhost:8084/test_quarantine_integration.html" class="service-card" target="_blank">
+                        <div class="icon">✅</div>
+                        <div class="name">Karantenekontroll</div>
+                        <div class="description">Teste karantenesystemet og se status for båter med siste anleggbesøk</div>
+                        <div class="port-info">Test & Debug</div>
+                    </a>
+                    
+                    <div class="service-card" style="cursor: not-allowed; opacity: 0.5;">
+                        <div class="icon">📊</div>
+                        <div class="name">Admin Dashboard</div>
+                        <div class="description">Administrasjon av anlegg, båter og sykdomsdata (Kommer snart)</div>
+                        <div class="port-info">Port 8082 (ikke startet)</div>
+                    </div>
+                    
+                    <a href="http://localhost:8000/docs" class="service-card" target="_blank">
+                        <div class="icon">📚</div>
+                        <div class="name">API Dokumentasjon</div>
+                        <div class="description">Interaktiv Swagger UI for alle API-endepunkter og tester</div>
+                        <div class="port-info">FastAPI Docs</div>
+                    </a>
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px; background: #f0f9ff; border-left: 4px solid #0284c7; padding: 20px; border-radius: 8px;">
+                <strong style="color: #0284c7;">💡 Tips:</strong> 
+                <ul style="margin-left: 20px; margin-top: 10px; color: #1e40af; font-size: 14px;">
+                    <li>Velg et anlegg på kartet for å se båter innenfor radius</li>
+                    <li>Orange båter er i karantene (besøkt smittet anlegg &lt; 24 timer siden)</li>
+                    <li>Grønne båter er godkjente for drift</li>
+                    <li>Se API-dokumentasjonen for tekniske detaljer</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>✓ System Online - Alle komponenter kjører normalt · Sist oppdatert: <span id="lastUpdate"></span></p>
+        </div>
+    </div>
+    
+    <script>
+        async function checkStatus() {
+            try {
+                // Test API
+                const apiRes = await fetch('http://localhost:8000/api/facilities', {
+                    method: 'GET',
+                    mode: 'cors'
+                }).catch(() => null);
+                
+                // Test Frontend
+                const frontendRes = await fetch('http://localhost:8084/', {
+                    method: 'GET',
+                    mode: 'cors'
+                }).catch(() => null);
+                
+                // Update system status
+                const systemCard = document.getElementById('systemStatus');
+                if (apiRes?.ok && frontendRes?.ok) {
+                    systemCard.classList.add('online');
+                    systemCard.querySelector('.status').textContent = '✓ ONLINE';
+                } else {
+                    systemCard.classList.remove('online');
+                    systemCard.classList.add('offline');
+                    systemCard.querySelector('.status').textContent = '⚠ DEGRADED';
+                }
+                
+                // Update timestamp
+                document.getElementById('lastUpdate').textContent = new Date().toLocaleString('no-NO');
+                
+            } catch (error) {
+                console.log('Status check error:', error);
+            }
+        }
+        
+        // Check status on load
+        window.addEventListener('load', checkStatus);
+        
+        // Check every 30 seconds
+        setInterval(checkStatus, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!-- Flyttet fra gammel mappe. Dette er frontend-dashboardet. -->
+<!-- ...eksisterende frontend.html-innhold skal inn her... -->
+<!DOCTYPE html>
+<html lang="no">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Kyst Monitor - Risikokart</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+        
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			min-height: 100vh;
+			padding: 20px;
+		}
+        
+		.container {
+			max-width: 1400px;
+			margin: 0 auto;
+		}
+        
+		header {
+			background: rgba(255, 255, 255, 0.95);
+			padding: 30px;
+			border-radius: 10px;
+			margin-bottom: 30px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+		}
+        
+		h1 {
+			color: #333;
+			margin-bottom: 10px;
+			font-size: 2.5em;
+		}
+        
+		.subtitle {
+			color: #666;
+			font-size: 1.1em;
+			margin-bottom: 20px;
+		}
+        
+		.controls {
+			display: flex;
+			gap: 15px;
+			flex-wrap: wrap;
+			align-items: center;
+		}
+        
+		input, select, button {
+			padding: 10px 15px;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			font-size: 1em;
+			transition: all 0.3s;
+		}
+        
+		button {
+			background: #667eea;
+			color: white;
+			cursor: pointer;
+			border: none;
+			font-weight: 600;
+		}
+        
+		button:hover {
+			background: #5568d3;
+		}
+        
+		.stats {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+			gap: 15px;
+			margin-top: 20px;
+		}
+        
+		.stat-box {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			padding: 15px;
+			border-radius: 8px;
+			text-align: center;
+		}
+        
+		.stat-number {
+			font-size: 2em;
+			font-weight: bold;
+		}
+        
+		.stat-label {
+			font-size: 0.9em;
+			opacity: 0.9;
+		}
+        
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+			gap: 20px;
+			margin-bottom: 30px;
+		}
+        
+		.farm-card {
+			background: white;
+			border-radius: 10px;
+			overflow: hidden;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s, box-shadow 0.3s;
+		}
+        
+		.farm-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+		}
+        
+		.farm-header {
+			padding: 20px;
+			color: white;
+			display: flex;
+			justify-content: space-between;
+			align-items: start;
+		}
+        
+		.farm-header.critical { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+		.farm-header.high { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+		.farm-header.moderate { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+		.farm-header.low { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; }
+        
+		.farm-info h3 {
+			margin-bottom: 5px;
+			font-size: 1.3em;
+		}
+        
+		.farm-code {
+			font-size: 0.85em;
+			opacity: 0.9;
+			margin-bottom: 8px;
+		}
+        
+		.risk-badge {
+			font-weight: bold;
+			padding: 5px 10px;
+			border-radius: 20px;
+			background: rgba(255, 255, 255, 0.3);
+			font-size: 0.9em;
+		}
+        
+		.risk-score {
+			font-size: 2.5em;
+			font-weight: bold;
+			text-align: right;
+		}
+        
+		.farm-body {
+			padding: 20px;
+		}
+        
+		.factor {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 8px 0;
+			border-bottom: 1px solid #f0f0f0;
+			font-size: 0.95em;
+		}
+        
+		.factor:last-child {
+			border-bottom: none;
+		}
+        
+		.factor-label {
+			color: #666;
+		}
+        
+		.factor-bar {
+			background: #f0f0f0;
+			border-radius: 10px;
+			height: 6px;
+			width: 100px;
+			margin: 0 10px;
+			overflow: hidden;
+		}
+        
+		.factor-fill {
+			height: 100%;
+			background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+			border-radius: 10px;
+		}
+        
+		.factor-value {
+			color: #333;
+			font-weight: 600;
+			min-width: 40px;
+			text-align: right;
+		}
+        
+		.disease-status {
+			margin-top: 15px;
+			padding-top: 15px;
+			border-top: 2px solid #f0f0f0;
+		}
+        
+		.disease-badge {
+			display: inline-block;
+			padding: 5px 10px;
+			border-radius: 5px;
+			font-size: 0.85em;
+			font-weight: 600;
+			margin-right: 8px;
+			margin-bottom: 8px;
+		}
+        
+		.disease-ila {
+			background: #ffe5e5;
+			color: #c41e3a;
+		}
+        
+		.disease-pd {
+			background: #e5f0ff;
+			color: #003d82;
+		}
+        
+		.loading {
+			text-align: center;
+			padding: 40px;
+			color: white;
+			font-size: 1.2em;
+		}
+        
+		.spinner {
+			border: 4px solid rgba(255, 255, 255, 0.3);
+			border-top: 4px solid white;
+			border-radius: 50%;
+			width: 40px;
+			height: 40px;
+			animation: spin 1s linear infinite;
+			margin: 0 auto 20px;
+		}
+        
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+        
+		.error {
+			background: #ffebee;
+			color: #c41e3a;
+			padding: 20px;
+			border-radius: 8px;
+			border-left: 4px solid #c41e3a;
+		}
+        
+		.location {
+			font-size: 0.85em;
+			color: #999;
+			margin-top: 5px;
+		}
+        
+		.filter-section {
+			display: flex;
+			gap: 10px;
+			align-items: center;
+		}
+	<link rel="stylesheet" href="styles.css">
+	<div class="container">
+		<header>
+			<h1>🗺️ Kyst Monitor</h1>
+			<p class="subtitle">Risikokart for fiskeoppdrettanlegg</p>
+            
+			<div class="controls">
+				<div class="filter-section">
+					<label for="riskFilter">Filtrér etter risiko:</label>
+					<select id="riskFilter">
+						<option value="">Alle</option>
+						<option value="critical">Kritisk</option>
+						<option value="high">Høy</option>
+						<option value="moderate">Moderat</option>
+						<option value="low">Lav</option>
+					</select>
+				</div>
+				<button onclick="loadData()">🔄 Oppdater</button>
+				<a href="/static/vessels.html" style="padding: 10px 15px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; font-weight: 600;">⛴️ Båtoversikt</a>
+			</div>
+            
+			<div class="stats">
+				<div class="stat-box">
+					<div class="stat-number" id="totalCount">-</div>
+					<div class="stat-label">Anlegg totalt</div>
+				</div>
+				<div class="stat-box">
+					<div class="stat-number" id="criticalCount">-</div>
+					<div class="stat-label">Kritisk risiko</div>
+				</div>
+				<div class="stat-box">
+					<div class="stat-number" id="highCount">-</div>
+					<div class="stat-label">Høy risiko</div>
+				</div>
+				<div class="stat-box">
+					<div class="stat-number" id="moderateCount">-</div>
+					<div class="stat-label">Moderat risiko</div>
+				</div>
+			</div>
+		</header>
+        
+		<div id="content"></div>
+	</div>
+
+	<script>
+		const API_URL = 'http://127.0.0.1:8000/api/risk/assess';
+		let allData = [];
+
+		async function loadData() {
+			const content = document.getElementById('content');
+			content.innerHTML = '<div class="loading"><div class="spinner"></div>Laster risikokart...</div>';
+            
+			try {
+				const response = await fetch(API_URL + '?locality_id=0');
+				if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+				const jsonData = await response.json();
+				allData = jsonData.assessments || [];
+                
+				updateStats();
+				renderCards();
+			} catch (error) {
+				content.innerHTML = `<div class="error">❌ Feil ved lasting: ${error.message}</div>`;
+			}
+		}
+
+		function updateStats() {
+			const stats = {
+				total: allData.length,
+				critical: allData.filter(f => f.risk_level === 'CRITICAL').length,
+				high: allData.filter(f => f.risk_level === 'HIGH').length,
+				moderate: allData.filter(f => f.risk_level === 'MODERATE').length
+			};
+            
+			document.getElementById('totalCount').textContent = stats.total;
+			document.getElementById('criticalCount').textContent = stats.critical;
+			document.getElementById('highCount').textContent = stats.high;
+			document.getElementById('moderateCount').textContent = stats.moderate;
+		}
+
+		function getRiskClass(riskLevel) {
+			const map = {
+				'CRITICAL': 'critical',
+				'HIGH': 'high',
+				'MODERATE': 'moderate',
+				'LOW': 'low'
+			};
+			return map[riskLevel] || 'low';
+		}
+
+		function getFactorPercentage(value, max = 100) {
+			if (value === null || value === undefined) return 0;
+			return Math.min(100, (value / max) * 100);
+		}
+
+		function renderCards() {
+			const filter = document.getElementById('riskFilter').value;
+			let filtered = allData;
+            
+			if (filter) {
+				filtered = allData.filter(f => getRiskClass(f.risk_level) === filter);
+			}
+            
+			const html = `
+				<div class="grid">
+					${filtered.map(farm => `
+						<div class="farm-card">
+							<div class="farm-header ${getRiskClass(farm.risk_level)}">
+								<div class="farm-info">
+									<h3>${farm.facility_name}</h3>
+									<div class="farm-code">Kode: ${farm.facility_code}</div>
+									<div class="risk-badge">${farm.risk_level}</div>
+									${farm.location ? `<div class="location">📍 ${farm.location.latitude?.toFixed(2)}, ${farm.location.longitude?.toFixed(2)}</div>` : ''}
+								</div>
+								<div class="risk-score">${farm.risk_score}</div>
+							</div>
+                            
+							<div class="farm-body">
+								<div style="margin-bottom: 15px;">
+									<strong>Hovedrisikofaktor:</strong> ${farm.biggest_risk_factor || 'Ukjent'}
+								</div>
+                                
+								<div class="factor">
+									<div class="factor-label">Sykdomsnærhet</div>
+									<div class="factor-bar"><div class="factor-fill" style="width: ${getFactorPercentage(farm.factors.disease_proximity)}%"></div></div>
+									<div class="factor-value">${farm.factors.disease_proximity?.toFixed(1) || '-'}</div>
+								</div>
+                                
+								<div class="factor">
+									<div class="factor-label">Sykdomsprevalens</div>
+									<div class="factor-bar"><div class="factor-fill" style="width: ${getFactorPercentage(farm.factors.disease_prevalence)}%"></div></div>
+									<div class="factor-value">${farm.factors.disease_prevalence?.toFixed(1) || '-'}</div>
+								</div>
+                                
+								<div class="factor">
+									<div class="factor-label">Anleggtetthet</div>
+									<div class="factor-bar"><div class="factor-fill" style="width: ${getFactorPercentage(farm.factors.farm_density)}%"></div></div>
+									<div class="factor-value">${farm.factors.farm_density?.toFixed(1) || '-'}</div>
+								</div>
+                                
+								<div class="factor">
+									<div class="factor-label">Lauselus-nivå</div>
+									<div class="factor-bar"><div class="factor-fill" style="width: ${getFactorPercentage(farm.factors.lice_level)}%"></div></div>
+									<div class="factor-value">${farm.factors.lice_level?.toFixed(1) || '-'}</div>
+								</div>
+                                
+								${farm.lice_data && (farm.lice_data.adult_female_lice !== null || farm.lice_data.mobile_lice !== null) ? `
+									<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #f0f0f0; font-size: 0.9em; color: #666;">
+										<strong>Lausedata:</strong><br>
+										Hunlustalarm: ${farm.lice_data.adult_female_lice?.toFixed(2) || '-'}<br>
+										Mobil lus: ${farm.lice_data.mobile_lice?.toFixed(2) || '-'}
+									</div>
+								` : ''}
+                                
+								${farm.disease_status && (farm.disease_status.has_ila || farm.disease_status.has_pd) ? `
+									<div class="disease-status">
+										${farm.disease_status.has_ila ? '<div class="disease-badge disease-ila">⚠️ ILA Påvist</div>' : ''}
+										${farm.disease_status.has_pd ? '<div class="disease-badge disease-pd">⚠️ PD Påvist</div>' : ''}
+									</div>
+								` : ''}
+							</div>
+						</div>
+					`).join('')}
+				</div>
+				${filtered.length === 0 ? '<div class="error">Ingen anlegg matcher filteret.</div>' : ''}
+			`;
+            
+			document.getElementById('content').innerHTML = html;
+		}
+
+		document.getElementById('riskFilter')?.addEventListener('change', renderCards);
+        
+		// Last data ved oppstart
+		loadData();
+	</script>
+</body>
+</html>

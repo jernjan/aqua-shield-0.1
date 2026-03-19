@@ -1,0 +1,122 @@
+{
+  "glossary": {
+    "smittet": {
+      "no": "Smittet",
+      "definition": "Anlegg med bekreftet smittesykdom (lus eller virus)",
+      "color": "#ef4444",
+      "icon": "🔴",
+      "priority": "kritisk"
+    },
+    "BW-sone": {
+      "no": "BarentsWatch-sone",
+      "definition": "BarentsWatch-sonestatus for ILA: PROTECTION-sone (oransje) eller SURVEILLANCE-sone (amber), basert på regulatoriske data",
+      "color": "#f59e0b",
+      "icon": "🟠",
+      "priority": "høy"
+    },
+    "karantene": {
+      "no": "Karantene",
+      "definition": "Lokalt pålagt forbud eller restriksjon på transport av fisk fra smittet anlegg",
+      "color": "#f59e0b",
+      "icon": "⚠️",
+      "priority": "høy"
+    },
+    "lokal_smitteradius": {
+      "no": "Lokal smitteradius",
+      "definition": "10 km buffer rundt smittede anlegg hvor risiko for naturlig smittespredning er høy",
+      "color": "#facc15",
+      "icon": "🟡",
+      "priority": "medium"
+    },
+    "infisert_anlegg": {
+      "no": "Infisert anlegg",
+      "definition": "Anlegg med påvist infeksjon (synonym med smittet)",
+      "color": "#ef4444",
+      "icon": "🔴",
+      "priority": "kritisk"
+    },
+    "risikofaktorer": {
+      "no": "Risikofaktorer",
+      "definition": "Elementer som påvirker smittespredningsrisiko: båter, havstrøm, avstand, kontaktkjeder",
+      "color": null,
+      "icon": "📊",
+      "priority": "informativt"
+    },
+    "havstrom": {
+      "no": "Havstrøm",
+      "definition": "Naturlig vannutstrømning som kan transportere smittstoffer mellom anlegg",
+      "color": null,
+      "icon": "🌊",
+      "priority": "høy"
+    },
+    "besok": {
+      "no": "Besøk",
+      "definition": "Båt som har besøkt et anlegg (kan ha transportert smitte)",
+      "color": null,
+      "icon": "⛴️",
+      "priority": "informativt"
+    },
+    "smitte_kontaktkjede": {
+      "no": "Smittekontaktkjede",
+      "definition": "To eller flere anlegg som er koblet via felles båter eller strømretning",
+      "color": null,
+      "icon": "🔗",
+      "priority": "medium"
+    },
+    "fritt_anlegg": {
+      "no": "Fritt anlegg",
+      "definition": "Anlegg uten kjent smitte, karantene eller smitterisk",
+      "color": "#10b981",
+      "icon": "🟢",
+      "priority": "lav"
+    },
+    "risikoscore": {
+      "no": "Risikoscore",
+      "definition": "Numerisk verdi (0–100) som viser den estimerte smittespredningsrisikoen basert på flere faktorer",
+      "color": null,
+      "icon": "📈",
+      "priority": "informativt"
+    },
+    "utbrudd": {
+      "no": "Utbrudd",
+      "definition": "Smittesituasjon med multiple smittede anlegg eller raske smittespredningstegn",
+      "color": "#ef4444",
+      "icon": "⚡",
+      "priority": "kritisk"
+    },
+    "prognose": {
+      "no": "Prognose",
+      "definition": "Prediktiv vurdering av smittespredning de neste 7 dagene basert på favorittdata og strøm",
+      "color": null,
+      "icon": "🔮",
+      "priority": "høy"
+    },
+    "rute": {
+      "no": "Rute",
+      "definition": "Planlagt eller faktisk skipsreise mellom flere anlegg",
+      "color": null,
+      "icon": "🗺️",
+      "priority": "informativt"
+    },
+    "bioforvaring": {
+      "no": "Biosikring",
+      "definition": "Sjekkpunkt for å bekrefta at båt har vært desinfisert før besøk",
+      "color": null,
+      "icon": "✓",
+      "priority": "høy"
+    },
+    "smittetrykk": {
+      "no": "Smittetrykk",
+      "definition": "Intensiteten eller faren for smittespredning i et område på gitt tidspunkt",
+      "color": null,
+      "icon": "📊",
+      "priority": "medium"
+    }
+  },
+  "metadata": {
+    "language": "nb-NO",
+    "version": "1.0",
+    "last_updated": "2026-03-11",
+    "note": "Alle termer skal brukes konsistent på tvers av Admin-, Anleggs- og Båtdashboard"
+  }
+}

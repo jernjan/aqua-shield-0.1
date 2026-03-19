@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="nb">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ops Lite</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { margin-bottom: 6px; }
+        .muted { color: #555; margin-top: 0; }
+        .grid { display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap: 10px; margin: 16px 0; }
+        .card { border: 1px solid #ddd; padding: 10px; border-radius: 6px; }
+        .value { font-size: 24px; font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; }
+        th { background: #f5f5f5; }
+        .section { margin-top: 24px; }
+        .top-links a { margin-right: 12px; }
+    </style>
+</head>
+<body>
+    <h1>Operativ oversikt Lite</h1>
+    <p id="profileMeta" class="muted">Laster profil...</p>
+
+    <div class="top-links">
+        <a href="./ops-lite.html">Ops Lite</a>
+        <a href="./calendar-lite.html">Kalender Lite</a>
+    </div>
+
+    <div class="grid">
+        <div class="card"><div>Båter total</div><div id="vesselTotal" class="value">-</div></div>
+        <div class="card"><div>Båter med MMSI</div><div id="vesselTrackable" class="value">-</div></div>
+        <div class="card"><div>Anlegg total</div><div id="facilityTotal" class="value">-</div></div>
+        <div class="card"><div>Kalenderhendelser</div><div id="eventTotal" class="value">-</div></div>
+    </div>
+
+    <section class="section">
+        <h2>Båter</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Navn</th>
+                    <th>Selskap</th>
+                    <th>MMSI</th>
+                    <th>Type</th>
+                    <th>Tracking</th>
+                </tr>
+            </thead>
+            <tbody id="vesselTableBody"></tbody>
+        </table>
+    </section>
+
+    <section class="section">
+        <h2>Anlegg</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Navn</th>
+                    <th>Selskap</th>
+                    <th>Kommune</th>
+                    <th>LocalityNo</th>
+                    <th>Tags</th>
+                </tr>
+            </thead>
+            <tbody id="facilityTableBody"></tbody>
+        </table>
+    </section>
+
+    <script type="module" src="./app/ops-lite.js"></script>
+</body>
+</html>

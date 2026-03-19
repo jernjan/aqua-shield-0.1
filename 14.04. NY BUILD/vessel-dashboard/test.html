@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <title>Labridae Test</title>
+  <style>
+    body { 
+      font-family: sans-serif; 
+      max-width: 800px; 
+      margin: 2rem auto; 
+      background: #f0f0f0;
+      padding: 1rem;
+    }
+    .panel {
+      background: white;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 0.5rem 0.5rem 0.5rem 0;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    .success {
+      background: #10b981;
+    }
+    .success:hover {
+      background: #059669;
+    }
+    .error {
+      background: #ef4444;
+    }
+    .error:hover {
+      background: #dc2626;
+    }
+    .results {
+      background: #f9fafb;
+      border-left: 4px solid #3b82f6;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    .success-text { color: #10b981; }
+    .error-text { color: #ef4444; }
+    .info-text { color: #6b7280; }
+  </style>
+</head>
+<body>
+  <h1>🚢 Labridae Dashboard - Diagnostic Test</h1>
+  
+  <div class="panel">
+    <h2>1. Module Load Test</h2>
+    <button onclick="testModules()">Test Modules</button>
+    <div id="moduleResults" class="results"></div>
+  </div>
+
+  <div class="panel">
+    <h2>2. API Test</h2>
+    <button class="success" onclick="testAPI()">Test API Connection</button>
+    <div id="apiResults" class="results"></div>
+  </div>
+
+  <div class="panel">
+    <h2>3. Function Test</h2>
+    <button onclick="testFunctions()">Test Exported Functions</button>
+    <div id="functionResults" class="results"></div>
+  </div>
+
+  <div class="panel">
+    <h2>4. Dashboard Functions</h2>
+    <button onclick="testDashboard()">Test Dashboard Init</button>
+    <div id="dashboardResults" class="results"></div>
+  </div>
+
+  <script>
+    function log(element, msg, type = 'info') {
+      const el = document.getElementById(element);
+      const cls = type === 'success' ? 'success-text' : type === 'error' ? 'error-text' : 'info-text';
+      const div = document.createElement('div');
+      div.className = cls;
+      div.textContent = msg;
+      el.appendChild(div);
+    }
+
+    function clear(element) {
+      document.getElementById(element).innerHTML = '';
+    }
+
+    function testModules() {
+      clear('moduleResults');
+      log('moduleResults', 'Checking module exports...', 'info');
+      
+      setTimeout(() => {
+        log('moduleResults', `L (Leaflet): ${typeof window.L !== 'undefined' ? 'OK' : 'MISSING'}`, 
+            typeof window.L !== 'undefined' ? 'success' : 'error');
+        log('moduleResults', `VesselStorage: ${typeof window.VesselStorage !== 'undefined' ? 'OK' : 'MISSING'}`, 
+            typeof window.VesselStorage !== 'undefined' ? 'success' : 'error');
+        log('moduleResults', `VesselMap: ${typeof window.VesselMap !== 'undefined' ? 'OK' : 'MISSING'}`, 
+            typeof window.VesselMap !== 'undefined' ? 'success' : 'error');
+        log('moduleResults', `RoutePlanner: ${typeof window.RoutePlanner !== 'undefined' ? 'OK' : 'MISSING'}`, 
+            typeof window.RoutePlanner !== 'undefined' ? 'success' : 'error');
+      }, 100);
+    }
+
+    async function testAPI() {
+      clear('apiResults');
+      log('apiResults', 'Testing API connection...', 'info');
+      
+      try {
+        const resp = await fetch('http://127.0.0.1:8002/api/facilities?limit=3');
+        const data = await resp.json();
+        
+        log('apiResults', `Status: ${resp.status}`, 'success');
+        log('apiResults', `Facilities in API: ${data.facilities.length}`, 'success');
+        log('apiResults', `Total facilities: ${data.total}`, 'info');
+      } catch (e) {
+        log('apiResults', `ERROR: ${e.message}`, 'error');
+      }
+    }
+
+    function testFunctions() {
+      clear('functionResults');
+      log('functionResults', 'Checking global functions...', 'info');
+      
+      const funcs = ['showVisitLogger', 'closeVisitLogger', 'logVisit', 'clearHistory', 
+                     'viewQuarantine', 'showRoutePlanner', 'showCalendarView'];
+      
+      funcs.forEach(f => {
+        const exists = typeof window[f] === 'function';
+        log('functionResults', `${f}: ${exists ? 'OK' : 'MISSING'}`, 
+            exists ? 'success' : 'error');
+      });
+    }
+
+    function testDashboard() {
+      clear('dashboardResults');
+      log('dashboardResults', 'Testing dashboard initialization...', 'info');
+      
+      try {
+        const mapDiv = document.getElementById('map');
+        log('dashboardResults', `Map div found: ${mapDiv ? 'YES' : 'NO'}`, 
+            mapDiv ? 'success' : 'error');
+        
+        if (window.VesselStorage) {
+          const vessel = window.VesselStorage.getVesselData();
+          log('dashboardResults', `Vessel name: ${vessel.vessel.name}`, 'success');
+          log('dashboardResults', `Vessel position: ${vessel.vessel.position.lat}, ${vessel.vessel.position.lon}`, 'info');
+        }
+      } catch (e) {
+        log('dashboardResults', `ERROR: ${e.message}`, 'error');
+      }
+    }
+  </script>
+
+  <!-- Load all modules -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="vessel-storage.js"></script>
+  <script src="vessel-map.js"></script>
+  <script src="routes-planner.js"></script>
+  <script src="vessel.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anleggsdashboard - Kyst Monitor</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div class="spinner"></div>
+    <p class="loading-text">Laster data...</p>
+  </div>
+
+  <!-- Error Toast Container -->
+  <div id="errorToastContainer" class="error-toast-container"></div>
+
+  <div class="dashboard-container">
+    <!-- Header -->
+    <header class="header">
+      <h1>Anleggsdashboard</h1>
+      <!-- Dark Mode Toggle -->
+      <button 
+        id="themeToggle" 
+        class="theme-toggle" 
+        aria-label="Bytt mellom lys og mørk modus"
+        title="Bytt til mørk modus"
+      >
+        <span class="theme-icon">🌙</span>
+        <span class="theme-label">Mørk</span>
+      </button>
+      <p class="header-subtext">
+        Verktøy for anlegg: velg ditt anlegg, se samlede smitterisikofaktorer (sone, havstrøm, historikk, karantener)
+        og følg opp båtbesøk – både planlagte ruter fra båtsiden og registrerte/bekreftede anløp. Denne demoen viser
+        alle anlegg uten innlogging, men er bygget for senere brukerstyring.
+      </p>
+      <div class="facility-selector">
+        <label for="facilitySearch">Søk anlegg:</label>
+        <input 
+          type="text" 
+          id="facilitySearch" 
+          placeholder="Skriv eller lim inn anleggsnavn..."
+          autocomplete="off"
+          list="facilityList"
+          aria-label="Søk etter anlegg"
+          aria-describedby="facilitySearchDesc"
+          role="combobox"
+          aria-expanded="false"
+          aria-autocomplete="list"
+        />
+        <span id="facilitySearchDesc" class="sr-only">Skriv anleggsnavn for å søke og velge</span>
+        <datalist id="facilityList">
+          <option value="">Laster anlegg...</option>
+        </datalist>
+      </div>
+      <div class="status-chips">
+        <div class="api-status" id="apiStatus" aria-live="polite">API: sjekker...</div>
+        <div class="api-status" id="aisStatus" aria-live="polite">AIS: sjekker...</div>
+      </div>
+    </header>
+
+    <!-- Main Content with SIDEBAR + MAP -->
+    <div class="main-content-layout">
+      
+      <!-- LEFT SIDE: Information Sidebar (scrollable) -->
+      <aside class="sidebar-left">
+        <nav class="sidebar-nav" role="navigation" aria-label="Informasjonspaneler">
+          <button class="sidebar-nav-item active" data-section="risk" aria-current="page">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Risiko nå</span>
+          </button>
+          <button class="sidebar-nav-item" data-section="details">
+            <span class="nav-icon">ℹ️</span>
+            <span class="nav-label">Anleggsinfo</span>
+          </button>
+          <button class="sidebar-nav-item" data-section="actions">
+            <span class="nav-icon">⚡</span>
+            <span class="nav-label">Handlinger</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-content">
+          
+          <!-- SECTION 1: Risk (default visible) -->
+          <div class="sidebar-section active" data-section="risk">
+            
+            <!-- 1. RISIKO NÅ (Sidebar) -->
+            <section class="risk-panel-sidebar">
+              <div class="risk-header">
+                <h2 id="facilityName" class="sidebar-title">Velg anlegg</h2>
+                <div class="facility-id-chip" id="facilityCodeIndicator">ID: -</div>
+                <div class="risk-status" id="riskStatus">
+                  <span class="risk-badge">🟢 FRISK</span>
+                  <span class="why-link is-hidden" id="whyRiskLink" onclick="handleShowRiskExplanation()">Hvorfor?</span>
+                </div>
+              </div>
+              
+              <div class="risk-summary-sidebar" id="riskSummary">
+                <div class="risk-metric-sidebar">
+                  <span class="metric-label">Smittede innen 15 km</span>
+                  <span class="metric-value" id="nearbyInfected">-</span>
+                </div>
+                <div class="risk-metric-sidebar">
+                  <span class="metric-label">Nærmeste smittede</span>
+                  <span class="metric-value" id="closestDistance">-</span>
+                </div>
+                <div class="risk-metric-sidebar">
+                  <span class="metric-label">Besøk siste 48t</span>
+                  <span class="metric-value" id="recentVisits">-</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- 1.3 OUTBREAK RISK SCORE WITH FACTOR BREAKDOWN -->
+            <section class="risk-score-panel-sidebar" id="outbreakRiskPanel">
+              <h3>Smitterisikoanalyse</h3>
+              <div class="risk-score-container">
+                <div class="risk-score-main">
+                  <div class="risk-score-number" id="riskScoreValue">—</div>
+                  <div class="risk-score-label" id="riskScoreLevel">Laster...</div>
+                </div>
+
+                <div class="factor-breakdown">
+                  <div class="factor-item" id="factorDistance">
+                    <div class="factor-header">
+                      <span class="factor-name">📏 Avstand til smitte</span>
+                      <span class="factor-points" id="distancePoints">0</span>
+                    </div>
+                    <div class="factor-detail" id="distanceDetail">-</div>
+                  </div>
+
+                  <div class="factor-item" id="factorCurrent">
+                    <div class="factor-header">
+                      <span class="factor-name">🌊 Havstrøm</span>
+                      <span class="factor-points" id="currentPoints">0</span>
+                    </div>
+                    <div class="factor-detail" id="currentDetail">-</div>
+                  </div>
+
+                  <div class="factor-item" id="factorVessels">
+                    <div class="factor-header">
+                      <span class="factor-name">🚢 Båter med risiko</span>
+                      <span class="factor-points" id="vesselPoints">0</span>
+                    </div>
+                    <div class="factor-detail" id="vesselDetail">-</div>
+                  </div>
+
+                  <div class="factor-item" id="factorContacts">
+                    <div class="factor-header">
+                      <span class="factor-name">Nylige kontakter</span>
+                      <span class="factor-points" id="contactPoints">0</span>
+                    </div>
+                    <div class="factor-detail" id="contactDetail">-</div>
+                  </div>
+                </div>
+
+                <div class="risk-recommendations" id="riskRecommendations"></div>
+              </div>
+            </section>
+
+            <!-- 1.5 STATUS I DAG -->
+            <section class="status-panel-sidebar" id="statusPanel">
+              <h3>Status i dag</h3>
+              <div class="status-inline">
+                <div class="status-item">
+                  <span class="status-label">Båter:</span>
+                  <span class="status-value" id="statusNearbyVessels">-</span>
+                  <span class="status-sub" id="statusNearbyRadius">(- km)</span>
+                </div>
+                <div class="status-divider"></div>
+                <div class="status-item">
+                  <span class="status-label">Ruter:</span>
+                  <span class="status-value" id="statusActiveRoutes">-</span>
+                  <span class="status-sub" id="statusPendingRoutes">(Avventer: -)</span>
+                </div>
+                <div class="status-divider"></div>
+                <div class="status-item">
+                  <span class="status-label">Neste:</span>
+                  <span class="status-value" id="statusNextApproved">-</span>
+                  <span class="status-sub" id="statusNextApprovedTime">(-)</span>
+                </div>
+                <div class="status-divider"></div>
+                <div class="status-item">
+                  <span class="status-label">Karantener:</span>
+                  <span class="status-value" id="statusActiveQuarantines">-</span>
+                  <span class="status-sub">(48t)</span>
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+          <!-- SECTION 2: Anleggsdetaljer -->
+          <div class="sidebar-section" data-section="details">
+            
+            <section class="facility-details-sidebar" id="facilityDetailsPanel">
+              <h3>Anleggsinfo</h3>
+              <div class="detail-group">
+                <label>Sykdom</label>
+                <div id="detailDiseases" class="detail-value">-</div>
+              </div>
+              <div class="detail-group">
+                <label>Luse</label>
+                <div id="detailLice" class="detail-value">-</div>
+              </div>
+              <div class="detail-group">
+                <label>Fisk i merd</label>
+                <div id="detailFish" class="detail-value">-</div>
+              </div>
+              <div class="detail-group">
+                <label>Produksjon</label>
+                <div id="detailProduction" class="detail-value">-</div>
+              </div>
+              <div class="detail-group">
+                <label>Koordinater</label>
+                <div id="detailCoords" class="detail-value">-</div>
+              </div>
+            </section>
+
+            <section class="b-survey-status-sidebar" id="bSurveyStatusPanel">
+              <h3>B-undersøkelse</h3>
+              <div class="b-survey-container">
+                <div class="b-survey-main">
+                  <div class="b-survey-status" id="bSurveyStatusBadge">-</div>
+                  <div class="b-survey-info" id="bSurveyInfo">Laster...</div>
+                </div>
+                <div class="b-survey-details">
+                  <div class="b-survey-detail-row">
+                    <span class="b-survey-label">Siste rapport:</span>
+                    <span class="b-survey-value" id="bSurveyLastDate">-</span>
+                  </div>
+                  <div class="b-survey-detail-row">
+                    <span class="b-survey-label">Status:</span>
+                    <span class="b-survey-value" id="bSurveySiteCondition">-</span>
+                  </div>
+                  <div class="b-survey-detail-row">
+                    <span class="b-survey-label">Anbefalt:</span>
+                    <span class="b-survey-value" id="bSurveyRecommendedDate">-</span>
+                  </div>
+                  <div class="b-survey-detail-row">
+                    <span class="b-survey-label">Dager til frist:</span>
+                    <span class="b-survey-value" id="bSurveyDaysUntilDeadline">-</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+          <!-- SECTION 3: Handlinger -->
+          <div class="sidebar-section" data-section="actions">
+            
+            <section class="actions-section-sidebar">
+              <h3>Handlinger</h3>
+              <div class="actions-column">
+                <button class="action-btn-small" id="btnLogEvent" disabled>Logg hendelse</button>
+                <button class="action-btn-small" id="btnSendAlert" disabled>Send varsel</button>
+                <button class="action-btn-small" id="btnSetQuarantine" disabled>Karantene</button>
+                <button class="action-btn-small" id="btnGenerateReport" disabled>Rapport</button>
+                <button class="action-btn-small route-planner-beta-btn" id="btnRoutePlannerBeta" onclick="showRoutePlannerWarnings()">Ruteplanlegger BETA</button>
+              </div>
+            </section>
+
+            <section class="factors-section-sidebar">
+              <h3>Risikofaktorer</h3>
+              <table class="factors-table-sidebar" id="factorsTable">
+                <tbody id="factorsBody">
+                  <tr><td>Velg anlegg</td><td>-</td></tr>
+                </tbody>
+              </table>
+            </section>
+
+          </div>
+
+        </div>
+
+      </aside>
+
+      <!-- RIGHT SIDE: Map + Expandable panels -->
+      <div class="content-right">
+      
+        <!-- 5. KART (full height) -->
+        <section class="map-section-tall" aria-label="Kart over anlegg">
+          <h3>Anlegget i området</h3>
+          <div class="map-controls" role="toolbar" aria-label="Kartkontroller">
+            <div class="filter-group">
+              <label class="map-filter">
+                <input type="checkbox" id="filterNearby" checked aria-label="Filtrer kun anlegg i nærheten" />
+                Vis kun innenfor
+              </label>
+              <select id="nearbyRadius" aria-label="Velg radius for nærliggende anlegg">
+                <option value="5">5 km</option>
+                <option value="10">10 km</option>
+                <option value="15">15 km</option>
+                <option value="20" selected>20 km</option>
+              </select>
+            </div>
+
+            <div class="toggle-group" role="group" aria-label="Kartlag">
+              <label class="toggle-checkbox">
+                <input type="checkbox" id="toggleFacilities" checked aria-label="Vis anlegg på kartet" />
+                Anlegg
+              </label>
+              <label class="toggle-checkbox">
+                <input type="checkbox" id="toggleVessels" checked aria-label="Vis båter på kartet" />
+                Båter
+              </label>
+              <label class="toggle-checkbox" title="Viser anlegg innenfor lokal smitteradius (10 km fra bekreftet smittet)">
+                <input type="checkbox" id="toggleLocalSmitteRadius" aria-label="Vis lokal smitteradius" />
+                Lokal smitteradius
+              </label>
+            </div>
+
+            <button id="resetMap" class="map-reset" type="button" aria-label="Nullstill kartet til standard visning">Nullstill</button>
+          </div>
+          <div id="facilityMap" class="facility-map-tall" role="application" aria-label="Interaktivt kart"></div>
+          <div class="map-legend-compact">
+            <span><span class="legend-dot red"></span> Smittet</span>
+            <span><span class="legend-dot orange"></span> Karantene</span>
+            <span><span class="legend-dot yellow"></span> Lokal smitteradius</span>
+            <span><span class="legend-dot green"></span> Frisk</span>
+            <span><span class="legend-dot gray"></span> Info</span>
+
+            <span class="map-legend-note">Havstrøm: pilstørrelse = styrke, retning i grader</span>
+            <span class="map-legend-note" style="color: #8b7355; font-style: italic; margin-top: 8px; display: block;">PD-risiko vises ikke for alge-/landbaserte anlegg (per Transportforskriften)</span>
+          </div>
+        </section>
+
+        <button id="toggleCalendarBtn" class="calendar-toggle-btn" type="button" aria-expanded="false">
+          Kalender
+        </button>
+        <section class="calendar-panel" id="calendarPanel" aria-hidden="true">
+          <div id="calendarContainer"></div>
+        </section>
+      </div>
+
+      <!-- RIGHT SIDE: Information Sidebar -->
+      <div class="content-right">
+        
+        <!-- 1. RISIKO NÅ (Sidebar) -->
+        <section class="risk-panel-sidebar">
+          <div class="risk-header">
+            <h2 id="facilityName" class="sidebar-title">Velg et anlegg</h2>
+            <div class="facility-id-chip" id="facilityCodeIndicator">ID: -</div>
+            <div class="risk-status" id="riskStatus">
+              <span class="risk-badge">🟢 FRISK</span>
+              <span class="why-link is-hidden" id="whyRiskLink" onclick="handleShowRiskExplanation()">Hvorfor?</span>
+            </div>
+          </div>
+          
+          <div class="risk-summary-sidebar" id="riskSummary">
+            <div class="risk-metric-sidebar">
+              <span class="metric-label">Smittede innen 15 km</span>
+              <span class="metric-value" id="nearbyInfected">-</span>
+            </div>
+            <div class="risk-metric-sidebar">
+              <span class="metric-label">Nærmeste smittede</span>
+              <span class="metric-value" id="closestDistance">-</span>
+            </div>
+            <div class="risk-metric-sidebar">
+              <span class="metric-label">Besøk siste 48t (AIS)</span>
+              <span class="metric-value" id="recentVisits">-</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 1.3 OUTBREAK RISK SCORE WITH FACTOR BREAKDOWN -->
+        <section class="risk-score-panel-sidebar" id="outbreakRiskPanel">
+          <h3>Smitterisikoanalyse</h3>
+          <div class="risk-score-container">
+            <!-- Main Score Display -->
+            <div class="risk-score-main">
+              <div class="risk-score-number" id="riskScoreValue">—</div>
+              <div class="risk-score-label" id="riskScoreLevel">Laster...</div>
+            </div>
+
+            <!-- Factor Breakdown (replaces global distribution) -->
+            <div class="factor-breakdown">
+              <!-- Factor 1: Distance -->
+              <div class="factor-item" id="factorDistance">
+                <div class="factor-header">
+                  <span class="factor-name">📏 Avstand til smitte</span>
+                  <span class="factor-points" id="distancePoints">0</span>
+                </div>
+                <div class="factor-detail" id="distanceDetail">-</div>
+              </div>
+
+              <!-- Factor 2: Ocean Current -->
+              <div class="factor-item" id="factorCurrent">
+                <div class="factor-header">
+                  <span class="factor-name">🌊 Havstrøm</span>
+                  <span class="factor-points" id="currentPoints">0</span>
+                </div>
+                <div class="factor-detail" id="currentDetail">-</div>
+              </div>
+
+              <!-- Factor 3: Risky Vessels -->
+              <div class="factor-item" id="factorVessels">
+                <div class="factor-header">
+                  <span class="factor-name">🚢 Båter med risiko</span>
+                  <span class="factor-points" id="vesselPoints">0</span>
+                </div>
+                <div class="factor-detail" id="vesselDetail">-</div>
+              </div>
+
+              <!-- Factor 4: Recent Contacts -->
+              <div class="factor-item" id="factorContacts">
+                <div class="factor-header">
+                  <span class="factor-name">Nylige kontakter</span>
+                  <span class="factor-points" id="contactPoints">0</span>
+                </div>
+                <div class="factor-detail" id="contactDetail">-</div>
+              </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="risk-recommendations" id="riskRecommendations"></div>
+          </div>
+        </section>
+
+        <!-- 1.5 STATUS I DAG (Actionable summary) -->
+        <section class="status-panel-sidebar" id="statusPanel">
+          <h3>Status i dag</h3>
+          <div class="status-inline">
+            <div class="status-item">
+              <span class="status-label">Båter:</span>
+              <span class="status-value" id="statusNearbyVessels">-</span>
+              <span class="status-sub" id="statusNearbyRadius">(- km)</span>
+            </div>
+            <div class="status-divider"></div>
+            <div class="status-item">
+              <span class="status-label">Ruter:</span>
+              <span class="status-value" id="statusActiveRoutes">-</span>
+              <span class="status-sub" id="statusPendingRoutes">(Avventer: -)</span>
+            </div>
+            <div class="status-divider"></div>
+            <div class="status-item">
+              <span class="status-label">Neste:</span>
+              <span class="status-value" id="statusNextApproved">-</span>
+              <span class="status-sub" id="statusNextApprovedTime">(-)</span>
+            </div>
+            <div class="status-divider"></div>
+            <div class="status-item">
+              <span class="status-label">Karantener:</span>
+              <span class="status-value" id="statusActiveQuarantines">-</span>
+              <span class="status-sub">(48t)</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. ANLEGGSDETALJER (NEW!) -->
+        <section class="facility-details-sidebar" id="facilityDetailsPanel">
+          <h3>Anleggsinfo</h3>
+          
+          <div class="detail-group">
+            <label>Sykdom</label>
+            <div id="detailDiseases" class="detail-value">-</div>
+          </div>
+
+          <div class="detail-group">
+            <label>Luse</label>
+            <div id="detailLice" class="detail-value">-</div>
+          </div>
+
+          <div class="detail-group">
+            <label>Fisk i merd</label>
+            <div id="detailFish" class="detail-value">-</div>
+          </div>
+
+          <div class="detail-group">
+            <label>Produksjon</label>
+            <div id="detailProduction" class="detail-value">-</div>
+          </div>
+
+          <div class="detail-group">
+            <label>Koordinater</label>
+            <div id="detailCoords" class="detail-value">-</div>
+          </div>
+        </section>
+
+        <!-- 2.2 B-UNDERSØKELSE STATUS (NEW!) -->
+        <section class="b-survey-status-sidebar" id="bSurveyStatusPanel">
+          <h3>B-undersøkelse</h3>
+          <div class="b-survey-container">
+            <div class="b-survey-main">
+              <div class="b-survey-status" id="bSurveyStatusBadge">-</div>
+              <div class="b-survey-info" id="bSurveyInfo">Laster...</div>
+            </div>
+            
+            <div class="b-survey-details">
+              <div class="b-survey-detail-row">
+                <span class="b-survey-label">Siste rapport:</span>
+                <span class="b-survey-value" id="bSurveyLastDate">-</span>
+              </div>
+              
+              <div class="b-survey-detail-row">
+                <span class="b-survey-label">Status:</span>
+                <span class="b-survey-value" id="bSurveySiteCondition">-</span>
+              </div>
+              
+              <div class="b-survey-detail-row">
+                <span class="b-survey-label">Anbefalt gjennomføring:</span>
+                <span class="b-survey-value" id="bSurveyRecommendedDate">-</span>
+              </div>
+              
+              <div class="b-survey-detail-row">
+                <span class="b-survey-label">Dager til frist:</span>
+                <span class="b-survey-value" id="bSurveyDaysUntilDeadline">-</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2.4 TIDSLINJE (Timeline - Data Moat) -->
+        <section class="timeline-sidebar" id="timelinePanel">
+          <h3>Tidslinje (historikk)</h3>
+          <div class="timeline-subtitle">Alle båtbesøk og risikoendringer</div>
+          <div id="timelineList" class="timeline-container">
+            <div class="timeline-empty">Velg et anlegg</div>
+          </div>
+        </section>
+
+        <!-- 2.5 BESOKSHISTORIKK (BATER) -->
+        <section class="visits-sidebar" id="visitsPanel">
+          <h3>🧾 Besokshistorikk (48 timer)</h3>
+          <div id="visitsList" class="list-container">
+            <p class="no-data">Velg et anlegg for a se besok</p>
+          </div>
+        </section>
+
+        <!-- 3. ANLEGG INNENFOR 15 KM MED SMITTE -->
+        <section class="nearby-infected-sidebar" id="nearbyInfectedPanel">
+          <h3 id="nearbyInfectedHeader"><span class="section-title">Smittede anlegg (15 km)</span></h3>
+          <div id="nearbyInfectedList" class="list-container">
+            <p class="no-data">Velg et anlegg for å se smittede i området</p>
+          </div>
+        </section>
+
+        <!-- 3.2 ORANSJE (BARENTSWATCH RISIKO) INNENFOR 15 KM -->
+        <section class="barentswatch-risk-sidebar" id="barentsWatchRiskPanel">
+          <h3 id="barentsWatchRiskHeader"><span class="section-title">BarentsWatch-risiko (15 km)</span></h3>
+          <div id="barentsWatchRiskList" class="list-container">
+            <p class="no-data">Velg et anlegg for å se risikofasiliteter (Høy/Ekstrem)</p>
+          </div>
+        </section>
+
+        <!-- 3.3 NÆRLIGGENDE LUSENIVÅ -->
+        <section class="nearby-lice-sidebar" id="nearbyLicePanel">
+          <h3 id="nearbyLiceHeader"><span class="section-title">Nærliggende lusenivå (15 km)</span></h3>
+          <div id="nearbyLiceList" class="list-container">
+            <p class="no-data">Velg et anlegg for å se lusedata i nærheten</p>
+          </div>
+        </section>
+
+        <!-- 3.4 GULE (LOKAL SMITTERADIUS) INNENFOR 10 KM AF VALGT ANLEGG -->
+        <section class="local-smitte-radius-sidebar" id="localSmitteRadiusPanel">
+          <h3 id="localSmitteRadiusHeader"><span class="section-title">Lokal smitteradius (10 km)</span></h3>
+          <div id="localSmitteRadiusList" class="list-container">
+            <p class="no-data">Slå på 'Lokal smitteradius' for å se anlegg innenfor 10 km fra smittet</p>
+          </div>
+        </section>
+
+        <!-- 4. NÆRLIGGENDE BÅTER (LIVE AIS) -->
+        <section class="nearby-vessels-risk-sidebar" id="nearbyVesselsRiskPanel">
+          <h3>Nærliggende båter (live AIS)</h3>
+          <p class="vessel-risk-note">
+            Som hovedregel vises båter som nøytrale (grå). Når beregnet karantenetid etter besøk på smittet anlegg
+            ikke er innfridd (fra GPS/AIS og karantenelogikk), markeres de som 🟡/🟠/🔴 etter alvorlighetsgrad.
+            Båter som bruker båtsiden til å bekrefte fullført karantene kan bli markert som grønne, men dette vil
+            normalt være et mindretall.
+          </p>
+          <div class="vessel-risk-legend-row">
+            <span><span class="legend-dot boat-unknown"></span> Grå: ukjent/nøytral</span>
+            <span><span class="legend-dot boat-cleared"></span> Grønn: karantene innfridd</span>
+            <span><span class="legend-dot boat-risk"></span> Gul/oransje/rød: karantene ikke innfridd</span>
+          </div>
+          <div id="nearbyVesselsRiskList" class="list-container">
+            <p class="no-data">Ingen båter detektert i området</p>
+          </div>
+        </section>
+
+        <!-- 4.1 VESSEL ARRIVAL RISK (MOVED TO BETA BUTTON) -->
+        <!-- This section now only displays in "Ruteplanlegger BETA" modal to avoid confusion with live AIS data -->
+        <section class="vessel-arrival-risk-sidebar is-hidden" id="vesselArrivalRiskPanel">
+          <h3>Båter som ankommer (BETA)</h3>
+          <div id="vesselArrivalRiskCritical" class="risk-alerts-container"></div>
+          <div id="vesselArrivalRiskCaution" class="risk-alerts-container"></div>
+          <div id="vesselArrivalRiskSummary" class="list-container">
+            <p class="no-data">Laster risiko-data...</p>
+          </div>
+        </section>
+
+        <!-- 5. RISIKOFAKTORER -->
+        <section class="factors-section-sidebar">
+          <h3>Risikofaktorer</h3>
+          <table class="factors-table-sidebar" id="factorsTable">
+            <tbody id="factorsBody">
+              <tr><td>Velg anlegg</td><td>-</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- 6. HANDLINGER -->
+        <section class="actions-section-sidebar">
+          <h3>Handlinger</h3>
+          <div class="actions-column">
+            <button class="action-btn-small" id="btnLogEvent" disabled title="Logg en ny hendelse for valgt anlegg">Logg hendelse</button>
+            <button class="action-btn-small" id="btnSendAlert" disabled title="Send varsel til relevante båter">Send varsel</button>
+            <button class="action-btn-small" id="btnSetQuarantine" disabled title="Opprett karanteneperiode for valgt anlegg">Karantene</button>
+            <button class="action-btn-small" id="btnGenerateReport" disabled title="Last ned tekstrapport for valgt anlegg">Rapport</button>
+            <button class="action-btn-small route-planner-beta-btn" id="btnRoutePlannerBeta" onclick="showRoutePlannerWarnings()" title="Åpne betavisning for ruteplanlegging">Ruteplanlegger BETA</button>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Map container initialization script -->
+  <script>
+    // Placeholder for initial state
+    document.addEventListener('DOMContentLoaded', function() {
+      // Will be initialized by app.js
+    });
+  </script>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="risk-explanation.js"></script>
+  <script src="facility-data.js"></script>
+  <script src="facility-map.js"></script>
+  <script src="facility-logic.js"></script>
+  <script src="facility-calendar.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

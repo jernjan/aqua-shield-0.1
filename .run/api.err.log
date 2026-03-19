@@ -1,0 +1,373 @@
+INFO:     Started server process [19448]
+INFO:     Waiting for application startup.
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detector initialized
+INFO:src.api.prediction_scheduler:\u2705 Prediction scheduler started (predictions: 1h, validation: 24h, AIS tracking: 15min)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.4s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.9s)
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 2, Risk zone visits: 6, 10km proximity: 0 (1.0s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 2, Risk zone visits: 6, 10km proximity: 0 (0.9s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 2, Risk zone visits: 6, 10km proximity: 0 (1.0s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 2, Risk zone visits: 6, 10km proximity: 0 (1.1s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.8s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.6s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 2, Risk zone visits: 6, 10km proximity: 0 (1.1s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257186000 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 2, Risk zone visits: 6, 10km proximity: 0 (1.9s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 2, Risk zone visits: 6, 10km proximity: 0 (1.1s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 2, Risk zone visits: 6, 10km proximity: 0 (1.0s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.5s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.1s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.0s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 258200000 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (0.9s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.6s)
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257644000: 1363 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257644000 from Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.0s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.4s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.1s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.0s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.0s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.1s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 6, 10km proximity: 0 (1.6s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.2s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.4s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 6, 10km proximity: 0 (0.9s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 6, 10km proximity: 0 (0.9s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 258031000 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 6, 10km proximity: 0 (1.0s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 6, 10km proximity: 0 (1.0s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.5s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.9s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 6, 10km proximity: 0 (1.0s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 6, 10km proximity: 0 (1.1s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.0s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (0.9s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.6s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.6s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.1s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 244140388 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.8s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.1s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.1s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (4.5s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.9s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.1s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.1s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (2.1s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (0.9s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+ERROR:src.api.prediction_scheduler:Fatal error in run_predictions: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\requests\adapters.py", line 644, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 325, in run_predictions
+    facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 64, in _request_with_facilities_token
+    token = self._get_facilities_token()
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 45, in _get_facilities_token
+    self._facilities_token = self._get_token(
+                             ~~~~~~~~~~~~~~~^
+        self.facilities_client_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.facilities_client_secret,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "api"
+        ^^^^^
+    )
+    ^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 27, in _get_token
+    response = requests.post(
+        self.token_endpoint,
+    ...<5 lines>...
+        }
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\requests\adapters.py", line 677, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 6, 10km proximity: 0 (1.0s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 7, 10km proximity: 0 (1.1s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 7, 10km proximity: 0 (0.9s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257403000 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 7, 10km proximity: 0 (2.0s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 311001327 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.7s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.3s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 8, 10km proximity: 0 (1.0s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 8, 10km proximity: 0 (1.1s)
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\requests\adapters.py", line 644, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 7821, in get_risk_correlations
+    vessels_raw = bw.get_ais_vessels(limit=500)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 294, in get_ais_vessels
+    response = self._request_with_ais_token("GET", url, timeout=45, stream=False)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 80, in _request_with_ais_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\.venv\Lib\site-packages\requests\adapters.py", line 677, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 8, 10km proximity: 0 (1.2s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 1, Risk zone visits: 8, 10km proximity: 0 (1.1s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.5s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.2s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 8, 10km proximity: 0 (1.1s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 8, 10km proximity: 0 (1.1s)

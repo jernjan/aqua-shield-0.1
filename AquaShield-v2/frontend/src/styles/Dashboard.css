@@ -1,0 +1,338 @@
+.dashboard {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.dashboard-header {
+  background: linear-gradient(135deg, #0066cc 0%, #004fa3 100%);
+  color: white;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.header-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.current-user {
+  color: white;
+  font-weight: 500;
+}
+
+.dashboard-info {
+  background-color: #e8f4f8;
+  border-left: 4px solid #0066cc;
+  padding: 12px 20px;
+  margin: 0;
+  font-size: 14px;
+  color: #004fa3;
+}
+
+.error-banner {
+  background-color: #fff5f5;
+  border-left: 4px solid #dc3545;
+  padding: 12px 20px;
+  margin: 20px;
+  color: #dc3545;
+  border-radius: 4px;
+}
+
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dashboard-section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-section h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 18px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.facilities-list,
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Facility Cards - UPDATED FOR PREDICTIVE MODEL */
+.facility-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 16px;
+  background-color: #fafafa;
+  transition: all 0.3s ease;
+}
+
+.facility-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.facility-risk-green {
+  border-left: 4px solid #28a745;
+}
+
+.facility-risk-yellow {
+  border-left: 4px solid #ffc107;
+  background-color: #fffbf0;
+}
+
+.facility-risk-red {
+  border-left: 4px solid #dc3545;
+  background-color: #fff5f5;
+}
+
+.facility-risk-monitored {
+  border-left: 4px solid #6c757d;
+  background-color: #f8f9fa;
+}
+
+.facility-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.facility-card h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.facility-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 12px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.facility-risk-factors {
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 4px;
+  padding: 12px;
+  margin: 12px 0;
+  font-size: 13px;
+}
+
+.facility-risk-factors strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.facility-risk-factors ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.facility-risk-factors li {
+  margin: 4px 0;
+  color: #555;
+}
+
+.facility-source {
+  display: block;
+  margin-top: 12px;
+  color: #999;
+  font-size: 12px;
+}
+
+/* Alert Cards - UPDATED FOR PREDICTIVE ALERTS */
+.alert-item {
+  border-left: 4px solid #999;
+  padding: 14px;
+  background-color: #fafafa;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.alert-item-red {
+  border-left-color: #dc3545;
+  background-color: #fff5f5;
+}
+
+.alert-item-yellow {
+  border-left-color: #ffc107;
+  background-color: #fffbf0;
+}
+
+.alert-item-green {
+  border-left-color: #28a745;
+  background-color: #f5fff5;
+}
+
+.alert-item.is-read {
+  opacity: 0.6;
+}
+
+.alert-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.alert-header h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.alert-message {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.4;
+}
+
+.alert-details {
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 12px;
+}
+
+.alert-details strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.alert-details ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.alert-details li {
+  margin: 3px 0;
+  color: #555;
+}
+
+.alert-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #999;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.empty-state {
+  text-align: center;
+  color: #999;
+  padding: 30px 20px;
+  font-size: 14px;
+}
+
+.dashboard-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  font-size: 16px;
+  color: #666;
+}
+
+/* Badge styles */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-red {
+  background-color: #dc3545;
+  color: white;
+}
+
+.badge-yellow {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.badge-green {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-monitored {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Button styles */
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: #0066cc;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #004fa3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 11px;
+}
+

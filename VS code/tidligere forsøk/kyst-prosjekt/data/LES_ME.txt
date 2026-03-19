@@ -1,0 +1,1 @@
+Legg alle bølgedata og andre datafiler i denne mappen.

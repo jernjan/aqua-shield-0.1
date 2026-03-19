@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FeelAI – prototype</title>
+  <style>
+    :root{--bg:#0b0f14;--card:#121821;--muted:#7b8a9a;--accent:#4fd1c5;--accent2:#60a5fa;--text:#e6edf3}
+    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+    body{margin:0;background:linear-gradient(180deg,#0b0f14,#0e1420);color:var(--text)}
+    header{position:sticky;top:0;background:rgba(11,15,20,.8);backdrop-filter:blur(8px);border-bottom:1px solid #1f2937}
+    .wrap{max-width:940px;margin:0 auto;padding:20px}
+    h1{font-size:26px;margin:0}
+    .card{background:var(--card);border:1px solid #1f2a37;border-radius:16px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+    .muted{color:var(--muted)}
+    .scenario{font-size:20px;margin:8px 0 2px}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:#0f172a;border:1px solid #233044;border-radius:999px;padding:6px 10px}
+    input[type=range]{accent-color:var(--accent);width:180px}
+    .feel{display:grid;grid-template-columns:120px 1fr auto;gap:8px;align-items:center;padding:8px 10px;border-radius:10px}
+    .feel:nth-child(odd){background:rgba(255,255,255,.02)}
+    .btns{display:flex;gap:10px;justify-content:space-between;margin-top:16px}
+    .btn{background:linear-gradient(90deg,var(--accent),var(--accent2));border:none;color:#06111a;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer}
+    .btn.secondary{background:#101826;color:var(--text);border:1px solid #2a3c50}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .hide{display:none}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid #223045;padding:8px;text-align:left}
+    .tag{font-size:12px;color:#a3b2c2}
+    footer{color:#90a3b8;font-size:12px;margin:24px 0}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap row" style="justify-content:space-between">
+      <h1>FeelAI – prototype</h1>
+      <div class="muted">0–9 skala • anonymt lokalt • demo</div>
+    </div>
+  </header>
+  <main class="wrap">
+    <section id="intro" class="card">
+      <h2 style="margin:0 0 8px">Velkommen 👋</h2>
+      <p>Du får ett scenario om gangen. Ranger hvor sterkt hver følelse treffer (0–9). Etterpå ser du sammenligning mot en enkel <b>AI‑baseline</b> og kan laste ned data (<i>CSV</i>).</p>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" onclick="start()">Start</button>
+        <button class="btn secondary" onclick="seedDemo()">Fyll med demo‑svar</button>
+      </div>
+      <p class="tag">NB: Denne prototypen kjører helt i nettleseren din og lagrer kun i <code>localStorage</code>.</p>
+    </section>
+
+    <section id="runner" class="card hide">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <div class="tag">Scenario <span id="idx">1</span>/<span id="total"></span></div>
+          <div id="scenario" class="scenario"></div>
+        </div>
+        <div class="pill"><span>Følelser:</span><b>10</b><span class="muted">• skala 0–9</span></div>
+      </div>
+      <div id="feelings"></div>
+      <div class="btns">
+        <button class="btn secondary" onclick="prev()">Tilbake</button>
+        <button class="btn" onclick="next()">Neste</button>
+      </div>
+    </section>
+
+    <section id="results" class="grid hide">
+      <div class="card">
+        <h3 style="margin-top:0">Oppsummering</h3>
+        <p>Under ser du gjennomsnittet av dine svar per følelse sammenlignet med en enkel AI‑baseline.</p>
+        <table id="summaryTbl">
+          <thead><tr><th>Følelse</th><th>Ditt snitt</th><th>AI‑baseline</th><th>Avvik</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="row" style="margin-top:12px">
+          <button class="btn" onclick="downloadCSV()">Last ned CSV</button>
+          <button class="btn secondary" onclick="resetAll()">Start på nytt</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Dine rådata</h3>
+        <table id="rawTbl">
+          <thead><tr id="rawHead"></tr></thead>
+          <tbody id="rawBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>© 2025 [Ditt Navn] – All rights reserved • FeelAI prototype (privat eierskap).</footer>
+  </main>
+
+  <script>
+    // --- Konfig ---
+    const FEELINGS = ["Glede","Sorg","Stress","Sinne","Skam","Lettelse","Overraskelse","Stolthet","Skuffelse","Bekymring"];
+
+    const SCENARIOS = [
+      "Du mister mobilen i regnet.",
+      "En venn glemmer bursdagen din.",
+      "Du får uventet ros på jobben.",
+      "Du blir invitert til en fest i siste liten.",
+      "Du søler kaffe foran mange mennesker.",
+      "En kollega tar æren for noe du har gjort.",
+      "Du får en melding fra en gammel venn.",
+      "Du mister bussen rett foran deg.",
+      "Du finner en 200‑lapp på gata.",
+      "En fremmed smiler til deg."
+    ];
+
+    // Enkel AI‑baseline (kun for demo). Verdier 0–9 per følelse per scenario.
+    // Disse er håndsatt grovt for å gi en synlig forskjell – i ekte app hentes dette fra modell.
+    const AI_BASELINE = {
+      "Du mister mobilen i regnet.":            {Glede:1,Sorg:3,Stress:6,Sinne:3,Skam:2,Lettelse:0,Overraskelse:2,Stolthet:0,Skuffelse:5,Bekymring:6},
+      "En venn glemmer bursdagen din.":        {Glede:0,Sorg:5,Stress:3,Sinne:2,Skam:1,Lettelse:0,Overraskelse:2,Stolthet:0,Skuffelse:6,Bekymring:3},
+      "Du får uventet ros på jobben.":         {Glede:7,Sorg:0,Stress:2,Sinne:0,Skam:0,Lettelse:5,Overraskelse:3,Stolthet:6,Skuffelse:0,Bekymring:0},
+      "Du blir invitert til en fest i siste liten.": {Glede:6,Sorg:0,Stress:3,Sinne:0,Skam:1,Lettelse:2,Overraskelse:3,Stolthet:2,Skuffelse:0,Bekymring:1},
+      "Du søler kaffe foran mange mennesker.":  {Glede:0,Sorg:1,Stress:6,Sinne:2,Skam:6,Lettelse:0,Overraskelse:2,Stolthet:0,Skuffelse:4,Bekymring:2},
+      "En kollega tar æren for noe du har gjort.": {Glede:0,Sorg:2,Stress:4,Sinne:6,Skam:3,Lettelse:0,Overraskelse:2,Stolthet:0,Skuffelse:6,Bekymring:4},
+      "Du får en melding fra en gammel venn.":  {Glede:6,Sorg:0,Stress:0,Sinne:0,Skam:0,Lettelse:4,Overraskelse:3,Stolthet:2,Skuffelse:0,Bekymring:0},
+      "Du mister bussen rett foran deg.":       {Glede:0,Sorg:0,Stress:5,Sinne:3,Skam:1,Lettelse:0,Overraskelse:2,Stolthet:0,Skuffelse:5,Bekymring:3},
+      "Du finner en 200‑lapp på gata.":        {Glede:7,Sorg:0,Stress:0,Sinne:0,Skam:0,Lettelse:3,Overraskelse:4,Stolthet:2,Skuffelse:0,Bekymring:0},
+      "En fremmed smiler til deg.":            {Glede:5,Sorg:0,Stress:0,Sinne:0,Skam:0,Lettelse:2,Overraskelse:2,Stolthet:2,Skuffelse:0,Bekymring:0}
+    };
+
+    // --- Tilstand ---
+    let idx=0;
+    const answers = JSON.parse(localStorage.getItem('feelai_answers')||'{}');
+
+    function start(){
+      document.getElementById('intro').classList.add('hide');
+      document.getElementById('runner').classList.remove('hide');
+      document.getElementById('total').textContent = SCENARIOS.length;
+      render();
+    }
+
+    function seedDemo(){
+      // legg inn tilfeldige (men plausible) tall for å kunne vise resultater raskt
+      SCENARIOS.forEach(s=>{
+        answers[s] = {};
+        FEELINGS.forEach(f=>{
+          const base = (AI_BASELINE[s]||{})[f]??0;
+          // menneske rundt baseline ±2, med klipp 0..9
+          const v = Math.max(0, Math.min(9, Math.round(base + (Math.random()*4-2))));
+          answers[s][f]=v;
+        });
+      });
+      localStorage.setItem('feelai_answers', JSON.stringify(answers));
+      showResults();
+    }
+
+    function render(){
+      const s = SCENARIOS[idx];
+      document.getElementById('idx').textContent = idx+1;
+      document.getElementById('scenario').textContent = s;
+
+      const wrap = document.getElementById('feelings');
+      wrap.innerHTML = '';
+      FEELINGS.forEach(f=>{
+        const row = document.createElement('div');
+        row.className='feel';
+        const label = document.createElement('div'); label.textContent=f;
+        const slider = document.createElement('input');
+        slider.type='range'; slider.min=0; slider.max=9; slider.step=1;
+        slider.value = (answers[s]?.[f] ?? 0);
+        slider.oninput = ()=>{
+          const val = Number(slider.value);
+          if(!answers[s]) answers[s] = {};
+          answers[s][f] = val;
+          localStorage.setItem('feelai_answers', JSON.stringify(answers));
+          valEl.textContent = val;
+        };
+        const valEl = document.createElement('div'); valEl.textContent = slider.value;
+        row.append(label, slider, valEl);
+        wrap.append(row);
+      });
+    }
+
+    function next(){
+      if(idx < SCENARIOS.length-1){ idx++; render(); }
+      else { showResults(); }
+    }
+    function prev(){ if(idx>0){ idx--; render(); } }
+
+    function showResults(){
+      document.getElementById('runner').classList.add('hide');
+      document.getElementById('results').classList.remove('hide');
+      // Summary per følelse
+      const sums = {}; const counts={};
+      FEELINGS.forEach(f=>{sums[f]=0;counts[f]=0});
+      SCENARIOS.forEach(s=>{
+        FEELINGS.forEach(f=>{ if(answers[s]&&typeof answers[s][f]==='number'){sums[f]+=answers[s][f];counts[f]++;} })
+      });
+      const tbody = document.querySelector('#summaryTbl tbody');
+      tbody.innerHTML='';
+      FEELINGS.forEach(f=>{
+        const you = counts[f]? (sums[f]/counts[f]) : 0;
+        // AI-baseline snitt: snitt av AI verdier over scenarioene
+        let aiSum=0, aiCnt=0; SCENARIOS.forEach(s=>{ const v=(AI_BASELINE[s]||{})[f]; if(typeof v==='number'){aiSum+=v;aiCnt++;} });
+        const ai = aiCnt? aiSum/aiCnt : 0;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${f}</td><td>${you.toFixed(1)}</td><td>${ai.toFixed(1)}</td><td>${Math.abs(you-ai).toFixed(1)}</td>`;
+        tbody.append(tr);
+      });
+
+      // Raw table
+      const head = document.getElementById('rawHead');
+      head.innerHTML = '<th>Scenario</th>' + FEELINGS.map(f=>`<th>${f}</th>`).join('') + FEELINGS.map(f=>`<th>AI:${f}</th>`).join('');
+      const body = document.getElementById('rawBody'); body.innerHTML='';
+      SCENARIOS.forEach(s=>{
+        const tr = document.createElement('tr');
+        let html = `<td>${s}</td>`;
+        FEELINGS.forEach(f=>{ html += `<td>${answers[s]?.[f] ?? ''}</td>`; });
+        FEELINGS.forEach(f=>{ html += `<td>${(AI_BASELINE[s]||{})[f] ?? ''}</td>`; });
+        tr.innerHTML = html; body.append(tr);
+      });
+    }
+
+    function downloadCSV(){
+      const cols = ['Scenario',...FEELINGS.map(f=>'Din_'+f),...FEELINGS.map(f=>'AI_'+f)];
+      const rows = [cols.join(',')];
+      SCENARIOS.forEach(s=>{
+        const a = FEELINGS.map(f=> (answers[s]?.[f] ?? '') );
+        const b = FEELINGS.map(f=> (AI_BASELINE[s]?.[f] ?? '') );
+        rows.push([`"${s.replaceAll('"','\"')}"`,...a,...b].join(','));
+      });
+      const blob = new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='feelai_data.csv'; a.click(); URL.revokeObjectURL(url);
+    }
+
+    function resetAll(){
+      localStorage.removeItem('feelai_answers');
+      location.reload();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: kyst-pilot-lite
+    env: static
+    rootDir: "14.04. NY BUILD/pilot-lite"
+    buildCommand: ""
+    staticPublishPath: .
+    pullRequestPreviewsEnabled: false

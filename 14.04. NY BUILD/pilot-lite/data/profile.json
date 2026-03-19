@@ -1,0 +1,2077 @@
+{
+  "profileName": "Masoval + Froy Pilot",
+  "createdAt": "2026-03-12",
+  "scope": {
+    "nearbyFacilityRadiusKm": 20.0,
+    "maxVessels": 100,
+    "maxFacilities": 0,
+    "externalFacilityCompanyId": "nearby-external"
+  },
+  "companies": [
+    {
+      "id": "froy",
+      "name": "FrÃ¸y Gruppen",
+      "role": "Vessel Operator"
+    },
+    {
+      "id": "masoval",
+      "name": "MÃ¥sÃ¸val",
+      "role": "Facility Operator"
+    },
+    {
+      "id": "nearby-external",
+      "name": "NÃ¦rliggende anlegg",
+      "role": "External Facility Operator"
+    }
+  ],
+  "vessels": [
+    {
+      "id": "froy-froey-257142900",
+      "name": "FROEY",
+      "companyId": "froy",
+      "mmsi": "257142900",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froey-257183400",
+      "name": "FROEY",
+      "companyId": "froy",
+      "mmsi": "257183400",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froey-259032670",
+      "name": "FROEY",
+      "companyId": "froy",
+      "mmsi": "259032670",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froey-challenger-258610000",
+      "name": "FROEY CHALLENGER",
+      "companyId": "froy",
+      "mmsi": "258610000",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": false
+    },
+    {
+      "id": "froy-froey-njord-257009680",
+      "name": "FROEY NJORD",
+      "companyId": "froy",
+      "mmsi": "257009680",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": false
+    },
+    {
+      "id": "froy-froeya-258024810",
+      "name": "FROEYA",
+      "companyId": "froy",
+      "mmsi": "258024810",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froeybanken-257470500",
+      "name": "FROEYBANKEN",
+      "companyId": "froy",
+      "mmsi": "257470500",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    },
+    {
+      "id": "froy-froeyfart-257208500",
+      "name": "FROEYFART",
+      "companyId": "froy",
+      "mmsi": "257208500",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    },
+    {
+      "id": "froy-froeygard-257092350",
+      "name": "FROEYGARD",
+      "companyId": "froy",
+      "mmsi": "257092350",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froeylaks-259027520",
+      "name": "FROEYLAKS",
+      "companyId": "froy",
+      "mmsi": "259027520",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froeyskarv-257743600",
+      "name": "FROEYSKARV",
+      "companyId": "froy",
+      "mmsi": "257743600",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froeytrans-258230000",
+      "name": "FROEYTRANS",
+      "companyId": "froy",
+      "mmsi": "258230000",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    },
+    {
+      "id": "froy-bas",
+      "name": "FROY BAS",
+      "companyId": "froy",
+      "mmsi": "257017390",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": true
+    },
+    {
+      "id": "froy-froy-fighter-257916600",
+      "name": "FROY FIGHTER",
+      "companyId": "froy",
+      "mmsi": "257916600",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": false
+    },
+    {
+      "id": "froy-froy-finnmark-257059140",
+      "name": "FROY FINNMARK",
+      "companyId": "froy",
+      "mmsi": "257059140",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froy-harvest-257170000",
+      "name": "FROY HARVEST",
+      "companyId": "froy",
+      "mmsi": "257170000",
+      "type": "BrÃ¸nnbÃ¥t",
+      "category": "BrÃ¸nnbÃ¥t",
+      "favorite": false
+    },
+    {
+      "id": "froy-froy-hild-258002430",
+      "name": "FROY HILD",
+      "companyId": "froy",
+      "mmsi": "258002430",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": false
+    },
+    {
+      "id": "froy-froy-junior-257096170",
+      "name": "FROY JUNIOR",
+      "companyId": "froy",
+      "mmsi": "257096170",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": false
+    },
+    {
+      "id": "froy-leader",
+      "name": "FROY LEADER",
+      "companyId": "froy",
+      "mmsi": "259030410",
+      "type": "BrÃ¸nnbÃ¥t",
+      "category": "BrÃ¸nnbÃ¥t",
+      "favorite": true
+    },
+    {
+      "id": "froy-master",
+      "name": "FROY MASTER",
+      "companyId": "froy",
+      "mmsi": "259027590",
+      "type": "BrÃ¸nnbÃ¥t",
+      "category": "BrÃ¸nnbÃ¥t",
+      "favorite": true
+    },
+    {
+      "id": "froy-neptun",
+      "name": "FROY NEPTUN",
+      "companyId": "froy",
+      "mmsi": "257088160",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": true
+    },
+    {
+      "id": "froy-froy-nordkapp-259000410",
+      "name": "FROY NORDKAPP",
+      "companyId": "froy",
+      "mmsi": "259000410",
+      "type": "BrÃ¸nnbÃ¥t",
+      "category": "BrÃ¸nnbÃ¥t",
+      "favorite": false
+    },
+    {
+      "id": "froy-ocean",
+      "name": "FROY OCEAN",
+      "companyId": "froy",
+      "mmsi": "258031070",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": true
+    },
+    {
+      "id": "froy-saga",
+      "name": "FROY SAGA",
+      "companyId": "froy",
+      "mmsi": "257917000",
+      "type": "BrÃ¸nnbÃ¥t",
+      "category": "BrÃ¸nnbÃ¥t",
+      "favorite": true
+    },
+    {
+      "id": "froy-froy-server-257700800",
+      "name": "FROY SERVER",
+      "companyId": "froy",
+      "mmsi": "257700800",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": false
+    },
+    {
+      "id": "froy-froy-skuld-257088720",
+      "name": "FROY SKULD",
+      "companyId": "froy",
+      "mmsi": "257088720",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": false
+    },
+    {
+      "id": "froy-stadt",
+      "name": "FROY STADT",
+      "companyId": "froy",
+      "mmsi": "257088090",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": true
+    },
+    {
+      "id": "froy-froy-supplier-259027820",
+      "name": "FROY SUPPLIER",
+      "companyId": "froy",
+      "mmsi": "259027820",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": false
+    },
+    {
+      "id": "froy-supporter",
+      "name": "FROY SUPPORTER",
+      "companyId": "froy",
+      "mmsi": "257133930",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": true
+    },
+    {
+      "id": "froy-froy-valkyrien-257171000",
+      "name": "FROY VALKYRIEN",
+      "companyId": "froy",
+      "mmsi": "257171000",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": false
+    },
+    {
+      "id": "froy-froya-257077100",
+      "name": "FROYA",
+      "companyId": "froy",
+      "mmsi": "257077100",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froya-257081000",
+      "name": "FROYA",
+      "companyId": "froy",
+      "mmsi": "257081000",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froya-257605000",
+      "name": "FROYA",
+      "companyId": "froy",
+      "mmsi": "257605000",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froyaferga-257306400",
+      "name": "FROYAFERGA",
+      "companyId": "froy",
+      "mmsi": "257306400",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    },
+    {
+      "id": "froy-froyanes-259028000",
+      "name": "FROYANES",
+      "companyId": "froy",
+      "mmsi": "259028000",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froyanes-junior-257489000",
+      "name": "FROYANES JUNIOR",
+      "companyId": "froy",
+      "mmsi": "257489000",
+      "type": "ServicefartÃ¸y",
+      "category": "ServicefartÃ¸y",
+      "favorite": false
+    },
+    {
+      "id": "froy-froybrand-258019240",
+      "name": "FROYBRAND",
+      "companyId": "froy",
+      "mmsi": "258019240",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    },
+    {
+      "id": "froy-froydis-257944800",
+      "name": "FROYDIS",
+      "companyId": "froy",
+      "mmsi": "257944800",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froydis-259004930",
+      "name": "FROYDIS",
+      "companyId": "froy",
+      "mmsi": "259004930",
+      "type": "FrÃ¸y-kandidat",
+      "category": "FrÃ¸y-kandidat",
+      "favorite": false
+    },
+    {
+      "id": "froy-froygutt-257956600",
+      "name": "FROYGUTT",
+      "companyId": "froy",
+      "mmsi": "257956600",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    },
+    {
+      "id": "froy-froyhav-258020350",
+      "name": "FROYHAV",
+      "companyId": "froy",
+      "mmsi": "258020350",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    },
+    {
+      "id": "froy-froylin-259026980",
+      "name": "FROYLIN",
+      "companyId": "froy",
+      "mmsi": "259026980",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    },
+    {
+      "id": "froy-froylys-257844600",
+      "name": "FROYLYS",
+      "companyId": "froy",
+      "mmsi": "257844600",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    },
+    {
+      "id": "froy-froymann-257123410",
+      "name": "FROYMANN",
+      "companyId": "froy",
+      "mmsi": "257123410",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    },
+    {
+      "id": "froy-froysjo-257493800",
+      "name": "FROYSJO",
+      "companyId": "froy",
+      "mmsi": "257493800",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    },
+    {
+      "id": "froy-froysprint-257000260",
+      "name": "FROYSPRINT",
+      "companyId": "froy",
+      "mmsi": "257000260",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    },
+    {
+      "id": "froy-froyvik-257029850",
+      "name": "FROYVIK",
+      "companyId": "froy",
+      "mmsi": "257029850",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    },
+    {
+      "id": "froy-froyvind-257518900",
+      "name": "FROYVIND",
+      "companyId": "froy",
+      "mmsi": "257518900",
+      "type": "Transport/logistikk",
+      "category": "Transport/logistikk",
+      "favorite": false
+    }
+  ],
+  "facilities": [
+    {
+      "id": "or-kristiansund",
+      "name": "Or",
+      "companyId": "masoval",
+      "municipality": "Kristiansund",
+      "localityNo": null,
+      "latitude": 63.1106,
+      "longitude": 7.7279,
+      "tags": [
+        "anlegg"
+      ]
+    },
+    {
+      "id": "kattholmen",
+      "name": "Kattholmen",
+      "companyId": "masoval",
+      "municipality": "Kristiansund",
+      "localityNo": null,
+      "latitude": 63.1032,
+      "longitude": 7.7247,
+      "tags": [
+        "anlegg"
+      ]
+    },
+    {
+      "id": "vartdalsfjorden",
+      "name": "Vartdalsfjorden",
+      "companyId": "masoval",
+      "municipality": "Vartdal",
+      "localityNo": null,
+      "latitude": 62.3242,
+      "longitude": 6.1273,
+      "tags": [
+        "anlegg"
+      ]
+    },
+    {
+      "id": "titran-smolt",
+      "name": "Titran",
+      "companyId": "masoval",
+      "municipality": "Titran",
+      "localityNo": null,
+      "latitude": 63.6764,
+      "longitude": 8.2961,
+      "tags": [
+        "smoltanlegg"
+      ]
+    },
+    {
+      "id": "froya-site-1",
+      "name": "FrÃ¸ya - Site 1",
+      "companyId": "masoval",
+      "municipality": "FrÃ¸ya",
+      "localityNo": null,
+      "latitude": 63.7218,
+      "longitude": 8.8324,
+      "tags": [
+        "anlegg"
+      ]
+    },
+    {
+      "id": "froya-site-2",
+      "name": "FrÃ¸ya - Site 2",
+      "companyId": "masoval",
+      "municipality": "FrÃ¸ya",
+      "localityNo": null,
+      "latitude": 63.7465,
+      "longitude": 8.7874,
+      "tags": [
+        "anlegg"
+      ]
+    },
+    {
+      "id": "hitra-main",
+      "name": "Hitra",
+      "companyId": "masoval",
+      "municipality": "Hitra",
+      "localityNo": null,
+      "latitude": 63.5645,
+      "longitude": 8.7723,
+      "tags": [
+        "slakteri",
+        "anlegg"
+      ]
+    },
+    {
+      "id": "hemne",
+      "name": "Hemne",
+      "companyId": "masoval",
+      "municipality": "Hemne",
+      "localityNo": null,
+      "latitude": 63.2891,
+      "longitude": 9.0895,
+      "tags": [
+        "anlegg"
+      ]
+    },
+    {
+      "id": "ulvoya",
+      "name": "UlvÃ¸ya",
+      "companyId": "masoval",
+      "municipality": "Hitra",
+      "localityNo": null,
+      "latitude": 63.5944,
+      "longitude": 8.9018,
+      "tags": [
+        "harvesting facility"
+      ]
+    },
+    {
+      "id": "reserve-site",
+      "name": "Reserve Site",
+      "companyId": "masoval",
+      "municipality": "Ukjent",
+      "localityNo": null,
+      "latitude": null,
+      "longitude": null,
+      "tags": [
+        "reserve"
+      ]
+    },
+    {
+      "id": "loc-24096",
+      "name": "VestseÃ¸ra",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "24096",
+      "latitude": 63.29535,
+      "longitude": 9.087754,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12361",
+      "name": "Bukkholmen S",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "12361",
+      "latitude": 63.72205,
+      "longitude": 8.86245,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12993",
+      "name": "LamÃ¸ya",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "12993",
+      "latitude": 63.73305,
+      "longitude": 8.854983,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-20815",
+      "name": "Slettvika",
+      "companyId": "nearby-external",
+      "municipality": "Ã˜RSTA",
+      "localityNo": "20815",
+      "latitude": 62.334,
+      "longitude": 6.157667,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-34417",
+      "name": "TaraskjÃ¦ra",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "34417",
+      "latitude": 63.704933,
+      "longitude": 8.86955,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12303",
+      "name": "Vartdal",
+      "companyId": "nearby-external",
+      "municipality": "Ã˜RSTA",
+      "localityNo": "12303",
+      "latitude": 62.3065,
+      "longitude": 6.092,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45109",
+      "name": "Skjelvika",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "45109",
+      "latitude": 63.664333,
+      "longitude": 8.343667,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12871",
+      "name": "Hogsnes",
+      "companyId": "nearby-external",
+      "municipality": "AVERÃ˜Y",
+      "localityNo": "12871",
+      "latitude": 63.093033,
+      "longitude": 7.675883,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-30377",
+      "name": "Hogsneset N",
+      "companyId": "nearby-external",
+      "municipality": "AVERÃ˜Y",
+      "localityNo": "30377",
+      "latitude": 63.099933,
+      "longitude": 7.670267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12986",
+      "name": "Storelva",
+      "companyId": "nearby-external",
+      "municipality": "Ã˜RSTA",
+      "localityNo": "12986",
+      "latitude": 62.300833,
+      "longitude": 6.080467,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-34437",
+      "name": "MÃ¥sskjÃ¦ra",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "34437",
+      "latitude": 63.745817,
+      "longitude": 8.881883,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45272",
+      "name": "TÃ¸fta",
+      "companyId": "nearby-external",
+      "municipality": "AVERÃ˜Y",
+      "localityNo": "45272",
+      "latitude": 63.110833,
+      "longitude": 7.646667,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-33957",
+      "name": "HofsÃ¸ya",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "33957",
+      "latitude": 63.7224,
+      "longitude": 8.9145,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45125",
+      "name": "SmedvÃ¥gen",
+      "companyId": "nearby-external",
+      "municipality": "AVERÃ˜Y",
+      "localityNo": "45125",
+      "latitude": 63.0774,
+      "longitude": 7.660317,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45126",
+      "name": "SmedvÃ¥gen II",
+      "companyId": "nearby-external",
+      "municipality": "AVERÃ˜Y",
+      "localityNo": "45126",
+      "latitude": 63.075967,
+      "longitude": 7.654217,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13677",
+      "name": "TrÃ¸an BjÃ¸rklibukta",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "13677",
+      "latitude": 63.33155,
+      "longitude": 9.1231,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12348",
+      "name": "KÃ¥holmen",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12348",
+      "latitude": 63.617183,
+      "longitude": 8.994133,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12872",
+      "name": "Kattholmen",
+      "companyId": "nearby-external",
+      "municipality": "KRISTIANSUND",
+      "localityNo": "12872",
+      "latitude": 63.055333,
+      "longitude": 7.695317,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12407",
+      "name": "Flesa",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12407",
+      "latitude": 63.64485,
+      "longitude": 8.879067,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45236",
+      "name": "Langtaren",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "45236",
+      "latitude": 63.75285,
+      "longitude": 8.9278,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12366",
+      "name": "RaskjÃ¦ret",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "12366",
+      "latitude": 63.793617,
+      "longitude": 8.854567,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12370",
+      "name": "MÃ¥Ã¸ydraga",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "12370",
+      "latitude": 63.676433,
+      "longitude": 8.757283,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10240",
+      "name": "IlsÃ¸ya Ã˜",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "10240",
+      "latitude": 63.651975,
+      "longitude": 8.88687,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19015",
+      "name": "Stokkvika",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "19015",
+      "latitude": 63.333533,
+      "longitude": 9.180583,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12406",
+      "name": "Rauodden",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12406",
+      "latitude": 63.664533,
+      "longitude": 8.884083,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-38997",
+      "name": "IlsÃ¸ya 2",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "38997",
+      "latitude": 63.66275,
+      "longitude": 8.447833,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13503",
+      "name": "Heggvika",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "13503",
+      "latitude": 63.610733,
+      "longitude": 9.0523,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12870",
+      "name": "Leite",
+      "companyId": "nearby-external",
+      "municipality": "AVERÃ˜Y",
+      "localityNo": "12870",
+      "latitude": 63.03515,
+      "longitude": 7.676817,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-34837",
+      "name": "DolmÃ¸y",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "34837",
+      "latitude": 63.654417,
+      "longitude": 8.77675,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12428",
+      "name": "TverrvÃ¥gen",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "12428",
+      "latitude": 63.728633,
+      "longitude": 8.62945,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10183",
+      "name": "Barstadvik",
+      "companyId": "nearby-external",
+      "municipality": "Ã˜RSTA",
+      "localityNo": "10183",
+      "latitude": 62.359983,
+      "longitude": 6.263517,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45087",
+      "name": "Aukan",
+      "companyId": "nearby-external",
+      "municipality": "AVERÃ˜Y",
+      "localityNo": "45087",
+      "latitude": 63.0603,
+      "longitude": 7.594283,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45158",
+      "name": "Fagerhamn",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "45158",
+      "latitude": 63.785267,
+      "longitude": 8.927783,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12879",
+      "name": "Endreset",
+      "companyId": "nearby-external",
+      "municipality": "KRISTIANSUND",
+      "localityNo": "12879",
+      "latitude": 63.029683,
+      "longitude": 7.713733,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12308",
+      "name": "BjÃ¸rndal",
+      "companyId": "nearby-external",
+      "municipality": "Ã˜RSTA",
+      "localityNo": "12308",
+      "latitude": 62.274883,
+      "longitude": 6.00285,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-20559",
+      "name": "LangskjÃ¦ra",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "20559",
+      "latitude": 63.8225,
+      "longitude": 8.75505,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12357",
+      "name": "AursÃ¸ysva",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "12357",
+      "latitude": 63.801967,
+      "longitude": 8.910767,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-33557",
+      "name": "LangskjÃ¦ra II",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "33557",
+      "latitude": 63.821817,
+      "longitude": 8.743433,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12371",
+      "name": "KalvÃ¸ya",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12371",
+      "latitude": 63.651483,
+      "longitude": 8.7472,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-26535",
+      "name": "Jamnungen",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "26535",
+      "latitude": 63.798583,
+      "longitude": 8.64735,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45280",
+      "name": "Klovningan",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "45280",
+      "latitude": 63.827933,
+      "longitude": 8.771833,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-33817",
+      "name": "Orstranda",
+      "companyId": "nearby-external",
+      "municipality": "KRISTIANSUND",
+      "localityNo": "33817",
+      "latitude": 63.0345,
+      "longitude": 7.83515,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19875",
+      "name": "Or",
+      "companyId": "nearby-external",
+      "municipality": "KRISTIANSUND",
+      "localityNo": "19875",
+      "latitude": 63.039933,
+      "longitude": 7.850267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-32677",
+      "name": "Espnestaren",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "32677",
+      "latitude": 63.677883,
+      "longitude": 8.667,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10212",
+      "name": "Bogen",
+      "companyId": "nearby-external",
+      "municipality": "KRISTIANSUND",
+      "localityNo": "10212",
+      "latitude": 63.076783,
+      "longitude": 7.9046,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-14041",
+      "name": "EdÃ¸ya",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "14041",
+      "latitude": 63.65835,
+      "longitude": 8.694417,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-38777",
+      "name": "Hallarvik",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "38777",
+      "latitude": 63.647267,
+      "longitude": 8.699267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-33697",
+      "name": "Forrahammaren",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "33697",
+      "latitude": 63.350433,
+      "longitude": 9.23325,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-30137",
+      "name": "EdÃ¸ya II",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "30137",
+      "latitude": 63.65805,
+      "longitude": 8.683667,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-38597",
+      "name": "LangÃ¸y SÃ¸r",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "38597",
+      "latitude": 63.78455,
+      "longitude": 8.596083,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12380",
+      "name": "LangÃ¸ya KvalÃ¸ya",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "12380",
+      "latitude": 63.791967,
+      "longitude": 8.60175,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13570",
+      "name": "UlvÃ¦rholmen",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "13570",
+      "latitude": 63.598217,
+      "longitude": 9.116583,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-38537",
+      "name": "SynstÃ¸y-BremÃ¸ya",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "38537",
+      "latitude": 63.76675,
+      "longitude": 8.574683,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13720",
+      "name": "Ulvan",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "13720",
+      "latitude": 63.672233,
+      "longitude": 9.0329,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-26775",
+      "name": "FjÃ¸lvÃ¦ret Ã˜",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "26775",
+      "latitude": 63.819233,
+      "longitude": 8.636133,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-35437",
+      "name": "SkarvÃ¸ya",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "35437",
+      "latitude": 63.650517,
+      "longitude": 8.650533,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13573",
+      "name": "Kistvika",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "13573",
+      "latitude": 63.384,
+      "longitude": 9.171467,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12422",
+      "name": "LaksÃ¥vatnet LaksÃ¥vik",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12422",
+      "latitude": 63.471567,
+      "longitude": 8.678917,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-29697",
+      "name": "Hafsmo",
+      "companyId": "nearby-external",
+      "municipality": "ORKLAND",
+      "localityNo": "29697",
+      "latitude": 63.3667,
+      "longitude": 9.245217,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13887",
+      "name": "Reitholmen",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "13887",
+      "latitude": 63.617183,
+      "longitude": 9.1311,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-34777",
+      "name": "TÃ¸mmervÃ¥g",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "34777",
+      "latitude": 63.152867,
+      "longitude": 7.939883,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-27376",
+      "name": "Hendneset",
+      "companyId": "nearby-external",
+      "municipality": "AVERÃ˜Y",
+      "localityNo": "27376",
+      "latitude": 63.0573,
+      "longitude": 7.515133,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10204",
+      "name": "Hendneset",
+      "companyId": "nearby-external",
+      "municipality": "AVERÃ˜Y",
+      "localityNo": "10204",
+      "latitude": 63.0601,
+      "longitude": 7.511167,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19457",
+      "name": "Nordskag",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "19457",
+      "latitude": 63.71165,
+      "longitude": 8.5614,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12394",
+      "name": "Ã˜rnÃ¸ya",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "12394",
+      "latitude": 63.760017,
+      "longitude": 8.4477,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45238",
+      "name": "KrutÃ¸ya",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "45238",
+      "latitude": 63.6724,
+      "longitude": 8.612367,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12383",
+      "name": "OmsÃ¸yholman",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12383",
+      "latitude": 63.631967,
+      "longitude": 8.575567,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12392",
+      "name": "Lille TorsÃ¸y",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12392",
+      "latitude": 63.60615,
+      "longitude": 8.492133,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-25695",
+      "name": "Gjerde",
+      "companyId": "nearby-external",
+      "municipality": "ULSTEIN",
+      "localityNo": "25695",
+      "latitude": 62.259983,
+      "longitude": 5.929183,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12385",
+      "name": "LyngvÃ¦r Ã˜ II",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "12385",
+      "latitude": 63.80621,
+      "longitude": 8.567418,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-37437",
+      "name": "Fagerholmen",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "37437",
+      "latitude": 63.66395,
+      "longitude": 8.603167,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19195",
+      "name": "Korsholman",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "19195",
+      "latitude": 63.597217,
+      "longitude": 8.51575,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13249",
+      "name": "Sagelva",
+      "companyId": "nearby-external",
+      "municipality": "Ã˜RSTA",
+      "localityNo": "13249",
+      "latitude": 62.33795,
+      "longitude": 6.3815,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-28636",
+      "name": "Rataren",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "28636",
+      "latitude": 63.7813,
+      "longitude": 8.521533,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-37197",
+      "name": "Ruggstein",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "37197",
+      "latitude": 63.770083,
+      "longitude": 8.476033,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-39037",
+      "name": "Kvitingen Ved Grip",
+      "companyId": "nearby-external",
+      "municipality": "KRISTIANSUND",
+      "localityNo": "39037",
+      "latitude": 63.209833,
+      "longitude": 7.563767,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13572",
+      "name": "Badstuvika",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "13572",
+      "latitude": 63.533983,
+      "longitude": 9.1469,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-38357",
+      "name": "Holsneset",
+      "companyId": "nearby-external",
+      "municipality": "SULA",
+      "localityNo": "38357",
+      "latitude": 62.439917,
+      "longitude": 6.240267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-25315",
+      "name": "SkogsÃ¸ya",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "25315",
+      "latitude": 63.853817,
+      "longitude": 8.631517,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13727",
+      "name": "Svellungen",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "13727",
+      "latitude": 63.655783,
+      "longitude": 9.15525,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-14042",
+      "name": "Kattholmen",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "14042",
+      "latitude": 63.867683,
+      "longitude": 8.677683,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13964",
+      "name": "Belsvik",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "13964",
+      "latitude": 63.415633,
+      "longitude": 9.018025,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-22296",
+      "name": "GrÃ¸nset",
+      "companyId": "nearby-external",
+      "municipality": "GJEMNES",
+      "localityNo": "22296",
+      "latitude": 62.972017,
+      "longitude": 7.701983,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-33737",
+      "name": "OlausskjÃ¦ret",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "33737",
+      "latitude": 63.7917,
+      "longitude": 8.504717,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-35657",
+      "name": "Varden",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "35657",
+      "latitude": 63.635717,
+      "longitude": 9.186467,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-30257",
+      "name": "Hausan",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "30257",
+      "latitude": 63.458317,
+      "longitude": 8.955683,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12278",
+      "name": "Standal Y",
+      "companyId": "nearby-external",
+      "municipality": "Ã˜RSTA",
+      "localityNo": "12278",
+      "latitude": 62.2976,
+      "longitude": 6.411233,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45167",
+      "name": "Heggeset",
+      "companyId": "nearby-external",
+      "municipality": "AVERÃ˜Y",
+      "localityNo": "45167",
+      "latitude": 62.973417,
+      "longitude": 7.645567,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-26835",
+      "name": "PÃ¥lskjÃ¦ra",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "26835",
+      "latitude": 63.862833,
+      "longitude": 8.633517,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-15777",
+      "name": "OnsÃ¸yholmen",
+      "companyId": "nearby-external",
+      "municipality": "GJEMNES",
+      "localityNo": "15777",
+      "latitude": 62.96805,
+      "longitude": 7.7752,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-38797",
+      "name": "OlÃ¸ya N",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "38797",
+      "latitude": 63.852733,
+      "longitude": 8.591083,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45244",
+      "name": "HingsskjÃ¦ret",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "45244",
+      "latitude": 63.82505,
+      "longitude": 8.528333,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19995",
+      "name": "Hagahammaren",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "19995",
+      "latitude": 63.137917,
+      "longitude": 8.0306,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12302",
+      "name": "Tueneset",
+      "companyId": "nearby-external",
+      "municipality": "Ã…LESUND",
+      "localityNo": "12302",
+      "latitude": 62.465471,
+      "longitude": 6.096801,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-26155",
+      "name": "SlÃ¥ttholmen",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "26155",
+      "latitude": 63.447787,
+      "longitude": 8.958173,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12449",
+      "name": "TennÃ¸ya",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "12449",
+      "latitude": 63.805033,
+      "longitude": 8.4444,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45260",
+      "name": "Korshamn",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "45260",
+      "latitude": 63.441117,
+      "longitude": 8.595233,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12315",
+      "name": "FlÃ¸",
+      "companyId": "nearby-external",
+      "municipality": "ULSTEIN",
+      "localityNo": "12315",
+      "latitude": 62.400852,
+      "longitude": 5.851353,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10232",
+      "name": "Mannbruholmen",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "10232",
+      "latitude": 63.84705,
+      "longitude": 8.536867,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19115",
+      "name": "FuglÃ¸ya",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "19115",
+      "latitude": 63.475917,
+      "longitude": 9.109833,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45265",
+      "name": "Tjeldbergodden Biopark Vest",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "45265",
+      "latitude": 63.416,
+      "longitude": 8.7111,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-29616",
+      "name": "Tjeldbergodden Biopark",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "29616",
+      "latitude": 63.415567,
+      "longitude": 8.712267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-36877",
+      "name": "MunkskjÃ¦ra",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "36877",
+      "latitude": 63.819683,
+      "longitude": 8.408817,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45181",
+      "name": "Tjeldbergodden Ã˜st",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "45181",
+      "latitude": 63.41455,
+      "longitude": 8.702917,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45106",
+      "name": "Alida",
+      "companyId": "nearby-external",
+      "municipality": "VOLDA",
+      "localityNo": "45106",
+      "latitude": 62.186583,
+      "longitude": 5.982267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13177",
+      "name": "Skorilla",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "13177",
+      "latitude": 63.36715,
+      "longitude": 9.385333,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45183",
+      "name": "Tjeldbergodden Ã˜st 2",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "45183",
+      "latitude": 63.413983,
+      "longitude": 8.698367,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12415",
+      "name": "KjÃ¸rsvikbugen",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "12415",
+      "latitude": 63.410817,
+      "longitude": 8.728083,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19016",
+      "name": "StorskogÃ¸ya",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "19016",
+      "latitude": 63.506067,
+      "longitude": 9.19075,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-27436",
+      "name": "SolvÃ¦ret",
+      "companyId": "nearby-external",
+      "municipality": "SMÃ˜LA",
+      "localityNo": "27436",
+      "latitude": 63.256217,
+      "longitude": 7.854367,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-26135",
+      "name": "KjÃ¸rsvikgrunn",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "26135",
+      "latitude": 63.457717,
+      "longitude": 9.0756,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45189",
+      "name": "Storflua",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "45189",
+      "latitude": 63.8874,
+      "longitude": 8.950583,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-31557",
+      "name": "ValÃ¸yan",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "31557",
+      "latitude": 63.81835,
+      "longitude": 8.463817,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-35377",
+      "name": "Kveitskjeret",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "35377",
+      "latitude": 63.825033,
+      "longitude": 8.444633,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13243",
+      "name": "Sandvika",
+      "companyId": "nearby-external",
+      "municipality": "VOLDA",
+      "localityNo": "13243",
+      "latitude": 62.195667,
+      "longitude": 5.904417,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-36377",
+      "name": "Mork II",
+      "companyId": "nearby-external",
+      "municipality": "AVERÃ˜Y",
+      "localityNo": "36377",
+      "latitude": 62.9522,
+      "longitude": 7.569217,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-37537",
+      "name": "MÃ¥lÃ¸ysundet",
+      "companyId": "nearby-external",
+      "municipality": "HERÃ˜Y I MÃ˜RE OG ROMSDAL",
+      "localityNo": "37537",
+      "latitude": 62.2278,
+      "longitude": 5.82745,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12435",
+      "name": "GrÃ¸ttingsÃ¸y",
+      "companyId": "nearby-external",
+      "municipality": "FRÃ˜YA",
+      "localityNo": "12435",
+      "latitude": 63.87955,
+      "longitude": 8.547883,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-32597",
+      "name": "Fjordprakken",
+      "companyId": "nearby-external",
+      "municipality": "SMÃ˜LA",
+      "localityNo": "32597",
+      "latitude": 63.256517,
+      "longitude": 7.928067,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45182",
+      "name": "Batnfjorden",
+      "companyId": "nearby-external",
+      "municipality": "GJEMNES",
+      "localityNo": "45182",
+      "latitude": 62.931817,
+      "longitude": 7.7725,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45193",
+      "name": "Ladeberget 4",
+      "companyId": "nearby-external",
+      "municipality": "GISKE",
+      "localityNo": "45193",
+      "latitude": 62.502133,
+      "longitude": 6.138767,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-37517",
+      "name": "SkarvskjÃ¦ret",
+      "companyId": "nearby-external",
+      "municipality": "HERÃ˜Y I MÃ˜RE OG ROMSDAL",
+      "localityNo": "37517",
+      "latitude": 62.316,
+      "longitude": 5.74075,
+      "tags": [
+        "nearby-auto"
+      ]
+    }
+  ],
+  "calendarEvents": [
+    {
+      "id": "evt-001",
+      "title": "Planlagt servicebesÃ¸k",
+      "vesselId": "froy-saga",
+      "facilityId": "or-kristiansund",
+      "start": "2026-03-18T08:00:00+01:00",
+      "end": "2026-03-18T14:00:00+01:00",
+      "status": "planned"
+    },
+    {
+      "id": "evt-002",
+      "title": "Smoltleveranse",
+      "vesselId": "froy-supporter",
+      "facilityId": "titran-smolt",
+      "start": "2026-03-19T07:30:00+01:00",
+      "end": "2026-03-19T12:00:00+01:00",
+      "status": "planned"
+    },
+    {
+      "id": "evt-003",
+      "title": "Henting etter slakt",
+      "vesselId": "rubin",
+      "facilityId": "hitra-main",
+      "start": "2026-03-20T10:00:00+01:00",
+      "end": "2026-03-20T15:30:00+01:00",
+      "status": "planned"
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EKTE_API Modern Dashboard</title>
+    <style>
+        body { background: #f5f6fa; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; }
+        .container { max-width: 900px; margin: 32px auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 16px #0001; padding: 32px; }
+        h1 { text-align: center; color: #2356c5; margin-bottom: 32px; }
+        .nav { display: flex; justify-content: center; gap: 32px; margin-bottom: 32px; }
+        .nav button { background: #eaf0fb; border: none; border-radius: 8px; padding: 16px 32px; font-size: 1.1em; color: #2356c5; cursor: pointer; transition: background 0.2s; }
+        .nav button:hover { background: #d6e4fa; }
+        .api-section { margin-bottom: 32px; }
+        .api-section h2 { color: #2356c5; font-size: 1.2em; margin-bottom: 12px; }
+        .api-buttons { display: flex; gap: 12px; margin-bottom: 16px; }
+        .api-buttons button { background: #4a5cff; color: #fff; border: none; border-radius: 6px; padding: 8px 18px; font-size: 1em; cursor: pointer; transition: background 0.2s; }
+        .api-buttons button:hover { background: #2d3bb3; }
+        .status-row { margin-bottom: 8px; }
+        .risk-table { width: 100%; border-collapse: collapse; margin-top: 32px; }
+        .risk-table th, .risk-table td { border: 1px solid #e0e0e0; padding: 8px 10px; text-align: left; }
+        .risk-table th { background: #eaf0fb; color: #2356c5; }
+        .risk-table-row.high { background: #ffeaea; }
+        .risk-table-row.moderate { background: #fffbe5; }
+        .risk-table-row.low { background: #eafbe7; }
+        .risk-table-row { transition: background 0.2s; }
+        .vessel-list { margin-top: 24px; }
+        .vessel-list h3 { margin-bottom: 8px; color: #2356c5; }
+        .vessel-list ul { padding-left: 20px; }
+        .vessel-list li { margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EKTE_API Modern Dashboard</h1>
+        <div class="nav">
+            <button disabled>Facilities</button>
+            <button disabled>Fish Health</button>
+            <button disabled>Vessels</button>
+            <button disabled>System</button>
+        </div>
+        <div class="api-section">
+            <h2>Test API Endepunkter</h2>
+            <div class="api-buttons">
+                <button onclick="fetchAndShowFacilities()">Hent 5 anlegg</button>
+                <button onclick="fetchAndShowVessels()">Hent 5 fartøy</button>
+                <button onclick="fetchAndShowHealth()">Hent helsedata</button>
+                <button onclick="fetchAndShowStatus()">Systemstatus</button>
+            </div>
+            <div class="status-row"><span id="facilities-status"></span></div>
+            <div class="status-row"><span id="vessels-status"></span></div>
+            <div class="status-row"><span id="health-status"></span></div>
+            <div class="status-row"><span id="system-status"></span></div>
+        </div>
+        <table id="risk-table" class="risk-table"></table>
+        <div class="vessel-list" id="vessel-list"></div>
+    </div>
+    <!-- JS skal ikke ligge i head! -->
+    <script>
+const API_BASE = "http://127.0.0.1:8001";
+let riskAssessments = [];
+async function fetchAndShowRisk() {
+    const table = document.getElementById('risk-table');
+    table.innerHTML = '<tr><td>Laster risikovarsel...</td></tr>';
+    try {
+        const response = await fetch(`${API_BASE}/api/risk/assess?limit=10`);
+        const data = await response.json();
+        if (data.assessments && data.assessments.length > 0) {
+            riskAssessments = data.assessments;
+            let html = '<tr><th>Anlegg</th><th>Risikoscore</th><th>Nivå</th><th>Årsak</th><th>Avstand til nærmeste sykdom (km)</th><th>ILA</th><th>PD</th><th>Lusetall (voksne)</th></tr>';
+            html += data.assessments.map(row => {
+                let riskClass = (row.risk_level === 'High') ? 'high' : (row.risk_level === 'Moderate') ? 'moderate' : 'low';
+                return `<tr class="risk-table-row ${riskClass}"><td>${row.facility_name}</td><td>${row.risk_score}</td><td>${row.risk_level}</td><td>${row.biggest_risk_factor}</td><td>${row.disease_status?.disease_sources && Array.isArray(row.disease_status.disease_sources) && row.disease_status.disease_sources.length > 0 ? row.disease_status.disease_sources[0].distance_km : '—'}</td><td>${row.disease_status?.has_ila ? 'Ja' : 'Nei'}</td><td>${row.disease_status?.has_pd ? 'Ja' : 'Nei'}</td><td>${row.lice_data?.adult_female_lice ?? '—'}</td></tr>`;
+            }).join('');
+            table.innerHTML = html;
+            showNearbyVessels();
+        } else {
+            table.innerHTML = '<tr><td>Ingen risikovarsel funnet.</td></tr>';
+        }
+    } catch (e) {
+        table.innerHTML = `<tr><td>Feil: ${e.message}</td></tr>`;
+    }
+}
+async function showNearbyVessels() {
+    const highRisk = riskAssessments.filter(r => r.risk_level === 'High');
+    if (highRisk.length === 0) {
+        document.getElementById('vessel-list').innerHTML = '';
+        return;
+    }
+    let vessels = [];
+    try {
+        const response = await fetch(`${API_BASE}/api/vessels?limit=500`);
+        const data = await response.json();
+        if (data.vessels) vessels = data.vessels;
+    } catch (e) {
+        document.getElementById('vessel-list').innerHTML = '<span style="color:red">Feil ved henting av fartøy.</span>';
+        return;
+    }
+    let html = '';
+    highRisk.forEach(anlegg => {
+        const nearVessels = vessels.filter(vessel => {
+            if (!vessel.latitude || !vessel.longitude || !anlegg.location) return false;
+            return haversine(anlegg.location.latitude, anlegg.location.longitude, vessel.latitude, vessel.longitude) < 5;
+        });
+        if (nearVessels.length > 0) {
+            html += `<h3>Båter nær ${anlegg.facility_name} (høy risiko)</h3><ul>`;
+            nearVessels.forEach(vessel => {
+                html += `<li>${vessel.name || vessel.mmsi} (${vessel.latitude.toFixed(3)}, ${vessel.longitude.toFixed(3)})</li>`;
+            });
+            html += '</ul>';
+        }
+    });
+    document.getElementById('vessel-list').innerHTML = html;
+}
+function haversine(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+}
+async function fetchAndShowFacilities() {
+    document.getElementById('facilities-status').textContent = 'Laster anlegg...';
+    try {
+        const response = await fetch(`${API_BASE}/api/facilities?limit=5`);
+        const data = await response.json();
+        document.getElementById('facilities-status').textContent = JSON.stringify(data, null, 2);
+    } catch (e) {
+        document.getElementById('facilities-status').textContent = 'Feil: ' + e.message;
+    }
+}
+async function fetchAndShowVessels() {
+    document.getElementById('vessels-status').textContent = 'Laster fartøy...';
+    try {
+        const response = await fetch(`${API_BASE}/api/vessels?limit=5`);
+        const data = await response.json();
+        document.getElementById('vessels-status').textContent = JSON.stringify(data, null, 2);
+    } catch (e) {
+        document.getElementById('vessels-status').textContent = 'Feil: ' + e.message;
+    }
+}
+async function fetchAndShowHealth() {
+    document.getElementById('health-status').textContent = 'Laster helsedata...';
+    try {
+        const response = await fetch(`${API_BASE}/api/health-summary?limit=5`);
+        const data = await response.json();
+        document.getElementById('health-status').textContent = JSON.stringify(data, null, 2);
+    } catch (e) {
+        document.getElementById('health-status').textContent = 'Feil: ' + e.message;
+    }
+}
+async function fetchAndShowStatus() {
+    document.getElementById('system-status').textContent = 'Laster systemstatus...';
+    try {
+        const response = await fetch(`${API_BASE}/api/status`);
+        const data = await response.json();
+        document.getElementById('system-status').textContent = JSON.stringify(data, null, 2);
+    } catch (e) {
+        document.getElementById('system-status').textContent = 'Feil: ' + e.message;
+    }
+}
+
+    window.addEventListener('DOMContentLoaded', fetchAndShowRisk);
+    </script>
+</body>
+</html>

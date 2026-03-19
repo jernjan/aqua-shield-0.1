@@ -1,0 +1,15 @@
+::ffff:127.0.0.1 - - [12/Mar/2026 20:13:35] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [16/Mar/2026 15:18:20] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [16/Mar/2026 15:20:58] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [16/Mar/2026 15:21:19] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [16/Mar/2026 15:21:23] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [16/Mar/2026 16:07:39] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [16/Mar/2026 16:07:39] code 404, message File not found
+::ffff:127.0.0.1 - - [16/Mar/2026 16:07:39] "GET /health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [16/Mar/2026 16:08:27] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [16/Mar/2026 16:10:34] code 404, message File not found
+::ffff:127.0.0.1 - - [16/Mar/2026 16:10:34] "GET /vessel.js HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [16/Mar/2026 16:10:34] "GET /facility-data.js HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [16/Mar/2026 16:10:34] "GET /app.js HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [16/Mar/2026 16:10:34] code 404, message File not found
+::ffff:127.0.0.1 - - [16/Mar/2026 16:10:34] "GET /vessel-dashboard-lite.html HTTP/1.1" 404 -

@@ -1,0 +1,2558 @@
+INFO:     Started server process [24052]
+INFO:     Waiting for application startup.
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detector initialized
+INFO:src.api.prediction_scheduler:\u2705 Prediction scheduler started (predictions: 1h, validation: 24h, BW scan: 2h)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.6s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.7s)
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+ERROR:asyncio:Task exception was never retrieved
+future: <Task finished name='Task-4' coro=<PredictionScheduler._delayed_tracking_start() done, defined at C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py:120> exception=AttributeError("'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'")>
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 127, in _delayed_tracking_start
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f504 Starting BW locality visit backfill (last 48h)...
+INFO:src.api.prediction_scheduler:\u2705 BW locality backfill done: 0 new visits from 0/283 facilities
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.3s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.1s)
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.6s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (7.7s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.7s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.7s)
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.5s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.4s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.2s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.1s)
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.2s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.2s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.2s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (4.7s)
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.6s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (7.7s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.6s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.8s)
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.7s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (7.4s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.4s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.3s)
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.5s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (7.3s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.0s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (4.5s)
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 8043, in get_risk_correlations
+    vessels_raw = bw.get_ais_vessels(limit=500)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 424, in get_ais_vessels
+    response = self._request_with_ais_token("GET", url, timeout=45, stream=False)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 80, in _request_with_ais_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+ERROR:asyncio:Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Python314\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] En eksisterende tilkobling ble tvangslukket av den eksterne verten
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+ERROR:src.api.prediction_scheduler:Fatal error in run_predictions: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 941, in run_predictions
+    facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 64, in _request_with_facilities_token
+    token = self._get_facilities_token()
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 45, in _get_facilities_token
+    self._facilities_token = self._get_token(
+                             ~~~~~~~~~~~~~~~^
+        self.facilities_client_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.facilities_client_secret,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "api"
+        ^^^^^
+    )
+    ^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 27, in _get_token
+    response = requests.post(
+        self.token_endpoint,
+    ...<5 lines>...
+        }
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Exception ignored while finalizing file <gzip on 0x2910a85f2e0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x29108f2c310>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2910904eb00>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 9521, in get_outbreak_risk_healthy_facilities
+    all_facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 66, in _request_with_facilities_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 9521, in get_outbreak_risk_healthy_facilities
+    all_facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 66, in _request_with_facilities_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Exception ignored while finalizing file <gzip on 0x29108d505e0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 8043, in get_risk_correlations
+    vessels_raw = bw.get_ais_vessels(limit=500)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 424, in get_ais_vessels
+    response = self._request_with_ais_token("GET", url, timeout=45, stream=False)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 80, in _request_with_ais_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Exception ignored while finalizing file <gzip on 0x2913ac0aa40>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.6s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (8.3s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257682190 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 259677000 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 231522000: 10863 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 231522000 from Unknown Facility
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.7s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (7.1s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257012000 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257993900 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 259677000: 60 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 259677000 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 259027820 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257012000: 45 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257012000 from Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.6s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (7.3s)
+C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\fastapi\routing.py:191: RuntimeWarning: coroutine 'get_vessel_track' was never awaited
+  return await dependant.call(**values)
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257072000 at Unknown Facility
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.7s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.6s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257038230 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.5s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.8s)
+INFO:src.api.prediction_scheduler:\U0001f50d Starting daily prediction validation...
+INFO:src.api.prediction_validator:\u2705 Validated 0 predictions - Accuracy: 0.0%, F1: 0.000
+INFO:src.api.prediction_scheduler:\u2705 Validation complete: Accuracy=0.0%, Precision=0.0%, Recall=0.0%, F1=0.000 (0 validated) (0.9s)
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.6s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.5s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 259050270 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 212597000 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257072000: 180 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257072000 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257129610: 19905 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257129610 from Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.5s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.9s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257163000 at Unknown Facility
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.1s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.0s)
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257746000: 2989 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257746000 from Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+ERROR:src.api.prediction_scheduler:Fatal error in run_predictions: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 941, in run_predictions
+    facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 64, in _request_with_facilities_token
+    token = self._get_facilities_token()
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 45, in _get_facilities_token
+    self._facilities_token = self._get_token(
+                             ~~~~~~~~~~~~~~~^
+        self.facilities_client_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.facilities_client_secret,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "api"
+        ^^^^^
+    )
+    ^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 27, in _get_token
+    response = requests.post(
+        self.token_endpoint,
+    ...<5 lines>...
+        }
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Exception ignored while finalizing file <gzip on 0x2910a95d9f0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2910a95e530>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2910a95efb0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2910a95f280>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2910a88a020>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2913cb1b910>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 9521, in get_outbreak_risk_healthy_facilities
+    all_facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 66, in _request_with_facilities_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 9521, in get_outbreak_risk_healthy_facilities
+    all_facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 66, in _request_with_facilities_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Exception ignored while finalizing file <gzip on 0x2913c03f4f0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 8043, in get_risk_correlations
+    vessels_raw = bw.get_ais_vessels(limit=500)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 424, in get_ais_vessels
+    response = self._request_with_ais_token("GET", url, timeout=45, stream=False)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 80, in _request_with_ais_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Exception ignored while finalizing file <gzip on 0x29108e7d150>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 8043, in get_risk_correlations
+    vessels_raw = bw.get_ais_vessels(limit=500)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 424, in get_ais_vessels
+    response = self._request_with_ais_token("GET", url, timeout=45, stream=False)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 80, in _request_with_ais_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 259042360 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 259042360: 30 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 259042360 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257041670: 8266 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257041670 from Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (3.3s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (9.6s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 231523000 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 259397000: 32059 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 259397000 from Unknown Facility
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (3.3s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (7.9s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.4s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (7.9s)
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.1s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (4.5s)
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 219031446: 23630 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 219031446 from Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.0s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.7s)
+ERROR:asyncio:Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Python314\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] En eksisterende tilkobling ble tvangslukket av den eksterne verten
+ERROR:asyncio:Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Python314\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] En eksisterende tilkobling ble tvangslukket av den eksterne verten
+ERROR:asyncio:Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Python314\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] En eksisterende tilkobling ble tvangslukket av den eksterne verten
+ERROR:asyncio:Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Python314\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] En eksisterende tilkobling ble tvangslukket av den eksterne verten
+ERROR:asyncio:Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Python314\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] En eksisterende tilkobling ble tvangslukket av den eksterne verten
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+ERROR:src.api.prediction_scheduler:Fatal error in run_predictions: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 941, in run_predictions
+    facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 64, in _request_with_facilities_token
+    token = self._get_facilities_token()
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 45, in _get_facilities_token
+    self._facilities_token = self._get_token(
+                             ~~~~~~~~~~~~~~~^
+        self.facilities_client_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.facilities_client_secret,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "api"
+        ^^^^^
+    )
+    ^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 27, in _get_token
+    response = requests.post(
+        self.token_endpoint,
+    ...<5 lines>...
+        }
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Exception ignored while finalizing file <gzip on 0x2910a892350>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2910a891210>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2913c8b9b40>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2910a8900d0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 235084424 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (3.2s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (8.5s)
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257038230: 1246 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257038230 from Unknown Facility
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (3.2s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.6s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 259199000 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257238000 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257846000: 9821 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257846000 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 259199000: 45 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 259199000 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257163000: 1170 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257163000 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 244463000 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.6s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (7.5s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 258114000 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257442000: 25852 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257442000 from Unknown Facility
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.3s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.0s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.1s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.0s)
+INFO:src.api.prediction_scheduler:\U0001f50d Starting daily prediction validation...
+INFO:src.api.prediction_validator:\u2705 Validated 0 predictions - Accuracy: 0.0%, F1: 0.000
+INFO:src.api.prediction_scheduler:\u2705 Validation complete: Accuracy=0.0%, Precision=0.0%, Recall=0.0%, F1=0.000 (0 validated) (0.8s)
+ERROR:asyncio:Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Python314\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] En eksisterende tilkobling ble tvangslukket av den eksterne verten
+ERROR:asyncio:Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Python314\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] En eksisterende tilkobling ble tvangslukket av den eksterne verten
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+ERROR:src.api.prediction_scheduler:Fatal error in run_predictions: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 941, in run_predictions
+    facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 64, in _request_with_facilities_token
+    token = self._get_facilities_token()
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 45, in _get_facilities_token
+    self._facilities_token = self._get_token(
+                             ~~~~~~~~~~~~~~~^
+        self.facilities_client_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.facilities_client_secret,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "api"
+        ^^^^^
+    )
+    ^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 27, in _get_token
+    response = requests.post(
+        self.token_endpoint,
+    ...<5 lines>...
+        }
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+ERROR:asyncio:Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Python314\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] En eksisterende tilkobling ble tvangslukket av den eksterne verten
+Exception ignored while finalizing file <gzip on 0x2913ca580a0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2913ca5ab30>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257111010 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 231523000: 1290 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 231523000 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257039200 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.5s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.6s)
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.6s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.7s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.2s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.3s)
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 258383000: 31064 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 258383000 from Unknown Facility
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.3s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (4.9s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 259220000 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (4.7s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (7.1s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 259046000 at Unknown Facility
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 259041000 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 259046000: 45 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 259046000 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 258166000: 26667 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 258166000 from Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.8s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.8s)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.1s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.0s)
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257039200: 390 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257039200 from Unknown Facility
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.0s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.1s)
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257917000: 18114 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257917000 from Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.0s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.9s)
+ERROR:asyncio:Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Python314\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] En eksisterende tilkobling ble tvangslukket av den eksterne verten
+ERROR:asyncio:Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "C:\Python314\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] En eksisterende tilkobling ble tvangslukket av den eksterne verten
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+ERROR:src.api.prediction_scheduler:Fatal error in run_predictions: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 941, in run_predictions
+    facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 64, in _request_with_facilities_token
+    token = self._get_facilities_token()
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 45, in _get_facilities_token
+    self._facilities_token = self._get_token(
+                             ~~~~~~~~~~~~~~~^
+        self.facilities_client_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.facilities_client_secret,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "api"
+        ^^^^^
+    )
+    ^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 27, in _get_token
+    response = requests.post(
+        self.token_endpoint,
+    ...<5 lines>...
+        }
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Exception ignored while finalizing file <gzip on 0x2913cb19150>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2913cb1a680>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2913cb1ace0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2913cb1a500>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2913c3742e0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2913ce22bc0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 9521, in get_outbreak_risk_healthy_facilities
+    all_facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 66, in _request_with_facilities_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 9521, in get_outbreak_risk_healthy_facilities
+    all_facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 66, in _request_with_facilities_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Exception ignored while finalizing file <gzip on 0x29108d506a0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 8043, in get_risk_correlations
+    vessels_raw = bw.get_ais_vessels(limit=500)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 424, in get_ais_vessels
+    response = self._request_with_ais_token("GET", url, timeout=45, stream=False)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 80, in _request_with_ais_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Exception ignored while finalizing file <gzip on 0x291091f8cd0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 8043, in get_risk_correlations
+    vessels_raw = bw.get_ais_vessels(limit=500)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 424, in get_ais_vessels
+    response = self._request_with_ais_token("GET", url, timeout=45, stream=False)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 80, in _request_with_ais_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='live.ais.barentswatch.no', port=443): Max retries exceeded with url: /v1/latest/ais (Caused by NameResolutionError("HTTPSConnection(host='live.ais.barentswatch.no', port=443): Failed to resolve 'live.ais.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Exception ignored while finalizing file <gzip on 0x291091fa3e0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x29108d50400>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257100800: 4339 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257100800 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 258383500 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 259220000: 600 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 259220000 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 259004230 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257060730 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 259030940: 24329 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 259030940 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 258383500: 45 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 258383500 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 259004230: 45 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 259004230 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257060530: 12709 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257060530 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257060730: 45 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257060730 from Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.6s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (8.9s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 259030730 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257119000 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257837800: 31816 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257837800 from Unknown Facility
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.8s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.5s)
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 412552109: 6079 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 412552109 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 412552109 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257107510 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257119000: 90 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257119000 from Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.3s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.3s)
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257107510: 38 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257107510 from Unknown Facility
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.5s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.4s)
+INFO:src.api.prediction_scheduler:\U0001f50d Starting daily prediction validation...
+INFO:src.api.prediction_validator:\u2705 Validated 0 predictions - Accuracy: 0.0%, F1: 0.000
+INFO:src.api.prediction_scheduler:\u2705 Validation complete: Accuracy=0.0%, Precision=0.0%, Recall=0.0%, F1=0.000 (0 validated) (0.9s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257813190 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.6s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (7.0s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 259030100 at Unknown Facility
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.0s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (4.6s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 259050290 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257287000 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257213000 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257798370: 12916 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257798370 from Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+ERROR:src.api.prediction_scheduler:Fatal error in run_predictions: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 941, in run_predictions
+    facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 64, in _request_with_facilities_token
+    token = self._get_facilities_token()
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 45, in _get_facilities_token
+    self._facilities_token = self._get_token(
+                             ~~~~~~~~~~~~~~~^
+        self.facilities_client_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.facilities_client_secret,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "api"
+        ^^^^^
+    )
+    ^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 27, in _get_token
+    response = requests.post(
+        self.token_endpoint,
+    ...<5 lines>...
+        }
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='id.barentswatch.no', port=443): Max retries exceeded with url: /connect/token (Caused by NameResolutionError("HTTPSConnection(host='id.barentswatch.no', port=443): Failed to resolve 'id.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Exception ignored while finalizing file <gzip on 0x2913cbd2230>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2913ca04be0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2913ca05de0>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2913ca06440>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2913c9d0760>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 9521, in get_outbreak_risk_healthy_facilities
+    all_facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 66, in _request_with_facilities_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\main.py", line 9521, in get_outbreak_risk_healthy_facilities
+    all_facilities = bw.get_facilities(limit=5000)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 118, in get_facilities
+    response = self._request_with_facilities_token("GET", url, params=params)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\clients\barentswatch.py", line 66, in _request_with_facilities_token
+    response = requests.request(method, url, headers=headers, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\.venv\Lib\site-packages\requests\adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='www.barentswatch.no', port=443): Max retries exceeded with url: /bwapi/v1/geodata/fishhealth/localities?limit=100&skip=0 (Caused by NameResolutionError("HTTPSConnection(host='www.barentswatch.no', port=443): Failed to resolve 'www.barentswatch.no' ([Errno 11001] getaddrinfo failed)"))
+Exception ignored while finalizing file <gzip on 0x291091e3460>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+Exception ignored while finalizing file <gzip on 0x2913c738430>:
+Traceback (most recent call last):
+  File "C:\Python314\Lib\gzip.py", line 390, in close
+    fileobj.write(self.compress.flush())
+ValueError: I/O operation on closed file.
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 232026676 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.4s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.1s)
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257414000: 22739 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257414000 from Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.7s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.4s)
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257579600: 6765 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257579600 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257579600 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (3.0s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.9s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257430000 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.7s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.2s)
+ERROR:src.api.prediction_scheduler:Error in BW scan loop: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+Traceback (most recent call last):
+  File "C:\Users\janin\OneDrive\Skrivebord\Kyst monitor DEMO\EKTE_API\src\api\prediction_scheduler.py", line 282, in _tracking_loop
+    await self.run_bw_two_phase_scan()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PredictionScheduler' object has no attribute 'run_bw_two_phase_scan'
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 258657000: 19749 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 258657000 from Unknown Facility

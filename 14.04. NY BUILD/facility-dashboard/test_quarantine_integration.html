@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quarantine Integration Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h1 { color: #1e293b; }
+        h2 { color: #475569; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .status.ok { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
+        .status.error { background: #fee2e2; color: #7f1d1d; border-left: 4px solid #ef4444; }
+        .status.testing { background: #fef3c7; color: #78350f; border-left: 4px solid #f59e0b; }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover { background: #2563eb; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        table th { background: #f8fafc; font-weight: 600; }
+        .color-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏥 Quarantine Detection System - Integration Test</h1>
+    
+    <div class="test-section">
+        <h2>API Server Status</h2>
+        <div id="apiStatus" class="status testing">Testing API connections...</div>
+        <button onclick="testAPIs()">Retest APIs</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Quarantine Endpoint Test</h2>
+        <p>Test MMSI: <input type="text" id="mmsiInput" value="258023000" style="width: 200px; padding: 5px;">
+        <button onclick="testQuarantineStatus()">Test Quarantine Status</button></p>
+        <div id="quarantineResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Color Legend</h2>
+        <table>
+            <tr>
+                <th>Status</th>
+                <th>Color</th>
+                <th>Meaning</th>
+            </tr>
+            <tr>
+                <td>GRØNN (Green)</td>
+                <td><span class="color-box" style="background: #22c55e; border: 2px solid #166534;"></span></td>
+                <td>Registered & Cleared - Safe to operate</td>
+            </tr>
+            <tr>
+                <td>ORANSJ (Orange)</td>
+                <td><span class="color-box" style="background: #f97316; border: 2px solid #92400e;"></span></td>
+                <td>In Quarantine - Visited infected facility < 24h ago</td>
+            </tr>
+            <tr>
+                <td>RØD (Red)</td>
+                <td><span class="color-box" style="background: #ef4444; border: 2px solid #7f1d1d;"></span></td>
+                <td>Active Risk - Has active disease risk status</td>
+            </tr>
+            <tr>
+                <td>GRÅ (Gray)</td>
+                <td><span class="color-box" style="background: #cbd5e1; border: 2px solid #1e293b;"></span></td>
+                <td>Unregistered - In AIS but not in system</td>
+            </tr>
+            <tr>
+                <td>GUL (Yellow)</td>
+                <td><span class="color-box" style="background: #eab308; border: 2px solid #713f12;"></span></td>
+                <td>Caution - Departed infected site 24-48h ago</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="test-section">
+        <h2>Frontend Integration Test</h2>
+        <p><strong>Test Instructions:</strong></p>
+        <ol>
+            <li>Open the facility dashboard: <a href="http://localhost:8084" target="_blank">http://localhost:8084</a></li>
+            <li>Select a facility from the map</li>
+            <li>Look for orange or yellow boats within the radius</li>
+            <li>Hover over boats to see their status and quarantine details</li>
+            <li>Click boats to see popup with full information including quarantine countdown</li>
+        </ol>
+        <button onclick="openDashboard()">Open Dashboard</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Audit Log Preview</h2>
+        <button onclick="loadAuditLog()">Load Audit Log Data</button>
+        <div id="auditLogPreview"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Disease Spread Data</h2>
+        <button onclick="loadDiseaseSpreading()">Load Disease Spread Data</button>
+        <div id="diseaseSpreadPreview"></div>
+    </div>
+
+    <script>
+        async function testAPIs() {
+            const status = document.getElementById('apiStatus');
+            status.className = 'status testing';
+            status.innerHTML = 'Testing API connections...';
+
+            try {
+                // Test backend API
+                const facilitiesRes = await fetch('http://localhost:8000/api/facilities');
+                const vesselsRes = await fetch('http://localhost:8000/api/vessels?limit=10');
+                const quarantineRes = await fetch('http://localhost:8000/api/vessel/quarantine-status/258023000');
+
+                if (facilitiesRes.ok && vesselsRes.ok && quarantineRes.ok) {
+                    status.className = 'status ok';
+                    status.innerHTML = `
+                        <strong>✓ All APIs responding:</strong><br>
+                        • Facilities API: 200 OK<br>
+                        • Vessels API: 200 OK<br>
+                        • Quarantine Endpoint: 200 OK<br>
+                        <em>Frontend server should be at http://localhost:8084</em>
+                    `;
+                } else {
+                    status.className = 'status error';
+                    status.innerHTML = `
+                        <strong>✗ Some APIs not responding:</strong><br>
+                        • Facilities: ${facilitiesRes.status}<br>
+                        • Vessels: ${vesselsRes.status}<br>
+                        • Quarantine: ${quarantineRes.status}
+                    `;
+                }
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `<strong>✗ Connection error:</strong> ${error.message}`;
+            }
+        }
+
+        async function testQuarantineStatus() {
+            const mmsi = document.getElementById('mmsiInput').value;
+            const result = document.getElementById('quarantineResult');
+            
+            result.innerHTML = `<div class="status testing">Checking quarantine status for MMSI ${mmsi}...</div>`;
+            
+            try {
+                const response = await fetch(`http://localhost:8000/api/vessel/quarantine-status/${mmsi}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    let statusColor = 'ok';
+                    if (data.risk_level === 'quarantine') statusColor = 'error';
+                    if (data.risk_level === 'caution') statusColor = 'testing';
+                    
+                    result.innerHTML = `
+                        <div class="status ${statusColor}">
+                            <strong>MMSI ${mmsi}:</strong><br>
+                            • Risk Level: <strong>${data.risk_level.toUpperCase()}</strong><br>
+                            • In Quarantine: ${data.in_quarantine ? '🔴 YES' : '✓ No'}<br>
+                            ${data.infected_facility_name ? `• Last Infected Facility: ${data.infected_facility_name}<br>` : ''}
+                            ${data.hours_since_infected_visit ? `• Hours Since Visit: ${data.hours_since_infected_visit.toFixed(1)}<br>` : ''}
+                            • Quarantine Hours Remaining: ${data.quarantine_hours_remaining}
+                        </div>
+                    `;
+                } else {
+                    result.innerHTML = `<div class="status error"><strong>Error:</strong> ${data.detail || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="status error"><strong>Connection error:</strong> ${error.message}</div>`;
+            }
+        }
+
+        async function loadAuditLog() {
+            const preview = document.getElementById('auditLogPreview');
+            preview.innerHTML = '<div class="status testing">Loading audit log...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/audit/visits-log');
+                const data = await response.json();
+                
+                if (data.visits && data.visits.length > 0) {
+                    const sample = data.visits.slice(0, 5);
+                    let html = '<strong>Sample Audit Log Entries (first 5):</strong><br>';
+                    html += '<table><tr><th>MMSI</th><th>Facility</th><th>Timestamp</th><th>Disease</th></tr>';
+                    sample.forEach(visit => {
+                        html += `<tr><td>${visit.mmsi || '-'}</td><td>${visit.facility_name || '-'}</td><td>${visit.timestamp ? new Date(visit.timestamp).toLocaleString() : '-'}</td><td>${visit.disease_type || '-'}</td></tr>`;
+                    });
+                    html += '</table>';
+                    html += `<p><em>Total entries: ${data.visits.length}</em></p>`;
+                    preview.innerHTML = html;
+                } else {
+                    preview.innerHTML = '<div class="status testing">No audit log entries found.</div>';
+                }
+            } catch (error) {
+                preview.innerHTML = `<div class="status error">Error loading audit log: ${error.message}</div>`;
+            }
+        }
+
+        async function loadDiseaseSpreading() {
+            const preview = document.getElementById('diseaseSpreadPreview');
+            preview.innerHTML = '<div class="status testing">Loading disease spread data...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/disease/spread');
+                const data = await response.json();
+                
+                if (data.infected_facilities && data.infected_facilities.length > 0) {
+                    const sample = data.infected_facilities.slice(0, 5);
+                    let html = '<strong>Sample Infected Facilities (first 5):</strong><br>';
+                    html += '<table><tr><th>Name</th><th>Disease</th><th>Status</th></tr>';
+                    sample.forEach(facility => {
+                        html += `<tr><td>${facility.name || facility.facility_name || '-'}</td><td>${facility.disease_names?.join(', ') || facility.diseases?.join(', ') || '-'}</td><td>${facility.status || 'Active'}</td></tr>`;
+                    });
+                    html += '</table>';
+                    html += `<p><em>Total infected facilities: ${data.infected_facilities.length}</em></p>`;
+                    preview.innerHTML = html;
+                } else {
+                    preview.innerHTML = '<div class="status testing">No infected facilities found.</div>';
+                }
+            } catch (error) {
+                preview.innerHTML = `<div class="status error">Error loading disease spread data: ${error.message}</div>`;
+            }
+        }
+
+        function openDashboard() {
+            window.open('http://localhost:8084', '_blank');
+        }
+
+        // Test on page load
+        window.addEventListener('load', testAPIs);
+    </script>
+</body>
+</html>

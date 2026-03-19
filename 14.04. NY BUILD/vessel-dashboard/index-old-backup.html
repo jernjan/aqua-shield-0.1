@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kyst Monitor - Båt Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 450px;
+      width: 100%;
+      border-radius: 8px;
+      margin: 1rem 0;
+      border: 2px solid #e5e7eb;
+    }
+    
+    .vessel-input-group {
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    
+    .vessel-input-group input {
+      width: 100%;
+      max-width: 300px;
+      padding: 0.75rem;
+      border: 2px solid #3b82f6;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    
+    .status-indicator {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1rem auto;
+      font-size: 2.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .status-indicator.available {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+    
+    .status-indicator.quarantine {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+    
+    .status-indicator.restricted {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚢 Kyst Monitor - Båt Dashboard</h1>
+      <p>Overvåk oppdrettsanlegg og planlegg ruter</p>
+    </header>
+
+    <!-- API Status Indicator -->
+    <div id="apiStatus" style="background: #fee; border: 2px solid #fcc; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+      <div style="width: 12px; height: 12px; border-radius: 50%; background: #ef4444;" id="apiStatusDot"></div>
+      <div>
+        <strong id="apiStatusText">Sjekker API...</strong>
+        <span id="apiStatusUrl" style="font-size: 0.85rem; color: #666; margin-left: 0.5rem;">http://127.0.0.1:8002</span>
+      </div>
+    </div>
+
+    <!-- Vessel Selection -->
+    <section class="panel vessel-input-group" id="vesselInputSection">
+      <h3 style="margin-bottom: 0.5rem;">Velg eller registrer båt:</h3>
+      <input type="text" id="vesselMMSI" placeholder="MMSI (f.eks. 257051270)" 
+             style="margin-right: 0.5rem;">
+      <button class="btn btn-success" onclick="loadVesselByMMSI()">Last båt</button>
+      <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #6b7280;">
+        💡 Prøv Labridae: 257051270 | Eller søk etter MMSI
+      </p>
+    </section>
+
+    <!-- Loading Indicator -->
+    <section class="panel" id="loadingPanel" style="display: none;">
+      <div style="text-align: center; padding: 2rem;">
+        <div style="font-size: 3rem; animation: spin 1s linear infinite;">⚓</div>
+        <h3 style="margin-top: 1rem;">Laster dashboard...</h3>
+        <p id="loadingStatus" style="color: #6b7280; margin-top: 0.5rem;">Kontakter API...</p>
+      </div>
+    </section>
+
+    <!-- Current Vessel Info -->
+    <section class="panel" id="vesselInfoPanel" style="display: none;">
+      <div class="panel-header">
+        <h2 id="vesselName">-</h2>
+        <button class="btn btn-danger" onclick="clearVessel()">Bytt båt</button>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+        <div>
+          <div style="font-size: 0.85rem; color: #6b7280;">MMSI</div>
+          <div id="vesselMMSIDisplay" style="font-weight: 600;">-</div>
+        </div>
+        <div>
+          <div style="font-size: 0.85rem; color: #6b7280;">Callsign</div>
+          <div id="vesselCallsign" style="font-weight: 600;">-</div>
+        </div>
+        <div>
+          <div style="font-size: 0.85rem; color: #6b7280;">Posisjon</div>
+          <div id="vesselPosition" style="font-weight: 600;">-</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Status -->
+    <section class="panel" id="statusPanel" style="display: none;">
+      <div class="panel-header">
+        <h2>Status</h2>
+      </div>
+      <div class="status-indicator available" id="statusIndicator">
+        ✓
+      </div>
+      <div style="text-align: center;">
+        <h3 id="statusText">Klar til besøk</h3>
+        <p id="statusDescription">Ingen aktive restriksjoner</p>
+      </div>
+    </section>
+
+    <!-- Map -->
+    <section class="panel" id="mapPanel" style="display: none;">
+      <div class="panel-header">
+        <h2>Kart</h2>
+        <div>
+          <label style="margin-right: 1rem;">
+            <input type="checkbox" id="showInfectedOnly"> Vis kun smittet
+          </label>
+        </div>
+      </div>
+      <div id="map"></div>
+      <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #6b7280;">
+        🟢 Friske anlegg | 🔴 Smittet anlegg | 🚢 Din båt | 💡 Klikk på anlegg for å legge til i rute
+      </p>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="panel" id="actionsPanel" style="display: none;">
+      <div class="panel-header">
+        <h2>Raske handlinger</h2>
+      </div>
+      <div class="quick-actions">
+        <button class="action-btn" onclick="showVisitLogger()">
+          📝 Logg besøk nå
+        </button>
+        <button class="action-btn secondary" onclick="showRoutePlanner()">
+          🗺️ Planlegg rute
+        </button>
+        <button class="action-btn success" onclick="viewQuarantine()">
+          ⏱️ Se karantene
+        </button>
+        <button class="action-btn secondary" onclick="showCalendarView()">
+          📅 Besøkskalender
+        </button>
+      </div>
+    </section>
+
+    <!-- Visit History -->
+    <section class="panel" id="historyPanel" style="display: none;">
+      <div class="panel-header">
+        <h2>Besøkshistorikk</h2>
+        <button class="btn" onclick="clearHistory()">Tøm historikk</button>
+      </div>
+      <div id="visitHistory">
+        <p style="color: #6b7280; text-align: center; padding: 2rem;">
+          Ingen registrerte besøk ennå.
+        </p>
+      </div>
+    </section>
+
+    <!-- Visit Logger Modal -->
+    <div id="visitLoggerModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Logg anleggsbesøk</h2>
+          <button class="close-btn" onclick="closeVisitLogger()">✕</button>
+        </div>
+        <div class="form-group">
+          <label for="visitFacility">Velg anlegg:</label>
+          <select id="visitFacility"></select>
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="visitDisinfection"> Desinfeksjon utført
+          </label>
+        </div>
+        <div style="margin-top: 1.5rem;">
+          <button class="btn btn-primary" onclick="logVisit()">Lagre besøk</button>
+          <button class="btn" onclick="closeVisitLogger()">Avbryt</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Route Planner Modal -->
+    <div id="routePlannerModal" class="modal">
+      <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-header">
+          <h2>Planlegg rute</h2>
+          <button class="close-btn" onclick="closeRoutePlanner()">✕</button>
+        </div>
+        <div class="form-group">
+          <label>Søk anlegg:</label>
+          <input type="text" id="facilitySearch" placeholder="Søk etter navn...">
+        </div>
+        <div class="form-group">
+          <label>Velg anlegg (klikk flere):</label>
+          <div style="margin-bottom: 0.5rem; font-size: 0.9rem; color: #6b7280;">
+            <span id="selectedCount">0 anlegg valgt</span>
+            <span style="margin-left: 0.5rem;">💡 Du kan også klikke direkte på anlegg på kartet</span>
+          </div>
+          <div id="facilitySelector" class="checkbox-group" style="max-height: 300px; overflow-y: auto;">
+            <!-- Facilities loaded here -->
+          </div>
+        </div>
+        <div style="margin-top: 1rem;">
+          <button class="btn btn-primary" onclick="RoutePlanner.planOptimalRoute()">
+            Beregn optimal rekkefølge
+          </button>
+          <button class="btn" onclick="RoutePlanner.clearPlannedRoute()">
+            Nullstill
+          </button>
+        </div>
+        <div id="routePreview" style="margin-top: 1.5rem; display: none;">
+          <h3>Planlagt rute:</h3>
+          <div id="routeDetails"></div>
+          <button class="btn btn-success" onclick="RoutePlanner.executeRoute()" style="width: 100%; margin-top: 1rem;">
+            Start rute
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar Modal -->
+    <div id="calendarModal" class="modal">
+      <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+          <h2>📅 Besøkskalender</h2>
+          <button class="close-btn" onclick="closeCalendarView()">✕</button>
+        </div>
+        <div id="calendarView" style="max-height: 500px; overflow-y: auto;">
+          <!-- Calendar entries loaded here -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="vessel-storage.js"></script>
+  <script src="vessel-map.js"></script>
+  <script src="routes-planner.js"></script>
+  <script src="vessel-simple.js"></script>
+  <script>
+    // Check API status
+    async function checkAPIStatus() {
+      const statusDot = document.getElementById('apiStatusDot');
+      const statusText = document.getElementById('apiStatusText');
+      const statusBox = document.getElementById('apiStatus');
+      
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        
+        const response = await fetch(`${VesselStorage.API_BASE}/health`, {
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+          const data = await response.json();
+          
+          if (data.status === 'healthy') {
+            // API is online and working
+            statusDot.style.background = '#10b981';
+            statusText.textContent = 'API Online';
+            statusBox.style.background = '#d1fae5';
+            statusBox.style.borderColor = '#a7f3d0';
+          } else {
+            // API is online but has issues
+            statusDot.style.background = '#f59e0b';
+            statusText.textContent = 'API Online (bruk eksempeldata)';
+            statusBox.style.background = '#fef3c7';
+            statusBox.style.borderColor = '#fde68a';
+          }
+        } else {
+          // API returned error
+          statusDot.style.background = '#f59e0b';
+          statusText.textContent = `API Error (${response.status})`;
+          statusBox.style.background = '#fef3c7';
+          statusBox.style.borderColor = '#fde68a';
+        }
+      } catch (error) {
+        // API is offline or unreachable
+        statusDot.style.background = '#ef4444';
+        statusText.textContent = 'API Offline (bruker eksempeldata)';
+        statusBox.style.background = '#fee2e2';
+        statusBox.style.borderColor = '#fecaca';
+      }
+    }
+    
+    // Initialize on load
+    window.addEventListener('load', async function() {
+      console.log('✓ Page loaded');
+      
+      // Check API status immediately
+      checkAPIStatus();
+      // Check API status every 30 seconds
+      setInterval(checkAPIStatus, 30000);
+      
+      // Check if we have a saved vessel
+      const saved = VesselStorage.getVesselData();
+      if (saved && saved.vessel && saved.vessel.mmsi) {
+        showLoading('Lastet inn lagret båt...');
+        showVesselDashboard(saved.vessel);
+        
+        // Initialize dashboard for saved vessel
+        try {
+          await initDashboard();
+          hideLoading();
+          console.log('✓ Auto-loaded saved vessel');
+        } catch (err) {
+          hideLoading();
+          console.error('⚠️ Init failed:', err.message);
+        }
+      } else {
+        console.log('No saved vessel, waiting for user input');
+      }
+    });
+    
+    // Load vessel by MMSI
+    async function loadVesselByMMSI() {
+      const mmsi = document.getElementById('vesselMMSI').value.trim();
+      if (!mmsi) {
+        alert('Vennligst skriv inn MMSI');
+        return;
+      }
+      
+      // Show loading
+      showLoading('Forbereder dashboard...');
+      
+      // For now, use default position if MMSI is valid
+      // In production, fetch from AIS API
+      const vesselInfo = {
+        mmsi: mmsi,
+        name: mmsi === '257051270' ? 'LABRIDAE' : `VESSEL-${mmsi}`,
+        callsign: mmsi === '257051270' ? 'LH2880' : 'UNKNOWN',
+        position: {
+          lat: 63.4305,
+          lon: 10.3951
+        }
+      };
+      
+      // Save vessel data
+      VesselStorage.updateVesselInfo(vesselInfo);
+      
+      // Show dashboard
+      showVesselDashboard(vesselInfo);
+      
+      // Initialize map and features
+      try {
+        await initDashboard();
+        hideLoading();
+        console.log('✓ Dashboard initialized successfully');
+      } catch (error) {
+        hideLoading();
+        console.error('❌ Dashboard initialization failed:', error);
+        alert('Advarsel: Dashboard lastet, men noen funksjoner kan være utilgjengelige.\n\nFeil: ' + error.message);
+      }
+    }
+    
+    function showLoading(message) {
+      document.getElementById('vesselInputSection').style.display = 'none';
+      document.getElementById('loadingPanel').style.display = 'block';
+      if (message) {
+        document.getElementById('loadingStatus').textContent = message;
+      }
+    }
+    
+    function hideLoading() {
+      document.getElementById('loadingPanel').style.display = 'none';
+    }
+    
+    function showVesselDashboard(vessel) {
+      // Hide input and loading, show dashboard
+      document.getElementById('vesselInputSection').style.display = 'none';
+      document.getElementById('loadingPanel').style.display = 'none';
+      document.getElementById('vesselInfoPanel').style.display = 'block';
+      document.getElementById('statusPanel').style.display = 'block';
+      document.getElementById('mapPanel').style.display = 'block';
+      document.getElementById('actionsPanel').style.display = 'block';
+      document.getElementById('historyPanel').style.display = 'block';
+      
+      // Update vessel info
+      document.getElementById('vesselName').textContent = vessel.name;
+      document.getElementById('vesselMMSIDisplay').textContent = vessel.mmsi;
+      document.getElementById('vesselCallsign').textContent = vessel.callsign;
+      document.getElementById('vesselPosition').textContent = 
+        `${vessel.position.lat.toFixed(4)}°N, ${vessel.position.lon.toFixed(4)}°E`;
+    }
+    
+    function clearVessel() {
+      if (confirm('Vil du bytte båt? Historikk blir bevart.')) {
+        location.reload();
+      }
+    }
+    
+    function closeRoutePlanner() {
+      document.getElementById('routePlannerModal').classList.remove('show');
+    }
+  </script>
+</body>
+</html>

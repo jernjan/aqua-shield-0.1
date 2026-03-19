@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../../kyst-monitor-v3/tests/frontend-agent"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {}
+}

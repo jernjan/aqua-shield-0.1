@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kyst Monitor - Dashboard</title>
+    <style>
+        :root {
+            --bg: #eef1f6;
+            --card: #ffffff;
+            --accent: #3b4a6b;
+            --accent-2: #5b7fff;
+            --text: #1f2937;
+            --muted: #64748b;
+            --danger: #b91c1c;
+        }
+        body {
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 24px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        header {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 18px 22px;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+            margin-bottom: 18px;
+        }
+        h1 {
+            margin: 0 0 6px 0;
+            font-size: 1.7rem;
+        }
+        .subtitle {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin: 16px 0 0 0;
+        }
+        .stat {
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+        .stat-number {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px 18px;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+            margin-bottom: 18px;
+        }
+        .error {
+            color: var(--danger);
+            margin: 0 0 10px 0;
+            font-weight: 600;
+        }
+        .table-wrap {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.95rem;
+        }
+        th {
+            background: #f8fafc;
+        }
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin: 8px 0 12px 0;
+            flex-wrap: wrap;
+        }
+        input[type="text"] {
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #cbd5f5;
+            min-width: 200px;
+        }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .tag-high { background: #f59e0b; }
+        .tag-critical { background: #dc2626; }
+        .tag-medium { background: #fbbf24; color: #1f2937; }
+        .tag-low { background: #16a34a; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Kyst Monitor Dashboard</h1>
+            <div class="subtitle">Kjores via FastAPI pa port 8000</div>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number" id="totalCount">-</div>
+                    <div class="stat-label">Aktive anlegg</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="criticalCount">-</div>
+                    <div class="stat-label">Kritisk risiko</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="highCount">-</div>
+                    <div class="stat-label">Hoy risiko</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="moderateCount">-</div>
+                    <div class="stat-label">Moderat risiko</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="card">
+            <div id="error" class="error" style="display:none;"></div>
+            <div class="toolbar">
+                <strong>Hoy risiko</strong>
+                <input type="text" id="riskFilter" placeholder="Filter anlegg...">
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Anlegg</th>
+                            <th>Kode</th>
+                            <th>Risiko</th>
+                            <th>Lokasjon</th>
+                        </tr>
+                    </thead>
+                    <tbody id="highRiskTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <strong>Moderat risiko</strong>
+            <div class="table-wrap" style="margin-top:10px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Anlegg</th>
+                            <th>Kode</th>
+                            <th>Risiko</th>
+                            <th>Lokasjon</th>
+                        </tr>
+                    </thead>
+                    <tbody id="moderateRiskTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const errorEl = document.getElementById('error');
+        const highRiskTable = document.getElementById('highRiskTable');
+        const moderateRiskTable = document.getElementById('moderateRiskTable');
+
+        function showError(message) {
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+
+        function riskTag(level, score) {
+            if (!level) return '-';
+            const cls = level === 'CRITICAL' ? 'tag-critical'
+                : level === 'HIGH' ? 'tag-high'
+                : level === 'MEDIUM' ? 'tag-medium'
+                : 'tag-low';
+            const label = score != null ? `${level} (${score})` : level;
+            return `<span class="tag ${cls}">${label}</span>`;
+        }
+
+        function renderTables(facilities) {
+            highRiskTable.innerHTML = '';
+            moderateRiskTable.innerHTML = '';
+
+            facilities.forEach((fac) => {
+                const name = fac.name || '-';
+                const kode = fac.id || '-';
+                const loc = fac.location ? `${fac.location.lat}, ${fac.location.lon}` : '-';
+                const risk = riskTag(fac.risk_level, fac.risk_score);
+                const row = `<tr><td>${name}</td><td>${kode}</td><td>${risk}</td><td>${loc}</td></tr>`;
+
+                if (fac.risk_level === 'HIGH' || fac.risk_level === 'CRITICAL') {
+                    highRiskTable.innerHTML += row;
+                }
+                if (fac.risk_level === 'MEDIUM') {
+                    moderateRiskTable.innerHTML += row;
+                }
+            });
+        }
+
+        async function loadSummary() {
+            const response = await fetch('http://127.0.0.1:8000/api/dashboard/summary');
+            if (!response.ok) throw new Error(`Summary HTTP ${response.status}`);
+            const json = await response.json();
+            if (json.status !== 'success') throw new Error('Summary payload error');
+
+            const data = json.data || {};
+            const risks = data.risk_distribution || {};
+            document.getElementById('totalCount').textContent = data.facilities?.active ?? '-';
+            document.getElementById('criticalCount').textContent = risks.CRITICAL ?? 0;
+            document.getElementById('highCount').textContent = risks.HIGH ?? 0;
+            document.getElementById('moderateCount').textContent = risks.MEDIUM ?? 0;
+        }
+
+        async function loadRiskTables() {
+            const response = await fetch('http://127.0.0.1:8000/api/dashboard/map/diseases');
+            if (!response.ok) throw new Error(`Map HTTP ${response.status}`);
+            const json = await response.json();
+            if (json.status !== 'success') throw new Error('Map payload error');
+            renderTables(json.data || []);
+        }
+
+        document.getElementById('riskFilter').addEventListener('input', function () {
+            const filter = this.value.toLowerCase();
+            const rows = highRiskTable.querySelectorAll('tr');
+            rows.forEach((row) => {
+                row.style.display = row.textContent.toLowerCase().includes(filter) ? '' : 'none';
+            });
+        });
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await loadSummary();
+                await loadRiskTables();
+            } catch (error) {
+                showError(`Feil ved lasting: ${error.message}`);
+            }
+        });
+    </script>
+</body>
+</html>

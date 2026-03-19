@@ -1,0 +1,27 @@
+﻿[
+    {
+        "port":  8000,
+        "pid":  2396,
+        "name":  "api"
+    },
+    {
+        "port":  8080,
+        "pid":  9020,
+        "name":  "admin"
+    },
+    {
+        "port":  8081,
+        "pid":  4136,
+        "name":  "facility"
+    },
+    {
+        "port":  8084,
+        "pid":  3828,
+        "name":  "facility-owner"
+    },
+    {
+        "port":  8082,
+        "pid":  12316,
+        "name":  "vessel"
+    }
+]

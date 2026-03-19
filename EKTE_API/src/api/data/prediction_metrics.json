@@ -1,0 +1,342 @@
+[
+  {
+    "timestamp": "2026-03-09T03:31:13.767294",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-13T21:54:04.923002",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-14T21:54:05.814933",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-15T22:52:15.647400",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-16T08:39:13.665611",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-16T08:39:14.945944",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-16T09:00:41.899663",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-16T22:52:14.798036",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-17T10:08:16.547143",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-17T10:31:39.215482",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-17T15:10:58.340048",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-17T22:52:15.547910",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-18T10:08:17.284813",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-18T10:31:39.971800",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-18T15:10:58.914234",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-18T22:52:16.343343",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-19T11:03:01.884269",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-19T11:18:20.779895",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-19T15:10:59.653107",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  },
+  {
+    "timestamp": "2026-03-19T22:52:17.112889",
+    "metrics": {
+      "total_predictions": 0,
+      "validated_predictions": 0,
+      "true_positives": 0,
+      "true_negatives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "average_prediction_lead_time_days": null,
+      "median_prediction_lead_time_days": null
+    }
+  }
+]

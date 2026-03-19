@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kyst Monitor Admin Console</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Vis.js for network graph -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" />
+  <!-- Leaflet.js for Risk Map -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <!-- DataTables for advanced table features -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">KM</div>
+        <div>
+          <div class="brand-title">Kyst Monitor Admin</div>
+          <div class="brand-sub">Real-time aquaculture intelligence</div>
+        </div>
+      </div>
+      <div class="api-pill">
+        <span class="dot" id="apiDot"></span>
+        <span id="apiStatus">Connecting...</span>
+        <span class="mono" id="apiBase">http://127.0.0.1:8000</span>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <h1>Kyst Monitor System Dashboard</h1>
+        <p>Aquaculture disease monitoring, vessel tracking, and environmental risk assessment.</p>
+      </div>
+      <div class="hero-panel">
+        <div class="metric">
+          <div class="metric-label">System health</div>
+          <div class="metric-value" id="healthStatus">--</div>
+          <div class="metric-meta" id="healthMeta">Waiting for API</div>
+          <div class="metric-meta" id="dataFreshness">Last check: --</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Facilities</div>
+          <div class="metric-value" id="facilityTotal">--</div>
+          <div class="metric-meta">Registered sites</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Vessels</div>
+          <div class="metric-value" id="vesselTotal">--</div>
+          <div class="metric-meta" id="vesselMeta">AIS positions</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Ocean grid</div>
+          <div class="metric-value" id="oceanCoverage">--</div>
+          <div class="metric-meta">NorKyst-800 coverage</div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tabs">
+      <!-- Situation Overview -->
+      <button class="tab active" data-tab="overview">Overview</button>
+      <button class="tab" data-tab="health">Health</button>
+      
+      <!-- Disease Analysis -->
+      <span style="display: inline-block; margin: 0 8px; color: var(--muted); font-size: 0.8rem; opacity: 0.5;" title="Disease Analysis">━━━</span>
+      <button class="tab" data-tab="predictions">Outbreak Predictions</button>
+      <button class="tab" data-tab="facility-risks">BarentsWatch Zones</button>
+      <button class="tab" data-tab="smittespredning">🧬 Infection Paths</button>
+      
+      <!-- Maritime Operations -->
+      <span style="display: inline-block; margin: 0 8px; color: var(--muted); font-size: 0.8rem; opacity: 0.5;" title="Maritime Operations">━━━</span>
+      <button class="tab" data-tab="vessel-risk">Boats at Risk</button>
+      <button class="tab" data-tab="vessel-clearing">Vessel Clearing</button>
+      
+      <!-- Administrative Actions -->
+      <span style="display: inline-block; margin: 0 8px; color: var(--muted); font-size: 0.8rem; opacity: 0.5;" title="Administrative Actions">━━━</span>
+      <button class="tab" data-tab="confirmed-plans">Confirmed Plans</button>
+      <button class="tab" data-tab="audit-log">🔍 Audit Log</button>
+      
+      <!-- Data Browse -->
+      <span style="display: inline-block; margin: 0 8px; color: var(--muted); font-size: 0.8rem; opacity: 0.5;" title="Data Browse">━━━</span>
+      <button class="tab" data-tab="facilities">Facilities</button>
+      <button class="tab" data-tab="vessels">Vessels</button>
+      <button class="tab" data-tab="ocean">Ocean</button>
+      
+      <!-- System Admin -->
+      <span style="display: inline-block; margin: 0 8px; color: var(--muted); font-size: 0.8rem; opacity: 0.5;" title="System Admin">━━━</span>
+      <button class="tab" data-tab="admin">Admin</button>
+    </nav>
+
+    <main class="content">
+      <section class="panel active" id="overview">
+        <div class="panel-header">
+          <h2>Dataflow snapshot</h2>
+          <p>Aligned with the external to admin to internal user pipeline.</p>
+        </div>
+        <div class="flow">
+          <div class="flow-row external">
+            <div class="flow-title">External</div>
+            <div class="flow-card">
+              <div>Barentswatch</div>
+              <div>NorKyst-800</div>
+              <div>Yr.no</div>
+            </div>
+          </div>
+          <div class="flow-arrow"></div>
+          <div class="flow-row internal">
+            <div class="flow-title">Internal admin</div>
+            <div class="flow-card">API / backend</div>
+          </div>
+          <div class="flow-arrow"></div>
+          <div class="flow-row admin">
+            <div class="flow-title">Admin surface</div>
+            <div class="flow-card">Admin console (all data)</div>
+          </div>
+          <div class="flow-row users">
+            <div class="flow-title">Internal user</div>
+            <div class="flow-split">
+              <div class="flow-card">Facilities UI</div>
+              <div class="flow-card">Vessel UI</div>
+              <div class="flow-card">Research analytics</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer">
+          <span class="hint">Tip: open each tab to load live data on demand.</span>
+        </div>
+      </section>
+
+      <section class="panel" id="predictions">
+        <div class="panel-header">
+          <h2>📊 Outbreak Risk Predictions (7-Day Forecast)</h2>
+          <p>Calibrated 7-day outbreak probabilities based on boat visits, proximity to infected sites, and disease types.</p>
+        </div>
+
+        <!-- Load Button -->
+        <div class="controls">
+          <div class="control">
+            <label>&nbsp;</label>
+            <button class="btn primary" id="predictionsLoad">
+              <span id="predictionsLoadText">🔮 Load Predictions</span>
+              <span id="predictionsLoadSpinner" class="is-hidden">⏳ Loading...</span>
+            </button>
+          </div>
+          <div class="meta-note-top">
+            <span id="predictionsLastUpdate">Last update: --</span> | Auto-runs hourly
+          </div>
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="summary-grid-predictions">
+          <div class="summary-card critical">
+            <div class="card-label">🔴 Critical Risk</div>
+            <div class="card-value" id="predictionsCritical">--</div>
+            <div class="summary-subtext">&gt;25% probability</div>
+          </div>
+          <div class="summary-card warning">
+            <div class="card-label">🟡 Medium Risk</div>
+            <div class="card-value" id="predictionsMedium">--</div>
+            <div class="summary-subtext">10–25% probability</div>
+          </div>
+          <div class="summary-card">
+            <div class="card-label">🟢 Low Risk</div>
+            <div class="card-value" id="predictionsLow">--</div>
+            <div class="summary-subtext">&lt;10% probability</div>
+          </div>
+          <div class="summary-card">
+            <div class="card-label">📈 Total Scanned</div>
+            <div class="card-value" id="predictionsTotal">--</div>
+            <div class="summary-subtext">Facilities analyzed</div>
+          </div>
+        </div>
+
+        <!-- Map Heatmap -->
+        <div class="dark-card-shell dark-card-mb">
+          <div class="dark-card-header-row">
+            <div>
+              <div class="dark-card-title-sm">Geographic Risk Map</div>
+              <div class="dark-card-subtitle">Infected facilities (🔴) + at-risk facilities in quarantine zone (&lt;5km)</div>
+            </div>
+            <button class="btn primary compact-btn" id="toggleRiskMapBtn" onclick="toggleRiskMap()">
+              📍 Show Map
+            </button>
+          </div>
+          <div id="riskMapContainer" class="risk-map-container"></div>
+        </div>
+
+        <!-- Top Critical Predictions -->
+        <div class="dark-card-body dark-card-mb">
+          <div class="dark-card-title">🔴 Top Critical Predictions</div>
+          <div id="predictionsCriticalList" class="stack-half-gap">
+            <div class="loading-muted">Loading...</div>
+          </div>
+        </div>
+
+        <!-- Top 20 by Risk -->
+        <div class="dark-card-body">
+          <div class="dark-card-title">📊 Top 20 Facilities by Outbreak Risk</div>
+          <div class="table-wrap">
+            <table class="data-table predictions-table-compact" id="predictionsTable">
+              <thead>
+                <tr>
+                  <th style="width: 5%;">#</th>
+                  <th style="width: 20%;">Facility Name</th>
+                  <th style="width: 10%;">Risk Score</th>
+                  <th style="width: 12%;">Risk Level</th>
+                  <th style="width: 10%;">Official Status</th>
+                  <th style="width: 10%;">Primary Disease</th>
+                  <th style="width: 33%;">Risk Factors</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td colspan="7" class="table-empty-muted">Click "Load Predictions" to populate</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel-footer">
+          <span class="hint">💡 Model: Rule-based predictor calibrated to realistic 7-day probabilities using boat visits, distance to infected sites, disease weights, and quarantine status. Runs hourly in background.</span>
+        </div>
+      </section>
+
+      <section class="panel" id="admin">
+        <div class="panel-header">
+          <h2>Risk Network & Correlation Control</h2>
+          <p>Real-time boat-facility impact visualization with strategic control actions.</p>
+        </div>
+
+        <!-- CRITICAL ALERTS - VESSELS BREAKING QUARANTINE -->
+        <div id="criticalAlertsSection" class="section-mb-lg">
+          <div class="critical-banner-wrap">
+            <div class="critical-banner-header">
+              <div>
+                <h3 class="critical-banner-title">🚨 KARANTENEBRUDD - Kritiske hendelser</h3>
+                <p class="critical-banner-subtitle">Båter med besøk ved smittet anlegg (&lt;48t) nå ved andre anlegg</p>
+              </div>
+              <button class="btn critical-banner-btn" id="refreshCriticalAlerts">
+                🔄 Oppdater
+              </button>
+            </div>
+          </div>
+
+          <!-- Vessel Category Summary (based on FACILITY TYPE visited) -->
+          <div class="summary-cards summary-grid-admin-tight">
+            <div class="summary-card alert">
+              <div class="card-label">🔴 Besøkt smittet</div>
+              <div class="card-value" id="statusInfectedVisit">--</div>
+              <div class="summary-subtext">&lt;1 km, 30+ min, &lt;48t</div>
+            </div>
+            <div class="summary-card warning">
+              <div class="card-label">🟠 Besøkt risikosone</div>
+              <div class="card-value" id="statusRiskZoneVisit">--</div>
+              <div class="summary-subtext">Anlegg i BW-risikosone</div>
+            </div>
+            <div class="summary-card">
+              <div class="card-label">🟡 Besøkt 10km-sone</div>
+              <div class="card-value" id="status10kmVisit">--</div>
+              <div class="summary-subtext">Anlegg &lt;10km fra smitte</div>
+            </div>
+            <div class="summary-card summary-card-cleared">
+              <div class="card-label">🟢 Klarert</div>
+              <div class="card-value" id="statusCleared">--</div>
+              <div class="summary-subtext">&gt;48t siden risiko</div>
+            </div>
+          </div>
+
+          <!-- Critical Events List -->
+          <div id="criticalEventsList" class="critical-events-shell">
+            <div class="critical-events-header">
+              <div>
+                <h4 class="critical-events-title">⚠️ KARANTENE IKKE OBSERVERT</h4>
+                <p class="critical-events-subtitle">Båter ved nytt anlegg før 48t karantetid er oppfylt</p>
+              </div>
+              <div class="critical-events-badge">
+                <span id="criticalCount">0</span> hendelser
+              </div>
+            </div>
+
+            <div id="criticalEventsContainer">
+              <div class="loading-center-muted">
+                Laster kritiske hendelser...
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Load Button -->
+        <div class="controls">
+          <div class="control">
+            <label>&nbsp;</label>
+            <button class="btn primary" id="adminLoad">
+              <span id="adminLoadText">🔄 Load Risk Network</span>
+              <span id="adminLoadSpinner" class="is-hidden">⏳ Loading...</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Aggregated Correlation Stats -->
+        <div id="adminKpis" class="summary-cards summary-grid-admin-wide">
+          <div class="summary-card">
+            <div class="card-label">🔴 Infected Sites</div>
+            <div class="card-value" id="correlationInfected">--</div>
+            <div class="summary-subtext">Current</div>
+          </div>
+          <div class="summary-card alert">
+            <div class="card-label">⚠️ High-Risk Boats</div>
+            <div class="card-value" id="correlationHighBoats">--</div>
+            <div class="summary-subtext">&lt;5 km risk</div>
+          </div>
+          <div class="summary-card warning">
+            <div class="card-label">⚡ Moderate-Risk Boats</div>
+            <div class="card-value" id="correlationModBoats">--</div>
+            <div class="summary-subtext">5-10 km risk</div>
+          </div>
+          <div class="summary-card">
+            <div class="card-label">🎯 Affected Farms</div>
+            <div class="card-value" id="correlationAffected">--</div>
+            <div class="summary-subtext">Potential spread</div>
+          </div>
+          <div class="summary-card">
+            <div class="card-label">🔗 Total Links</div>
+            <div class="card-value" id="correlationLinks">--</div>
+            <div class="summary-subtext">Boat-farm pairs</div>
+          </div>
+        </div>
+
+        <!-- Quick Action Buttons -->
+        <div class="action-grid-admin">
+          <button class="btn action-btn-admin action-btn-admin-danger" id="adminActionIsolate">
+            🔒 ISOLATE High-Risk Boats
+          </button>
+          <button class="btn action-btn-admin action-btn-admin-success" id="adminActionApprove">
+            ✅ APPROVE Cleared Vessels
+          </button>
+          <button class="btn action-btn-admin action-btn-admin-warning" id="adminActionRefresh">
+            📊 REFRESH All Data
+          </button>
+          <button class="btn action-btn-admin action-btn-admin-primary" id="adminActionExport">
+            📄 EXPORT Report
+          </button>
+        </div>
+
+        <!-- Risk Network Graph -->
+        <div class="dark-card-shell dark-card-mb">
+          <div class="dark-card-header-row">
+            <div>
+              <div class="dark-card-title-sm">Risk Network Graph</div>
+              <div class="dark-card-subtitle">Nodes: Infected sites &amp; vessels | Edges: Connections with color-coded risk</div>
+            </div>
+            <div class="graph-btn-row">
+              <button id="graphZoomIn" class="btn graph-btn">🔍+ Zoom</button>
+              <button id="graphZoomOut" class="btn graph-btn">🔍− Zoom</button>
+              <button id="graphReset" class="btn graph-btn">↺ Reset</button>
+            </div>
+          </div>
+          <div id="adminNetworkContainer" class="network-container">
+            <div class="network-loading-overlay">
+              Loading network visualization...
+            </div>
+          </div>
+        </div>
+
+        <!-- Top 10 Priority Links -->
+        <div class="dark-card-body dark-card-mb">
+          <div class="dark-card-title">🎯 Top 10 Critical Correlations (This Week)</div>
+          <div id="adminPriorityList" class="stack-half-gap">
+            <div class="loading-center-muted">Loading priorities...</div>
+          </div>
+        </div>
+
+        <!-- Affected Facilities Detail -->
+        <div class="affected-grid-admin">
+          <div class="dark-card-body">
+            <div class="dark-card-title-md">Infected Facilities (Sources)</div>
+            <div id="adminInfectedList" class="scroll-list-300">
+              <div class="loading-muted-center">Loading...</div>
+            </div>
+          </div>
+          <div class="dark-card-body">
+            <div class="dark-card-title-md">Affected Facilities (At Risk)</div>
+            <div id="adminAffectedList" class="scroll-list-300">
+              <div class="loading-muted-center">Loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-footer">
+          <span class="hint">💡 <strong>Risk Network:</strong> Visualizes real-time boat-facility correlations. Red edges = HIGH risk (&lt;5km from infected). Yellow = MODERATE (5-10km). Click to filter or isolate vessels.</span>
+        </div>
+      </section>
+
+      <section class="panel" id="vessel-clearing">
+        <div class="panel-header">
+          <h2>Vessel Clearing & Status</h2>
+          <p>Monitor vessel disinfection, quarantine compliance, and approval status for facility access.</p>
+        </div>
+        <div class="controls">
+          <div class="control">
+            <label>Status filter</label>
+            <select id="vesselStatusFilter">
+              <option value="all">All Vessels</option>
+              <option value="cleared">✓ Cleared (ready)</option>
+              <option value="pending">⏳ Pending (awaiting confirmation)</option>
+              <option value="at-risk">🔴 At Risk (needs attention)</option>
+            </select>
+          </div>
+          <div class="control wide">
+            <label>Vessel search</label>
+            <input type="text" id="vesselClearingSearch" placeholder="Vessel name or MMSI" />
+          </div>
+          <div class="control">
+            <label>&nbsp;</label>
+            <button class="btn primary" id="loadVesselClearing">Load vessel clearing data</button>
+          </div>
+        </div>
+        <div class="summary-cards">
+          <div class="summary-card">
+            <div class="card-label">✓ Cleared</div>
+            <div class="card-value" id="vesselClearedCount">--</div>
+          </div>
+          <div class="summary-card warning">
+            <div class="card-label">⏳ Pending</div>
+            <div class="card-value" id="vesselPendingCount">--</div>
+          </div>
+          <div class="summary-card alert">
+            <div class="card-label">🔴 At Risk</div>
+            <div class="card-value" id="vesselAtRiskCount">--</div>
+          </div>
+          <div class="summary-card">
+            <div class="card-label">Total monitored</div>
+            <div class="card-value" id="vesselClearingTotalCount">--</div>
+          </div>
+        </div>
+        <div id="vesselClearingList" class="list"></div>
+        <div class="panel-footer">
+          <span class="hint">Data synced from vessel dashboard. Vessels can be approved for facility access once all disinfection confirmed.</span>
+        </div>
+      </section>
+
+      <section class="panel" id="confirmed-plans">
+        <div class="panel-header">
+          <h2>Confirmed Route Plans</h2>
+          <p>Plans that have been confirmed in the vessel dashboard and stored on the server.</p>
+        </div>
+        <div class="controls">
+          <div class="control">
+            <label>MMSI filter</label>
+            <input type="text" id="confirmedPlansMmsi" placeholder="e.g. 257051270" />
+          </div>
+          <div class="control">
+            <label>&nbsp;</label>
+            <button class="btn primary" id="loadConfirmedPlans">Load confirmed plans</button>
+          </div>
+        </div>
+        <div class="summary-cards">
+          <div class="summary-card">
+            <div class="card-label">Total plans</div>
+            <div class="card-value" id="confirmedPlansCount">--</div>
+          </div>
+        </div>
+        <div id="confirmedPlansList" class="list"></div>
+        <div class="panel-footer">
+          <span class="hint">Source: /api/boat/plan/confirmed</span>
+        </div>
+      </section>
+
+      <section class="panel" id="audit-log">
+        <div class="panel-header">
+          <h2>🔍 Audit Log - Facility Visits</h2>
+          <p>Track all facility visits, health pass status, and disinfection audit trail.</p>
+        </div>
+        <div class="controls">
+          <div class="control">
+            <label>Boat MMSI</label>
+            <input type="text" id="auditMmsiFilter" placeholder="e.g. 257051270" />
+          </div>
+          <div class="control">
+            <label>Days back</label>
+            <select id="auditDaysFilter">
+              <option value="7">Last 7 days</option>
+              <option value="30" selected>Last 30 days</option>
+              <option value="90">Last 90 days</option>
+              <option value="365">Last year</option>
+            </select>
+          </div>
+          <div class="control">
+            <label>&nbsp;</label>
+            <button class="btn primary" id="loadAuditLog">Last inn revisjonslogg</button>
+          </div>
+        </div>
+        <div class="summary-cards">
+          <div class="summary-card">
+            <div class="card-label">Total visits</div>
+            <div class="card-value" id="auditTotalCount">--</div>
+          </div>
+          <div class="summary-card">
+            <div class="card-label">With health pass</div>
+            <div class="card-value" id="auditWithPassCount">--</div>
+          </div>
+          <div class="summary-card">
+            <div class="card-label">Warnings ignored</div>
+            <div class="card-value" id="auditWarningIgnoredCount">--</div>
+          </div>
+          <div class="summary-card">
+            <div class="card-label">Disinfections logged</div>
+            <div class="card-value" id="auditDisinfectionCount">--</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="auditLogTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Boat (MMSI)</th>
+                <th>Facility</th>
+                <th>Disease</th>
+                <th>Health Pass</th>
+                <th>Disinfection</th>
+                <th>Responsible Party</th>
+              </tr>
+            </thead>
+            <tbody id="auditLogBody">
+              <tr>
+                <td colspan="7" style="padding: 2rem; text-align: center; color: #9ca3af;">Last inn revisjonslogg for å se poster</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel-footer">
+          <span class="hint">Source: /api/audit/visits-log | Last updated: <span id="auditLastUpdated">--</span></span>
+        </div>
+      </section>
+
+      <section class="panel" id="risk">
+        <div class="panel-header">
+          <h2>Risk assessment</h2>
+          <p>Pulls from the live risk engine. Filter by disease and exposure without fetching thousands.</p>
+        </div>
+        <div class="controls">
+          <div class="control">
+            <label>Max rows</label>
+            <input type="number" id="riskLimit" min="10" max="500" value="80" />
+          </div>
+          <div class="control">
+            <label>Risk level</label>
+            <select id="riskLevel">
+              <option value="all">All</option>
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+          <div class="control">
+            <label>Disease</label>
+            <select id="diseaseFilter">
+              <option value="all">All</option>
+              <option value="ila">ILA</option>
+              <option value="pd">PD</option>
+              <option value="none">None</option>
+            </select>
+          </div>
+          <div class="control wide">
+            <label>Facility search</label>
+            <input type="text" id="riskSearch" placeholder="Search facility name or code" />
+          </div>
+          <div class="control">
+            <label>&nbsp;</label>
+            <button class="btn primary" id="loadRisk">Load risk</button>
+          </div>
+        </div>
+        <div id="riskSummary" class="mini-cards"></div>
+        <div id="riskGrid" class="grid"></div>
+      </section>
+
+      <section class="panel" id="facilities">
+        <div class="panel-header">
+          <h2>Facilities</h2>
+          <p>Search the registry or perform a radius lookup. Pagination avoids overload.</p>
+        </div>
+        <div class="controls">
+          <div class="control">
+            <label>Mode</label>
+            <select id="facilityMode">
+              <option value="list">List</option>
+              <option value="near">Near location</option>
+            </select>
+          </div>
+          <div class="control">
+            <label>Limit</label>
+            <input type="number" id="facilityLimit" min="10" max="200" value="50" />
+          </div>
+          <div class="control">
+            <label>Skip</label>
+            <input type="number" id="facilitySkip" min="0" value="0" />
+          </div>
+          <div class="control wide">
+            <label>Search</label>
+            <input type="text" id="facilitySearch" placeholder="Name, code, municipality" />
+          </div>
+          <div class="control">
+            <label>Lat</label>
+            <input type="number" id="facilityLat" step="0.01" value="70" />
+          </div>
+          <div class="control">
+            <label>Lon</label>
+            <input type="number" id="facilityLon" step="0.01" value="20" />
+          </div>
+          <div class="control">
+            <label>Radius km</label>
+            <input type="number" id="facilityRadius" min="1" max="500" value="50" />
+          </div>
+          <div class="control">
+            <label>&nbsp;</label>
+            <button class="btn primary" id="loadFacilities">Load facilities</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="facilityTable">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Municipality</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Distance</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="panel-footer">
+          <span class="hint">Note: registry responses do not include coordinates. Use the Risk tab for lat/lon.</span>
+        </div>
+      </section>
+
+      <section class="panel" id="facility-risks">
+        <div class="panel-header">
+          <h2>🏭 BarentsWatch Disease Zones</h2>
+          <p>Official BarentsWatch regulatory zones where disease is declared. Data source: Norwegian Directorate of Fisheries. RESTRICTION zones prohibit movement; SURVEILLANCE zones require enhanced biosecurity.</p>
+          <div class="facility-id-chip-admin" id="facilityRiskSelectedId">Selected facility ID: -</div>
+        </div>
+        <div class="controls">
+          <div class="control">
+            <label>Risk filter</label>
+            <select id="facilityRiskLevel">
+              <option value="all">All Risk Levels</option>
+              <option value="Ekstrem">EKSTREM (highest risk)</option>
+              <option value="Høy">HØY (high risk)</option>
+              <option value="Moderat">MODERAT (moderate)</option>
+              <option value="Lav">LAV (low risk)</option>
+            </select>
+          </div>
+          <div class="control">
+            <label>Disease filter</label>
+            <select id="facilityDiseaseFilter">
+              <option value="all">All Diseases</option>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div class="control">
+            <label>County (Fylke)</label>
+            <select id="facilityCountyFilter">
+              <option value="all">All Counties</option>
+              <option value="Troms">Troms</option>
+              <option value="Nordland">Nordland</option>
+              <option value="Trøndelag">Trøndelag</option>
+              <option value="Møre og Romsdal">Møre og Romsdal</option>
+              <option value="Sogn og Fjordane">Sogn og Fjordane</option>
+              <option value="Hordaland">Hordaland</option>
+              <option value="Rogaland">Rogaland</option>
+              <option value="Vestland">Vestland</option>
+            </select>
+          </div>
+          <div class="control wide">
+            <label>Search facilities</label>
+            <input type="text" id="facilityRiskSearch" data-facility-search placeholder="Facility name or code" />
+          </div>
+          <div class="control">
+            <label>View</label>
+            <div class="segmented">
+              <button class="seg-btn active" id="facilityViewList" type="button">List</button>
+              <button class="seg-btn" id="facilityViewTable" type="button">Table</button>
+            </div>
+          </div>
+          <button class="btn primary" id="loadFacilityRisk">Load facility risk</button>
+        </div>
+        <div class="summary-cards">
+          <div class="summary-card ekstrem">
+            <div class="card-label">EKSTREM</div>
+            <div class="card-value" id="facilityRiskEkstremCount">--</div>
+          </div>
+          <div class="summary-card høy">
+            <div class="card-label">HØY</div>
+            <div class="card-value" id="facilityRiskHøyCount">--</div>
+          </div>
+          <div class="summary-card moderat">
+            <div class="card-label">MODERAT</div>
+            <div class="card-value" id="facilityRiskModeratCount">--</div>
+          </div>
+          <div class="summary-card lav">
+            <div class="card-label">LAV</div>
+            <div class="card-value" id="facilityRiskLavCount">--</div>
+          </div>
+          <div class="summary-card">
+            <div class="card-label">Total at risk</div>
+            <div class="card-value" id="facilityRiskTotalCount">--</div>
+          </div>
+        </div>
+        <div class="risk-insights">
+          <div class="legend-card">
+            <div class="legend-title">Currents legend</div>
+            <div class="legend-row">
+              <span class="legend-dot toward"></span>
+              <span>Current toward facility (risk increases)</span>
+            </div>
+            <div class="legend-row">
+              <span class="legend-dot away"></span>
+              <span>Current away from facility (risk dampened)</span>
+            </div>
+            <div class="legend-row">
+              <span class="legend-dot neutral"></span>
+              <span>Direction unknown or no current data</span>
+            </div>
+          </div>
+          <div class="top5-card">
+            <div class="legend-title">Top 5 current risks</div>
+            <div id="facilityRiskTopList" class="top5-list">--</div>
+          </div>
+        </div>
+        <div id="facilityRiskList" class="list"></div>
+        <div id="facilityRiskTableWrap" class="table-wrap hidden">
+          <table class="data-table" id="facilityRiskTable">
+            <thead>
+              <tr>
+                <th>Facility</th>
+                <th>Code</th>
+                <th>Risk</th>
+                <th>Score</th>
+                <th>Effective km</th>
+                <th>Current</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="panel-footer">
+          <span class="hint">Distance-based risk: ILA/PD Ekstrem &lt;5km, Høy 5-10km, Moderat 10-20km, Lav 20-30km+</span>
+        </div>
+      </section>
+
+      <section class="panel" id="vessel-risk">
+        <div class="panel-header">
+          <h2>Boats at Risk Facilities</h2>
+          <p>Vessels that have visited high-risk or infected aquaculture facilities (20+ min visits). Based on actual facility exposure, not distance.</p>
+          <div class="facility-id-chip-admin" id="vesselRiskSelectedMmsi">Selected MMSI: -</div>
+        </div>
+        <div class="controls">
+          <div class="control">
+            <label>Risk filter</label>
+            <select id="vesselRiskLevel" data-vessel-search>
+              <option value="all">All Risk Levels</option>
+              <option value="HIGH">HIGH (ekstrem/høy)</option>
+              <option value="MODERATE">MODERATE (moderat)</option>
+            </select>
+          </div>
+          <div class="control">
+            <label>Visited infected facility</label>
+            <select id="vesselInfectedFilter">
+              <option value="all">All Vessels</option>
+              <option value="true">Visited Infected (Red Flag)</option>
+              <option value="false">Not Visited Infected</option>
+            </select>
+          </div>
+          <div class="control">
+            <label>Has 48h contact chain</label>
+            <select id="vesselChainFilter">
+              <option value="all">All Vessels</option>
+              <option value="true">Has Contact Chain</option>
+              <option value="false">No Contact Chain</option>
+            </select>
+          </div>
+          <div class="control">
+            <label>Visit Category Filter</label>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="btn small visit-category-filter" data-category="infected_facility" style="background: rgba(220, 53, 69, 0.2); color: #dc3545; border: 1px solid #dc3545;">🦠 Infected</button>
+              <button class="btn small visit-category-filter" data-category="risk_zone_facility" style="background: rgba(255, 193, 7, 0.2); color: #ffc107; border: 1px solid #ffc107;">⚠️ Risk Zone</button>
+              <button class="btn small visit-category-filter" data-category="near_infected_10km" style="background: rgba(23, 162, 184, 0.2); color: #17a2b8; border: 1px solid #17a2b8;">📍 &lt;10km</button>
+              <button class="btn small visit-category-filter" data-category="all" style="margin-left: auto;">Show All</button>
+            </div>
+          </div>
+          <button class="btn primary" id="loadVesselRisk">Load vessel risk</button>
+        </div>
+        <div class="summary-cards">
+          <div class="summary-card" id="vesselRiskCardInfected" style="cursor: pointer;">
+            <div class="card-label">Visited Infected</div>
+            <div class="card-value" id="vesselRiskInfectedCount">--</div>
+          </div>
+          <div class="summary-card alert" id="vesselRiskCardHigh" style="cursor: pointer;">
+            <div class="card-label">HIGH RISK vessels</div>
+            <div class="card-value" id="vesselRiskHighCount">--</div>
+          </div>
+          <div class="summary-card warning" id="vesselRiskCardChain" style="cursor: pointer;">
+            <div class="card-label">Contact Chains (48h)</div>
+            <div class="card-value" id="vesselRiskChainCount">--</div>
+          </div>
+          <div class="summary-card" id="vesselRiskCardTotal" style="cursor: pointer;">
+            <div class="card-label">Total at risk</div>
+            <div class="card-value" id="vesselRiskTotalCount">--</div>
+          </div>
+        </div>
+        
+        <!-- Table View -->
+        <div id="vesselRiskTableContainer" style="margin-top: 20px;">
+          <table id="vesselRiskTable" class="display" style="width:100%">
+            <thead>
+              <tr>
+                <th>MMSI</th>
+                <th>Vessel Name</th>
+                <th>Risk Level</th>
+                <th>Smittede besøkt</th>
+                <th>Visits (7d)</th>
+                <th>Risk Zone/10km</th>
+                <th>48h Chain</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Detail Modal -->
+        <div id="vesselDetailModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 9999; overflow: auto;">
+          <div style="max-width: 1200px; margin: 40px auto; background: #1a1f2e; border-radius: 12px; padding: 30px; position: relative; border: 1px solid rgba(255,255,255,0.1);">
+            <button id="closeVesselModal" style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--muted); font-size: 24px; cursor: pointer;">&times;</button>
+            <div id="vesselDetailContent"></div>
+          </div>
+        </div>
+        
+        <div class="panel-footer">
+          <span class="hint">Categories: 🦠 Visited infected | ⚠️ Visited risk zone | 📍 Visited within 10km of infected. Tracking for traceability, not scoring.</span>
+        </div>
+      </section>
+
+      <section class="panel" id="vessels">
+        <div class="panel-header">
+          <h2>Vessels</h2>
+          <p>Search by name or MMSI, or filter by speed/region to find vessels.</p>
+        </div>
+        <div class="controls">
+          <div class="control wide">
+            <label>Search by name or MMSI</label>
+            <input type="text" id="vesselSearchName" placeholder="e.g. Labridae or 257051270" />
+          </div>
+          <div class="control">
+            <label>&nbsp;</label>
+            <button class="btn primary" id="searchVesselBtn">Search</button>
+          </div>
+          <div class="control">
+            <label>Limit</label>
+            <input type="number" id="vesselLimit" min="10" max="300" value="100" />
+          </div>
+          <div class="control">
+            <label>Min speed</label>
+            <input type="number" id="vesselSpeed" min="0" step="0.1" value="0" />
+          </div>
+          <div class="control">
+            <label>Lat min</label>
+            <input type="number" id="vesselLatMin" step="0.01" value="60" />
+          </div>
+          <div class="control">
+            <label>Lat max</label>
+            <input type="number" id="vesselLatMax" step="0.01" value="82" />
+          </div>
+          <div class="control">
+            <label>Lon min</label>
+            <input type="number" id="vesselLonMin" step="0.01" value="0" />
+          </div>
+          <div class="control">
+            <label>Lon max</label>
+            <input type="number" id="vesselLonMax" step="0.01" value="40" />
+          </div>
+          <div class="control">
+            <label>&nbsp;</label>
+            <button class="btn primary" id="loadVessels">Load vessels</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="vesselTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>MMSI</th>
+                <th>Lat</th>
+                <th>Lon</th>
+                <th>Speed</th>
+                <th>Heading</th>
+                <th>Updated</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="health">
+        <div class="panel-header">
+          <h2>Health summary</h2>
+          <p>Weekly fish health signals (ILA / PD) from NAIS.</p>
+        </div>
+        <div class="controls">
+          <div class="control">
+            <label>Year</label>
+            <input type="number" id="healthYear" min="2020" max="2030" placeholder="Auto" />
+          </div>
+          <div class="control">
+            <label>Week</label>
+            <input type="number" id="healthWeek" min="1" max="53" placeholder="Auto" />
+          </div>
+          <div class="control">
+            <label>&nbsp;</label>
+            <button class="btn primary" id="loadHealth">Load health</button>
+          </div>
+        </div>
+        <div id="healthCards" class="mini-cards"></div>
+        <pre class="code-block" id="healthJson">Waiting for data...</pre>
+      </section>
+
+      <section class="panel" id="ocean">
+        <div class="panel-header">
+          <h2>Ocean currents</h2>
+          <p>Query NorKyst-800 for the most recent ocean current velocity vectors.</p>
+        </div>
+        <div class="controls">
+          <div class="control">
+            <label>Latitude</label>
+            <input type="number" id="oceanLat" min="70" max="82" step="0.1" value="74.5" />
+          </div>
+          <div class="control">
+            <label>Longitude</label>
+            <input type="number" id="oceanLon" min="10" max="35" step="0.1" value="25" />
+          </div>
+          <div class="control">
+            <label>&nbsp;</label>
+            <button class="btn primary" id="loadOcean">Load currents</button>
+          </div>
+        </div>
+        <div id="oceanCards" class="mini-cards"></div>
+        <pre class="code-block" id="oceanJson">Waiting for data...</pre>
+      </section>
+
+      <!-- SMITTESPREDNING (INFECTION PATHS) PANEL -->
+      <section class="panel" id="smittespredning">
+        <div class="panel-header">
+          <h2>🧬 Infection Paths (Smittespredning)</h2>
+          <p>Boats detected at facilities with confirmed/suspected disease, with potential downstream spread to other sites. Core Tier 1 biosecurity operational view.</p>
+        </div>
+
+        <div id="smitteFilters" class="control-group">
+          <div class="control">
+            <label>Filter by Status</label>
+            <select id="smitteStatusFilter">
+              <option value="">All statuses</option>
+              <option value="DETECTED">DETECTED (Initial detection)</option>
+              <option value="CONFIRMED_HEALTHY">CONFIRMED_HEALTHY (No spread confirmed)</option>
+              <option value="CONFIRMED_INFECTED">CONFIRMED_INFECTED (Spread confirmed)</option>
+              <option value="UNCERTAIN">UNCERTAIN (Unable to confirm)</option>
+            </select>
+          </div>
+          <div class="control">
+            <label>&nbsp;</label>
+            <button class="btn primary" id="loadSmitte">Load infection paths</button>
+            <button class="btn secondary" id="refreshSmitte">Refresh</button>
+            <button class="btn success" id="logEventBtn" title="Manually log a new smittespredning event">➕ Log Event</button>
+          </div>
+        </div>
+
+        <div id="smitteStats" class="mini-cards">
+          <div class="mini-card">
+            <div class="mini-label">Total Paths</div>
+            <div class="mini-value" id="smitteTotalPaths">--</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-label">Detected</div>
+            <div class="mini-value" id="smitteDetected">--</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-label">Confirmed Healthy</div>
+            <div class="mini-value" id="smitteHealthy">--</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-label">Confirmed Infected</div>
+            <div class="mini-value" id="smitteInfected">--</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-label">Uncertain</div>
+            <div class="mini-value" id="smitteUncertain">--</div>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Vessel (MMSI)</th>
+                <th>From (Disease)</th>
+                <th>To (Destination)</th>
+                <th>Detected Via</th>
+                <th>Status</th>
+                <th>Timeline</th>
+                <th>Distance (km)</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="smitteTableBody">
+              <tr>
+                <td colspan="8" class="text-center">Loading infection paths...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="code-header">Raw API Response</div>
+        <pre class="code-block" id="smitteJson">Waiting for data...</pre>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Modal: Confirm Isolate -->
+  <div id="isolateModal" class="legacy-modal-overlay">
+    <div class="legacy-modal-card legacy-modal-card-sm">
+      <h3 class="legacy-modal-title">🔒 Isolate High-Risk Vessels?</h3>
+      <p class="legacy-modal-text">Mark all <strong id="isolateCount">--</strong> high-risk vessels as PENDING for mandatory inspection. They will be notified immediately.</p>
+      <div class="legacy-modal-actions">
+        <button id="isolateConfirm" class="btn legacy-modal-btn legacy-modal-btn-danger">✓ Confirm Isolate</button>
+        <button id="isolateCancel" class="btn legacy-modal-btn legacy-modal-btn-muted">✕ Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Confirm Approve -->
+  <div id="approveModal" class="legacy-modal-overlay">
+    <div class="legacy-modal-card legacy-modal-card-sm">
+      <h3 class="legacy-modal-title">✅ Approve Cleared Vessels?</h3>
+      <p class="legacy-modal-text">Approve all cleared vessels and update their status to APPROVED. They regain facility access immediately.</p>
+      <div class="legacy-modal-actions">
+        <button id="approveConfirm" class="btn legacy-modal-btn legacy-modal-btn-success">✓ Confirm Approve</button>
+        <button id="approveCancel" class="btn legacy-modal-btn legacy-modal-btn-muted">✕ Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Correlation Details -->
+  <div id="correlationDetailModal" class="legacy-modal-overlay legacy-modal-overlay-scroll">
+    <div class="legacy-modal-card legacy-modal-card-lg">
+      <h3 id="detailTitle" class="legacy-modal-title">Correlation Details</h3>
+      <div id="detailContent" class="legacy-modal-text legacy-modal-detail-content">Loading...</div>
+      <div class="legacy-modal-actions">
+        <button id="detailNotify" class="btn legacy-modal-btn legacy-modal-btn-primary">📧 Notify Facility</button>
+        <button id="detailClose" class="btn legacy-modal-btn legacy-modal-btn-muted">✕ Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="riskFactorModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="riskFactorTitle">
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title" id="riskFactorTitle">Risk factor breakdown</div>
+        <button class="modal-close" type="button" data-modal-close>Close</button>
+      </div>
+      <div class="modal-body" id="riskFactorBody"></div>
+    </div>
+  </div>
+
+  <!-- Modal: Transmission Sources & Infection Chain -->
+  <div id="transmissionModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="transmissionTitle">
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-card" style="width: 90%; max-width: 1000px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <div class="modal-title" id="transmissionTitle">🧬 Transmission Sources & Infection Chain</div>
+        <button class="modal-close" type="button" data-modal-close>✕</button>
+      </div>
+      <div class="modal-body" id="transmissionBody" style="padding: 20px;">
+        <div style="text-align: center; color: #9ca3af;">Loading transmission analysis...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Log Smittespredning Event -->
+  <div id="eventModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card" style="width: 600px;">
+      <div class="modal-header">
+        <h2>Log Smittespredning Event</h2>
+        <span class="modal-close" onclick="closeEventModal()">&times;</span>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+        <form id="eventForm">
+          <!-- Vessel MMSI -->
+          <div class="form-group">
+            <label for="eventMMSI">Vessel MMSI *</label>
+            <input type="text" id="eventMMSI" placeholder="e.g., 259234000" maxlength="9" required />
+            <small id="eventMMSIError" style="color: #cc0000; display: none;"></small>
+          </div>
+
+          <!-- Facility From -->
+          <div class="form-group">
+            <label for="eventFacilityFrom">Facility (Origin) *</label>
+            <select id="eventFacilityFrom" required>
+              <option value="">-- Select facility --</option>
+            </select>
+          </div>
+
+          <!-- Disease Type -->
+          <div class="form-group">
+            <label>Disease Type *</label>
+            <div style="display: flex; gap: 20px;">
+              <label style="display: flex; align-items: center; gap: 8px;">
+                <input type="radio" name="eventDisease" value="ILA" checked /> ILA
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px;">
+                <input type="radio" name="eventDisease" value="PD" /> PD
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px;">
+                <input type="radio" name="eventDisease" value="UNKNOWN" /> UNKNOWN
+              </label>
+            </div>
+          </div>
+
+          <!-- Detection Method -->
+          <div class="form-group">
+            <label>Detection Method *</label>
+            <div style="display: flex; gap: 20px;">
+              <label style="display: flex; align-items: center; gap: 8px;">
+                <input type="radio" name="eventDetected" value="AIS_PROXIMITY" checked /> AIS Proximity
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px;">
+                <input type="radio" name="eventDetected" value="MANUAL" /> Manual Report
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px;">
+                <input type="radio" name="eventDetected" value="INSPECTION" /> Inspection
+              </label>
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div class="form-group">
+            <label for="eventStatus">Status *</label>
+            <select id="eventStatus" required>
+              <option value="DETECTED" selected>DETECTED</option>
+              <option value="CONFIRMED_HEALTHY">CONFIRMED_HEALTHY</option>
+              <option value="CONFIRMED_INFECTED">CONFIRMED_INFECTED</option>
+              <option value="UNCERTAIN">UNCERTAIN</option>
+            </select>
+          </div>
+
+          <!-- Facility To (optional) -->
+          <div class="form-group">
+            <label for="eventFacilityTo">Facility (Destination - Optional)</label>
+            <select id="eventFacilityTo">
+              <option value="">-- Select if known --</option>
+            </select>
+          </div>
+
+          <!-- Notes -->
+          <div class="form-group">
+            <label for="eventNotes">Notes</label>
+            <textarea id="eventNotes" placeholder="Additional observations..." style="resize: vertical; min-height: 80px;"></textarea>
+          </div>
+
+          <div id="eventFormError" style="color: #cc0000; margin-bottom: 15px; display: none;"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn secondary" onclick="closeEventModal()">Cancel</button>
+        <button class="btn success" onclick="submitEventForm()">Create Event</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="risk-map.js"></script>
+  <script>
+    // Initialize dashboard when DOM is ready
+    document.addEventListener("DOMContentLoaded", async () => {
+      console.log("[INIT] DOM ready, starting dashboard initialization...");
+      
+      // First: Initialize all DOM element references
+      initializeElements();
+      console.log("[INIT] DOM elements initialized");
+      
+      // Setup tab navigation system
+      setupTabs();
+      console.log("[INIT] Tab navigation enabled");
+      
+      // Setup event listeners for all buttons
+      setupListeners();
+      console.log("[INIT] Event listeners attached");
+      
+      // Load overview (API status, health, facility/vessel/ocean summaries)
+      await loadOverview();
+      console.log("[INIT] Overview loaded");
+      
+      // Auto-load facility risk data
+      await loadFacilityRisk();
+      console.log("[INIT] Facility risk loaded");
+      
+      // Auto-load vessel risk data  
+      await loadVesselRisk();
+      console.log("[INIT] Vessel risk loaded");
+      
+      // Auto-load vessel clearing status
+      await loadVesselClearing();
+      console.log("[INIT] Vessel clearing loaded");
+      
+      console.log("[INIT] Dashboard initialization complete");
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <title>Quick Test - Vessel Dashboard</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 2rem;
+      background: #1e1e1e;
+      color: #00ff00;
+    }
+    .test {
+      background: #2d2d2d;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-left: 4px solid #00ff00;
+    }
+    .pass { color: #00ff00; }
+    .fail { color: #ff0000; }
+    button {
+      background: #00ff00;
+      color: #000;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚢 Quick Test - Vessel Dashboard</h1>
+  
+  <div class="test">
+    <h3>1. Load Test Boat (Labridae)</h3>
+    <button onclick="loadTestBoat()">Load Labridae (257051270)</button>
+    <div id="loadResult"></div>
+  </div>
+
+  <div class="test">
+    <h3>2. Check Dashboard Elements</h3>
+    <button onclick="checkElements()">Check Elements</button>
+    <div id="elemResult"></div>
+  </div>
+
+  <div class="test">
+    <h3>3. Initialize Map</h3>
+    <button onclick="testMap()">Test Map Init</button>
+    <div id="mapResult"></div>
+  </div>
+
+  <div class="test">
+    <h3>4. Load Facilities</h3>
+    <button onclick="testAPI()">Test API</button>
+    <div id="apiResult"></div>
+  </div>
+
+  <div class="test">
+    <h3>5. Go to Dashboard</h3>
+    <button onclick="goToDashboard()">Open Dashboard</button>
+  </div>
+
+  <script src="vessel-storage.js"></script>
+  <script>
+    function log(id, msg, type = 'pass') {
+      const el = document.getElementById(id);
+      el.innerHTML += `<div class="${type}">${msg}</div>`;
+    }
+
+    function clear(id) {
+      document.getElementById(id).innerHTML = '';
+    }
+
+    function loadTestBoat() {
+      clear('loadResult');
+      log('loadResult', 'Loading Labridae...', 'pass');
+      
+      const vesselInfo = {
+        mmsi: '257051270',
+        name: 'LABRIDAE',
+        callsign: 'LH2880',
+        position: {
+          lat: 63.4305,
+          lon: 10.3951
+        }
+      };
+      
+      VesselStorage.updateVesselInfo(vesselInfo);
+      log('loadResult', '✓ Vessel saved to localStorage', 'pass');
+      log('loadResult', `  Name: ${vesselInfo.name}`, 'pass');
+      log('loadResult', `  MMSI: ${vesselInfo.mmsi}`, 'pass');
+      log('loadResult', `  Position: ${vesselInfo.position.lat}, ${vesselInfo.position.lon}`, 'pass');
+    }
+
+    function checkElements() {
+      clear('elemResult');
+      log('elemResult', 'Checking HTML elements...', 'pass');
+      
+      const elements = [
+        'vesselMMSI',
+        'vesselInfoPanel',
+        'vesselName',
+        'statusPanel',
+        'statusIndicator',
+        'mapPanel',
+        'map',
+        'actionsPanel',
+        'historyPanel',
+        'visitLoggerModal',
+        'visitFacility',
+        'routePlannerModal'
+      ];
+      
+      elements.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          log('elemResult', `✓ Found: ${id}`, 'pass');
+        } else {
+          log('elemResult', `✗ Missing: ${id}`, 'fail');
+        }
+      });
+    }
+
+    async function testAPI() {
+      clear('apiResult');
+      log('apiResult', 'Testing API connection...', 'pass');
+      
+      try {
+        const response = await fetch('http://127.0.0.1:8002/api/facilities?limit=5');
+        log('apiResult', `Status: ${response.status}`, response.ok ? 'pass' : 'fail');
+        
+        if (response.ok) {
+          const data = await response.json();
+          log('apiResult', `✓ Facilities: ${data.facilities.length}`, 'pass');
+          log('apiResult', `✓ Total: ${data.total}`, 'pass');
+          log('apiResult', `✓ First facility: ${data.facilities[0].name}`, 'pass');
+        }
+      } catch (error) {
+        log('apiResult', `✗ Error: ${error.message}`, 'fail');
+      }
+    }
+
+    async function testMap() {
+      clear('mapResult');
+      log('mapResult', '✗ Cannot test map here - needs actual map div', 'fail');
+      log('mapResult', 'Go to dashboard to test map', 'pass');
+    }
+
+    function goToDashboard() {
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facility Loading Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        h1 { color: #333; }
+        .test-section { margin: 20px 0; padding: 15px; background: #f9f9f9; border-left: 4px solid #007bff; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 10px; padding: 10px; background: #e3f2fd; border-radius: 4px; font-family: monospace; max-height: 400px; overflow-y: auto; }
+        .success { background: #e8f5e9; border-left-color: #4caf50; }
+        .error { background: #ffebee; border-left-color: #f44336; }
+        input[type="text"] { padding: 8px; width: 300px; font-size: 14px; }
+        #autocompleteResults { margin-top: 10px; }
+        .autocomplete-item { padding: 8px; background: #f0f0f0; margin: 5px 0; border-radius: 4px; cursor: pointer; }
+        .autocomplete-item:hover { background: #e0e0e0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Facility Loading Test</h1>
+        
+        <div class="test-section">
+            <h2>1. Test API Connection</h2>
+            <button onclick="testAPI()">Test API /api/facilities</button>
+            <div id="apiResult" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. Load Facilities and Test Autocomplete</h2>
+            <input type="text" id="searchInput" placeholder="Type facility name..." />
+            <button onclick="testAutocomplete()">Load Facilities</button>
+            <div id="autocompleteResults"></div>
+            <div id="autocompleteResult" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. Search for Specific Facilities</h2>
+            <button onclick="searchValaayan()">Search: Valøyan</button>
+            <button onclick="searchMannbruholmen()">Search: Mannbruholmen</button>
+            <button onclick="searchGrottingsoy()">Search: Grøttingsøy</button>
+            <button onclick="searchSlettholmene()">Search: Slettholmene</button>
+            <div id="searchResult" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>4. Console Output</h2>
+            <p>Open browser console (F12) to see detailed logs</p>
+            <button onclick="clearConsole()">Clear Console Logs</button>
+            <div id="consoleOutput" class="result" style="max-height: 300px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <script>
+        let facilitiesData = [];
+        const consoleOutputDiv = document.getElementById('consoleOutput');
+        
+        // Override console.log to also display in page
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+            consoleOutputDiv.innerHTML += `<div>${new Date().toLocaleTimeString()}: ${msg}</div>`;
+            consoleOutputDiv.scrollTop = consoleOutputDiv.scrollHeight;
+        };
+
+        async function testAPI() {
+            const resultDiv = document.getElementById('apiResult');
+            resultDiv.innerHTML = '<p>Testing API...</p>';
+            
+            try {
+                console.log('Fetching from http://127.0.0.1:8002/api/facilities?limit=500');
+                const response = await fetch('http://127.0.0.1:8002/api/facilities?limit=500');
+                console.log('Response status:', response.status);
+                
+                const data = await response.json();
+                console.log('API Response keys:', Object.keys(data));
+                console.log('Total facilities from API:', data.total || data.count);
+                console.log('Facilities array length:', data.facilities ? data.facilities.length : 0);
+                
+                if (data.facilities && data.facilities.length > 0) {
+                    resultDiv.classList.add('success');
+                    resultDiv.innerHTML = `
+                        <h3>SUCCESS</h3>
+                        <p>Total from API: ${data.total || data.count}</p>
+                        <p>Facilities array: ${data.facilities.length} items</p>
+                        <p>First facility: ${data.facilities[0].name}</p>
+                        <p>Sample: ${JSON.stringify(data.facilities[0], null, 2)}</p>
+                    `;
+                    facilitiesData = data.facilities;
+                    console.log('Facilities data loaded and stored');
+                } else {
+                    resultDiv.classList.add('error');
+                    resultDiv.innerHTML = '<p>ERROR: No facilities in response</p>';
+                }
+            } catch (e) {
+                resultDiv.classList.add('error');
+                resultDiv.innerHTML = `<p>ERROR: ${e.message}</p>`;
+                console.error('API Error:', e);
+            }
+        }
+
+        function testAutocomplete() {
+            console.log('testAutocomplete() called');
+            const resultDiv = document.getElementById('autocompleteResult');
+            
+            if (facilitiesData.length === 0) {
+                resultDiv.classList.add('error');
+                resultDiv.innerHTML = '<p>ERROR: No facilities data loaded. Run "Test API" first.</p>';
+                console.error('No facilities data available');
+                return;
+            }
+            
+            resultDiv.classList.add('success');
+            resultDiv.innerHTML = `<p>Facilities loaded: ${facilitiesData.length}</p>`;
+            console.log('Facilities available for search:', facilitiesData.length);
+            
+            // Set up autocomplete
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', updateAutocomplete);
+            console.log('Search input listener attached');
+        }
+
+        function updateAutocomplete() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            console.log('Search query:', query);
+            
+            if (!query) {
+                document.getElementById('autocompleteResults').innerHTML = '';
+                return;
+            }
+            
+            const matches = facilitiesData.filter(f => 
+                f.name && f.name.toLowerCase().includes(query)
+            );
+            
+            console.log('Matches found:', matches.length);
+            
+            let html = '';
+            matches.slice(0, 10).forEach(f => {
+                html += `<div class="autocomplete-item" onclick="selectFacility('${f.name}')">${f.name} (${f.municipality})</div>`;
+            });
+            
+            document.getElementById('autocompleteResults').innerHTML = html || '<p>No matches found</p>';
+        }
+
+        function selectFacility(name) {
+            console.log('Selected facility:', name);
+            document.getElementById('searchInput').value = name;
+        }
+
+        function searchValaayan() { searchFacility('Valøyan'); }
+        function searchMannbruholmen() { searchFacility('Mannbruholmen'); }
+        function searchGrottingsoy() { searchFacility('Grøttingsøy'); }
+        function searchSlettholmene() { searchFacility('Slettholmene'); }
+
+        function searchFacility(name) {
+            console.log('Searching for:', name);
+            const resultDiv = document.getElementById('searchResult');
+            
+            const matches = facilitiesData.filter(f => 
+                f.name && f.name.toLowerCase().includes(name.toLowerCase())
+            );
+            
+            console.log('Found %d matches for "%s"', matches.length, name);
+            
+            if (matches.length > 0) {
+                resultDiv.classList.add('success');
+                resultDiv.classList.remove('error');
+                resultDiv.innerHTML = `<h3>Found ${matches.length} match(es)</h3>`;
+                matches.forEach(f => {
+                    resultDiv.innerHTML += `
+                        <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 4px;">
+                            <strong>${f.name}</strong><br/>
+                            Municipality: ${f.municipality}<br/>
+                            Location: ${f.latitude}, ${f.longitude}<br/>
+                            Diseases: ${f.diseases ? f.diseases.length : 0}
+                        </div>
+                    `;
+                });
+            } else {
+                resultDiv.classList.add('error');
+                resultDiv.classList.remove('success');
+                resultDiv.innerHTML = `<p>ERROR: No match found for "${name}"</p>`;
+            }
+        }
+
+        function clearConsole() {
+            document.getElementById('consoleOutput').innerHTML = '';
+            console.log('Console cleared');
+        }
+
+        // Initial message
+        console.log('Test page loaded. Click buttons to test facility loading.');
+        console.log('API URL: http://127.0.0.1:8002/api/facilities?limit=500');
+    </script>
+</body>
+</html>

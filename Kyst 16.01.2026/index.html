@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kyst Monitor - Velg Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial; background: #f6f7fa; padding: 40px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h1 { color: #3b4a6b; margin-bottom: 20px; }
+        .dashboard-link { display: block; padding: 16px 24px; margin: 12px 0; background: #3b4a6b; color: white; text-decoration: none; border-radius: 8px; text-align: center; font-weight: 600; }
+        .dashboard-link:hover { background: #27304a; }
+        .info { color: #6b7280; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kyst Monitor</h1>
+        <p>Velg dashboard:</p>
+        
+        <a href="vessels.html" class="dashboard-link">Båtoversikt</a>
+        <a href="frontend.html" class="dashboard-link">Risiko Dashboard</a>
+        <a href="http://127.0.0.1:8082" class="dashboard-link">Admin Dashboard</a>
+        
+        <div class="info">
+            <strong>API Status:</strong> Kjører på port 8000<br>
+            <strong>Dokumentasjon:</strong> <a href="http://127.0.0.1:8000/docs" target="_blank">http://127.0.0.1:8000/docs</a>
+        </div>
+    </div>
+</body>
+</html>
+            fetchData();
+        }
+    </script>
+</head>
+<body>
+    <h1>Kyst Monitor Demo Dashboard</h1>
+    <p>Status: <span id="status">Loading...</span></p>
+    <p>Data: <span id="data">Loading...</span></p>
+</body>
+</html>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Båtoversikt - Kyst Monitor</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary: #3b4a6b;
+            --primary-dark: #27304a;
+            --accent: #eab308;
+            --danger: #b91c1c;
+            --success: #15803d;
+            --bg: #f6f7fa;
+            --bg-card: #f9fafb;
+            --text-main: #23272f;
+            --text-muted: #6b7280;
+            --shadow: 0 1px 4px rgba(44,62,80,0.07);
+            --radius: 8px;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            padding: 24px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        header {
+            background: #fff;
+            padding: 28px 32px;
+            border-radius: var(--radius);
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+        }
+        h1 {
+            color: var(--text-main);
+            margin-bottom: 8px;
+            font-size: 2.1em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1em;
+            margin-bottom: 16px;
+        }
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            background: var(--primary);
+            color: #fff;
+            cursor: pointer;
+            font-weight: 500;
+            box-shadow: none;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: var(--primary-dark);
+        }
+        @media (max-width: 700px) {
+            .container {
+                padding: 0 2vw;
+            }
+            header {
+                padding: 18px 8px;
+            }
+        }
+        /* Dashboard cards */
+        #dashboard-summary > div {
+            background: var(--bg-card) !important;
+            border-radius: var(--radius) !important;
+            box-shadow: var(--shadow) !important;
+            border: 1px solid #e5e7eb !important;
+        }
+        /* Tabell */
+        .vessel-table {
+            background: #fff;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 32px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        thead {
+            background: #f3f4f6;
+            color: var(--text-main);
+            position: sticky;
+            top: 0;
+        }
+        th {
+            padding: 14px 18px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-muted);
+            border-bottom: 1px solid #e5e7eb;
+        }
+        td {
+            padding: 13px 18px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 15px;
+        }
+        tbody tr:hover {
+            background: #f1f5f9;
+        }
+        .vessel-name {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .risk-badge {
+            display: inline-block;
+            padding: 5px 16px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 700;
+            text-align: center;
+            min-width: 80px;
+            box-shadow: 0 1px 4px rgba(44,62,80,0.07);
+        }
+        .risk-kritisk {
+            background: var(--danger);
+            color: #fff;
+        }
+        .risk-hoy {
+            background: var(--accent);
+            color: #fff;
+        }
+        .risk-medium {
+            background: #fbbf24;
+            color: #fff;
+        }
+        .risk-lav {
+            background: var(--success);
+            color: #fff;
+        }
+        .facility-link {
+            background: #f3f4f6;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.95em;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .distance {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #5568d3;
+        }
+        
+        .nav-link {
+            padding: 10px 15px;
+            background: #f0f0f0;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            background: #e0e0e0;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .vessel-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+        
+        .vessel-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .risk-badge {
+            display: inline-block;
+            padding: 5px 16px;
+            border-radius: 16px;
+            font-size: 0.95em;
+            font-weight: 700;
+            text-align: center;
+            min-width: 80px;
+            box-shadow: 0 1px 4px rgba(79,70,229,0.07);
+        }
+        .risk-kritisk {
+            background: var(--danger);
+            color: #fff;
+        }
+        .risk-hoy {
+            background: var(--accent);
+            color: #fff;
+        }
+        .risk-medium {
+            background: #fbbf24;
+            color: #fff;
+        }
+        .risk-lav {
+            background: var(--success);
+            color: #fff;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2em;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c41e3a;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #c41e3a;
+        }
+        
+        .empty {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            color: #999;
+            font-size: 1.1em;
+        }
+        
+        .vessel-detail {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .mmsi {
+            font-family: monospace;
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        
+        .facility-link {
+            background: #f0f0f0;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        
+        .distance {
+            color: #667eea;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Oversiktskort (dashboard summary) -->
+        <div id="dashboard-summary" style="display: flex; gap: 24px; margin-bottom: 24px; flex-wrap: wrap;">
+            <div style="flex:1; min-width: 220px; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(79,70,229,0.07); padding: 22px 28px; display: flex; flex-direction: column; align-items: flex-start;">
+                <div style="font-size: 15px; color: #6366f1; font-weight: 600; margin-bottom: 6px;">Totalt antall båter</div>
+                <div style="font-size: 2.2em; font-weight: bold; color: #1e293b;">1 777</div>
+            </div>
+            <div style="flex:1; min-width: 220px; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(79,70,229,0.07); padding: 22px 28px; display: flex; flex-direction: column; align-items: flex-start;">
+                <div style="font-size: 15px; color: #f59e42; font-weight: 600; margin-bottom: 6px;">Kritiske alarmer</div>
+                <div style="font-size: 2.2em; font-weight: bold; color: #b91c1c;">12</div>
+            </div>
+            <div style="flex:1; min-width: 220px; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(79,70,229,0.07); padding: 22px 28px; display: flex; flex-direction: column; align-items: flex-start;">
+                <div style="font-size: 15px; color: #10b981; font-weight: 600; margin-bottom: 6px;">Risikofordeling</div>
+                <div style="display: flex; gap: 10px; align-items: flex-end;">
+                    <span style="color: #b91c1c; font-weight: 600;">Kritisk: 12</span>
+                    <span style="color: #f59e42; font-weight: 600;">Høy: 88</span>
+                    <span style="color: #fbbf24; font-weight: 600;">Medium: 320</span>
+                    <span style="color: #10b981; font-weight: 600;">Lav: 1 357</span>
+                </div>
+            </div>
+        </div>
+        <!-- Filterpanel for intelligente filtre og gruppering (dummy/demo) -->
+        <div id="filter-panel" style="background: #f3f4f6; border-radius: 10px; padding: 18px 24px 10px 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(79,70,229,0.07); display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-end;">
+            <div>
+                <label for="filter-fylke" style="font-weight: 500; color: #374151;">Fylke</label><br>
+                <select id="filter-fylke" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #c7d2fe;">
+                    <option value="">Alle</option>
+                    <option value="Nordland">Nordland</option>
+                    <option value="Troms">Troms</option>
+                    <option value="Finnmark">Finnmark</option>
+                </select>
+            </div>
+            <div>
+                <label for="filter-risiko" style="font-weight: 500; color: #374151;">Risikogruppe</label><br>
+                <select id="filter-risiko" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #c7d2fe;">
+                    <option value="">Alle</option>
+                    <option value="kritisk">Kritisk</option>
+                    <option value="hoy">Høy</option>
+                    <option value="medium">Medium</option>
+                    <option value="lav">Lav</option>
+                </select>
+            </div>
+            <div>
+                <label for="filter-eier" style="font-weight: 500; color: #374151;">Eier</label><br>
+                <select id="filter-eier" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #c7d2fe;">
+                    <option value="">Alle</option>
+                    <option value="Mowi">Mowi</option>
+                    <option value="SalMar">SalMar</option>
+                    <option value="Cermaq">Cermaq</option>
+                </select>
+            </div>
+            <div style="margin-left: auto;">
+                <button id="filter-reset" style="background: #6366f1; color: #fff; border: none; border-radius: 6px; padding: 8px 18px; font-size: 15px; cursor: pointer;">Nullstill filtre</button>
+            </div>
+        </div>
+        <script>
+            // Demo: Nullstill alle filtre
+            document.getElementById('filter-reset').onclick = function() {
+                document.getElementById('filter-fylke').value = '';
+                document.getElementById('filter-risiko').value = '';
+                document.getElementById('filter-eier').value = '';
+            };
+        </script>
+        <header>
+            <h1>⛴️ Båtoversikt</h1>
+            <p class="subtitle">Monitering av fartøyer nær smittestedene</p>
+            
+            <div class="controls">
+                <a href="/static/frontend.html" class="nav-link">← Tilbake til risikokart</a>
+                <button onclick="loadData()">🔄 Oppdater</button>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-number" id="totalVessels">-</div>
+                    <div class="stat-label">Båter monitert</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="exposedVessels">-</div>
+                    <div class="stat-label">Utsatte båter</div>
+                </div>
+            </div>
+        </header>
+        
+        <div id="content"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000/api/vessels/exposure';
+
+        async function loadData() {
+            const content = document.getElementById('content');
+            content.innerHTML = '<div class="loading"><div class="spinner"></div>Laster båtoversikt...</div>';
+            
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const data = await response.json();
+                
+                document.getElementById('totalVessels').textContent = data.total_vessels_monitored || 0;
+                document.getElementById('exposedVessels').textContent = data.exposed_vessels || 0;
+                
+                renderVessels(data.vessels || []);
+            } catch (error) {
+                content.innerHTML = `<div class="error">❌ Feil ved lasting: ${error.message}</div>`;
+            }
+        }
+
+        function formatDiseases(diseases) {
+            if (!diseases) return 'Ukjent';
+            if (typeof diseases === 'string') return diseases;
+            if (Array.isArray(diseases)) return diseases.join(', ');
+            return 'Ukjent';
+        }
+
+        function renderVessels(vessels) {
+            const content = document.getElementById('content');
+            if (!vessels || vessels.length === 0) {
+                content.innerHTML = '<div class="empty">✓ Ingen båter detektert i risikosoner akkurat nå</div>';
+                return;
+            }
+
+            // PAGINERING
+            const pageSize = 50;
+            let currentPage = window.currentVesselPage || 1;
+            const totalPages = Math.ceil(vessels.length / pageSize);
+
+            function renderPage(page) {
+                window.currentVesselPage = page;
+                const start = (page - 1) * pageSize;
+                const end = start + pageSize;
+                const pageVessels = vessels.slice(start, end);
+                const html = `
+                <div class="vessel-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Båtnavn / MMSI</th>
+                                <th>Type</th>
+                                <th>Posisjon</th>
+                                <th>Risiko</th>
+                                <th>Nærmeste smittested</th>
+                                <th>Avstand</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${pageVessels.map((vessel, idx) => {
+                                let riskClass = '';
+                                if (vessel.risk_level) {
+                                  const r = vessel.risk_level.toLowerCase();
+                                  if (r === 'kritisk') riskClass = 'risk-kritisk';
+                                  else if (r === 'høy' || r === 'hoy') riskClass = 'risk-hoy';
+                                  else if (r === 'medium') riskClass = 'risk-medium';
+                                  else if (r === 'lav') riskClass = 'risk-lav';
+                                }
+                                return `
+                                <tr>
+                                    <td>
+                                        <div class="vessel-name">${vessel.vessel_name || 'Ukjent'}</div>
+                                        <div class="vessel-detail">MMSI: <span class="mmsi">${vessel.mmsi}</span></div>
+                                    </td>
+                                    <td>
+                                        <div class="vessel-detail">${vessel.vessel_type || 'Ukjent'}</div>
+                                    </td>
+                                    <td>
+                                        <div class="vessel-detail">📍 ${vessel.latitude?.toFixed(2) || '-'}, ${vessel.longitude?.toFixed(2) || '-'}</div>
+                                    </td>
+                                    <td>
+                                        <span class="risk-badge ${riskClass}">${vessel.risk_level || 'Ukjent'}</span>
+                                    </td>
+                                    <td>
+                                        ${vessel.closest_facility ? `
+                                            <div class="facility-link">
+                                                <strong>${vessel.closest_facility.facility_name}</strong><br>
+                                                Kode: ${vessel.closest_facility.facility_code}<br>
+                                                Sykdom: ${formatDiseases(vessel.closest_facility.diseases)}
+                                            </div>
+                                        ` : '-'}
+                                    </td>
+                                    <td>
+                                        <span class="distance">${vessel.closest_facility?.distance_km?.toFixed(1) || '-'} km</span>
+                                    </td>
+                                </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination" style="margin:16px 0;text-align:center;">
+                    <button id="prevPage" ${page === 1 ? 'disabled' : ''}>Forrige</button>
+                    <span>Side ${page} av ${totalPages}</span>
+                    <button id="nextPage" ${page === totalPages ? 'disabled' : ''}>Neste</button>
+                </div>
+                `;
+                content.innerHTML = html;
+                document.getElementById('prevPage').onclick = () => renderPage(page - 1);
+                document.getElementById('nextPage').onclick = () => renderPage(page + 1);
+            }
+            renderPage(currentPage);
+        }
+        
+        // Last data ved oppstart
+        loadData();
+    </script>
+</body>
+
+        <!-- Forbedret chat-agent-widget -->
+        <div id="chat-agent-widget">
+            <div class="chat-header">Kyst Monitor Agent
+                <button id="chat-clear" title="Tøm chat">🗑️</button>
+            </div>
+            <div id="chat-messages"></div>
+            <div class="chat-input-row">
+                <input id="chat-input" type="text" placeholder="Skriv en melding...">
+                <button id="chat-send">Send</button>
+            </div>
+        </div>
+        <style>
+            #chat-agent-widget {
+                position: fixed;
+                bottom: 24px;
+                right: 24px;
+                width: 320px;
+                max-width: 95vw;
+                background: #fff;
+                border: 1.5px solid #4f46e5;
+                border-radius: 14px;
+                box-shadow: 0 4px 24px rgba(79,70,229,0.13);
+                z-index: 9999;
+                font-family: 'Segoe UI', Arial, sans-serif;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                transition: box-shadow 0.2s;
+            }
+            #chat-agent-widget:focus-within {
+                box-shadow: 0 6px 32px rgba(79,70,229,0.22);
+            }
+            .chat-header {
+                background: linear-gradient(90deg, #6366f1 60%, #818cf8 100%);
+                color: #fff;
+                padding: 12px 16px;
+                font-weight: 600;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-top-left-radius: 14px;
+                border-top-right-radius: 14px;
+            }
+            #chat-clear {
+                background: none;
+                border: none;
+                color: #fff;
+                font-size: 18px;
+                cursor: pointer;
+                margin-left: 8px;
+                transition: color 0.2s;
+            }
+            #chat-clear:hover {
+                color: #fbbf24;
+            }
+            #chat-messages {
+                height: 180px;
+                overflow-y: auto;
+                padding: 12px 12px 0 12px;
+                background: #f3f4f6;
+                font-size: 14px;
+                flex: 1 1 auto;
+                margin-bottom: 4px;
+            }
+            .chat-input-row {
+                display: flex;
+                border-top: 1px solid #e5e7eb;
+                background: #f9fafb;
+            }
+            #chat-input {
+                flex: 1;
+                border: none;
+                padding: 12px;
+                border-bottom-left-radius: 14px;
+                outline: none;
+                font-size: 15px;
+                background: transparent;
+            }
+            #chat-send {
+                background: #6366f1;
+                color: #fff;
+                border: none;
+                padding: 0 22px;
+                border-bottom-right-radius: 14px;
+                cursor: pointer;
+                font-size: 15px;
+                font-weight: 500;
+                transition: background 0.2s;
+            }
+            #chat-send:hover {
+                background: #4f46e5;
+            }
+            @media (max-width: 600px) {
+                #chat-agent-widget {
+                    width: 98vw;
+                    right: 1vw;
+                    bottom: 1vw;
+                }
+                #chat-messages {
+                    height: 120px;
+                }
+            }
+            .chat-msg {
+                margin-bottom: 8px;
+                line-height: 1.4;
+            }
+            .chat-msg.user {
+                text-align: right;
+                color: #6366f1;
+            }
+            .chat-msg.agent {
+                text-align: left;
+                color: #374151;
+            }
+        </style>
+        <script>
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const chatSend = document.getElementById('chat-send');
+            const chatClear = document.getElementById('chat-clear');
+            let chatHistory = [];
+
+            function renderMessages() {
+                chatMessages.innerHTML = chatHistory.map(msg =>
+                    `<div class="chat-msg ${msg.sender}">${msg.text}</div>`
+                ).join('');
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function sendMessage() {
+                const text = chatInput.value.trim();
+                if (!text) return;
+                chatHistory.push({ sender: 'user', text });
+                renderMessages();
+                chatInput.value = '';
+                // Simulert agent-svar
+                setTimeout(() => {
+                    chatHistory.push({ sender: 'agent', text: 'Agent: ' + text });
+                    renderMessages();
+                }, 600);
+            }
+
+            chatSend.onclick = sendMessage;
+            chatInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter') sendMessage();
+            });
+            if (chatClear) {
+                chatClear.onclick = () => {
+                    chatHistory = [];
+                    renderMessages();
+                };
+            }
+            // Init tom chat
+            renderMessages();
+        </script>
+</html>

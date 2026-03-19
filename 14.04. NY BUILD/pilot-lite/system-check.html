@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="nb">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>System Check · Pilot Lite</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./app/dashboard-lite.css?v=20260319x" />
+</head>
+<body>
+    <header class="topbar">
+        <h1>System Check</h1>
+        <nav class="links">
+            <a href="./index.html">Startside</a>
+            <a href="./vessel-dashboard-lite.html">Vessel Lite</a>
+            <a href="./facility-dashboard-lite.html">Facility Lite</a>
+            <a href="./ops-lite.html">Ops Lite</a>
+            <a href="./calendar-lite.html">Kalender Lite</a>
+            <a href="./feedback-inbox.html">Feedback Inbox</a>
+            <button id="runChecksBtn" type="button" class="topbar-link-btn">Kjør sjekk</button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <p class="meta">Sjekker om sentrale endepunkter svarer før demo. Litt treghet er ok, men feil vises tydelig her.</p>
+        <p id="checkSummary" class="meta api-health-chip">Venter på første sjekk...</p>
+        <p id="checkRunMeta" class="meta">Sist sjekket: -</p>
+        <div id="checkGrid" class="system-check-layout"></div>
+    </main>
+
+    <script type="module" src="./app/system-check.js?v=20260319v"></script>
+    <script type="module" src="./app/feedback-widget.js?v=20260319x"></script>
+</body>
+</html>

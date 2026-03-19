@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="nb">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Feedback Inbox · Pilot Lite</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./app/dashboard-lite.css?v=20260319y" />
+</head>
+<body>
+    <header class="topbar">
+        <h1>Feedback Inbox</h1>
+        <nav class="links">
+            <a href="./index.html">Startside</a>
+            <a href="./vessel-dashboard-lite.html">Vessel Lite</a>
+            <a href="./facility-dashboard-lite.html">Facility Lite</a>
+            <a href="./system-check.html">System Check</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <p id="feedbackInboxMeta" class="meta">Laster feedback...</p>
+
+        <section class="panel cue-blue">
+            <div class="panel-heading-row">
+                <h2 class="panel-heading">Filter</h2>
+                <div class="feedback-inbox-actions">
+                    <button id="refreshFeedbackBtn" type="button" class="mini-btn">Oppdater</button>
+                    <button id="importFeedbackJsonBtn" type="button" class="mini-btn">Importer JSON</button>
+                    <button id="copyFeedbackReportBtn" type="button" class="mini-btn">Kopier rapport</button>
+                    <button id="exportFeedbackJsonBtn" type="button" class="mini-btn">Eksporter JSON</button>
+                    <button id="exportFeedbackCsvBtn" type="button" class="mini-btn">Eksporter CSV</button>
+                    <button id="exportFeedbackTxtBtn" type="button" class="mini-btn">Last ned rapport (.txt)</button>
+                    <button id="clearFeedbackBtn" type="button" class="mini-btn danger">Tøm alt</button>
+                </div>
+            </div>
+            <input id="importFeedbackFileInput" type="file" accept="application/json,.json" style="display:none" />
+            <div class="filters" style="margin-bottom:0;">
+                <select id="feedbackCategoryFilter">
+                    <option value="all">Alle kategorier</option>
+                    <option value="feil">Feil</option>
+                    <option value="forbedring">Forbedring</option>
+                    <option value="uklarhet">Uklart i UI</option>
+                    <option value="ytelse">Treghet</option>
+                </select>
+                <select id="feedbackSeverityFilter">
+                    <option value="all">Alle alvorligheter</option>
+                    <option value="høy">Høy</option>
+                    <option value="medium">Medium</option>
+                    <option value="lav">Lav</option>
+                </select>
+                <input id="feedbackSearchInput" type="search" class="text-input compact-input" placeholder="Søk i kommentar, side eller tester" style="min-width:280px;" />
+            </div>
+        </section>
+
+        <section class="panel cue-gray" style="margin-top:10px;">
+            <h2 class="panel-heading">Feedback-liste</h2>
+            <div id="feedbackInboxList" class="feedback-inbox-list"></div>
+        </section>
+    </main>
+
+    <script type="module" src="./app/feedback-inbox.js?v=20260319y"></script>
+</body>
+</html>

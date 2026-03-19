@@ -1,0 +1,20 @@
+name: Collect Breach Data (template)
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    env:
+      API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      COLLECT_TOKEN: ${{ secrets.COLLECT_TOKEN }}
+    steps:
+      - name: Call API collect endpoint
+        run: |
+          echo "Template only - sett riktige secrets før bruk"
+          curl -fsS -X POST "$API_BASE_URL/api/collect/breaches" \
+            -H "Authorization: Bearer $COLLECT_TOKEN" \
+            -H "Content-Type: application/json"

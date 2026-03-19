@@ -1,0 +1,31 @@
+{
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.mypy_cache": true,
+    "Python-3.10.19": true,
+    "VS code/tidligere forsøk": true
+  },
+  "search.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.mypy_cache": true,
+    "Python-3.10.19/**": true,
+    "VS code/tidligere forsøk/**": true,
+    "Kyst 16.01.2026/**": true
+  },
+  "files.watcherExclude": {
+    "**/__pycache__/**": true,
+    "**/.pytest_cache/**": true,
+    "**/.mypy_cache/**": true,
+    "Python-3.10.19/**": true,
+    "VS code/tidligere forsøk/**": true,
+    "Kyst 16.01.2026/**": true
+  },
+  "python.analysis.exclude": [
+    "**/__pycache__",
+    "Python-3.10.19",
+    "VS code/tidligere forsøk",
+    "Kyst 16.01.2026"
+  ]
+}

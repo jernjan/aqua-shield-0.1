@@ -1,0 +1,69 @@
+{
+  "profileName": "Masoval + Froy Pilot",
+  "createdAt": "2026-03-12",
+  "companies": [
+    {
+      "id": "froy",
+      "name": "Frøy Gruppen",
+      "role": "Vessel Operator"
+    },
+    {
+      "id": "masoval",
+      "name": "Måsøval",
+      "role": "Facility Operator"
+    }
+  ],
+  "vessels": [
+    { "id": "froy-saga", "name": "Frøy Saga", "companyId": "froy", "mmsi": "258351500", "type": "Brønnbåt/servicebåt" },
+    { "id": "froy-supporter", "name": "Frøy Supporter", "companyId": "froy", "mmsi": "259031610", "type": "Brønnbåt/servicebåt" },
+    { "id": "froy-leader", "name": "Frøy Leader", "companyId": "froy", "mmsi": "257075200", "type": "Brønnbåt/servicebåt" },
+    { "id": "froy-ocean", "name": "Frøy Ocean", "companyId": "froy", "mmsi": "258207480", "type": "Brønnbåt/servicebåt" },
+    { "id": "froy-master", "name": "Frøy Master", "companyId": "froy", "mmsi": "257977700", "type": "Brønnbåt/servicebåt" },
+    { "id": "froy-bas", "name": "Frøy Bas", "companyId": "froy", "mmsi": "257000210", "type": "Brønnbåt/servicebåt" },
+    { "id": "rubin", "name": "Rubin", "companyId": "froy", "mmsi": "231908000", "type": "Stykkgodsskip/fraktbåt" },
+    { "id": "froy-stadt", "name": "Frøy Stadt", "companyId": "froy", "mmsi": null, "type": "Servicekatamaran" },
+    { "id": "froysund", "name": "Frøysund", "companyId": "froy", "mmsi": null, "type": "Servicekatamaran" },
+    { "id": "froy-neptun", "name": "Frøy Neptun", "companyId": "froy", "mmsi": null, "type": "Dykkerkatamaran" }
+  ],
+  "facilities": [
+    { "id": "or-kristiansund", "name": "Or", "companyId": "masoval", "municipality": "Kristiansund", "localityNo": null, "tags": ["anlegg"] },
+    { "id": "kattholmen", "name": "Kattholmen", "companyId": "masoval", "municipality": "Kristiansund", "localityNo": null, "tags": ["anlegg"] },
+    { "id": "vartdalsfjorden", "name": "Vartdalsfjorden", "companyId": "masoval", "municipality": "Vartdal", "localityNo": null, "tags": ["anlegg"] },
+    { "id": "titran-smolt", "name": "Titran", "companyId": "masoval", "municipality": "Titran", "localityNo": null, "tags": ["smoltanlegg"] },
+    { "id": "froya-site-1", "name": "Frøya - Site 1", "companyId": "masoval", "municipality": "Frøya", "localityNo": null, "tags": ["anlegg"] },
+    { "id": "froya-site-2", "name": "Frøya - Site 2", "companyId": "masoval", "municipality": "Frøya", "localityNo": null, "tags": ["anlegg"] },
+    { "id": "hitra-main", "name": "Hitra", "companyId": "masoval", "municipality": "Hitra", "localityNo": null, "tags": ["slakteri", "anlegg"] },
+    { "id": "hemne", "name": "Hemne", "companyId": "masoval", "municipality": "Hemne", "localityNo": null, "tags": ["anlegg"] },
+    { "id": "ulvoya", "name": "Ulvøya", "companyId": "masoval", "municipality": "Hitra", "localityNo": null, "tags": ["harvesting facility"] },
+    { "id": "reserve-site", "name": "Reserve Site", "companyId": "masoval", "municipality": "Ukjent", "localityNo": null, "tags": ["reserve"] }
+  ],
+  "calendarEvents": [
+    {
+      "id": "evt-001",
+      "title": "Planlagt servicebesøk",
+      "vesselId": "froy-saga",
+      "facilityId": "or-kristiansund",
+      "start": "2026-03-18T08:00:00+01:00",
+      "end": "2026-03-18T14:00:00+01:00",
+      "status": "planned"
+    },
+    {
+      "id": "evt-002",
+      "title": "Smoltleveranse",
+      "vesselId": "froy-supporter",
+      "facilityId": "titran-smolt",
+      "start": "2026-03-19T07:30:00+01:00",
+      "end": "2026-03-19T12:00:00+01:00",
+      "status": "planned"
+    },
+    {
+      "id": "evt-003",
+      "title": "Henting etter slakt",
+      "vesselId": "rubin",
+      "facilityId": "hitra-main",
+      "start": "2026-03-20T10:00:00+01:00",
+      "end": "2026-03-20T15:30:00+01:00",
+      "status": "planned"
+    }
+  ]
+}

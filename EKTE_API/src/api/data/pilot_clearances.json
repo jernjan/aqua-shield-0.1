@@ -1,0 +1,72 @@
+{
+  "profiles": {
+    "test": {
+      "actors": {
+        "froy": {
+          "clearedByMmsi": {},
+          "routePlans": [],
+          "updated_at": null
+        }
+      }
+    },
+    "Masoval + Froy Pilot": {
+      "actors": {
+        "froy": {
+          "clearedByMmsi": {
+            "258351500": {
+              "cleared": true,
+              "updatedAt": "2026-03-13T06:48:45.114874",
+              "signedVia": "route-planner",
+              "signedAt": "2026-03-13T06:48:45.114874",
+              "signedBy": "Froy Ops",
+              "quarantineCompleted": true,
+              "disinfectionCompleted": true,
+              "vesselName": "Froy Saga",
+              "routePlanId": "demo-sign-1",
+              "routePlanTitle": "Demo Signert Rute",
+              "routeStart": "2026-03-13T08:00:00",
+              "routeEnd": "2026-03-13T12:00:00",
+              "source": "froy"
+            }
+          },
+          "routePlans": [
+            {
+              "id": "demo-sign-1",
+              "createdAt": "2026-03-13T06:48:45.114874",
+              "type": "clearance-signature",
+              "mmsi": "258351500",
+              "vesselName": "Froy Saga",
+              "title": "Demo Signert Rute",
+              "start": "2026-03-13T08:00:00",
+              "end": "2026-03-13T12:00:00",
+              "signedBy": "Froy Ops",
+              "quarantineCompleted": true,
+              "disinfectionCompleted": true
+            }
+          ],
+          "updated_at": "2026-03-13T06:48:45.114874"
+        }
+      }
+    }
+  },
+  "global": {
+    "clearedByMmsi": {
+      "258351500": {
+        "cleared": true,
+        "updatedAt": "2026-03-13T06:48:45.114874",
+        "signedVia": "route-planner",
+        "signedAt": "2026-03-13T06:48:45.114874",
+        "signedBy": "Froy Ops",
+        "quarantineCompleted": true,
+        "disinfectionCompleted": true,
+        "vesselName": "Froy Saga",
+        "routePlanId": "demo-sign-1",
+        "routePlanTitle": "Demo Signert Rute",
+        "routeStart": "2026-03-13T08:00:00",
+        "routeEnd": "2026-03-13T12:00:00",
+        "source": "froy"
+      }
+    }
+  },
+  "updated_at": "2026-03-13T06:48:45.115235"
+}

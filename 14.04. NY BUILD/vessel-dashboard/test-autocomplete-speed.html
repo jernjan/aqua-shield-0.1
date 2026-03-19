@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autocomplete & Speed Test - Vessel Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem;
+      color: #333;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    h1 {
+      color: #667eea;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .section {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    .section:last-child {
+      border-bottom: none;
+    }
+    h2 {
+      color: #764ba2;
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+    .test-result {
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 8px;
+      border-left: 4px solid;
+      font-weight: 600;
+    }
+    .test-result.success {
+      background: #d1fae5;
+      border-left-color: #10b981;
+      color: #059669;
+    }
+    .test-result.error {
+      background: #fee2e2;
+      border-left-color: #ef4444;
+      color: #dc2626;
+    }
+    .test-result.info {
+      background: #dbeafe;
+      border-left-color: #3b82f6;
+      color: #1d4ed8;
+    }
+    .test-result.warning {
+      background: #fef3c7;
+      border-left-color: #f59e0b;
+      color: #b45309;
+    }
+    button {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    .test-list {
+      list-style: none;
+    }
+    .test-list li {
+      padding: 0.75rem;
+      background: #f9fafb;
+      margin-bottom: 0.5rem;
+      border-radius: 6px;
+      border-left: 3px solid #667eea;
+    }
+    code {
+      background: #f3f4f6;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+    .input-group {
+      display: flex;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    input {
+      flex: 1;
+      padding: 0.75rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    label {
+      font-weight: 600;
+      color: #374151;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .speed-display {
+      background: #f0f9ff;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 1.25rem;
+    }
+    .speed-value {
+      color: #667eea;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚢 Vessel Dashboard - Autocomplete & Speed Test</h1>
+    
+    <!-- API Connectivity Test -->
+    <div class="section">
+      <h2>1️⃣ API Connectivity Test</h2>
+      <p>Verify that the API server is running and responding.</p>
+      <button onclick="testAPIHealth()">Test API Health</button>
+      <button onclick="testFacilitiesEndpoint()">Test Facilities Endpoint</button>
+      <div id="apiResults"></div>
+    </div>
+
+    <!-- Speed Control Test -->
+    <div class="section">
+      <h2>2️⃣ Speed Control Test</h2>
+      <p>Test the boat speed adjustment and conversion.</p>
+      
+      <label for="testSpeed">Enter Boat Speed (km/h):</label>
+      <div class="input-group">
+        <input 
+          type="number" 
+          id="testSpeed" 
+          placeholder="Enter speed (e.g., 18.52)"
+          value="18.52"
+          step="0.5"
+          min="1"
+          max="50"
+        >
+        <button onclick="testSpeed()">Calculate</button>
+      </div>
+      
+      <div id="speedResults"></div>
+    </div>
+
+    <!-- Autocomplete Test -->
+    <div class="section">
+      <h2>3️⃣ Autocomplete Test</h2>
+      <p>Test facility search and autocomplete functionality.</p>
+      
+      <label for="testSearch">Search for a facility:</label>
+      <div class="input-group">
+        <input 
+          type="text" 
+          id="testSearch" 
+          placeholder="Try: Valøyan, Mannbruholmen, Grøtt..."
+          onkeyup="testAutocomplete()"
+        >
+        <button onclick="clearSearch()">Clear</button>
+      </div>
+      
+      <div id="autocompleteResults" style="margin-top: 1rem;"></div>
+    </div>
+
+    <!-- Feature Checklist -->
+    <div class="section">
+      <h2>✅ Implementation Checklist</h2>
+      <ul class="test-list">
+        <li>✅ Autocomplete real-time search functionality</li>
+        <li>✅ Speed input field with km/h to knots conversion</li>
+        <li>✅ Dynamic route time calculation based on speed</li>
+        <li>✅ Facility data loading from API</li>
+        <li>✅ Responsive UI with proper styling</li>
+        <li>✅ Error handling and fallback to mock data</li>
+        <li>✅ Smooth animations and transitions</li>
+        <li>✅ Mobile-friendly design</li>
+      </ul>
+    </div>
+
+    <!-- Expected Results -->
+    <div class="section">
+      <h2>📋 Expected Results</h2>
+      <h3>When Autocomplete Works:</h3>
+      <ul class="test-list">
+        <li>API Health: <code>200 OK</code></li>
+        <li>Facilities Loaded: <code>>= 500</code> facilities</li>
+        <li>Search typing "val": Shows "Valøyan" in suggestions</li>
+        <li>Search typing "slett": Shows "Slettholmene" in suggestions</li>
+        <li>Clicking suggestion: Selects facility & updates checkbox</li>
+      </ul>
+      
+      <h3>When Speed Works:</h3>
+      <ul class="test-list">
+        <li>Input <code>18.52 km/h</code> → Converts to <code>10.0 knots</code></li>
+        <li>Input <code>25 km/h</code> → Converts to <code>13.5 knots</code></li>
+        <li>Route times update when speed changes</li>
+        <li>ETA displays in format: <code>1t 30min</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Test API Health
+    async function testAPIHealth() {
+      const resultsDiv = document.getElementById('apiResults');
+      resultsDiv.innerHTML = '<div class="test-result info">🔄 Testing...</div>';
+      
+      try {
+        const response = await fetch('http://127.0.0.1:8002/health', {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        if (response.ok) {
+          resultsDiv.innerHTML = '<div class="test-result success">✅ API Health: OK (200)</div>';
+        } else {
+          resultsDiv.innerHTML = `<div class="test-result error">❌ API Error: ${response.status}</div>`;
+        }
+      } catch (error) {
+        resultsDiv.innerHTML = `<div class="test-result error">❌ API Connection Failed: ${error.message}</div>`;
+      }
+    }
+
+    // Test Facilities Endpoint
+    async function testFacilitiesEndpoint() {
+      const resultsDiv = document.getElementById('apiResults');
+      resultsDiv.innerHTML = '<div class="test-result info">🔄 Loading facilities...</div>';
+      
+      try {
+        const response = await fetch('http://127.0.0.1:8002/api/facilities?limit=5', {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          const count = data.facilities ? data.facilities.length : 0;
+          const total = data.total || 'unknown';
+          
+          let facilityList = '<div class="test-result success">✅ Facilities Loaded</div>';
+          facilityList += `<div class="test-result info">Found: ${count} of ~${total} total facilities</div>`;
+          
+          if (data.facilities && data.facilities.length > 0) {
+            facilityList += '<h4>Sample facilities:</h4><ul class="test-list">';
+            data.facilities.slice(0, 3).forEach(f => {
+              facilityList += `<li>📍 ${f.name} (${f.municipality || 'N/A'})</li>`;
+            });
+            facilityList += '</ul>';
+          }
+          
+          resultsDiv.innerHTML = facilityList;
+        } else {
+          resultsDiv.innerHTML = `<div class="test-result error">❌ API Error: ${response.status}</div>`;
+        }
+      } catch (error) {
+        resultsDiv.innerHTML = `<div class="test-result error">❌ Connection Failed: ${error.message}</div>`;
+      }
+    }
+
+    // Test Speed Conversion
+    function testSpeed() {
+      const speedInput = document.getElementById('testSpeed');
+      const speed = parseFloat(speedInput.value);
+      const resultsDiv = document.getElementById('speedResults');
+      
+      if (!speed || speed <= 0) {
+        resultsDiv.innerHTML = '<div class="test-result error">❌ Invalid speed. Please enter a number > 0</div>';
+        return;
+      }
+      
+      const knots = (speed / 1.852).toFixed(1);
+      const html = `
+        <div class="test-result success">
+          ✅ Speed Conversion Successful
+          <div class="speed-display">
+            <span class="speed-value">${speed} km/h</span> = 
+            <span class="speed-value">${knots} knots</span>
+          </div>
+        </div>
+        <div class="test-result info">
+          📊 Example route times:
+          <ul class="test-list">
+            <li>10 km → ${Math.round(10 * 60 / speed)} min (~${Math.floor(10 * 60 / speed / 60)}min)</li>
+            <li>25 km → ${Math.round(25 * 60 / speed)} min (~${Math.round(25 * 60 / speed / 60 * 10) / 10}h)</li>
+            <li>50 km → ${Math.round(50 * 60 / speed)} min (~${Math.round(50 * 60 / speed / 60 * 10) / 10}h)</li>
+          </ul>
+        </div>
+      `;
+      resultsDiv.innerHTML = html;
+    }
+
+    // Test Autocomplete
+    async function testAutocomplete() {
+      const searchInput = document.getElementById('testSearch');
+      const resultsDiv = document.getElementById('autocompleteResults');
+      const term = searchInput.value.toLowerCase().trim();
+      
+      if (term.length === 0) {
+        resultsDiv.innerHTML = '';
+        return;
+      }
+      
+      try {
+        const response = await fetch('http://127.0.0.1:8002/api/facilities?limit=500', {
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        if (!response.ok) throw new Error(`API error: ${response.status}`);
+        
+        const data = await response.json();
+        const facilities = data.facilities || [];
+        
+        const matches = facilities
+          .filter(f => f.name && f.name.toLowerCase().includes(term))
+          .slice(0, 8);
+        
+        if (matches.length === 0) {
+          resultsDiv.innerHTML = '<div class="test-result warning">⚠️ No matches found. Try a different search term.</div>';
+          return;
+        }
+        
+        let html = `<div class="test-result success">✅ Found ${matches.length} matching facilities</div>`;
+        html += '<h4>Suggestions:</h4><ul class="test-list">';
+        
+        matches.forEach(f => {
+          html += `<li>
+            <strong>${f.name}</strong>
+            <br><small>${f.municipality || 'Unknown municipality'}</small>
+          </li>`;
+        });
+        
+        html += '</ul>';
+        resultsDiv.innerHTML = html;
+        
+      } catch (error) {
+        resultsDiv.innerHTML = `<div class="test-result error">❌ Error: ${error.message}</div>`;
+      }
+    }
+
+    // Clear search
+    function clearSearch() {
+      document.getElementById('testSearch').value = '';
+      document.getElementById('autocompleteResults').innerHTML = '';
+    }
+
+    // Auto-run health check on load
+    window.addEventListener('load', testAPIHealth);
+  </script>
+</body>
+</html>

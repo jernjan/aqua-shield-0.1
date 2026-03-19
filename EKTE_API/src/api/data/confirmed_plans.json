@@ -1,0 +1,356 @@
+[
+  {
+    "plan_id": "257051270-1",
+    "mmsi": "257051270",
+    "vessel_name": "LABRIDAE",
+    "callsign": "LH2880",
+    "position": {
+      "lat": 63.4305,
+      "lon": 10.3951
+    },
+    "position_source": "MANUELL",
+    "position_updated_at": "2026-02-19T12:00:00Z",
+    "route": [
+      {
+        "day": 1,
+        "date": "2026-02-19",
+        "needs_quarantine": false,
+        "has_infected": false,
+        "facilities": [
+          {
+            "id": 123,
+            "name": "Testanlegg",
+            "latitude": 63.44,
+            "longitude": 10.41,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 0,
+            "comment": ""
+          }
+        ]
+      }
+    ],
+    "notes": "Test confirm",
+    "status": "confirmed",
+    "confirmed_at": "2026-02-19T22:32:05.642316",
+    "source": "dashboard"
+  },
+  {
+    "plan_id": "257051270-2",
+    "mmsi": "257051270",
+    "vessel_name": "LABRIDAE",
+    "callsign": "LH2880",
+    "position": {
+      "lat": 63.4305,
+      "lon": 10.3951
+    },
+    "position_source": "MANUELL",
+    "position_updated_at": "2026-02-19T12:00:00Z",
+    "route": [
+      {
+        "day": 1,
+        "date": "2026-02-19",
+        "needs_quarantine": false,
+        "has_infected": false,
+        "facilities": [
+          {
+            "id": 123,
+            "name": "Testanlegg",
+            "latitude": 63.44,
+            "longitude": 10.41,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 0,
+            "comment": ""
+          }
+        ]
+      }
+    ],
+    "notes": "Test confirm",
+    "status": "confirmed",
+    "confirmed_at": "2026-02-19T22:34:40.685216",
+    "source": "dashboard"
+  },
+  {
+    "plan_id": "257051270-3",
+    "mmsi": "257051270",
+    "vessel_name": "LABRIDAE",
+    "callsign": "LH2880",
+    "position": {
+      "lat": 63.4305,
+      "lon": 10.3951
+    },
+    "position_source": "MANUELL",
+    "position_updated_at": "2026-02-19T22:04:35.174Z",
+    "route": [
+      {
+        "day": 1,
+        "date": "2026-02-20",
+        "needs_quarantine": true,
+        "has_infected": true,
+        "facilities": [
+          {
+            "id": 10375,
+            "name": "Nord Leksa",
+            "latitude": 63.589367,
+            "longitude": 9.409217,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 0,
+            "comment": ""
+          },
+          {
+            "id": 37717,
+            "name": "Vassg\u00e5sholmen",
+            "latitude": 63.592167,
+            "longitude": 9.339833,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 0,
+            "comment": ""
+          },
+          {
+            "id": 35657,
+            "name": "Varden",
+            "latitude": 63.635717,
+            "longitude": 9.186467,
+            "infected": false,
+            "proximity_risk": true,
+            "operation_minutes": 0,
+            "comment": ""
+          }
+        ]
+      },
+      {
+        "day": 4,
+        "date": "2026-02-23",
+        "needs_quarantine": true,
+        "has_infected": true,
+        "facilities": [
+          {
+            "id": 12794,
+            "name": "Rundklumpen",
+            "latitude": 63.801317,
+            "longitude": 9.607583,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 60,
+            "comment": ""
+          },
+          {
+            "id": 30560,
+            "name": "Tristeinen",
+            "latitude": 63.868933,
+            "longitude": 9.619183,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 60,
+            "comment": ""
+          },
+          {
+            "id": 38337,
+            "name": "Hals\u00f8ya",
+            "latitude": 63.8574,
+            "longitude": 9.6982,
+            "infected": false,
+            "proximity_risk": true,
+            "operation_minutes": 60,
+            "comment": ""
+          }
+        ]
+      }
+    ],
+    "notes": "Planned route (4 days)",
+    "status": "confirmed",
+    "confirmed_at": "2026-02-20T01:33:37.303402",
+    "source": "dashboard"
+  },
+  {
+    "plan_id": "257051270-4",
+    "mmsi": "257051270",
+    "vessel_name": "LABRIDAE",
+    "callsign": "LH2880",
+    "position": {
+      "lat": 63.4305,
+      "lon": 10.3951
+    },
+    "position_source": "MANUELL",
+    "position_updated_at": "2026-02-19T22:04:35.174Z",
+    "route": [
+      {
+        "day": 1,
+        "date": "2026-02-20",
+        "needs_quarantine": true,
+        "has_infected": true,
+        "facilities": [
+          {
+            "id": 12784,
+            "name": "Ringholmen",
+            "latitude": 63.55995,
+            "longitude": 9.409567,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 0,
+            "comment": ""
+          },
+          {
+            "id": 10375,
+            "name": "Nord Leksa",
+            "latitude": 63.589367,
+            "longitude": 9.409217,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 0,
+            "comment": ""
+          },
+          {
+            "id": 37717,
+            "name": "Vassg\u00e5sholmen",
+            "latitude": 63.592167,
+            "longitude": 9.339833,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 0,
+            "comment": ""
+          },
+          {
+            "id": 13572,
+            "name": "Badstuvika",
+            "latitude": 63.533983,
+            "longitude": 9.1469,
+            "infected": false,
+            "proximity_risk": true,
+            "operation_minutes": 0,
+            "comment": ""
+          }
+        ]
+      },
+      {
+        "day": 4,
+        "date": "2026-02-23",
+        "needs_quarantine": true,
+        "has_infected": true,
+        "facilities": [
+          {
+            "id": 45034,
+            "name": "Gjems\u00f8yskj\u00e6ra",
+            "latitude": 63.813533,
+            "longitude": 9.618583,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 60,
+            "comment": ""
+          },
+          {
+            "id": 32717,
+            "name": "Tran\u00f8ya N",
+            "latitude": 63.87185,
+            "longitude": 9.76985,
+            "infected": false,
+            "proximity_risk": true,
+            "operation_minutes": 0,
+            "comment": ""
+          }
+        ]
+      }
+    ],
+    "notes": "Planned route (4 days)",
+    "status": "confirmed",
+    "confirmed_at": "2026-02-20T02:42:21.390940",
+    "source": "dashboard"
+  },
+  {
+    "plan_id": "257051270-5",
+    "mmsi": "257051270",
+    "vessel_name": "LABRIDAE",
+    "callsign": "LH2880",
+    "position": {
+      "lat": 63.4305,
+      "lon": 10.3951
+    },
+    "position_source": "MANUELL",
+    "position_updated_at": "2026-02-19T22:04:35.174Z",
+    "route": [
+      {
+        "day": 1,
+        "date": "2026-02-06",
+        "needs_quarantine": true,
+        "has_infected": true,
+        "facilities": [
+          {
+            "id": 12784,
+            "name": "Ringholmen",
+            "latitude": 63.55995,
+            "longitude": 9.409567,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 0,
+            "comment": ""
+          },
+          {
+            "id": 10375,
+            "name": "Nord Leksa",
+            "latitude": 63.589367,
+            "longitude": 9.409217,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 0,
+            "comment": ""
+          },
+          {
+            "id": 37717,
+            "name": "Vassg\u00e5sholmen",
+            "latitude": 63.592167,
+            "longitude": 9.339833,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 0,
+            "comment": ""
+          }
+        ]
+      },
+      {
+        "day": 4,
+        "date": "2026-02-09",
+        "needs_quarantine": true,
+        "has_infected": true,
+        "facilities": [
+          {
+            "id": 12794,
+            "name": "Rundklumpen",
+            "latitude": 63.801317,
+            "longitude": 9.607583,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 60,
+            "comment": ""
+          },
+          {
+            "id": 45034,
+            "name": "Gjems\u00f8yskj\u00e6ra",
+            "latitude": 63.813533,
+            "longitude": 9.618583,
+            "infected": false,
+            "proximity_risk": false,
+            "operation_minutes": 60,
+            "comment": ""
+          },
+          {
+            "id": 32717,
+            "name": "Tran\u00f8ya N",
+            "latitude": 63.87185,
+            "longitude": 9.76985,
+            "infected": false,
+            "proximity_risk": true,
+            "operation_minutes": 0,
+            "comment": ""
+          }
+        ]
+      }
+    ],
+    "notes": "Planned route (4 days)",
+    "status": "confirmed",
+    "confirmed_at": "2026-02-20T03:41:58.952348",
+    "source": "dashboard"
+  }
+]

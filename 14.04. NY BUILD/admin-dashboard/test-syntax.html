@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>App.js Syntax Test</title>
+</head>
+<body>
+    <h1>Checking app.js syntax...</h1>
+    <div id="status">Loading...</div>
+    <script>
+        // Load app.js to check for syntax errors
+        const script = document.createElement('script');
+        script.src = 'app.js';
+        script.onerror = function() {
+            document.getElementById('status').innerHTML = '<h2 style="color:red;">✗ SYNTAX ERROR in app.js</h2>';
+        };
+        script.onload = function() {
+            document.getElementById('status').innerHTML = '<h2 style="color:green;">✓ app.js loaded successfully</h2>';
+            document.getElementById('status').innerHTML += '<p>API_BASE = ' + (typeof API_BASE !== 'undefined' ? API_BASE : 'NOT DEFINED') + '</p>';
+            document.getElementById('status').innerHTML += '<p>elements object exists: ' + (typeof elements !== 'undefined') + '</p>';
+            if (typeof elements !== 'undefined') {
+                document.getElementById('status').innerHTML += '<p>apiDot element: ' + (elements.apiDot ? 'FOUND' : 'NOT FOUND') + '</p>';
+                document.getElementById('status').innerHTML += '<p>apiStatus element: ' + (elements.apiStatus ? 'FOUND' : 'NOT FOUND') + '</p>';
+            }
+        };
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>

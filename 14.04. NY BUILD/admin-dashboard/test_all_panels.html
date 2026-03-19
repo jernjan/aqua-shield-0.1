@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard Panel Testing</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background: #f5f5f5; }
+    h1 { color: #333; }
+    .test-container { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .test-result { padding: 12px; margin: 8px 0; border-radius: 4px; font-family: 'Courier New', monospace; }
+    .pass { background: #d4edda; border-left: 4px solid #28a745; color: #155724; }
+    .fail { background: #f8d7da; border-left: 4px solid #dc3545; color: #721c24; }
+    .pending { background: #fff3cd; border-left: 4px solid #ffc107; color: #856404; }
+    .test-log { font-size: 12px; color: #666; margin-top: 4px; }
+    button { background: #007bff; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    button:hover { background: #0056b3; }
+    button:disabled { background: #6c757d; cursor: not-allowed; }
+    .progress { margin-top: 10px; font-weight: bold; color: #007bff; }
+    .summary { background: #e7f3ff; padding: 15px; border-radius: 4px; margin-top: 20px; }
+    iframe { display: none; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Admin Dashboard - All Panels Test Suite</h1>
+  
+  <div class="test-container">
+    <h2>Test Configuration</h2>
+    <p>This test will systematically verify all 14 panels by loading the dashboard in an iframe, navigating to each panel, triggering load operations, and verifying data appears.</p>
+    <button id="runTests" onclick="runAllTests()">▶ Run All Panel Tests</button>
+    <div class="progress" id="progress"></div>
+  </div>
+
+  <div class="test-container">
+    <h2>Test Results</h2>
+    <div id="results"></div>
+    <div id="summary" class="summary" style="display:none;"></div>
+  </div>
+
+  <iframe id="dashboardFrame" src="index.html"></iframe>
+
+  <script>
+    const testPanels = [
+      { id: 'overview', name: 'Oversikt', category: 'cat-situation', hasLoad: false, verify: (doc) => {
+        const counts = ['totalFacilities', 'infectedCount', 'atRiskCount', 'totalVessels', 'vesselsAtRisk'];
+        return counts.some(id => {
+          const el = doc.getElementById(id);
+          return el && el.textContent.trim() !== '' && el.textContent !== '0';
+        });
+      }},
+      
+      { id: 'predictions', name: 'Utbrottsprediksjoner', category: 'cat-situation', hasLoad: 'predictionsLoad', verify: (doc) => {
+        const table = doc.getElementById('predictions-table');
+        return table && (table.children.length > 0 || table.textContent.includes('risk'));
+      }},
+      
+      { id: 'facility-risks', name: 'Anleggsrisiko', category: 'cat-situation', hasLoad: 'facility-risk-load', verify: (doc) => {
+        const table = doc.getElementById('facility-risk-table');
+        return table && (table.children.length > 0 || table.textContent.includes('locality'));
+      }},
+      
+      { id: 'vessel-risk', name: 'Fartøyrisiko', category: 'cat-situation', hasLoad: 'vessel-risk-load', verify: (doc) => {
+        const table = doc.getElementById('vessel-risk-table');
+        return table && (table.children.length > 0 || table.textContent.includes('vessel'));
+      }},
+      
+      { id: 'vessel-clearing', name: 'Fartøyklaring', category: 'cat-maritime', hasLoad: 'vessel-clearing-load', verify: (doc) => {
+        const table = doc.getElementById('vessel-clearing-table');
+        return table && (table.children.length > 0 || table.textContent.includes('MMSI'));
+      }},
+      
+      { id: 'confirmed-plans', name: 'Bekreftede Ruter', category: 'cat-maritime', hasLoad: 'confirmed-plans-load', verify: (doc) => {
+        const table = doc.getElementById('confirmed-plans-table');
+        return table && (table.children.length > 0 || table.textContent.includes('vessel') || table.textContent.includes('plan'));
+      }},
+      
+      { id: 'audit-log', name: 'Revisjonslogg', category: 'cat-maritime', hasLoad: 'audit-load', verify: (doc) => {
+        const table = doc.getElementById('audit-table');
+        return table && (table.children.length > 0 || table.textContent.includes('visit'));
+      }},
+      
+      { id: 'smittespredning', name: 'Smittespredning', category: 'cat-disease', hasLoad: 'smitte-load', verify: (doc) => {
+        const table = doc.getElementById('smitte-table');
+        return table && (table.children.length > 0 || table.textContent.includes('facility'));
+      }},
+      
+      { id: 'risk', name: 'Risikovurdering', category: 'cat-disease', hasLoad: 'risk-load', verify: (doc) => {
+        const table = doc.getElementById('risk-table');
+        return table && (table.children.length > 0 || table.textContent.includes('facility'));
+      }},
+      
+      { id: 'facilities', name: 'Anlegg', category: 'cat-admin', hasLoad: 'facilities-load', verify: (doc) => {
+        const table = doc.getElementById('facilities-table');
+        return table && (table.children.length > 0 || table.textContent.includes('locality'));
+      }},
+      
+      { id: 'vessels', name: 'Fartøy', category: 'cat-admin', hasLoad: 'vessels-load', verify: (doc) => {
+        const table = doc.getElementById('vessels-table');
+        return table && (table.children.length > 0 || table.textContent.includes('MMSI'));
+      }},
+      
+      { id: 'health', name: 'Helsestatus', category: 'cat-admin', hasLoad: 'health-load', verify: (doc) => {
+        const container = doc.getElementById('health-list') || doc.getElementById('healthContainer');
+        return container && (container.children.length > 0 || container.textContent.includes('locality') || container.textContent.includes('status'));
+      }},
+      
+      { id: 'ocean', name: 'Havstrømmer', category: 'cat-admin', hasLoad: 'ocean-load', verify: (doc) => {
+        const list = doc.getElementById('ocean-list') || doc.getElementById('oceanContainer');
+        return list && (list.children.length > 0 || list.textContent.includes('current') || list.textContent.includes('temperature'));
+      }},
+      
+      { id: 'admin', name: 'Admin Panel', category: 'cat-admin', hasLoad: 'admin-load', verify: (doc) => {
+        // Admin panel loads system stats
+        const cacheCount = doc.getElementById('cacheCount');
+        return cacheCount && cacheCount.textContent.trim() !== '';
+      }}
+    ];
+
+    let testResults = [];
+    let currentTestIndex = 0;
+
+    function log(message, isError = false) {
+      console.log((isError ? '❌ ' : '✅ ') + message);
+    }
+
+    function addResult(panel, passed, details) {
+      const resultDiv = document.createElement('div');
+      resultDiv.className = `test-result ${passed ? 'pass' : 'fail'}`;
+      resultDiv.innerHTML = `
+        <strong>${passed ? '✅ PASS' : '❌ FAIL'}</strong>: <strong>${panel.name}</strong> (${panel.id})
+        <div class="test-log">${details}</div>
+      `;
+      document.getElementById('results').appendChild(resultDiv);
+      testResults.push({ panel: panel.name, id: panel.id, passed, details });
+    }
+
+    function updateProgress(current, total) {
+      document.getElementById('progress').textContent = `Testing panel ${current}/${total}...`;
+    }
+
+    function showSummary() {
+      const total = testResults.length;
+      const passed = testResults.filter(r => r.passed).length;
+      const failed = total - passed;
+      const passRate = ((passed / total) * 100).toFixed(1);
+      
+      const summaryDiv = document.getElementById('summary');
+      summaryDiv.style.display = 'block';
+      summaryDiv.innerHTML = `
+        <h3>📊 Test Summary</h3>
+        <p><strong>Total Panels:</strong> ${total}</p>
+        <p><strong>✅ Passed:</strong> ${passed} (${passRate}%)</p>
+        <p><strong>❌ Failed:</strong> ${failed}</p>
+        ${failed > 0 ? `
+          <h4>Failed Panels:</h4>
+          <ul>
+            ${testResults.filter(r => !r.passed).map(r => `<li>${r.panel} (${r.id}): ${r.details}</li>`).join('')}
+          </ul>
+        ` : '<p>🎉 All panels loaded successfully!</p>'}
+      `;
+      
+      document.getElementById('progress').textContent = 'Testing complete!';
+      document.getElementById('runTests').disabled = false;
+    }
+
+    async function testPanel(panel) {
+      return new Promise((resolve) => {
+        const iframe = document.getElementById('dashboardFrame');
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        
+        try {
+          // Wait for dashboard to be ready
+          if (!doc.getElementById('overview')) {
+            addResult(panel, false, 'Dashboard not loaded in iframe');
+            resolve();
+            return;
+          }
+
+          // Expand category if needed
+          const category = doc.getElementById(panel.category);
+          if (category && !category.classList.contains('active')) {
+            const categoryBtn = doc.querySelector(`[onclick*="${panel.category}"]`);
+            if (categoryBtn) categoryBtn.click();
+          }
+
+          // Navigate to panel
+          const panelEl = doc.getElementById(panel.id);
+          if (!panelEl) {
+            addResult(panel, false, `Panel element #${panel.id} not found in DOM`);
+            resolve();
+            return;
+          }
+
+          // Use the dashboard's switchTab function
+          if (typeof iframe.contentWindow.sidebarSwitchTab === 'function') {
+            iframe.contentWindow.sidebarSwitchTab(panel.id);
+          } else {
+            // Fallback: manually activate panel
+            doc.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            panelEl.classList.add('active');
+          }
+
+          // Wait a moment for panel to activate
+          setTimeout(() => {
+            // If panel has a load button, click it
+            if (panel.hasLoad) {
+              const loadBtn = doc.getElementById(panel.hasLoad);
+              if (!loadBtn) {
+                addResult(panel, false, `Load button #${panel.hasLoad} not found`);
+                resolve();
+                return;
+              }
+              loadBtn.click();
+              
+              // Wait for data to load
+              setTimeout(() => {
+                const verified = panel.verify(doc);
+                if (verified) {
+                  addResult(panel, true, 'Data loaded and verified successfully');
+                } else {
+                  addResult(panel, false, 'Load button clicked but no data appeared in expected containers');
+                }
+                resolve();
+              }, 2000); // Wait 2s for API response
+              
+            } else {
+              // No load button, just verify data exists (e.g., overview loads on init)
+              setTimeout(() => {
+                const verified = panel.verify(doc);
+                if (verified) {
+                  addResult(panel, true, 'Panel displayed with data (no load button)');
+                } else {
+                  addResult(panel, false, 'Panel active but no data found in expected containers');
+                }
+                resolve();
+              }, 1000);
+            }
+          }, 500); // Wait 500ms for panel activation
+          
+        } catch (error) {
+          addResult(panel, false, `Exception during test: ${error.message}`);
+          resolve();
+        }
+      });
+    }
+
+    async function runAllTests() {
+      document.getElementById('runTests').disabled = true;
+      document.getElementById('results').innerHTML = '';
+      document.getElementById('summary').style.display = 'none';
+      testResults = [];
+      currentTestIndex = 0;
+
+      // Reload iframe to ensure clean state
+      const iframe = document.getElementById('dashboardFrame');
+      iframe.src = iframe.src;
+      
+      // Wait for iframe to load
+      await new Promise(resolve => {
+        iframe.onload = resolve;
+      });
+
+      // Wait a moment for dashboard init
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Run tests sequentially
+      for (let i = 0; i < testPanels.length; i++) {
+        updateProgress(i + 1, testPanels.length);
+        await testPanel(testPanels[i]);
+        // Brief pause between tests
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+
+      showSummary();
+    }
+
+    // Auto-run tests on load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        log('Test suite ready. Click button to start testing.');
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

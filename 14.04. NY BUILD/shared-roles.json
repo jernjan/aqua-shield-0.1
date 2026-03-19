@@ -1,0 +1,53 @@
+{
+  "roles": {
+    "ADMIN": {
+      "name": "Administrator",
+      "description": "Full access to all facilities, vessels, and administrative functions",
+      "permissions": {
+        "view_all_facilities": true,
+        "view_all_vessels": true,
+        "edit_facility_info": true,
+        "edit_vessel_info": true,
+        "manage_users": true,
+        "view_audit_logs": true,
+        "export_data": true,
+        "manage_permissions": true,
+        "access_predictive_models": true,
+        "configure_alerts": true
+      }
+    },
+    "OPERATOR": {
+      "name": "Operator",
+      "description": "Can view and manage assigned facilities and vessels, perform routine operations",
+      "permissions": {
+        "view_assigned_facilities": true,
+        "view_assigned_vessels": true,
+        "edit_assigned_facility_info": false,
+        "edit_assigned_vessel_info": false,
+        "manage_own_assignments": true,
+        "view_audit_logs": false,
+        "export_data": true,
+        "manage_permissions": false,
+        "access_predictive_models": true,
+        "configure_alerts": false
+      }
+    },
+    "VIEWER": {
+      "name": "Viewer",
+      "description": "Read-only access to assigned facilities and vessels, no modifications",
+      "permissions": {
+        "view_assigned_facilities": true,
+        "view_assigned_vessels": true,
+        "edit_assigned_facility_info": false,
+        "edit_assigned_vessel_info": false,
+        "manage_own_assignments": false,
+        "view_audit_logs": false,
+        "export_data": false,
+        "manage_permissions": false,
+        "access_predictive_models": false,
+        "configure_alerts": false
+      }
+    }
+  },
+  "default_role": "VIEWER"
+}

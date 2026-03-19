@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kyst Monitor - Båt Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+      border-radius: 8px;
+      border: 2px solid #e5e7eb;
+    }
+
+    /* Main layout container */
+    .dashboard-wrapper {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-top: 1rem;
+    }
+
+    .dashboard-left {
+      flex: 1 1 60%;
+      min-width: 600px;
+    }
+
+    .dashboard-right {
+      flex: 1 1 40%;
+      min-width: 300px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1rem;
+      background: white;
+      border-radius: 8px;
+      border: 2px solid #e5e7eb;
+    }
+
+    .route-planner-panel {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+
+    .route-planner-panel h2 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      color: #1f2937;
+    }
+
+    .route-planner-panel .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .route-planner-panel input,
+    .route-planner-panel select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .route-planner-panel .checkbox-group {
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      max-height: 250px;
+      overflow-y: auto;
+      padding: 0.5rem;
+    }
+
+    .route-planner-panel .checkbox-item {
+      padding: 0.5rem;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .route-planner-panel .checkbox-item:last-child {
+      border-bottom: none;
+    }
+
+    .route-planner-panel .checkbox-item label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .route-planner-panel .checkbox-item input[type="checkbox"] {
+      width: auto;
+      margin-right: 0.5rem;
+      cursor: pointer;
+    }
+
+    #routePreview {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f9fafb;
+      border-radius: 4px;
+      border-left: 4px solid #3b82f6;
+    }
+
+    #routePreview h3 {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
+    }
+
+    .route-item {
+      background: white;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-radius: 4px;
+      border-left: 4px solid #10b981;
+      font-size: 0.9rem;
+    }
+
+    .route-item.infected {
+      border-left-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    /* Calendar modal styles */
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      padding: 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      overflow: hidden;
+      background: white;
+      position: relative;
+    }
+
+    .calendar-day.other-month {
+      background: #f9fafb;
+      color: #d1d5db;
+    }
+
+    .calendar-day.today {
+      background: #dbeafe;
+      border-color: #3b82f6;
+      font-weight: bold;
+    }
+
+    .calendar-day.has-events {
+      position: relative;
+    }
+
+    .calendar-day.has-events::after {
+      content: '●';
+      position: absolute;
+      bottom: 2px;
+      right: 4px;
+      font-size: 0.75rem;
+      color: #ef4444;
+    }
+
+    .calendar-day-number {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .calendar-day-visits {
+      font-size: 0.7rem;
+      margin-top: 0.25rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .event-form {
+      background: #f3f4f6;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .event-form .form-group {
+      margin-bottom: 0.75rem;
+    }
+
+    .event-form label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: #374151;
+    }
+
+    .event-form input,
+    .event-form select,
+    .event-form textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .event-form textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .event-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .event-item {
+      background: white;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-left: 4px solid #3b82f6;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .event-item.visit {
+      border-left-color: #10b981;
+    }
+
+    .event-item.disinfection {
+      border-left-color: #fbbf24;
+    }
+
+    .event-item.quarantine {
+      border-left-color: #ef4444;
+    }
+
+    .event-item-time {
+      font-weight: 600;
+      color: #6b7280;
+      font-size: 0.8rem;
+    }
+
+    .infection-risk {
+      padding: 1rem;
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      border-radius: 4px;
+      margin-top: 1rem;
+      color: #7f1d1d;
+      font-size: 0.9rem;
+    }
+
+    .infection-risk strong {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 1200px) {
+      .dashboard-wrapper {
+        flex-direction: column;
+      }
+
+      .dashboard-left {
+        min-width: auto;
+      }
+
+      .dashboard-right {
+        min-width: auto;
+        max-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚢 Kyst Monitor - Båt Dashboard</h1>
+      <p>Overvåk oppdrettsanlegg og planlegg ruter</p>
+    </header>
+
+    <!-- API Status Indicator -->
+    <div id="apiStatus" style="background: #fee; border: 2px solid #fcc; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+      <div style="width: 12px; height: 12px; border-radius: 50%; background: #ef4444;" id="apiStatusDot"></div>
+      <div>
+        <strong id="apiStatusText">Sjekker API...</strong>
+        <span id="apiStatusUrl" style="font-size: 0.85rem; color: #666; margin-left: 0.5rem;">http://127.0.0.1:8002</span>
+      </div>
+    </div>
+
+    <!-- Vessel Selection -->
+    <section class="panel vessel-input-group" id="vesselInputSection">
+      <h3 style="margin-bottom: 0.5rem;">Velg eller registrer båt:</h3>
+      <input type="text" id="vesselMMSI" placeholder="MMSI (f.eks. 257051270)" style="margin-right: 0.5rem;">
+      <button class="btn btn-success" onclick="loadVesselByMMSI()">Last båt</button>
+      <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #6b7280;">
+        💡 Prøv Labridae: 257051270 | Eller søk etter MMSI
+      </p>
+    </section>
+
+    <!-- Loading Indicator -->
+    <section class="panel" id="loadingPanel" style="display: none;">
+      <div style="text-align: center; padding: 2rem;">
+        <div style="font-size: 3rem; animation: spin 1s linear infinite;">⚓</div>
+        <h3 style="margin-top: 1rem;">Laster dashboard...</h3>
+        <p id="loadingStatus" style="color: #6b7280; margin-top: 0.5rem;">Kontakter API...</p>
+      </div>
+    </section>
+
+    <!-- Main Dashboard (2-column layout) -->
+    <div id="mainDashboard" style="display: none;">
+      <!-- Vessel Info -->
+      <section class="panel" id="vesselInfoPanel">
+        <div class="panel-header">
+          <h2 id="vesselName">-</h2>
+          <button class="btn btn-danger" onclick="clearVessel()">Bytt båt</button>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+          <div>
+            <div style="font-size: 0.85rem; color: #6b7280;">MMSI</div>
+            <div id="vesselMMSIDisplay" style="font-weight: 600;">-</div>
+          </div>
+          <div>
+            <div style="font-size: 0.85rem; color: #6b7280;">Callsign</div>
+            <div id="vesselCallsign" style="font-weight: 600;">-</div>
+          </div>
+          <div>
+            <div style="font-size: 0.85rem; color: #6b7280;">Posisjon</div>
+            <div id="vesselPosition" style="font-weight: 600;">-</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Status -->
+      <section class="panel" id="statusPanel">
+        <div class="panel-header">
+          <h2>Status</h2>
+        </div>
+        <div class="status-indicator available" id="statusIndicator">✓</div>
+        <div style="text-align: center;">
+          <h3 id="statusText">Klar til besøk</h3>
+          <p id="statusDescription">Ingen aktive restriksjoner</p>
+        </div>
+      </section>
+
+      <!-- 2-Column Layout: Map + Route Planner -->
+      <div class="dashboard-wrapper">
+        <!-- LEFT: Map + History -->
+        <div class="dashboard-left">
+          <!-- Map -->
+          <section class="panel" id="mapPanel">
+            <div class="panel-header">
+              <h2>Kart</h2>
+              <label>
+                <input type="checkbox" id="showInfectedOnly"> Vis kun smittet
+              </label>
+            </div>
+            <div id="map"></div>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #6b7280;">
+              🟢 Friske | 🔴 Smittet | 🚢 Båt | 💡 Klikk anlegg for å legge til i rute
+            </p>
+          </section>
+
+          <!-- Quick Actions -->
+          <section class="panel" id="actionsPanel">
+            <div class="panel-header">
+              <h2>Raske handlinger</h2>
+            </div>
+            <div class="quick-actions">
+              <button class="action-btn" onclick="showVisitLogger()">📝 Logg besøk nå</button>
+              <button class="action-btn success" onclick="viewQuarantine()">⏱️ Se karantene</button>
+              <button class="action-btn secondary" onclick="showCalendarView()">📅 Kalender</button>
+            </div>
+          </section>
+
+          <!-- Visit History -->
+          <section class="panel" id="historyPanel">
+            <div class="panel-header">
+              <h2>Besøkshistorikk</h2>
+              <button class="btn" onclick="clearHistory()">Tøm</button>
+            </div>
+            <div id="visitHistory">
+              <p style="color: #6b7280; text-align: center; padding: 2rem;">Ingen registrerte besøk ennå.</p>
+            </div>
+          </section>
+        </div>
+
+        <!-- RIGHT: Route Planner (permanent side-panel) -->
+        <div class="dashboard-right">
+          <div class="route-planner-panel">
+            <h2>🗺️ Planlegg Rute</h2>
+            
+            <!-- Search -->
+            <div class="form-group">
+              <label>Søk anlegg:</label>
+              <input type="text" id="facilitySearch" placeholder="Søk etter navn...">
+            </div>
+
+            <!-- Facility Selector -->
+            <div class="form-group">
+              <label>Velg anlegg:</label>
+              <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;">
+                <span id="selectedCount">0 anlegg valgt</span>
+              </div>
+              <div id="facilitySelector" class="checkbox-group"></div>
+            </div>
+
+            <!-- Buttons -->
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+              <button class="btn btn-primary" onclick="RoutePlanner.planOptimalRoute()" style="flex: 1;">
+                Beregn rute
+              </button>
+              <button class="btn" onclick="RoutePlanner.clearPlannedRoute()" style="flex: 1;">
+                Nullstill
+              </button>
+            </div>
+
+            <!-- Route Preview -->
+            <div id="routePreview" style="display: none;">
+              <h3>📍 Din Rute</h3>
+              <div id="routeDetails"></div>
+              <button class="btn btn-success" onclick="RoutePlanner.executeRoute()" style="width: 100%; margin-top: 1rem;">
+                🚀 Start Rute
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visit Logger Modal -->
+    <div id="visitLoggerModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Logg anleggsbesøk</h2>
+          <button class="close-btn" onclick="closeVisitLogger()">✕</button>
+        </div>
+        <div class="form-group">
+          <label for="visitFacility">Velg anlegg:</label>
+          <select id="visitFacility"></select>
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" id="visitDisinfection"> Desinfeksjon utført</label>
+        </div>
+        <div style="margin-top: 1.5rem;">
+          <button class="btn btn-primary" onclick="logVisit()">Lagre besøk</button>
+          <button class="btn" onclick="closeVisitLogger()">Avbryt</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Calendar Modal -->
+    <div id="calendarModal" class="modal">
+      <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+          <h2>📅 Avansert Besøkskalender</h2>
+          <button class="close-btn" onclick="closeCalendarView()">✕</button>
+        </div>
+
+        <!-- Calendar Navigation -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <button class="btn" onclick="CalendarView.previousMonth()">← Forrige</button>
+          <h3 id="calendarMonth" style="margin: 0; min-width: 200px; text-align: center;">Januar 2026</h3>
+          <button class="btn" onclick="CalendarView.nextMonth()">Neste →</button>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="calendar-grid" id="calendarGrid" style="margin-bottom: 2rem;"></div>
+
+        <!-- Event Planning Form -->
+        <div style="margin-bottom: 2rem;">
+          <h3>Planlegg Hendelse</h3>
+          <div class="event-form">
+            <div class="form-group">
+              <label>Dato:</label>
+              <input type="date" id="eventDate">
+            </div>
+            <div class="form-group">
+              <label>Type:</label>
+              <select id="eventType">
+                <option value="visit">Besøk Anlegg</option>
+                <option value="disinfection">Desinfeksjon</option>
+                <option value="quarantine">Karantene</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Detaljer:</label>
+              <textarea id="eventDetails" placeholder="Navn på anlegg, notes, etc."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="CalendarView.addEvent()" style="width: 100%;">
+              Legg til Hendelse
+            </button>
+          </div>
+        </div>
+
+        <!-- Events List -->
+        <div>
+          <h3>Planlagte Hendelser</h3>
+          <div class="event-list" id="eventList"></div>
+        </div>
+
+        <!-- Infection Risk Analysis -->
+        <div id="infectionRiskAnalysis"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="vessel-storage.js"></script>
+  <script src="vessel-map.js"></script>
+  <script src="routes-planner.js"></script>
+  <script src="vessel-simple.js"></script>
+  <script src="calendar-advanced.js"></script>
+  <script>
+    async function checkAPIStatus() {
+      const statusDot = document.getElementById('apiStatusDot');
+      const statusText = document.getElementById('apiStatusText');
+      const statusBox = document.getElementById('apiStatus');
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 300000);
+        const response = await fetch(`${VesselStorage.API_BASE}/health`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.status === 'healthy') {
+            statusDot.style.background = '#10b981';
+            statusText.textContent = 'API Online';
+            statusBox.style.background = '#d1fae5';
+            statusBox.style.borderColor = '#a7f3d0';
+          } else {
+            statusDot.style.background = '#f59e0b';
+            statusText.textContent = 'API Online (fallback data)';
+            statusBox.style.background = '#fef3c7';
+            statusBox.style.borderColor = '#fde68a';
+          }
+        }
+      } catch (error) {
+        statusDot.style.background = '#ef4444';
+        statusText.textContent = 'API Offline';
+        statusBox.style.background = '#fee2e2';
+        statusBox.style.borderColor = '#fecaca';
+      }
+    }
+
+    window.addEventListener('load', async function() {
+      checkAPIStatus();
+      setInterval(checkAPIStatus, 30000);
+      const saved = VesselStorage.getVesselData();
+      if (saved && saved.vessel && saved.vessel.mmsi) {
+        showLoading('Lastet inn lagret båt...');
+        showVesselDashboard(saved.vessel);
+        try {
+          await initDashboard();
+          hideLoading();
+        } catch (err) {
+          hideLoading();
+          console.error('Init failed:', err.message);
+        }
+      }
+    });
+
+    async function loadVesselByMMSI() {
+      const mmsi = document.getElementById('vesselMMSI').value.trim();
+      if (!mmsi) {
+        alert('Vennligst skriv inn MMSI');
+        return;
+      }
+      showLoading('Forbereder dashboard...');
+      const vesselInfo = {
+        mmsi: mmsi,
+        name: mmsi === '257051270' ? 'LABRIDAE' : `VESSEL-${mmsi}`,
+        callsign: mmsi === '257051270' ? 'LH2880' : 'UNKNOWN',
+        position: { lat: 63.4305, lon: 10.3951 }
+      };
+      VesselStorage.updateVesselInfo(vesselInfo);
+      showVesselDashboard(vesselInfo);
+      try {
+        await initDashboard();
+        hideLoading();
+      } catch (error) {
+        hideLoading();
+        console.error('Dashboard initialization failed:', error);
+      }
+    }
+
+    function showLoading(message) {
+      document.getElementById('vesselInputSection').style.display = 'none';
+      document.getElementById('mainDashboard').style.display = 'none';
+      document.getElementById('loadingPanel').style.display = 'block';
+      if (message) document.getElementById('loadingStatus').textContent = message;
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingPanel').style.display = 'none';
+    }
+
+    function showVesselDashboard(vessel) {
+      document.getElementById('vesselInputSection').style.display = 'none';
+      document.getElementById('mainDashboard').style.display = 'block';
+      document.getElementById('vesselName').textContent = vessel.name;
+      document.getElementById('vesselMMSIDisplay').textContent = vessel.mmsi;
+      document.getElementById('vesselCallsign').textContent = vessel.callsign;
+      document.getElementById('vesselPosition').textContent = 
+        `${vessel.position.lat.toFixed(4)}°N, ${vessel.position.lon.toFixed(4)}°E`;
+    }
+
+    function clearVessel() {
+      if (confirm('Vil du bytte båt? Historikk blir bevart.')) {
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>

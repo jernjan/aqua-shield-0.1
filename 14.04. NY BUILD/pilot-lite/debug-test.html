@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Test - Facility Listings</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #f0f0f0; }
+        .section { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; }
+        h2 { color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 10px; }
+        .stat { padding: 8px 0; }
+        .stat-label { font-weight: bold; color: #0066cc; }
+        .stat-value { color: #333; margin-left: 10px; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #f5f5f5; font-weight: bold; }
+        .error { color: #cc0000; }
+        .ok { color: #00aa00; }
+    </style>
+</head>
+<body>
+    <h1>Pilot-Lite Debug: Facility Distribution</h1>
+    
+    <div class="section">
+        <h2>Profile Summary</h2>
+        <div class="stat">
+            <span class="stat-label">Total facilities in profile:</span>
+            <span class="stat-value" id="totalFacilities">Loading...</span>
+        </div>
+        <div class="stat">
+            <span class="stat-label">Total vessels in profile:</span>
+            <span class="stat-value" id="totalVessels">Loading...</span>
+        </div>
+        <div class="stat">
+            <span class="stat-label">Companies:</span>
+            <span class="stat-value" id="companies">Loading...</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Facilities by Company</h2>
+        <table id="companyTable">
+            <thead>
+                <tr>
+                    <th>Company ID</th>
+                    <th>Company Name</th>
+                    <th>Facility Count</th>
+                    <th>Sample Facilities</th>
+                </tr>
+            </thead>
+            <tbody id="companyBody">
+                <tr><td colspan="4">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Vessel Dashboard Logic Test</h2>
+        <div id="vesselDashboardResult">Loading...</div>
+    </div>
+
+    <div class="section">
+        <h2>Facility Dashboard Logic Test</h2>
+        <div id="facilityDashboardResult">Loading...</div>
+    </div>
+
+    <script>
+        async function test() {
+            try {
+                const response = await fetch('./data/profile.json');
+                const profile = await response.json();
+
+                // Basic stats
+                document.getElementById('totalFacilities').textContent = profile.facilities?.length || 0;
+                document.getElementById('totalVessels').textContent = profile.vessels?.length || 0;
+                document.getElementById('companies').textContent = 
+                    (profile.companies || []).map(c => `${c.id} (${c.name})`).join(', ');
+
+                // Group facilities by company
+                const byCompany = {};
+                for (const f of profile.facilities || []) {
+                    const cid = f.companyId || 'unknown';
+                    if (!byCompany[cid]) byCompany[cid] = [];
+                    byCompany[cid].push(f);
+                }
+
+                // Build company table
+                const tbody = document.getElementById('companyBody');
+                tbody.innerHTML = '';
+                for (const [companyId, facilities] of Object.entries(byCompany)) {
+                    const company = (profile.companies || []).find(c => c.id === companyId);
+                    const companyName = company?.name || companyId;
+                    const samples = facilities.slice(0, 3).map(f => f.name).join(', ');
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><code>${companyId}</code></td>
+                        <td>${companyName}</td>
+                        <td><strong>${facilities.length}</strong></td>
+                        <td>${samples}${facilities.length > 3 ? '...' : ''}</td>
+                    `;
+                    tbody.appendChild(row);
+                }
+
+                // Simulate Frøy context (vessel dashboard)
+                const froyFacilities = (profile.facilities || []).filter(f => f.companyId === 'froy');
+                const masovalFacilities = (profile.facilities || []).filter(f => f.companyId === 'masoval');
+                
+                document.getElementById('vesselDashboardResult').innerHTML = `
+                    <p><strong>When activeCompanyId = 'froy':</strong></p>
+                    <p class="stat">Facilities to show: <span class="stat-value ok"><strong>${froyFacilities.length}</strong></span> 
+                    (Should be small list of Frøy facilities)</p>
+                    <p>First 5: ${froyFacilities.slice(0, 5).map(f => f.name).join(', ')}</p>
+                `;
+
+                document.getElementById('facilityDashboardResult').innerHTML = `
+                    <p><strong>When activeCompanyId = 'masoval':</strong></p>
+                    <p class="stat">Facilities to show: <span class="stat-value ok"><strong>${masovalFacilities.length}</strong></span>
+                    (Should be ~10-20 Masøval facilities)</p>
+                    <p>First 5: ${masovalFacilities.slice(0, 5).map(f => f.name).join(', ')}</p>
+                `;
+
+            } catch (error) {
+                document.body.innerHTML += `<div class="section error"><h2>Error</h2><p>${error.message}</p></div>`;
+            }
+        }
+
+        test();
+    </script>
+</body>
+</html>

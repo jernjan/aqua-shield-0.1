@@ -1,0 +1,17 @@
+# Template for senere bruk på Render
+# Ikke aktiv før du oppretter service i Render.
+services:
+  - type: web
+    name: kyst-monitor-api
+    env: python
+    plan: starter
+    rootDir: EKTE_API
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m uvicorn src.api.main:app --host 0.0.0.0 --port $PORT --log-level info
+    envVars:
+      - key: ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false

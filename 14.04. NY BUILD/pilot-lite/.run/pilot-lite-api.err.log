@@ -1,0 +1,60 @@
+INFO:     Started server process [24900]
+INFO:     Waiting for application startup.
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detector initialized
+INFO:src.api.prediction_scheduler:\u2705 Prediction scheduler started (predictions: 1h, validation: 24h, AIS tracking: 15min)
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.3s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (6.1s)
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 4, 10km proximity: 0 (1.0s)
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257834600: 14040 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257834600 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257010430 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 259206000: 39 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 259206000 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257715600: 14040 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257715600 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 259004880: 14040 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 259004880 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257496600 at Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257044910: 14040 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257044910 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257058120 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 4, 10km proximity: 0 (1.0s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 4, 10km proximity: 0 (0.9s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 4, 10km proximity: 0 (0.9s)
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257010430: 45 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257010430 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257496600: 45 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257496600 from Unknown Facility
+INFO:src.api.quarantine_logic:Exposure threshold met for MMSI 257058120: 45 minutes at Unknown Facility
+INFO:src.api.quarantine_logic:Auto-registered MMSI 257058120 from Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f4ca Starting hourly prediction update...
+INFO:src.api.prediction_scheduler:\u2705 Prediction update complete: 0 facilities analyzed, 0 critical, 0 medium (2.7s)
+INFO:src.api.prediction_scheduler:\U0001f9ec Starting smittespredning detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DETECT] Running infection detection cycle...
+INFO:src.api.smittespredning_detector:[SMITTE-DELIVER] Checking for downstream deliveries...
+INFO:src.api.prediction_scheduler:\u2705 Smittespredning detection complete (5.7s)
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 5, 10km proximity: 0 (1.0s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 257080050 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 5, 10km proximity: 0 (1.8s)
+INFO:src.api.quarantine_logic:Exposure tracking started for MMSI 259113000 at Unknown Facility
+INFO:src.api.prediction_scheduler:\U0001f6a2 Starting AIS tracking cycle...
+INFO:src.api.prediction_scheduler:\U0001f4cd Tracking 500 vessels against 223 facilities
+INFO:src.api.prediction_scheduler:\u2705 AIS tracking complete: 500 vessels tracked, Infected visits: 0, Risk zone visits: 5, 10km proximity: 0 (1.0s)

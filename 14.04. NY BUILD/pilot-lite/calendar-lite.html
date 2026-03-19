@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="nb">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kalender Lite</title>
+    <link rel="stylesheet" href="./app/dashboard-lite.css" />
+    <style>
+        .cal-toolbar {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .cal-toolbar label { font-size: 13px; color: var(--muted); }
+        .cal-toolbar select {
+            height: 34px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0 8px;
+            background: #fff;
+        }
+        .cal-toolbar button {
+            height: 34px;
+            border: 1px solid #1d4ed8;
+            border-radius: 8px;
+            padding: 0 14px;
+            background: #2563eb;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .cal-toolbar button:hover { background: #1d4ed8; }
+        .cal-panel {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            overflow: auto;
+        }
+        .cal-panel h2 { margin: 0 0 12px; font-size: 16px; }
+        .event-none { color: var(--muted); font-size: 13px; padding: 8px 0; }
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1d4ed8;
+        }
+        .fleet-panel {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            overflow: auto;
+            margin-bottom: 14px;
+        }
+        .fleet-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .fleet-toolbar input,
+        .fleet-toolbar select {
+            height: 34px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0 8px;
+            background: #fff;
+        }
+        .fleet-meta {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+        .fleet-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+        .fleet-legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .fleet-legend i {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .fleet-grid-wrap {
+            overflow: auto;
+        }
+        .fleet-grid {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 4px;
+            min-width: 960px;
+        }
+        .fleet-grid th {
+            font-size: 11px;
+            color: var(--muted);
+            text-align: center;
+            white-space: nowrap;
+            padding: 4px 6px;
+        }
+        .fleet-grid td {
+            padding: 0;
+            vertical-align: middle;
+        }
+        .fleet-vessel-cell {
+            min-width: 200px;
+            padding-right: 8px !important;
+        }
+        .fleet-vessel-name {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 13px;
+        }
+        .fleet-vessel-meta {
+            font-size: 11px;
+            color: var(--muted);
+        }
+        .fleet-day-cell {
+            min-width: 44px;
+        }
+        .fleet-day-btn {
+            width: 100%;
+            min-height: 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            font-size: 11px;
+            color: var(--text);
+            cursor: default;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .fleet-day-btn.free { background: #f8fafc; }
+        .fleet-day-btn.presence { background: #e0f2fe; border-color: #7dd3fc; color: #075985; }
+        .fleet-day-btn.busy { background: #dcfce7; border-color: #86efac; color: #166534; }
+        .fleet-day-btn.risk { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+        .fleet-day-btn.today { outline: 2px solid #2563eb; outline-offset: 1px; }
+        .fleet-day-btn.dim { opacity: 0.55; }
+        .fleet-empty {
+            color: var(--muted);
+            font-size: 13px;
+            padding: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <h1>Kalender Lite</h1>
+        <nav class="links">
+            <a href="./index.html">Startside</a>
+            <a href="./facility-dashboard-lite.html">Anlegg</a>
+            <a href="./ops-lite.html">Ops Lite</a>
+            <a href="./vessel-dashboard-lite.html">Vessel Lite</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <p id="profileMeta" class="meta">Laster profil...</p>
+
+        <div class="cal-toolbar">
+            <label for="vesselFilter">Filtrer båt:</label>
+            <select id="vesselFilter">
+                <option value="">Alle båter</option>
+            </select>
+            <label for="typeFilter">Type:</label>
+            <select id="typeFilter">
+                <option value="">Alle typer</option>
+                <option value="visit">Besøk</option>
+                <option value="operation">Oppdrag</option>
+                <option value="disinfection">Desinfeksjon</option>
+                <option value="quarantine">Karantene</option>
+                <option value="presence">Tilstede i område</option>
+            </select>
+            <button id="exportIcsBtn" type="button">⬇ Eksporter iCal (.ics)</button>
+            <button id="copyIcsBtn" type="button">📋 Kopier iCal</button>
+            <button id="exportCalendarCsvBtn" type="button">⬇ Eksporter CSV</button>
+            <button id="copyCalendarCsvBtn" type="button">📋 Kopier CSV</button>
+            <button id="exportCalendarPackBtn" type="button">📦 Eksporter pakke</button>
+            <button id="calendarSyncHelpBtn" type="button">ℹ Synk-hjelp</button>
+        </div>
+        <p id="calendarSyncMeta" class="meta" style="margin-top:6px;">Tips: Eksporter .ics for kalender-import, eller CSV for Excel/tabellverktøy.</p>
+
+        <div class="fleet-panel">
+            <div class="fleet-toolbar">
+                <strong>Flåteoversikt</strong>
+                <label for="fleetStartDate">Start:</label>
+                <input id="fleetStartDate" type="date" />
+                <label for="fleetHorizon">Horisont:</label>
+                <select id="fleetHorizon">
+                    <option value="14" selected>14 dager</option>
+                    <option value="21">21 dager</option>
+                    <option value="30">30 dager</option>
+                </select>
+            </div>
+            <div id="fleetTimelineMeta" class="fleet-meta">Laster flåteoversikt...</div>
+            <div class="fleet-legend">
+                <span><i style="background:#f8fafc;border:1px solid #cbd5e1"></i> Fri</span>
+                <span><i style="background:#e0f2fe;border:1px solid #7dd3fc"></i> Tilstede i område</span>
+                <span><i style="background:#dcfce7;border:1px solid #86efac"></i> Oppdrag / besøk</span>
+                <span><i style="background:#fee2e2;border:1px solid #fca5a5"></i> Karantene / desinfeksjon</span>
+            </div>
+            <div id="fleetTimelineWrap" class="fleet-grid-wrap"></div>
+        </div>
+
+        <div class="cal-panel">
+            <h2>Planlagte besøk og sonevinduer</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tittel</th>
+                        <th>Båt</th>
+                        <th>Anlegg</th>
+                        <th>Start</th>
+                        <th>Slutt</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Kilde</th>
+                    </tr>
+                </thead>
+                <tbody id="eventTableBody"></tbody>
+            </table>
+            <p id="emptyMsg" class="event-none" style="display:none">Ingen planlagte besøk funnet.</p>
+        </div>
+    </main>
+
+    <script type="module" src="./app/calendar-lite.js"></script>
+</body>
+</html>

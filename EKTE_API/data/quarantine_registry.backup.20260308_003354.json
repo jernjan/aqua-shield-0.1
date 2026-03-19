@@ -1,0 +1,4888 @@
+{
+  "auto_registered": [
+    {
+      "mmsi": 259592000,
+      "vessel_name": "FOLDOY",
+      "registered_at": "2026-02-21T14:23:39.691321",
+      "registered_from_facility": "Fjord Farm Nord",
+      "quarantine_expires": "2026-02-23T14:23:39.691321",
+      "cooldown_expires": "2026-03-02T14:23:39.691321",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-21T14:23:39.691321",
+          "facility_name": "Fjord Farm Nord",
+          "action": "auto_detected",
+          "distance_km": 0.4557578545641552,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257614000,
+      "vessel_name": "BONA SAFIR",
+      "registered_at": "2026-02-23T12:01:57.852907",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:01:57.852907",
+      "cooldown_expires": "2026-03-04T12:01:57.852907",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:01:57.852907",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9653343097139407,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259031610,
+      "vessel_name": "KLOVNINGEN",
+      "registered_at": "2026-02-23T12:32:02.662441",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:02.662441",
+      "cooldown_expires": "2026-03-04T12:32:02.662441",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:02.662441",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.18404056213917602,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259031700,
+      "vessel_name": "RINGAHOLM",
+      "registered_at": "2026-02-23T12:32:02.841353",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:02.841353",
+      "cooldown_expires": "2026-03-04T12:32:02.841353",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:02.841353",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.1932343537915672,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259031710,
+      "vessel_name": "RINGASKJAER",
+      "registered_at": "2026-02-23T12:32:03.017744",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:03.017744",
+      "cooldown_expires": "2026-03-04T12:32:03.017744",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:03.017744",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.13018728766144586,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257071030,
+      "vessel_name": "FOSNA ARES",
+      "registered_at": "2026-02-23T12:32:03.191778",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:03.191778",
+      "cooldown_expires": "2026-03-04T12:32:03.191778",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:03.191778",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.15637817577171245,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257675800,
+      "vessel_name": "GJESINGFJORD",
+      "registered_at": "2026-02-23T12:32:03.366361",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:03.366361",
+      "cooldown_expires": "2026-03-04T12:32:03.366361",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:03.366361",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.10825397257910141,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257977700,
+      "vessel_name": "HANNE",
+      "registered_at": "2026-02-23T12:32:03.535168",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:03.535168",
+      "cooldown_expires": "2026-03-04T12:32:03.535168",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:03.535168",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.20305219031919494,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257075200,
+      "vessel_name": "MJOELNER",
+      "registered_at": "2026-02-23T12:32:03.890873",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:03.890873",
+      "cooldown_expires": "2026-03-04T12:32:03.890873",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:03.890873",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.08678269163725726,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257000180,
+      "vessel_name": "NJORD",
+      "registered_at": "2026-02-23T12:32:04.069988",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:04.069988",
+      "cooldown_expires": "2026-03-04T12:32:04.069988",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:04.069988",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.21013775287188186,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258360500,
+      "vessel_name": "JOHAN VIKING",
+      "registered_at": "2026-02-23T12:32:04.580893",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:04.580893",
+      "cooldown_expires": "2026-03-04T12:32:04.580893",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:04.580893",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.05141066830060524,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257606800,
+      "vessel_name": "BUSTADTIND",
+      "registered_at": "2026-02-23T12:32:04.898660",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:04.898660",
+      "cooldown_expires": "2026-03-04T12:32:04.898660",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:04.898660",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.2574085079681196,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259040010,
+      "vessel_name": "ERVIK EXSPRESS",
+      "registered_at": "2026-02-23T12:32:05.050464",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:05.050464",
+      "cooldown_expires": "2026-03-04T12:32:05.050464",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:05.050464",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.1088092540442046,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259041130,
+      "vessel_name": "SOLVI",
+      "registered_at": "2026-02-23T12:32:05.430943",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:05.430943",
+      "cooldown_expires": "2026-03-04T12:32:05.430943",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:05.430943",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.18537673712211758,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257006640,
+      "vessel_name": "SEIFIX",
+      "registered_at": "2026-02-23T12:32:05.986909",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:05.986909",
+      "cooldown_expires": "2026-03-04T12:32:05.986909",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:05.986909",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.03339666817373923,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257083450,
+      "vessel_name": "SENIOR",
+      "registered_at": "2026-02-23T12:32:06.135933",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:06.135933",
+      "cooldown_expires": "2026-03-04T12:32:06.135933",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:06.135933",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.07333791147882786,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257988900,
+      "vessel_name": "Vessel 257988900",
+      "registered_at": "2026-02-23T12:32:06.275654",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:06.275654",
+      "cooldown_expires": "2026-03-04T12:32:06.275654",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:06.275654",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.0961937984326455,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257084030,
+      "vessel_name": "TYFON",
+      "registered_at": "2026-02-23T12:32:06.407348",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:06.407348",
+      "cooldown_expires": "2026-03-04T12:32:06.407348",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:06.407348",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.277566098571631,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257010170,
+      "vessel_name": "BRUNSFISK",
+      "registered_at": "2026-02-23T12:32:06.552142",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:06.552142",
+      "cooldown_expires": "2026-03-04T12:32:06.552142",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:06.552142",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.1617197662488467,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257467000,
+      "vessel_name": "SEIHOLM",
+      "registered_at": "2026-02-23T12:32:06.984309",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:06.984309",
+      "cooldown_expires": "2026-03-04T12:32:06.984309",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:06.984309",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.33272249469888393,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257090840,
+      "vessel_name": "HORDAFJELL",
+      "registered_at": "2026-02-23T12:32:07.112172",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:07.112172",
+      "cooldown_expires": "2026-03-04T12:32:07.112172",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:07.112172",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.21780027382534065,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257093390,
+      "vessel_name": "RAMNTINDEN",
+      "registered_at": "2026-02-23T12:32:07.247578",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:07.247578",
+      "cooldown_expires": "2026-03-04T12:32:07.247578",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:07.247578",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.25197438892253887,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258002350,
+      "vessel_name": "FOX INSPECTOR",
+      "registered_at": "2026-02-23T12:32:07.559820",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:07.559820",
+      "cooldown_expires": "2026-03-04T12:32:07.559820",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:07.559820",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.13024695214455106,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257256000,
+      "vessel_name": "RINGASUND",
+      "registered_at": "2026-02-23T12:32:07.712323",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:07.712323",
+      "cooldown_expires": "2026-03-04T12:32:07.712323",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:07.712323",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.07420742887838336,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258086330,
+      "vessel_name": "OSPEN",
+      "registered_at": "2026-02-23T12:32:07.833673",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:07.833673",
+      "cooldown_expires": "2026-03-04T12:32:07.833673",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:07.833673",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.22210209939364728,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257106420,
+      "vessel_name": "SVANFJELL",
+      "registered_at": "2026-02-23T12:32:07.954903",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:07.954903",
+      "cooldown_expires": "2026-03-04T12:32:07.954903",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:07.954903",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.19689730488089854,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257937700,
+      "vessel_name": "KNUT VIKING",
+      "registered_at": "2026-02-23T12:32:08.078751",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:08.078751",
+      "cooldown_expires": "2026-03-04T12:32:08.078751",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:08.078751",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.16454018657049738,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257560700,
+      "vessel_name": "NUEN",
+      "registered_at": "2026-02-23T12:32:08.196125",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:08.196125",
+      "cooldown_expires": "2026-03-04T12:32:08.196125",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:08.196125",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.21483387406547422,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259677000,
+      "vessel_name": "NORANGSFJORD",
+      "registered_at": "2026-02-23T12:32:08.490701",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:08.490701",
+      "cooldown_expires": "2026-03-04T12:32:08.490701",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:08.490701",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5539775848235775,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257037770,
+      "vessel_name": "GJESING JUNIOR",
+      "registered_at": "2026-02-23T12:32:08.608790",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:08.608790",
+      "cooldown_expires": "2026-03-04T12:32:08.608790",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:08.608790",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.1083035311552317,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257264900,
+      "vessel_name": "HAVKONGEN",
+      "registered_at": "2026-02-23T12:32:08.731737",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:08.731737",
+      "cooldown_expires": "2026-03-04T12:32:08.731737",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:08.731737",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.3012992226597504,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258019890,
+      "vessel_name": "FOSNA SENJA",
+      "registered_at": "2026-02-23T12:32:08.841884",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:08.841884",
+      "cooldown_expires": "2026-03-04T12:32:08.841884",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:08.841884",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.19614522795049855,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257493800,
+      "vessel_name": "FROYSJO",
+      "registered_at": "2026-02-23T12:32:08.958303",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:08.958303",
+      "cooldown_expires": "2026-03-04T12:32:08.958303",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:08.958303",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.15147823389570977,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257045680,
+      "vessel_name": "FOSNA GYME",
+      "registered_at": "2026-02-23T12:32:09.580427",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:09.580427",
+      "cooldown_expires": "2026-03-04T12:32:09.580427",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:09.580427",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.2975275532559002,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258028170,
+      "vessel_name": "RAMNFJELL",
+      "registered_at": "2026-02-23T12:32:09.680834",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:09.680834",
+      "cooldown_expires": "2026-03-04T12:32:09.680834",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:09.680834",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.18078646472827767,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257123850,
+      "vessel_name": "HEVROY",
+      "registered_at": "2026-02-23T12:32:09.858988",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:09.858988",
+      "cooldown_expires": "2026-03-04T12:32:09.858988",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:09.858988",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.30475524070976284,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258029570,
+      "vessel_name": "EKSPRESSEN",
+      "registered_at": "2026-02-23T12:32:09.940403",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:09.940403",
+      "cooldown_expires": "2026-03-04T12:32:09.940403",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:09.940403",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.18260945747832577,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258030550,
+      "vessel_name": "AUSTLENDINGEN",
+      "registered_at": "2026-02-23T12:32:10.025981",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:10.025981",
+      "cooldown_expires": "2026-03-04T12:32:10.025981",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:10.025981",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.2068249820627092,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257502700,
+      "vessel_name": "MADELEINE",
+      "registered_at": "2026-02-23T12:32:10.101741",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:10.101741",
+      "cooldown_expires": "2026-03-04T12:32:10.101741",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:10.101741",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.3405601573878438,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258031050,
+      "vessel_name": "Vessel 258031050",
+      "registered_at": "2026-02-23T12:32:10.176652",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:10.176652",
+      "cooldown_expires": "2026-03-04T12:32:10.176652",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:10.176652",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.2983189810551967,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257060250,
+      "vessel_name": "ODDENAKKEN",
+      "registered_at": "2026-02-23T12:32:10.432649",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:10.432649",
+      "cooldown_expires": "2026-03-04T12:32:10.432649",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:10.432649",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.26643283869298273,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257061390,
+      "vessel_name": "RESTLESS WIND",
+      "registered_at": "2026-02-23T12:32:10.590212",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:10.590212",
+      "cooldown_expires": "2026-03-04T12:32:10.590212",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:10.590212",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.14639914117100836,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259023760,
+      "vessel_name": "LANGOY",
+      "registered_at": "2026-02-23T12:32:10.657626",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:10.657626",
+      "cooldown_expires": "2026-03-04T12:32:10.657626",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:10.657626",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.030149898842005626,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 992581038,
+      "vessel_name": "SEA FARM HEGGVIKA -13503",
+      "registered_at": "2026-02-23T12:32:10.883169",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:32:10.883169",
+      "cooldown_expires": "2026-03-04T12:32:10.883169",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:32:10.883169",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.2931857423643286,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257908600,
+      "vessel_name": "TERNA",
+      "registered_at": "2026-02-23T12:33:08.669573",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:33:08.669573",
+      "cooldown_expires": "2026-03-04T12:33:08.669573",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:33:08.669573",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5414733204355553,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257060720,
+      "vessel_name": "TAUPO",
+      "registered_at": "2026-02-23T12:38:58.437225",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:38:58.437225",
+      "cooldown_expires": "2026-03-04T12:38:58.437225",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:38:58.437225",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.24107298949208172,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259417000,
+      "vessel_name": "JULSUND",
+      "registered_at": "2026-02-23T12:39:53.100918",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:39:53.100918",
+      "cooldown_expires": "2026-03-04T12:39:53.100918",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:39:53.100918",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9915435670713597,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257590000,
+      "vessel_name": "HORDA PIONEER",
+      "registered_at": "2026-02-23T12:41:59.510159",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:41:59.510159",
+      "cooldown_expires": "2026-03-04T12:41:59.510159",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:41:59.510159",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9238029878985906,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257081720,
+      "vessel_name": "Vessel 257081720",
+      "registered_at": "2026-02-23T12:43:00.641843",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:43:00.641843",
+      "cooldown_expires": "2026-03-04T12:43:00.641843",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:43:00.641843",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5926585555469334,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258998000,
+      "vessel_name": "TJELDEN",
+      "registered_at": "2026-02-23T12:53:02.753727",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:53:02.753727",
+      "cooldown_expires": "2026-03-04T12:53:02.753727",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:53:02.753727",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9211948042069303,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257072000,
+      "vessel_name": "KVALOY",
+      "registered_at": "2026-02-23T12:54:00.118076",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:54:00.118076",
+      "cooldown_expires": "2026-03-04T12:54:00.118076",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:54:00.118076",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9955039633109706,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258021160,
+      "vessel_name": "FRIDA",
+      "registered_at": "2026-02-23T12:54:55.701743",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T12:54:55.701743",
+      "cooldown_expires": "2026-03-04T12:54:55.701743",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T12:54:55.701743",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9597325699072197,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257660600,
+      "vessel_name": "FOSNA PONTOS",
+      "registered_at": "2026-02-23T13:07:07.449883",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T13:07:07.449883",
+      "cooldown_expires": "2026-03-04T13:07:07.449883",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T13:07:07.449883",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5898228697462481,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257055930,
+      "vessel_name": "HUFTAROY",
+      "registered_at": "2026-02-23T14:47:03.712521",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T14:47:03.712521",
+      "cooldown_expires": "2026-03-04T14:47:03.712521",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T14:47:03.712521",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9653504780775964,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257077570,
+      "vessel_name": "TAUPIRI",
+      "registered_at": "2026-02-23T15:15:46.134100",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T15:15:46.134100",
+      "cooldown_expires": "2026-03-04T15:15:46.134100",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T15:15:46.134100",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.12807920735448883,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257182500,
+      "vessel_name": "FOSNAKALLEN",
+      "registered_at": "2026-02-23T15:15:46.352917",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T15:15:46.352917",
+      "cooldown_expires": "2026-03-04T15:15:46.352917",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T15:15:46.352917",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.48945215051901375,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257032210,
+      "vessel_name": "FYLLINGSNES",
+      "registered_at": "2026-02-23T15:15:46.406703",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T15:15:46.406703",
+      "cooldown_expires": "2026-03-04T15:15:46.406703",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T15:15:46.406703",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9890274655486028,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258394000,
+      "vessel_name": "SEIVIK",
+      "registered_at": "2026-02-23T15:15:46.469403",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T15:15:46.469403",
+      "cooldown_expires": "2026-03-04T15:15:46.469403",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T15:15:46.469403",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5003638766500991,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257055990,
+      "vessel_name": "FLATOY",
+      "registered_at": "2026-02-23T15:27:05.884088",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T15:27:05.884088",
+      "cooldown_expires": "2026-03-04T15:27:05.884088",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T15:27:05.884088",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9266788649038527,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258180000,
+      "vessel_name": "BOTRANS",
+      "registered_at": "2026-02-23T15:28:53.969198",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T15:28:53.969198",
+      "cooldown_expires": "2026-03-04T15:28:53.969198",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T15:28:53.969198",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9093380650974919,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257156700,
+      "vessel_name": "TROLLBAS",
+      "registered_at": "2026-02-23T15:35:59.878008",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T15:35:59.878008",
+      "cooldown_expires": "2026-03-04T15:35:59.878008",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T15:35:59.878008",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.985751581964877,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257055910,
+      "vessel_name": "FAEROY",
+      "registered_at": "2026-02-23T15:46:51.233309",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T15:46:51.233309",
+      "cooldown_expires": "2026-03-04T15:46:51.233309",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T15:46:51.233309",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9296638730071607,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258352500,
+      "vessel_name": "ADMIRALEN",
+      "registered_at": "2026-02-23T15:53:59.563453",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T15:53:59.563453",
+      "cooldown_expires": "2026-03-04T15:53:59.563453",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T15:53:59.563453",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9399661759855643,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257055860,
+      "vessel_name": "SAMNOY",
+      "registered_at": "2026-02-23T16:06:49.587849",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-25T16:06:49.587849",
+      "cooldown_expires": "2026-03-04T16:06:49.587849",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-23T16:06:49.587849",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9255397908368522,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259016601,
+      "vessel_name": "FUGGELOY",
+      "registered_at": "2026-02-25T08:40:46.003662",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T08:40:46.003662",
+      "cooldown_expires": "2026-03-06T08:40:46.003662",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T08:40:46.003662",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8228334457815631,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257056190,
+      "vessel_name": "LYSOY",
+      "registered_at": "2026-02-25T08:46:56.692854",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T08:46:56.692854",
+      "cooldown_expires": "2026-03-06T08:46:56.692854",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T08:46:56.692854",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9016553135315267,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257148900,
+      "vessel_name": "MELAKS",
+      "registered_at": "2026-02-25T09:03:55.851553",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:55.851553",
+      "cooldown_expires": "2026-03-06T09:03:55.851553",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:55.851553",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.22017056914412877,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257606700,
+      "vessel_name": "HERKULES",
+      "registered_at": "2026-02-25T09:03:55.969575",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:55.969575",
+      "cooldown_expires": "2026-03-06T09:03:55.969575",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:55.969575",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.20979544221574242,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257532600,
+      "vessel_name": "KYRHAUG",
+      "registered_at": "2026-02-25T09:03:56.061545",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:56.061545",
+      "cooldown_expires": "2026-03-06T09:03:56.061545",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:56.061545",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.545068876426861,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257759700,
+      "vessel_name": "SILJE",
+      "registered_at": "2026-02-25T09:03:56.150846",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:56.150846",
+      "cooldown_expires": "2026-03-06T09:03:56.150846",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:56.150846",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.11469028762066852,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257233000,
+      "vessel_name": "RONJA MISTRAL",
+      "registered_at": "2026-02-25T09:03:56.235604",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:56.235604",
+      "cooldown_expires": "2026-03-06T09:03:56.235604",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:56.235604",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.16750660676113888,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257015350,
+      "vessel_name": "TROLLET",
+      "registered_at": "2026-02-25T09:03:56.360160",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:56.360160",
+      "cooldown_expires": "2026-03-06T09:03:56.360160",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:56.360160",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.2042756641640581,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257698500,
+      "vessel_name": "LUNNOY",
+      "registered_at": "2026-02-25T09:03:56.484806",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:56.484806",
+      "cooldown_expires": "2026-03-06T09:03:56.484806",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:56.484806",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.12860911446219467,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257252000,
+      "vessel_name": "GASO FREYJA",
+      "registered_at": "2026-02-25T09:03:56.590813",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:56.590813",
+      "cooldown_expires": "2026-03-06T09:03:56.590813",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:56.590813",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.1572015435260468,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257032050,
+      "vessel_name": "Vessel 257032050",
+      "registered_at": "2026-02-25T09:03:56.696951",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:56.696951",
+      "cooldown_expires": "2026-03-06T09:03:56.696951",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:56.696951",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.811072097935088,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259301000,
+      "vessel_name": "HAUGLAKS",
+      "registered_at": "2026-02-25T09:03:56.796128",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:56.796128",
+      "cooldown_expires": "2026-03-06T09:03:56.796128",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:56.796128",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.49063751957572715,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257727900,
+      "vessel_name": "VESTSUND",
+      "registered_at": "2026-02-25T09:03:56.917657",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:56.917657",
+      "cooldown_expires": "2026-03-06T09:03:56.917657",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:56.917657",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.19152410078595,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257658900,
+      "vessel_name": "MOKSTRANISSEN",
+      "registered_at": "2026-02-25T09:03:57.014702",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:57.014702",
+      "cooldown_expires": "2026-03-06T09:03:57.014702",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:57.014702",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.10702831378443613,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257133930,
+      "vessel_name": "FROY SUPPORTER",
+      "registered_at": "2026-02-25T09:03:57.114293",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:57.114293",
+      "cooldown_expires": "2026-03-06T09:03:57.114293",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:57.114293",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.10076320369802184,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257966600,
+      "vessel_name": "SIGFRID",
+      "registered_at": "2026-02-25T09:03:57.186509",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:03:57.186509",
+      "cooldown_expires": "2026-03-06T09:03:57.186509",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:03:57.186509",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.21182676924399152,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257092350,
+      "vessel_name": "FROEYGARD",
+      "registered_at": "2026-02-25T09:14:05.265846",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:14:05.265846",
+      "cooldown_expires": "2026-03-06T09:14:05.265846",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:14:05.265846",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.1557783635368863,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257915600,
+      "vessel_name": "Vessel 257915600",
+      "registered_at": "2026-02-25T09:15:45.546267",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:15:45.546267",
+      "cooldown_expires": "2026-03-06T09:15:45.546267",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:15:45.546267",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9584464483965504,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259203000,
+      "vessel_name": "SEIBAS",
+      "registered_at": "2026-02-25T09:23:52.802051",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:23:52.802051",
+      "cooldown_expires": "2026-03-06T09:23:52.802051",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:23:52.802051",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9910831356564632,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 219347000,
+      "vessel_name": "STAVANGERFJORD",
+      "registered_at": "2026-02-25T09:54:02.103460",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:54:02.103460",
+      "cooldown_expires": "2026-03-06T09:54:02.103460",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:54:02.103460",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8296072641429918,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257306400,
+      "vessel_name": "FROYAFERGA",
+      "registered_at": "2026-02-25T09:56:47.618180",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:56:47.618180",
+      "cooldown_expires": "2026-03-06T09:56:47.618180",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:56:47.618180",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9678939920285683,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258020030,
+      "vessel_name": "AMB AUSTEVOLLJENTA",
+      "registered_at": "2026-02-25T09:57:58.308808",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T09:57:58.308808",
+      "cooldown_expires": "2026-03-06T09:57:58.308808",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T09:57:58.308808",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7686772261104632,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257213800,
+      "vessel_name": "ELISABETH",
+      "registered_at": "2026-02-25T10:06:48.234544",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T10:06:48.234544",
+      "cooldown_expires": "2026-03-06T10:06:48.234544",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T10:06:48.234544",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.992659814579722,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257000260,
+      "vessel_name": "FROYSPRINT",
+      "registered_at": "2026-02-25T10:36:54.349374",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T10:36:54.349374",
+      "cooldown_expires": "2026-03-06T10:36:54.349374",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T10:36:54.349374",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6185631208014253,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257799600,
+      "vessel_name": "SEIFJORD",
+      "registered_at": "2026-02-25T10:37:59.622516",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T10:37:59.622516",
+      "cooldown_expires": "2026-03-06T10:37:59.622516",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T10:37:59.622516",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9873325057823652,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258313500,
+      "vessel_name": "DAVIK",
+      "registered_at": "2026-02-25T10:46:49.345637",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-27T10:46:49.345637",
+      "cooldown_expires": "2026-03-06T10:46:49.345637",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-25T10:46:49.345637",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8813288226658276,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259040710,
+      "vessel_name": "BLUEY",
+      "registered_at": "2026-02-26T10:02:59.763397",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-28T10:02:59.763397",
+      "cooldown_expires": "2026-03-07T10:02:59.763397",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-26T10:02:59.763397",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.3292262826713074,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257031840,
+      "vessel_name": "MEVIND",
+      "registered_at": "2026-02-26T10:02:59.948957",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-28T10:02:59.948957",
+      "cooldown_expires": "2026-03-07T10:02:59.948957",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-26T10:02:59.948957",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.20545316962790222,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259031690,
+      "vessel_name": "KB VARG",
+      "registered_at": "2026-02-26T10:33:51.523035",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-28T10:33:51.523035",
+      "cooldown_expires": "2026-03-07T10:33:51.523035",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-26T10:33:51.523035",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.12472334185977044,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257080180,
+      "vessel_name": "ROALD K",
+      "registered_at": "2026-02-26T10:33:51.641477",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-28T10:33:51.641477",
+      "cooldown_expires": "2026-03-07T10:33:51.641477",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-26T10:33:51.641477",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.04333059017035143,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259612000,
+      "vessel_name": "RADEK",
+      "registered_at": "2026-02-26T10:33:51.956742",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-28T10:33:51.956742",
+      "cooldown_expires": "2026-03-07T10:33:51.956742",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-26T10:33:51.956742",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8424800846818271,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258029600,
+      "vessel_name": "Vessel 258029600",
+      "registered_at": "2026-02-26T10:37:07.960466",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-28T10:37:07.960466",
+      "cooldown_expires": "2026-03-07T10:37:07.960466",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-26T10:37:07.960466",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.308188743210198,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257723800,
+      "vessel_name": "Vessel 257723800",
+      "registered_at": "2026-02-26T10:39:04.863297",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-28T10:39:04.863297",
+      "cooldown_expires": "2026-03-07T10:39:04.863297",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-26T10:39:04.863297",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9802991522952,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258476000,
+      "vessel_name": "LANGSUND",
+      "registered_at": "2026-02-26T10:53:54.887572",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-28T10:53:54.887572",
+      "cooldown_expires": "2026-03-07T10:53:54.887572",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-26T10:53:54.887572",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.37358939897545523,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257547800,
+      "vessel_name": "ERLING",
+      "registered_at": "2026-02-26T10:59:00.825871",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-28T10:59:00.825871",
+      "cooldown_expires": "2026-03-07T10:59:00.825871",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-26T10:59:00.825871",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.02701317788935062,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258235500,
+      "vessel_name": "RESCUE HORN FLYER",
+      "registered_at": "2026-02-26T11:20:01.033757",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-28T11:20:01.033757",
+      "cooldown_expires": "2026-03-07T11:20:01.033757",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-26T11:20:01.033757",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6910668301879465,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258023570,
+      "vessel_name": "AMB ROSESOL",
+      "registered_at": "2026-02-26T11:43:47.886939",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-02-28T11:43:47.886939",
+      "cooldown_expires": "2026-03-07T11:43:47.886939",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-26T11:43:47.886939",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.2673164167556717,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259020720,
+      "vessel_name": "ROMSDALSJENTA",
+      "registered_at": "2026-02-27T11:50:16.939790",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T11:50:16.939790",
+      "cooldown_expires": "2026-03-08T11:50:16.939790",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T11:50:16.939790",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.29507013923612013,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259030580,
+      "vessel_name": "NAMDALINGEN",
+      "registered_at": "2026-02-27T11:55:16.439143",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T11:55:16.439143",
+      "cooldown_expires": "2026-03-08T11:55:16.439143",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T11:55:16.439143",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8800859522081695,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257220500,
+      "vessel_name": "TROLLSJO",
+      "registered_at": "2026-02-27T12:16:14.655903",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T12:16:14.655903",
+      "cooldown_expires": "2026-03-08T12:16:14.655903",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T12:16:14.655903",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8511961437023214,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257083230,
+      "vessel_name": "RINGANES",
+      "registered_at": "2026-02-27T12:18:14.851786",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T12:18:14.851786",
+      "cooldown_expires": "2026-03-08T12:18:14.851786",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T12:18:14.851786",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.20227762732213314,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257791290,
+      "vessel_name": "NYSUND",
+      "registered_at": "2026-02-27T12:18:15.064645",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T12:18:15.064645",
+      "cooldown_expires": "2026-03-08T12:18:15.064645",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T12:18:15.064645",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.05518844898480343,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257659800,
+      "vessel_name": "AQUA FJELL",
+      "registered_at": "2026-02-27T16:02:40.211121",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T16:02:40.211121",
+      "cooldown_expires": "2026-03-08T16:02:40.211121",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T16:02:40.211121",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.23070614447112414,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257036260,
+      "vessel_name": "ATHENA",
+      "registered_at": "2026-02-27T16:21:14.568111",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T16:21:14.568111",
+      "cooldown_expires": "2026-03-08T16:21:14.568111",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T16:21:14.568111",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7820482451973545,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257175000,
+      "vessel_name": "RYGERFONN",
+      "registered_at": "2026-02-27T16:24:04.795501",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T16:24:04.795501",
+      "cooldown_expires": "2026-03-08T16:24:04.795501",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T16:24:04.795501",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6311839969639546,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259869000,
+      "vessel_name": "RANI",
+      "registered_at": "2026-02-27T16:36:12.867704",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T16:36:12.867704",
+      "cooldown_expires": "2026-03-08T16:36:12.867704",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T16:36:12.867704",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.4569538846953101,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257373400,
+      "vessel_name": "SOGNEFJORD",
+      "registered_at": "2026-02-27T16:56:13.044351",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T16:56:13.044351",
+      "cooldown_expires": "2026-03-08T16:56:13.044351",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T16:56:13.044351",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.4842980670536522,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257039680,
+      "vessel_name": "FOSNA STORM",
+      "registered_at": "2026-02-27T17:08:07.806929",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T17:08:07.806929",
+      "cooldown_expires": "2026-03-08T17:08:07.806929",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T17:08:07.806929",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7514038988063984,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257004440,
+      "vessel_name": "Vessel 257004440",
+      "registered_at": "2026-02-27T17:13:08.375738",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T17:13:08.375738",
+      "cooldown_expires": "2026-03-08T17:13:08.375738",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T17:13:08.375738",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.3153888511748405,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257781000,
+      "vessel_name": "NJORD",
+      "registered_at": "2026-02-27T17:38:14.905713",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T17:38:14.905713",
+      "cooldown_expires": "2026-03-08T17:38:14.905713",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T17:38:14.905713",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9028189526565414,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257359700,
+      "vessel_name": "FJORDCRUISE",
+      "registered_at": "2026-02-27T18:16:17.023851",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T18:16:17.023851",
+      "cooldown_expires": "2026-03-08T18:16:17.023851",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T18:16:17.023851",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7620682274924168,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258999000,
+      "vessel_name": "FJORDBRIS",
+      "registered_at": "2026-02-27T19:58:14.588160",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T19:58:14.588160",
+      "cooldown_expires": "2026-03-08T19:58:14.588160",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T19:58:14.588160",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9638063192542077,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257629000,
+      "vessel_name": "BIOSTAR",
+      "registered_at": "2026-02-27T20:11:12.502558",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T20:11:12.502558",
+      "cooldown_expires": "2026-03-08T20:11:12.502558",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T20:11:12.502558",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.4486680456767006,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259000790,
+      "vessel_name": "ODDRUN WITH",
+      "registered_at": "2026-02-27T20:58:47.419226",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T20:58:47.419226",
+      "cooldown_expires": "2026-03-08T20:58:47.419226",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T20:58:47.419226",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9341415907542688,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258032610,
+      "vessel_name": "Vessel 258032610",
+      "registered_at": "2026-02-27T20:58:47.541348",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T20:58:47.541348",
+      "cooldown_expires": "2026-03-08T20:58:47.541348",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T20:58:47.541348",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9099083915042633,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259001560,
+      "vessel_name": "NYVING",
+      "registered_at": "2026-02-27T21:31:19.053038",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-01T21:31:19.053038",
+      "cooldown_expires": "2026-03-08T21:31:19.053038",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-27T21:31:19.053038",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.929709131476726,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259019030,
+      "vessel_name": "FOX POWER",
+      "registered_at": "2026-02-28T12:19:16.123230",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-02T12:19:16.123230",
+      "cooldown_expires": "2026-03-09T12:19:16.123230",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-28T12:19:16.123230",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.11462021858244946,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259019670,
+      "vessel_name": "TROLE",
+      "registered_at": "2026-02-28T12:19:16.207497",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-02T12:19:16.207497",
+      "cooldown_expires": "2026-03-09T12:19:16.207497",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-28T12:19:16.207497",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.16034735066446054,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257861600,
+      "vessel_name": "FOSNA AQUA",
+      "registered_at": "2026-02-28T12:51:15.678560",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-02T12:51:15.678560",
+      "cooldown_expires": "2026-03-09T12:51:15.678560",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-28T12:51:15.678560",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.2535369142222017,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257586000,
+      "vessel_name": "WITH HARVEST",
+      "registered_at": "2026-02-28T12:51:15.869718",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-02T12:51:15.869718",
+      "cooldown_expires": "2026-03-09T12:51:15.869718",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-28T12:51:15.869718",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5659601393174343,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257086760,
+      "vessel_name": "MAASOFISK",
+      "registered_at": "2026-02-28T14:09:17.081761",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-02T14:09:17.081761",
+      "cooldown_expires": "2026-03-09T14:09:17.081761",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-28T14:09:17.081761",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9450517090799426,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257968600,
+      "vessel_name": "FOSNA ODIN",
+      "registered_at": "2026-02-28T14:09:17.373572",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-02T14:09:17.373572",
+      "cooldown_expires": "2026-03-09T14:09:17.373572",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-28T14:09:17.373572",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5087715727498132,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257088160,
+      "vessel_name": "FROY NEPTUN",
+      "registered_at": "2026-02-28T14:16:15.448536",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-02T14:16:15.448536",
+      "cooldown_expires": "2026-03-09T14:16:15.448536",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-28T14:16:15.448536",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9188447759473704,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258044000,
+      "vessel_name": "HORDAFOR III",
+      "registered_at": "2026-02-28T14:34:18.079410",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-02T14:34:18.079410",
+      "cooldown_expires": "2026-03-09T14:34:18.079410",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-28T14:34:18.079410",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9952761883618267,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258709000,
+      "vessel_name": "HAGLAND BORG",
+      "registered_at": "2026-02-28T15:19:15.763429",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-02T15:19:15.763429",
+      "cooldown_expires": "2026-03-09T15:19:15.763429",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-28T15:19:15.763429",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5465594536693338,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258343000,
+      "vessel_name": "NORDFJORD",
+      "registered_at": "2026-02-28T16:14:16.391530",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-02T16:14:16.391530",
+      "cooldown_expires": "2026-03-09T16:14:16.391530",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-28T16:14:16.391530",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8756135323173445,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259405000,
+      "vessel_name": "EIDSVAAG MARIN",
+      "registered_at": "2026-02-28T17:04:13.529426",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-02T17:04:13.529426",
+      "cooldown_expires": "2026-03-09T17:04:13.529426",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-28T17:04:13.529426",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7227035505782333,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257045380,
+      "vessel_name": "KB TYFON",
+      "registered_at": "2026-02-28T17:17:15.364229",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-02T17:17:15.364229",
+      "cooldown_expires": "2026-03-09T17:17:15.364229",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-28T17:17:15.364229",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7109658735524358,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257963000,
+      "vessel_name": "SEIVEST",
+      "registered_at": "2026-02-28T17:21:15.340367",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-02T17:21:15.340367",
+      "cooldown_expires": "2026-03-09T17:21:15.340367",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-02-28T17:21:15.340367",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7051803499495133,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257914700,
+      "vessel_name": "ERVIK SUPPORT",
+      "registered_at": "2026-03-01T12:02:36.657311",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T12:02:36.657311",
+      "cooldown_expires": "2026-03-10T12:02:36.657311",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T12:02:36.657311",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.04682333741192367,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259584000,
+      "vessel_name": "Vessel 259584000",
+      "registered_at": "2026-03-01T12:02:36.748119",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T12:02:36.748119",
+      "cooldown_expires": "2026-03-10T12:02:36.748119",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T12:02:36.748119",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.15218390794065634,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258194500,
+      "vessel_name": "NORDSUND",
+      "registered_at": "2026-03-01T12:34:15.046975",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T12:34:15.046975",
+      "cooldown_expires": "2026-03-10T12:34:15.046975",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T12:34:15.046975",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.2794084323198749,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259822000,
+      "vessel_name": "FIRDA HARVEST",
+      "registered_at": "2026-03-01T13:31:17.196829",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T13:31:17.196829",
+      "cooldown_expires": "2026-03-10T13:31:17.196829",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T13:31:17.196829",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.36684807974075845,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257893700,
+      "vessel_name": "RINGAFJORD",
+      "registered_at": "2026-03-01T13:31:17.405807",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T13:31:17.405807",
+      "cooldown_expires": "2026-03-10T13:31:17.405807",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T13:31:17.405807",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.11674371937523284,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259005950,
+      "vessel_name": "FOX ENERGY",
+      "registered_at": "2026-03-01T14:27:16.073248",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T14:27:16.073248",
+      "cooldown_expires": "2026-03-10T14:27:16.073248",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T14:27:16.073248",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9822301509074193,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259221000,
+      "vessel_name": "EIDSVAAG POLARIS",
+      "registered_at": "2026-03-01T14:36:15.667429",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T14:36:15.667429",
+      "cooldown_expires": "2026-03-10T14:36:15.667429",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T14:36:15.667429",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6245994000044665,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257749000,
+      "vessel_name": "CABAL",
+      "registered_at": "2026-03-01T15:11:12.221098",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T15:11:12.221098",
+      "cooldown_expires": "2026-03-10T15:11:12.221098",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T15:11:12.221098",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.48779185866939506,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258176000,
+      "vessel_name": "TAUROA",
+      "registered_at": "2026-03-01T15:16:12.570707",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T15:16:12.570707",
+      "cooldown_expires": "2026-03-10T15:16:12.570707",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T15:16:12.570707",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.10146135617565549,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257096170,
+      "vessel_name": "FROY JUNIOR",
+      "registered_at": "2026-03-01T15:51:12.939624",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T15:51:12.939624",
+      "cooldown_expires": "2026-03-10T15:51:12.939624",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T15:51:12.939624",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8654585730571045,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258062000,
+      "vessel_name": "FALKSUND",
+      "registered_at": "2026-03-01T15:56:11.900533",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T15:56:11.900533",
+      "cooldown_expires": "2026-03-10T15:56:11.900533",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T15:56:11.900533",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.546723888996615,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258170000,
+      "vessel_name": "TROMS CASTOR",
+      "registered_at": "2026-03-01T16:26:12.603953",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T16:26:12.603953",
+      "cooldown_expires": "2026-03-10T16:26:12.603953",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T16:26:12.603953",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6685799058914449,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257129120,
+      "vessel_name": "HARALD",
+      "registered_at": "2026-03-01T16:26:12.732091",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T16:26:12.732091",
+      "cooldown_expires": "2026-03-10T16:26:12.732091",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T16:26:12.732091",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9857408354903487,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257747000,
+      "vessel_name": "SEIGRUNN",
+      "registered_at": "2026-03-01T16:36:12.790402",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T16:36:12.790402",
+      "cooldown_expires": "2026-03-10T16:36:12.790402",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T16:36:12.790402",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6133112599776454,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259012100,
+      "vessel_name": "MULTI EXPLORER",
+      "registered_at": "2026-03-01T17:45:41.425023",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T17:45:41.425023",
+      "cooldown_expires": "2026-03-10T17:45:41.425023",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T17:45:41.425023",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.49154219826068757,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258713000,
+      "vessel_name": "TROLL",
+      "registered_at": "2026-03-01T17:55:42.135993",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T17:55:42.135993",
+      "cooldown_expires": "2026-03-10T17:55:42.135993",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T17:55:42.135993",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.819940724366482,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258558000,
+      "vessel_name": "ROSLAGEN",
+      "registered_at": "2026-03-01T21:10:22.934815",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-03T21:10:22.934815",
+      "cooldown_expires": "2026-03-10T21:10:22.934815",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-01T21:10:22.934815",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9752883956055328,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257309400,
+      "vessel_name": "FLEKKO",
+      "registered_at": "2026-03-02T00:12:10.681972",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T00:12:10.681972",
+      "cooldown_expires": "2026-03-11T00:12:10.681972",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T00:12:10.681972",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5462631759591995,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257107510,
+      "vessel_name": "NORVA SEA",
+      "registered_at": "2026-03-02T10:52:10.000825",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T10:52:10.000825",
+      "cooldown_expires": "2026-03-11T10:52:10.000825",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T10:52:10.000825",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.10294045132216824,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258266500,
+      "vessel_name": "HELGOY CRUISE",
+      "registered_at": "2026-03-02T11:32:10.335792",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T11:32:10.335792",
+      "cooldown_expires": "2026-03-11T11:32:10.335792",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T11:32:10.335792",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9136253166468992,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257104940,
+      "vessel_name": "SVEHOLM",
+      "registered_at": "2026-03-02T11:52:09.646482",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T11:52:09.646482",
+      "cooldown_expires": "2026-03-11T11:52:09.646482",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T11:52:09.646482",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7527018136223175,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257150600,
+      "vessel_name": "SAGAVIK",
+      "registered_at": "2026-03-02T12:31:07.136037",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T12:31:07.136037",
+      "cooldown_expires": "2026-03-11T12:31:07.136037",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T12:31:07.136037",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8508773492153766,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257276000,
+      "vessel_name": "Vessel 257276000",
+      "registered_at": "2026-03-02T13:15:43.449033",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T13:15:43.449033",
+      "cooldown_expires": "2026-03-11T13:15:43.449033",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T13:15:43.449033",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7339432419808142,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259042710,
+      "vessel_name": "LEROY TROLLFJORD",
+      "registered_at": "2026-03-02T13:32:10.034362",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T13:32:10.034362",
+      "cooldown_expires": "2026-03-11T13:32:10.034362",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T13:32:10.034362",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.1741202855374372,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 219348000,
+      "vessel_name": "BERGENSFJORD",
+      "registered_at": "2026-03-02T15:06:10.201294",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T15:06:10.201294",
+      "cooldown_expires": "2026-03-11T15:06:10.201294",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T15:06:10.201294",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8811776771991293,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258489000,
+      "vessel_name": "STEINAR OLAISEN",
+      "registered_at": "2026-03-02T15:11:10.191608",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T15:11:10.191608",
+      "cooldown_expires": "2026-03-11T15:11:10.191608",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T15:11:10.191608",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6579761744781379,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259048860,
+      "vessel_name": "FOX HYBRID",
+      "registered_at": "2026-03-02T15:34:04.386237",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T15:34:04.386237",
+      "cooldown_expires": "2026-03-11T15:34:04.386237",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T15:34:04.386237",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7019196685229099,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257085210,
+      "vessel_name": "SEIHAUST",
+      "registered_at": "2026-03-02T16:13:09.928303",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T16:13:09.928303",
+      "cooldown_expires": "2026-03-11T16:13:09.928303",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T16:13:09.928303",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8701219821820919,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257142400,
+      "vessel_name": "SJOBAS",
+      "registered_at": "2026-03-02T16:23:10.074649",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T16:23:10.074649",
+      "cooldown_expires": "2026-03-11T16:23:10.074649",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T16:23:10.074649",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9308504636576101,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259119000,
+      "vessel_name": "SVEALAND",
+      "registered_at": "2026-03-02T16:26:09.761910",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T16:26:09.761910",
+      "cooldown_expires": "2026-03-11T16:26:09.761910",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T16:26:09.761910",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8145168624977629,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257733500,
+      "vessel_name": "SKOLTAFJORD",
+      "registered_at": "2026-03-02T17:03:10.213798",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T17:03:10.213798",
+      "cooldown_expires": "2026-03-11T17:03:10.213798",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T17:03:10.213798",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9993872483541726,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259074000,
+      "vessel_name": "HAVILA CLIPPER",
+      "registered_at": "2026-03-02T17:33:10.113297",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T17:33:10.113297",
+      "cooldown_expires": "2026-03-11T17:33:10.113297",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T17:33:10.113297",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9416824092264776,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257151900,
+      "vessel_name": "VINGTOR",
+      "registered_at": "2026-03-02T17:38:09.904333",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T17:38:09.904333",
+      "cooldown_expires": "2026-03-11T17:38:09.904333",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T17:38:09.904333",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9602730017480499,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 255806190,
+      "vessel_name": "MSC ANNE F",
+      "registered_at": "2026-03-02T18:01:10.005071",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T18:01:10.005071",
+      "cooldown_expires": "2026-03-11T18:01:10.005071",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T18:01:10.005071",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8990477563760451,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259045000,
+      "vessel_name": "KNM THOR HEYERDAHL",
+      "registered_at": "2026-03-02T20:07:08.426692",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-04T20:07:08.426692",
+      "cooldown_expires": "2026-03-11T20:07:08.426692",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-02T20:07:08.426692",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8269842992464732,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257861700,
+      "vessel_name": "EVA ELISABETH",
+      "registered_at": "2026-03-03T00:53:08.467629",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-05T00:53:08.467629",
+      "cooldown_expires": "2026-03-12T00:53:08.467629",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-03T00:53:08.467629",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9331193177446199,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258763000,
+      "vessel_name": "NORNE",
+      "registered_at": "2026-03-03T00:58:09.391490",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-05T00:58:09.391490",
+      "cooldown_expires": "2026-03-12T00:58:09.391490",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-03T00:58:09.391490",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8471333310718562,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257982700,
+      "vessel_name": "AQUA VIKING",
+      "registered_at": "2026-03-03T03:16:08.377721",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-05T03:16:08.377721",
+      "cooldown_expires": "2026-03-12T03:16:08.377721",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-03T03:16:08.377721",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8099348627894799,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259143000,
+      "vessel_name": "NORJARL",
+      "registered_at": "2026-03-03T03:41:08.503835",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-05T03:41:08.503835",
+      "cooldown_expires": "2026-03-12T03:41:08.503835",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-03T03:41:08.503835",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6536596860448963,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257684000,
+      "vessel_name": "BERGEN VIKING",
+      "registered_at": "2026-03-03T04:37:08.407128",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-05T04:37:08.407128",
+      "cooldown_expires": "2026-03-12T04:37:08.407128",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-03T04:37:08.407128",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.918718291867864,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257456900,
+      "vessel_name": "BOGOY",
+      "registered_at": "2026-03-03T17:03:08.625578",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-05T17:03:08.625578",
+      "cooldown_expires": "2026-03-12T17:03:08.625578",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-03T17:03:08.625578",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9982933793945571,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259488000,
+      "vessel_name": "ROBAS",
+      "registered_at": "2026-03-03T17:46:08.482369",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-05T17:46:08.482369",
+      "cooldown_expires": "2026-03-12T17:46:08.482369",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-03T17:46:08.482369",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5961001870733293,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257045690,
+      "vessel_name": "FOSNA ATLAS",
+      "registered_at": "2026-03-03T18:36:08.644289",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-05T18:36:08.644289",
+      "cooldown_expires": "2026-03-12T18:36:08.644289",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-03T18:36:08.644289",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6071724329506077,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257063650,
+      "vessel_name": "GODFISKEN",
+      "registered_at": "2026-03-03T18:52:08.841753",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-05T18:52:08.841753",
+      "cooldown_expires": "2026-03-12T18:52:08.841753",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-03T18:52:08.841753",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9650100292994185,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257539600,
+      "vessel_name": "TEDDY VIKING",
+      "registered_at": "2026-03-03T20:01:08.372126",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-05T20:01:08.372126",
+      "cooldown_expires": "2026-03-12T20:01:08.372126",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-03T20:01:08.372126",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.666761273455229,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 231850000,
+      "vessel_name": "SAEBORG",
+      "registered_at": "2026-03-03T23:16:08.722807",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-05T23:16:08.722807",
+      "cooldown_expires": "2026-03-12T23:16:08.722807",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-03T23:16:08.722807",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7440475475328062,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259039240,
+      "vessel_name": "HUNDHOLMEN",
+      "registered_at": "2026-03-04T00:36:08.658056",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-06T00:36:08.658056",
+      "cooldown_expires": "2026-03-13T00:36:08.658056",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-04T00:36:08.658056",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.544802480966819,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259014000,
+      "vessel_name": "KNM OTRA",
+      "registered_at": "2026-03-04T00:37:08.837508",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-06T00:37:08.837508",
+      "cooldown_expires": "2026-03-13T00:37:08.837508",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-04T00:37:08.837508",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9242048818137756,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257952800,
+      "vessel_name": "LAKSEN",
+      "registered_at": "2026-03-04T00:42:08.640588",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-06T00:42:08.640588",
+      "cooldown_expires": "2026-03-13T00:42:08.640588",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-04T00:42:08.640588",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9028915469472215,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258221000,
+      "vessel_name": "NYFJELL",
+      "registered_at": "2026-03-04T01:01:08.843183",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-06T01:01:08.843183",
+      "cooldown_expires": "2026-03-13T01:01:08.843183",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-04T01:01:08.843183",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6190869591485012,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259015000,
+      "vessel_name": "KNM RAUMA",
+      "registered_at": "2026-03-04T01:31:10.430440",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-06T01:31:10.430440",
+      "cooldown_expires": "2026-03-13T01:31:10.430440",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-04T01:31:10.430440",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.992727320505334,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258006930,
+      "vessel_name": "SKOG",
+      "registered_at": "2026-03-04T02:06:08.719864",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-06T02:06:08.719864",
+      "cooldown_expires": "2026-03-13T02:06:08.719864",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-04T02:06:08.719864",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7708128549665733,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257576600,
+      "vessel_name": "OLAGUTT",
+      "registered_at": "2026-03-04T02:46:08.530366",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-06T02:46:08.530366",
+      "cooldown_expires": "2026-03-13T02:46:08.530366",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-04T02:46:08.530366",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8907801282939435,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257059350,
+      "vessel_name": "SEIBOEN",
+      "registered_at": "2026-03-04T12:16:11.614830",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-06T12:16:11.614830",
+      "cooldown_expires": "2026-03-13T12:16:11.614830",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-04T12:16:11.614830",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.2048546560667348,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259019050,
+      "vessel_name": "RINGAVIK",
+      "registered_at": "2026-03-04T12:35:58.342709",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-06T12:35:58.342709",
+      "cooldown_expires": "2026-03-13T12:35:58.342709",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-04T12:35:58.342709",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7686885649777483,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257814700,
+      "vessel_name": "BREMHOLM",
+      "registered_at": "2026-03-05T09:50:52.097261",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T09:50:52.097261",
+      "cooldown_expires": "2026-03-14T09:50:52.097261",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T09:50:52.097261",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.23135611652433588,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257834600,
+      "vessel_name": "SMOELA 1",
+      "registered_at": "2026-03-05T09:51:09.091453",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T09:51:09.091453",
+      "cooldown_expires": "2026-03-14T09:51:09.091453",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T09:51:09.091453",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.522499552277758,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257715600,
+      "vessel_name": "FLOEFRAKT 1",
+      "registered_at": "2026-03-05T09:51:15.089329",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T09:51:15.089329",
+      "cooldown_expires": "2026-03-14T09:51:15.089329",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T09:51:15.089329",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.1981664970990138,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259004880,
+      "vessel_name": "BOGOYFISK 1",
+      "registered_at": "2026-03-05T09:51:26.580643",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T09:51:26.580643",
+      "cooldown_expires": "2026-03-14T09:51:26.580643",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T09:51:26.580643",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.17865052201120793,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257346600,
+      "vessel_name": "VALVAAG",
+      "registered_at": "2026-03-05T09:51:32.360504",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T09:51:32.360504",
+      "cooldown_expires": "2026-03-14T09:51:32.360504",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T09:51:32.360504",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.15430958152357882,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257044910,
+      "vessel_name": "FALKEN",
+      "registered_at": "2026-03-05T09:51:38.125047",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T09:51:38.125047",
+      "cooldown_expires": "2026-03-14T09:51:38.125047",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T09:51:38.125047",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.20550604341813328,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258274500,
+      "vessel_name": "OERNOEY",
+      "registered_at": "2026-03-05T09:51:49.780614",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T09:51:49.780614",
+      "cooldown_expires": "2026-03-14T09:51:49.780614",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T09:51:49.780614",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.3267211056804294,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259030410,
+      "vessel_name": "FROY LEADER",
+      "registered_at": "2026-03-05T10:16:06.529328",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T10:16:06.529328",
+      "cooldown_expires": "2026-03-14T10:16:06.529328",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T10:16:06.529328",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.1094095766211968,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257668800,
+      "vessel_name": "Vessel 257668800",
+      "registered_at": "2026-03-05T10:16:07.533638",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T10:16:07.533638",
+      "cooldown_expires": "2026-03-14T10:16:07.533638",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T10:16:07.533638",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.25223939604072143,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258351500,
+      "vessel_name": "SORDAL MARGRET",
+      "registered_at": "2026-03-05T10:23:08.478356",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T10:23:08.478356",
+      "cooldown_expires": "2026-03-14T10:23:08.478356",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T10:23:08.478356",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.09624344138947627,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258659000,
+      "vessel_name": "HYDRO PIONEER",
+      "registered_at": "2026-03-05T10:23:08.603470",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T10:23:08.603470",
+      "cooldown_expires": "2026-03-14T10:23:08.603470",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T10:23:08.603470",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.14013142286147276,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257000210,
+      "vessel_name": "FOSNA ORION",
+      "registered_at": "2026-03-05T10:23:08.695488",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T10:23:08.695488",
+      "cooldown_expires": "2026-03-14T10:23:08.695488",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T10:23:08.695488",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.469215727199355,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258207480,
+      "vessel_name": "AKVAMOY",
+      "registered_at": "2026-03-05T10:23:08.816465",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T10:23:08.816465",
+      "cooldown_expires": "2026-03-14T10:23:08.816465",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T10:23:08.816465",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.11341320634833837,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259195000,
+      "vessel_name": "RONJA SPIRIT",
+      "registered_at": "2026-03-05T10:23:14.483451",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T10:23:14.483451",
+      "cooldown_expires": "2026-03-14T10:23:14.483451",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T10:23:14.483451",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5397053803345507,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257087880,
+      "vessel_name": "SALMAR V",
+      "registered_at": "2026-03-05T10:23:14.619903",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T10:23:14.619903",
+      "cooldown_expires": "2026-03-14T10:23:14.619903",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T10:23:14.619903",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.20022510666641952,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257697700,
+      "vessel_name": "SALMAR IV",
+      "registered_at": "2026-03-05T10:23:20.284704",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T10:23:20.284704",
+      "cooldown_expires": "2026-03-14T10:23:20.284704",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T10:23:20.284704",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.4949794069142667,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258264500,
+      "vessel_name": "SORDAL FRIGG",
+      "registered_at": "2026-03-05T10:23:20.550463",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T10:23:20.550463",
+      "cooldown_expires": "2026-03-14T10:23:20.550463",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T10:23:20.550463",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.10976092953335662,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257058120,
+      "vessel_name": "ERVIK IV",
+      "registered_at": "2026-03-05T10:23:20.619778",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T10:23:20.619778",
+      "cooldown_expires": "2026-03-14T10:23:20.619778",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T10:23:20.619778",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.10869465326208243,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259029860,
+      "vessel_name": "LEMMY",
+      "registered_at": "2026-03-05T10:23:20.735910",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T10:23:20.735910",
+      "cooldown_expires": "2026-03-14T10:23:20.735910",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T10:23:20.735910",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.12823019985442333,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 249497000,
+      "vessel_name": "TRANS HAV",
+      "registered_at": "2026-03-05T11:00:06.577862",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T11:00:06.577862",
+      "cooldown_expires": "2026-03-14T11:00:06.577862",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T11:00:06.577862",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9859331318019631,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257163000,
+      "vessel_name": "VETLEFJORD",
+      "registered_at": "2026-03-05T11:18:06.792016",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T11:18:06.792016",
+      "cooldown_expires": "2026-03-14T11:18:06.792016",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T11:18:06.792016",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9410310468515649,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257155400,
+      "vessel_name": "HANS BRATTSTROM",
+      "registered_at": "2026-03-05T11:45:05.851593",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T11:45:05.851593",
+      "cooldown_expires": "2026-03-14T11:45:05.851593",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T11:45:05.851593",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8610604582431308,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257496600,
+      "vessel_name": "STAALBJOERN",
+      "registered_at": "2026-03-05T11:55:06.762072",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T11:55:06.762072",
+      "cooldown_expires": "2026-03-14T11:55:06.762072",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T11:55:06.762072",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.31853496235794887,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257008390,
+      "vessel_name": "GYDA",
+      "registered_at": "2026-03-05T12:48:06.902705",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T12:48:06.902705",
+      "cooldown_expires": "2026-03-14T12:48:06.902705",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T12:48:06.902705",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8742428267432601,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258764000,
+      "vessel_name": "PELAGIA HORDAFOR",
+      "registered_at": "2026-03-05T13:09:28.029548",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T13:09:28.029548",
+      "cooldown_expires": "2026-03-14T13:09:28.029548",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T13:09:28.029548",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.13457881830949436,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257134800,
+      "vessel_name": "KYSTBUNKER III",
+      "registered_at": "2026-03-05T13:42:06.953109",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T13:42:06.953109",
+      "cooldown_expires": "2026-03-14T13:42:06.953109",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T13:42:06.953109",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.4937398422253644,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257969000,
+      "vessel_name": "LINK SUN",
+      "registered_at": "2026-03-05T14:10:06.682034",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T14:10:06.682034",
+      "cooldown_expires": "2026-03-14T14:10:06.682034",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T14:10:06.682034",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7004802900594124,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257072570,
+      "vessel_name": "ROGNKJEKSA",
+      "registered_at": "2026-03-05T14:20:06.283016",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T14:20:06.283016",
+      "cooldown_expires": "2026-03-14T14:20:06.283016",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T14:20:06.283016",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9307243018553792,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257839700,
+      "vessel_name": "TROLLSOY",
+      "registered_at": "2026-03-05T14:41:06.739353",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T14:41:06.739353",
+      "cooldown_expires": "2026-03-14T14:41:06.739353",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T14:41:06.739353",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9315802813239813,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257032190,
+      "vessel_name": "BJORG VIKING",
+      "registered_at": "2026-03-05T14:45:06.570316",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T14:45:06.570316",
+      "cooldown_expires": "2026-03-14T14:45:06.570316",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T14:45:06.570316",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5172500503727486,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257010430,
+      "vessel_name": "AQUA STAR",
+      "registered_at": "2026-03-05T15:05:06.366111",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T15:05:06.366111",
+      "cooldown_expires": "2026-03-14T15:05:06.366111",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T15:05:06.366111",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9428873542900893,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257010880,
+      "vessel_name": "MYSIL",
+      "registered_at": "2026-03-05T15:40:06.396413",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T15:40:06.396413",
+      "cooldown_expires": "2026-03-14T15:40:06.396413",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T15:40:06.396413",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9852862651287184,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257371000,
+      "vessel_name": "SCANBIO DART",
+      "registered_at": "2026-03-05T15:52:07.546162",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T15:52:07.546162",
+      "cooldown_expires": "2026-03-14T15:52:07.546162",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T15:52:07.546162",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5162047828576299,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257927600,
+      "vessel_name": "BRUTUS",
+      "registered_at": "2026-03-05T15:53:06.285052",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T15:53:06.285052",
+      "cooldown_expires": "2026-03-14T15:53:06.285052",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T15:53:06.285052",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9579675265217507,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259018930,
+      "vessel_name": "TRYM",
+      "registered_at": "2026-03-05T15:55:06.295178",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T15:55:06.295178",
+      "cooldown_expires": "2026-03-14T15:55:06.295178",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T15:55:06.295178",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.4079131494969315,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258004690,
+      "vessel_name": "MULTI POWER",
+      "registered_at": "2026-03-05T16:02:06.495690",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T16:02:06.495690",
+      "cooldown_expires": "2026-03-14T16:02:06.495690",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T16:02:06.495690",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.1580804079805625,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257184340,
+      "vessel_name": "KRYSSHOLM",
+      "registered_at": "2026-03-05T21:49:06.322254",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-07T21:49:06.322254",
+      "cooldown_expires": "2026-03-14T21:49:06.322254",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-05T21:49:06.322254",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6874414324276217,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257235000,
+      "vessel_name": "RO SPIRIT",
+      "registered_at": "2026-03-06T03:16:06.150723",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T03:16:06.150723",
+      "cooldown_expires": "2026-03-15T03:16:06.150723",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T03:16:06.150723",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.3408583424653032,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258197000,
+      "vessel_name": "EIDSVAAG OMEGA",
+      "registered_at": "2026-03-06T03:41:07.315576",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T03:41:07.315576",
+      "cooldown_expires": "2026-03-15T03:41:07.315576",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T03:41:07.315576",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.2836190983958329,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259458000,
+      "vessel_name": "RANA FRAKT",
+      "registered_at": "2026-03-06T03:43:06.395525",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T03:43:06.395525",
+      "cooldown_expires": "2026-03-15T03:43:06.395525",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T03:43:06.395525",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8672680780017425,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257077970,
+      "vessel_name": "RO VISION",
+      "registered_at": "2026-03-06T05:26:06.353501",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T05:26:06.353501",
+      "cooldown_expires": "2026-03-15T05:26:06.353501",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T05:26:06.353501",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5387519766805856,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 305371000,
+      "vessel_name": "FEED TRONDHEIM",
+      "registered_at": "2026-03-06T05:41:06.244437",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T05:41:06.244437",
+      "cooldown_expires": "2026-03-15T05:41:06.244437",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T05:41:06.244437",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6056523821059677,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258293000,
+      "vessel_name": "M/V EIDHOLM",
+      "registered_at": "2026-03-06T07:31:07.866400",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T07:31:07.866400",
+      "cooldown_expires": "2026-03-15T07:31:07.866400",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T07:31:07.866400",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.286227560491102,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257080750,
+      "vessel_name": "EIDSVAAG OPAL",
+      "registered_at": "2026-03-06T07:41:06.526474",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T07:41:06.526474",
+      "cooldown_expires": "2026-03-15T07:41:06.526474",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T07:41:06.526474",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8207228038552066,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259048850,
+      "vessel_name": "AQUA QUEEN",
+      "registered_at": "2026-03-06T13:07:08.063927",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T13:07:08.063927",
+      "cooldown_expires": "2026-03-15T13:07:08.063927",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T13:07:08.063927",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.35406228901068554,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258374500,
+      "vessel_name": "VATTIND",
+      "registered_at": "2026-03-06T13:07:08.173044",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T13:07:08.173044",
+      "cooldown_expires": "2026-03-15T13:07:08.173044",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T13:07:08.173044",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.18429874076150676,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257254700,
+      "vessel_name": "TROLLUNGEN",
+      "registered_at": "2026-03-06T13:23:06.095926",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T13:23:06.095926",
+      "cooldown_expires": "2026-03-15T13:23:06.095926",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T13:23:06.095926",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9158422519272043,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259015380,
+      "vessel_name": "FOSNAKRAFT",
+      "registered_at": "2026-03-06T13:38:06.461275",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T13:38:06.461275",
+      "cooldown_expires": "2026-03-15T13:38:06.461275",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T13:38:06.461275",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.06932259441067104,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257858600,
+      "vessel_name": "BRAGE",
+      "registered_at": "2026-03-06T13:58:06.389222",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T13:58:06.389222",
+      "cooldown_expires": "2026-03-15T13:58:06.389222",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T13:58:06.389222",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8978207510952906,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258284500,
+      "vessel_name": "AKVA VIKING",
+      "registered_at": "2026-03-06T14:41:06.365905",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T14:41:06.365905",
+      "cooldown_expires": "2026-03-15T14:41:06.365905",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T14:41:06.365905",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.05279121505647903,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257111020,
+      "vessel_name": "OV_HEKKINGEN",
+      "registered_at": "2026-03-06T15:46:06.557665",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T15:46:06.557665",
+      "cooldown_expires": "2026-03-15T15:46:06.557665",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T15:46:06.557665",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8770232688890784,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257605000,
+      "vessel_name": "FROYA",
+      "registered_at": "2026-03-06T16:07:06.270944",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T16:07:06.270944",
+      "cooldown_expires": "2026-03-15T16:07:06.270944",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T16:07:06.270944",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.7356850829196658,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258383500,
+      "vessel_name": "SMALOY",
+      "registered_at": "2026-03-06T16:26:06.722584",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T16:26:06.722584",
+      "cooldown_expires": "2026-03-15T16:26:06.722584",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T16:26:06.722584",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9859778808683548,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258209500,
+      "vessel_name": "NJORD",
+      "registered_at": "2026-03-06T17:06:06.029874",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T17:06:06.029874",
+      "cooldown_expires": "2026-03-15T17:06:06.029874",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T17:06:06.029874",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6104115837007565,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258021830,
+      "vessel_name": "HELLA",
+      "registered_at": "2026-03-06T17:16:06.565524",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T17:16:06.565524",
+      "cooldown_expires": "2026-03-15T17:16:06.565524",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T17:16:06.565524",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.3872898018564521,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 258901000,
+      "vessel_name": "AQUA JUNIOR",
+      "registered_at": "2026-03-06T23:07:35.945574",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T23:07:35.945574",
+      "cooldown_expires": "2026-03-15T23:07:35.945574",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T23:07:35.945574",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9132895807096602,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257035990,
+      "vessel_name": "KV MOB 2099",
+      "registered_at": "2026-03-06T23:12:35.518950",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T23:12:35.518950",
+      "cooldown_expires": "2026-03-15T23:12:35.518950",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T23:12:35.518950",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.725464922436073,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 219023116,
+      "vessel_name": "KARMSUND",
+      "registered_at": "2026-03-06T23:50:24.924362",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-08T23:50:24.924362",
+      "cooldown_expires": "2026-03-15T23:50:24.924362",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-06T23:50:24.924362",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8298260188600168,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259506000,
+      "vessel_name": "SVEASUND",
+      "registered_at": "2026-03-07T02:21:05.843954",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-09T02:21:05.843954",
+      "cooldown_expires": "2026-03-16T02:21:05.843954",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-07T02:21:05.843954",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.5646653670264059,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257152000,
+      "vessel_name": "AUSTFJORD",
+      "registered_at": "2026-03-07T05:06:05.830294",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-09T05:06:05.830294",
+      "cooldown_expires": "2026-03-16T05:06:05.830294",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-07T05:06:05.830294",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9919153350570946,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257017390,
+      "vessel_name": "FROY BAS",
+      "registered_at": "2026-03-07T14:01:05.594617",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-09T14:01:05.594617",
+      "cooldown_expires": "2026-03-16T14:01:05.594617",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-07T14:01:05.594617",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.9861306816509917,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257106900,
+      "vessel_name": "SEINES",
+      "registered_at": "2026-03-07T14:01:11.273592",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-09T14:01:11.273592",
+      "cooldown_expires": "2026-03-16T14:01:11.273592",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-07T14:01:11.273592",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6110101280826995,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257346000,
+      "vessel_name": "ISLAND CLIPPER",
+      "registered_at": "2026-03-07T14:41:06.337485",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-09T14:41:06.337485",
+      "cooldown_expires": "2026-03-16T14:41:06.337485",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-07T14:41:06.337485",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.863101127677165,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257724800,
+      "vessel_name": "OSPOEY",
+      "registered_at": "2026-03-07T15:01:06.084305",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-09T15:01:06.084305",
+      "cooldown_expires": "2026-03-16T15:01:06.084305",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-07T15:01:06.084305",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.2174797304421782,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257174400,
+      "vessel_name": "LARS",
+      "registered_at": "2026-03-07T15:36:05.535958",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-09T15:36:05.535958",
+      "cooldown_expires": "2026-03-16T15:36:05.535958",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-07T15:36:05.535958",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.8309811622685558,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259029000,
+      "vessel_name": "HAVBRIS",
+      "registered_at": "2026-03-07T15:46:20.530299",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-09T15:46:20.530299",
+      "cooldown_expires": "2026-03-16T15:46:20.530299",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-07T15:46:20.530299",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.4125231829479802,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 257048230,
+      "vessel_name": "FOSNA VARG",
+      "registered_at": "2026-03-07T23:20:53.572807",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-09T23:20:53.572807",
+      "cooldown_expires": "2026-03-16T23:20:53.572807",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-07T23:20:53.572807",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.23470329928087794,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 245593000,
+      "vessel_name": "THUN EMPOWER",
+      "registered_at": "2026-03-07T23:20:53.715731",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-09T23:20:53.715731",
+      "cooldown_expires": "2026-03-16T23:20:53.715731",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-07T23:20:53.715731",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.6402607192495409,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    },
+    {
+      "mmsi": 259027520,
+      "vessel_name": "FROEYLAKS",
+      "registered_at": "2026-03-07T23:20:59.419093",
+      "registered_from_facility": null,
+      "quarantine_expires": "2026-03-09T23:20:59.419093",
+      "cooldown_expires": "2026-03-16T23:20:59.419093",
+      "status": "quarantine",
+      "visits_logged": [
+        {
+          "timestamp": "2026-03-07T23:20:59.419093",
+          "facility_name": null,
+          "action": "auto_detected",
+          "distance_km": 0.11389087186520881,
+          "exposure_duration_minutes": 30
+        }
+      ],
+      "subsequent_facility_visits": []
+    }
+  ],
+  "last_updated": "2026-03-07T23:20:59.420653"
+}

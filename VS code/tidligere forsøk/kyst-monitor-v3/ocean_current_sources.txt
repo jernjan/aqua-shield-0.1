@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+"""
+Search for ocean current data sources available
+"""
+
+# Kilder jeg har funnet:
+
+print("""
+=" * 80
+HAVSTRØM DATA KILDER - NOREG
+=" * 80
+
+1. **COPERNICUS MARINE SERVICE** (EU - Gratis!)
+   - URL: https://marine.copernicus.eu/
+   - Data: Globale oceanmodeller, havstrømmer, temperatur
+   - Oppløsning: 1/12° (~9 km)
+   - API: Ja, gratis tilgang
+   - Dekning: Hele verden inkl. Barentshavet
+   - Status: ✅ BEST OPTION
+   
+2. **NOAA GLOBAL OCEAN MODEL** 
+   - Data: https://ocean.weather.gov/Current_fcasts.php
+   - Format: GeoTIFF/NetCDF
+   - Oppløsning: 1/4° (~27 km)
+   - Status: ✅ Gratis
+   - Men: Litt grovere oppløsning
+
+3. **MET NORGE (meteorologisk.no)**
+   - Kan ha oceandata
+   - Må sjekke API: https://www.met.no/en
+   - Status: ? Ukjent
+
+4. **THREDDS Data Server**
+   - Mange institusjonsdatastrømmer
+   - Inkl. oceandata fra NOAA
+   - URL: http://thredds.ucar.edu/
+   - Status: ✅ Tilgjengelig
+
+5. **IMR (Institute of Marine Research - Norge)**
+   - Lokal nordisk oceandata
+   - URL: https://www.hi.no/
+   - Status: Må kontakte?
+
+6. **NORCE**
+   - Oceanmodeller for Norskehavet
+   - Privat, men kanskje tilgjengelig
+   - Status: Må kontakte
+
+=" * 80
+ANBEFALING
+=" * 80
+
+**Copernicus Marine Service** - Beste valget!
+- ✅ Gratis
+- ✅ Globalt dekket
+- ✅ Høy oppløsning (1/12°)
+- ✅ API tilgjengelig
+- ✅ Realtidsdata og forecast
+- ✅ Inkl. lakselus-relevante data
+
+Neste steg: Test Copernicus API
+
+""")

@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-critical: #DC2626;
+  --color-high: #F97316;
+  --color-medium: #EAB308;
+  --color-low: #22C55E;
+  --color-neutral: #6B7280;
+}
+
+@layer base {
+  html {
+    @apply bg-slate-900 text-white;
+  }
+
+  body {
+    @apply bg-slate-900 text-white;
+    scrollbar-color: rgba(71, 85, 105, 0.5) transparent;
+    scrollbar-width: thin;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-600;
+  }
+}
+
+* {
+  @apply transition-colors;
+}
+
+/* Improve form inputs in dark mode */
+@layer components {
+  input[type="checkbox"] {
+    @apply accent-blue-600;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  textarea,
+  select {
+    @apply bg-slate-700 text-white border-slate-600 placeholder-slate-400;
+  }
+
+  input[type="text"]:focus,
+  input[type="password"]:focus,
+  input[type="email"]:focus,
+  textarea:focus,
+  select:focus {
+    @apply border-blue-500 ring-2 ring-blue-500/20;
+  }
+}

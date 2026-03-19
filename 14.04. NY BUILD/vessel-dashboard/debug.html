@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Debug Test</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #1e1e1e;
+      color: #00ff00;
+      padding: 2rem;
+      line-height: 1.8;
+    }
+    .test-section {
+      background: #2d2d2d;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-left: 4px solid #00ff00;
+      border-radius: 4px;
+    }
+    .test-section h3 {
+      margin-top: 0;
+      color: #00ffff;
+    }
+    .pass {
+      color: #00ff00;
+    }
+    .fail {
+      color: #ff0000;
+    }
+    .info {
+      color: #ffff00;
+    }
+    button {
+      background: #00ff00;
+      color: #000;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      font-weight: bold;
+      margin: 0.5rem 0;
+    }
+    button:hover {
+      background: #00cc00;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔧 Labridae Dashboard Debug</h1>
+  
+  <div class="test-section">
+    <h3>1. Environmental Check</h3>
+    <div id="envCheck"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>2. API Connectivity</h3>
+    <button onclick="testAPI()">Test API Connection</button>
+    <div id="apiTest"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>3. JavaScript Libraries</h3>
+    <div id="libTest"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>4. LocalStorage</h3>
+    <button onclick="testStorage()">Test LocalStorage</button>
+    <div id="storageTest"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>5. Module Exports</h3>
+    <button onclick="testModules()">Check Module Exports</button>
+    <div id="moduleTest"></div>
+  </div>
+
+  <script>
+    function log(elementId, message, type = 'info') {
+      const el = document.getElementById(elementId);
+      const className = type === 'pass' ? 'pass' : type === 'fail' ? 'fail' : 'info';
+      el.innerHTML += `<div class="${className}">${message}</div>`;
+    }
+
+    // Environmental Check
+    window.addEventListener('load', () => {
+      const env = document.getElementById('envCheck');
+      env.innerHTML = `
+        <div class="pass">✓ Page loaded successfully</div>
+        <div class="info">User Agent: ${navigator.userAgent.substring(0, 80)}...</div>
+        <div class="info">Window dimension: ${window.innerWidth}x${window.innerHeight}</div>
+        <div class="info">Document ready state: ${document.readyState}</div>
+      `;
+    });
+
+    // API Test
+    async function testAPI() {
+      log('apiTest', '⏳ Testing API...', 'info');
+      try {
+        const response = await fetch('http://127.0.0.1:8002/api/facilities?limit=5');
+        log('apiTest', `API Response Status: ${response.status}`, 'info');
+        
+        if (!response.ok) {
+          log('apiTest', `❌ API returned ${response.status}`, 'fail');
+        } else {
+          const data = await response.json();
+          log('apiTest', `✓ API responded successfully`, 'pass');
+          log('apiTest', `Response keys: ${Object.keys(data).join(', ')}`, 'info');
+          log('apiTest', `Facilities count: ${data.facilities?.length || 0}`, 'info');
+        }
+      } catch (error) {
+        log('apiTest', `❌ API Error: ${error.message}`, 'fail');
+      }
+    }
+
+    // Library Test
+    setTimeout(() => {
+      const lib = document.getElementById('libTest');
+      lib.innerHTML = `
+        <div class="${window.L ? 'pass' : 'fail'}">Leaflet (L): ${window.L ? '✓ Loaded' : '❌ Not found'}</div>
+        <div class="${window.VesselStorage ? 'pass' : 'fail'}">VesselStorage: ${window.VesselStorage ? '✓ Loaded' : '❌ Not found'}</div>
+        <div class="${window.VesselMap ? 'pass' : 'fail'}">VesselMap: ${window.VesselMap ? '✓ Loaded' : '❌ Not found'}</div>
+        <div class="${window.RoutePlanner ? 'pass' : 'fail'}">RoutePlanner: ${window.RoutePlanner ? '✓ Loaded' : '❌ Not found'}</div>
+      `;
+    }, 500);
+
+    // Storage Test
+    function testStorage() {
+      log('storageTest', '⏳ Testing LocalStorage...', 'info');
+      try {
+        localStorage.setItem('test', 'value');
+        const val = localStorage.getItem('test');
+        if (val === 'value') {
+          log('storageTest', '✓ LocalStorage works', 'pass');
+        } else {
+          log('storageTest', '❌ LocalStorage read failed', 'fail');
+        }
+        localStorage.removeItem('test');
+      } catch (error) {
+        log('storageTest', `❌ LocalStorage error: ${error.message}`, 'fail');
+      }
+    }
+
+    // Module Test
+    function testModules() {
+      log('moduleTest', '⏳ Checking modules...', 'info');
+      
+      if (window.VesselStorage) {
+        const methods = ['getVesselData', 'saveVesselData', 'API_BASE'];
+        methods.forEach(m => {
+          const has = typeof window.VesselStorage[m] !== 'undefined';
+          log('moduleTest', `${has ? '✓' : '❌'} VesselStorage.${m}`, has ? 'pass' : 'fail');
+        });
+      }
+      
+      if (window.VesselMap) {
+        const methods = ['initMap', 'loadFacilities'];
+        methods.forEach(m => {
+          const has = typeof window.VesselMap[m] !== 'undefined';
+          log('moduleTest', `${has ? '✓' : '❌'} VesselMap.${m}`, has ? 'pass' : 'fail');
+        });
+      }
+      
+      if (window.RoutePlanner) {
+        const methods = ['initRoutePlanner', 'displayCalendar'];
+        methods.forEach(m => {
+          const has = typeof window.RoutePlanner[m] !== 'undefined';
+          log('moduleTest', `${has ? '✓' : '❌'} RoutePlanner.${m}`, has ? 'pass' : 'fail');
+        });
+      }
+    }
+  </script>
+</body>
+</html>

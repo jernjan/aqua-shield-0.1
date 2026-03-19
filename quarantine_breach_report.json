@@ -1,0 +1,27 @@
+{
+  "report_date": "2026-03-09T20:17:15.276611",
+  "regulation": "Transportforskriften \u00a720a",
+  "total_breaches": 2,
+  "breaches": [
+    {
+      "mmsi": "257000210",
+      "vessel_name": "FOSNA ORION",
+      "status": "QUARANTINE_BREACH",
+      "infected_source": "Gr\u00f8ttings\u00f8y",
+      "destination_facility": "Val\u00f8yan",
+      "hours_between_visits": 20.8,
+      "rule_violated": "RED_TO_ANY_OTHER_FACILITY_WITHIN_48H",
+      "infected_facility_count": 2
+    },
+    {
+      "mmsi": "258351500",
+      "vessel_name": "SORDAL MARGRET",
+      "status": "QUARANTINE_BREACH",
+      "infected_source": "Slettholmene",
+      "destination_facility": "Gr\u00f8ttings\u00f8y",
+      "hours_between_visits": 21.1,
+      "rule_violated": "RED_TO_ANY_OTHER_FACILITY_WITHIN_48H",
+      "infected_facility_count": 2
+    }
+  ]
+}

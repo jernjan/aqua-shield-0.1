@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test - Kalender</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-top: 0;
+    }
+    .test-section {
+      margin: 20px 0;
+      padding: 15px;
+      background: #f9f9f9;
+      border-left: 4px solid #4CAF50;
+      border-radius: 4px;
+    }
+    .test-button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 5px 5px 5px 0;
+    }
+    .test-button:hover {
+      background: #45a049;
+    }
+    .calendar-demo {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 4px;
+    }
+    #calendarContainer {
+      /* Calendar will be inserted here */
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>🗓️ Kalender Test</h1>
+    
+    <div class="test-section">
+      <h3>Test Scenarios</h3>
+      <button class="test-button" onclick="testInit()">➤ Initialize Calendar</button>
+      <button class="test-button" onclick="testAddBoat()">➕ Add Test Boat</button>
+      <button class="test-button" onclick="testApprove()">✓ Approve Visit</button>
+      <button class="test-button" onclick="testToggleDay()">🟢 Toggle Green Day</button>
+      <button class="test-button" onclick="testRender()">🔄 Re-render</button>
+      <button class="test-button" onclick="testClear()">🗑️ Clear All</button>
+    </div>
+
+    <div class="calendar-demo">
+      <h3>Calendar Widget:</h3>
+      <div id="calendarContainer"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>Debug Info:</h3>
+      <pre id="debugOutput" style="background: #f0f0f0; padding: 10px; border-radius: 4px; overflow-x: auto; max-height: 400px;"></pre>
+    </div>
+  </div>
+
+  <script src="facility-calendar.js"></script>
+  <script>
+    let facilityCalendar = null;
+    let calendarUI = null;
+
+    function log(msg) {
+      const debug = document.getElementById('debugOutput');
+      const timestamp = new Date().toLocaleTimeString('no-NO');
+      debug.textContent += `[${timestamp}] ${msg}\n`;
+      debug.scrollTop = debug.scrollHeight;
+    }
+
+    function testInit() {
+      log('Initializing calendar...');
+      try {
+        facilityCalendar = new FacilityCalendar();
+        facilityCalendar.facilityCode = 'TEST-001';
+        calendarUI = new CalendarUI(facilityCalendar, 'calendarContainer');
+        
+        // Add default green days
+        facilityCalendar.setGreenDays([0, 1, 2, 3, 4]); // Man-Fre
+        
+        // Add some test data
+        const today = new Date();
+        facilityCalendar.addVesselVisit(today, '10:30', 'BERGSFJORD', 'Eirik Hansen', 'Fra API', true);
+        facilityCalendar.addVesselVisit(
+          new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000), 
+          '14:00', 
+          'OV RUNDE', 
+          'Mari Olsen',
+          'Planlagt besøk',
+          false
+        );
+        
+        calendarUI.render();
+        log('✅ Calendar initialized with test data');
+      } catch (e) {
+        log('❌ Error: ' + e.message);
+      }
+    }
+
+    function testAddBoat() {
+      if (!facilityCalendar) {
+        log('⚠️ Calendar not initialized. Run "Initialize Calendar" first.');
+        return;
+      }
+      
+      try {
+        const date = new Date();
+        date.setDate(date.getDate() + Math.floor(Math.random() * 6));
+        const time = `${9 + Math.floor(Math.random() * 8)}:${Math.floor(Math.random() * 6)}0`;
+        const boats = ['BERGSFJORD', 'OV RUNDE', 'KIM ROGER', 'AQS LOKE', 'NORNE'];
+        const boat = boats[Math.floor(Math.random() * boats.length)];
+        
+        const event = facilityCalendar.addVesselVisit(date, time, boat, 'Kontakt', 'Test', false);
+        calendarUI.render();
+        log(`✅ Added: ${boat} on ${date.toLocaleDateString('no-NO')} at ${time}`);
+      } catch (e) {
+        log('❌ Error: ' + e.message);
+      }
+    }
+
+    function testApprove() {
+      if (!facilityCalendar || facilityCalendar.events.length === 0) {
+        log('⚠️ No events to approve.');
+        return;
+      }
+      
+      try {
+        const pendingEvent = facilityCalendar.events.find(e => e.status === 'pending');
+        if (pendingEvent) {
+          facilityCalendar.approveVisit(pendingEvent.id, true, '');
+          calendarUI.render();
+          log(`✅ Approved: ${pendingEvent.vessel}`);
+        } else {
+          log('⚠️ No pending events found.');
+        }
+      } catch (e) {
+        log('❌ Error: ' + e.message);
+      }
+    }
+
+    function testToggleDay() {
+      if (!facilityCalendar) {
+        log('⚠️ Calendar not initialized.');
+        return;
+      }
+      
+      try {
+        const dayIndex = Math.floor(Math.random() * 7);
+        if (facilityCalendar.greenDays.has(dayIndex)) {
+          facilityCalendar.greenDays.delete(dayIndex);
+          log(`🔴 Day ${dayIndex} is now RED (unavailable)`);
+        } else {
+          facilityCalendar.greenDays.add(dayIndex);
+          log(`🟢 Day ${dayIndex} is now GREEN (available)`);
+        }
+        facilityCalendar.saveToStorage();
+        calendarUI.render();
+      } catch (e) {
+        log('❌ Error: ' + e.message);
+      }
+    }
+
+    function testRender() {
+      if (!calendarUI) {
+        log('⚠️ Calendar not initialized.');
+        return;
+      }
+      
+      try {
+        calendarUI.render();
+        log('🔄 Calendar re-rendered');
+      } catch (e) {
+        log('❌ Error: ' + e.message);
+      }
+    }
+
+    function testClear() {
+      if (!facilityCalendar) {
+        log('⚠️ Calendar not initialized.');
+        return;
+      }
+      
+      try {
+        facilityCalendar.events = [];
+        facilityCalendar.greenDays.clear();
+        facilityCalendar.saveToStorage();
+        calendarUI.render();
+        log('🗑️ All calendar data cleared');
+      } catch (e) {
+        log('❌ Error: ' + e.message);
+      }
+    }
+
+    // Auto-init on page load
+    window.addEventListener('load', () => {
+      log('Page loaded - ready for testing');
+    });
+  </script>
+</body>
+</html>

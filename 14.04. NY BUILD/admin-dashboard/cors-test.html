@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CORS Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #0f0; }
+        div { margin: 10px 0; padding: 10px; background: #222; border-left: 3px solid #0f0; }
+        .error { border-left-color: #ff6b6b; color: #ff6b6b; }
+        .success { border-left-color: #45e39e; color: #45e39e; }
+    </style>
+</head>
+<body>
+    <h2>CORS Test - API Connectivity</h2>
+    <div id="status">Testing...</div>
+    <script>
+        const API_BASE = "http://127.0.0.1:8002";
+        
+        async function test() {
+            const results = [];
+            
+            try {
+                // Test 1: /health
+                const resp1 = await fetch(`${API_BASE}/health`);
+                results.push({
+                    endpoint: '/health',
+                    status: resp1.status,
+                    ok: resp1.ok
+                });
+                
+                // Test 2: /api/facilities
+                const resp2 = await fetch(`${API_BASE}/api/facilities?limit=1`);
+                results.push({
+                    endpoint: '/api/facilities?limit=1',
+                    status: resp2.status,
+                    ok: resp2.ok
+                });
+                
+                // Test 3: /api/vessels
+                const resp3 = await fetch(`${API_BASE}/api/vessels?limit=1`);
+                results.push({
+                    endpoint: '/api/vessels?limit=1',
+                    status: resp3.status,
+                    ok: resp3.ok
+                });
+                
+                // Test 4: /api/ocean/summary
+                const resp4 = await fetch(`${API_BASE}/api/ocean/summary`);
+                results.push({
+                    endpoint: '/api/ocean/summary',
+                    status: resp4.status,
+                    ok: resp4.ok
+                });
+                
+                const allOk = results.every(r => r.ok);
+                document.getElementById('status').innerHTML = `
+                    <div class="${allOk ? 'success' : 'error'}">
+                        <strong>API Status: ${allOk ? '✓ ALL OK' : '✗ SOME FAILED'}</strong>
+                    </div>
+                    ${results.map(r => `
+                        <div class="${r.ok ? 'success' : 'error'}">
+                            ${r.endpoint}: ${r.status} ${r.ok ? '✓' : '✗'}
+                        </div>
+                    `).join('')}
+                    <div style="color: #999; margin-top: 20px;">
+                        All endpoints must return 200 OK for dashboard to work.
+                    </div>
+                `;
+            } catch (err) {
+                document.getElementById('status').innerHTML = `
+                    <div class="error">
+                        <strong>✗ ERROR: ${err.message}</strong>
+                    </div>
+                    <div style="color: #999; margin-top: 10px;">
+                        This might be a CORS issue. Check browser console (F12) for details.
+                    </div>
+                `;
+            }
+        }
+        
+        test();
+    </script>
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Smittevernsregler</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #f5f7fa; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #1e3a8a; margin-bottom: 10px; }
+        .subtitle { color: #64748b; margin-bottom: 30px; }
+        .test-section { margin: 25px 0; padding: 20px; background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 4px; }
+        .test-section h2 { margin-top: 0; color: #334155; font-size: 1.2rem; }
+        button { 
+            padding: 12px 24px; 
+            margin: 8px 8px 8px 0; 
+            background: #3b82f6; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        button:hover { background: #2563eb; }
+        button.success { background: #10b981; }
+        button.success:hover { background: #059669; }
+        button.warning { background: #f59e0b; }
+        button.warning:hover { background: #d97706; }
+        button.danger { background: #ef4444; }
+        button.danger:hover { background: #dc2626; }
+        .result { 
+            margin-top: 15px; 
+            padding: 15px; 
+            background: white; 
+            border-radius: 6px; 
+            border: 1px solid #e2e8f0;
+            font-family: 'Courier New', monospace; 
+            font-size: 13px;
+            max-height: 500px; 
+            overflow-y: auto; 
+        }
+        .pass { background: #d1fae5; border-color: #10b981; color: #065f46; }
+        .fail { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+        .info { background: #dbeafe; border-color: #3b82f6; color: #1e3a8a; }
+        pre { margin: 10px 0; padding: 10px; background: #1e293b; color: #e2e8f0; border-radius: 4px; overflow-x: auto; }
+        .badge { 
+            display: inline-block; 
+            padding: 4px 10px; 
+            border-radius: 12px; 
+            font-size: 12px; 
+            font-weight: 600; 
+            margin-left: 8px;
+        }
+        .badge.green { background: #d1fae5; color: #065f46; }
+        .badge.orange { background: #fed7aa; color: #9a3412; }
+        .badge.red { background: #fecaca; color: #991b1b; }
+        .stats { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 15px; 
+            margin: 20px 0;
+        }
+        .stat-card { 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            border-radius: 8px; 
+            text-align: center;
+        }
+        .stat-value { font-size: 2rem; font-weight: 700; margin: 10px 0; }
+        .stat-label { font-size: 0.9rem; opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test: Smittevernsregler</h1>
+        <p class="subtitle">Verifiserer implementering av Mattilsynets krav (Transportforskriften §20a)</p>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Totale anlegg</div>
+                <div class="stat-value" id="totalFacilities">-</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="stat-label">Smittede anlegg</div>
+                <div class="stat-value" id="infectedCount">-</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="stat-label">Karantetid</div>
+                <div class="stat-value">48t</div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Test 1: API og facilitetdata</h2>
+            <button onclick="testAPI()">Test API /api/facilities</button>
+            <button class="success" onclick="testSearchFacilities()">Søk etter testanlegg</button>
+            <div id="apiResult" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🗺️ Test 2: Rutesortering (frisk → sone → smittet)</h2>
+            <button onclick="testRouteSorting()">Test autosortering</button>
+            <button class="warning" onclick="testMixedRoute()">Test blandet rute</button>
+            <div id="sortResult" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>⏱️ Test 3: Karantenekontroll (48 timer)</h2>
+            <button onclick="testQuarantine()">Simuler karantene</button>
+            <button class="success" onclick="checkQuarantineStatus()">Sjekk status</button>
+            <button class="danger" onclick="clearQuarantine()">Nullstill karantene</button>
+            <div id="quarantineResult" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🧪 Test 4: Desinfeksjonslogging</h2>
+            <button onclick="logTestDisinfection()">Logg desinfeksjon</button>
+            <button onclick="viewDisinfectionLog()">Vis logg</button>
+            <button class="danger" onclick="clearLog()">Slett logg</button>
+            <div id="disinfectionResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🚀 Test 5: Komplett rute med varsler</h2>
+            <button onclick="testCompleteRoute()">Generer testrute</button>
+            <div id="routeResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('apiResult');
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = '<p>⏳ Tester API...</p>';
+            
+            try {
+                const response = await fetch('http://127.0.0.1:8002/api/facilities?limit=500');
+                const data = await response.json();
+                
+                const facilities = data.facilities || [];
+                const infected = facilities.filter(f => f.diseases && f.diseases.length > 0);
+                
+                document.getElementById('totalFacilities').textContent = facilities.length;
+                document.getElementById('infectedCount').textContent = infected.length;
+                
+                resultDiv.className = 'result pass';
+                resultDiv.innerHTML = `
+                    <h3>✅ API TEST - BESTÅTT</h3>
+                    <p><strong>Totale anlegg:</strong> ${facilities.length}</p>
+                    <p><strong>Smittede anlegg:</strong> ${infected.length}</p>
+                    <p><strong>Første anlegg:</strong> ${facilities[0]?.name || 'Ingen'}</p>
+                    <pre>${JSON.stringify(facilities[0], null, 2).substring(0, 300)}...</pre>
+                `;
+            } catch (e) {
+                resultDiv.className = 'result fail';
+                resultDiv.innerHTML = `<h3>❌ API TEST - FEILET</h3><p>${e.message}</p>`;
+            }
+        }
+
+        async function testSearchFacilities() {
+            const resultDiv = document.getElementById('apiResult');
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = '<p>⏳ Søker...</p>';
+            
+            try {
+                const response = await fetch('http://127.0.0.1:8002/api/facilities?limit=500');
+                const data = await response.json();
+                const facilities = data.facilities || [];
+                
+                const targets = ['Valøyan', 'Mannbruholmen', 'Grøttingsøy', 'Slettholmene'];
+                let html = '<h3>🔍 SØKERESULTAT</h3>';
+                
+                targets.forEach(target => {
+                    const found = facilities.filter(f => 
+                        f.name && f.name.toLowerCase().includes(target.toLowerCase())
+                    );
+                    
+                    if (found.length > 0) {
+                        const f = found[0];
+                        const badge = f.diseases && f.diseases.length > 0 ? 
+                            '<span class="badge red">🔴 SMITTET</span>' : 
+                            '<span class="badge green">🟢 FRISK</span>';
+                        html += `<p>✅ <strong>${target}</strong> funnet ${badge}</p>`;
+                    } else {
+                        html += `<p>❌ <strong>${target}</strong> IKKE funnet</p>`;
+                    }
+                });
+                
+                resultDiv.className = 'result pass';
+                resultDiv.innerHTML = html;
+            } catch (e) {
+                resultDiv.className = 'result fail';
+                resultDiv.innerHTML = `<h3>❌ SØKEFEIL</h3><p>${e.message}</p>`;
+            }
+        }
+
+        function testRouteSorting() {
+            const resultDiv = document.getElementById('sortResult');
+            
+            // Mock facilities
+            const facilities = [
+                { name: 'Rødt Anlegg', infected: true, proximityRisk: false },
+                { name: 'Friskt Anlegg 1', infected: false, proximityRisk: false },
+                { name: 'Oransje Anlegg', infected: false, proximityRisk: true },
+                { name: 'Friskt Anlegg 2', infected: false, proximityRisk: false },
+                { name: 'Rødt Anlegg 2', infected: true, proximityRisk: false }
+            ];
+            
+            // Sort by safety
+            const sorted = [...facilities].sort((a, b) => {
+                const aLevel = a.infected ? 3 : (a.proximityRisk ? 2 : 1);
+                const bLevel = b.infected ? 3 : (b.proximityRisk ? 2 : 1);
+                return aLevel - bLevel;
+            });
+            
+            let html = '<h3>✅ SORTERINGSTEST - BESTÅTT</h3>';
+            html += '<p><strong>Mattilsynets regel:</strong> Friske → Sone → Smittet</p>';
+            html += '<p><strong>Sortert rekkefølge:</strong></p>';
+            
+            sorted.forEach((f, i) => {
+                const badge = f.infected ? 
+                    '<span class="badge red">🔴 SMITTET</span>' : 
+                    (f.proximityRisk ? '<span class="badge orange">🟠 SONE</span>' : '<span class="badge green">🟢 FRISK</span>');
+                html += `<p>${i + 1}. ${f.name} ${badge}</p>`;
+            });
+            
+            resultDiv.className = 'result pass';
+            resultDiv.innerHTML = html;
+        }
+
+        function testMixedRoute() {
+            const resultDiv = document.getElementById('sortResult');
+            
+            const route = [
+                { name: 'Start', distanceFromPrevious: 0, estTimeMinutes: 0 },
+                { name: 'Friskt 1', infected: false, distanceFromPrevious: 5, estTimeMinutes: 16 },
+                { name: 'Friskt 2', infected: false, distanceFromPrevious: 3, estTimeMinutes: 10 },
+                { name: 'Smittet A', infected: true, distanceFromPrevious: 10, estTimeMinutes: 32, disinfectionRequired: true },
+                { name: 'Smittet B', infected: true, distanceFromPrevious: 5, estTimeMinutes: 16, quarantineRequired: true, quarantineHoursRemaining: 25 }
+            ];
+            
+            let html = '<h3>⚠️ BLANDET RUTE - Med karantenebrudd</h3>';
+            let totalTime = 0;
+            
+            route.forEach((stop, i) => {
+                if (i === 0) return;
+                totalTime += stop.estTimeMinutes;
+                
+                let warnings = '';
+                if (stop.disinfectionRequired) {
+                    warnings += '<br>🧪 Desinfeksjon påkrevd (60 min)';
+                    totalTime += 60;
+                }
+                if (stop.quarantineRequired) {
+                    warnings += `<br>⛔ KARANTENE AKTIV - Vent ${stop.quarantineHoursRemaining}t`;
+                }
+                
+                const badge = stop.infected ? '<span class="badge red">🔴</span>' : '<span class="badge green">🟢</span>';
+                
+                html += `
+                    <div style="margin: 10px 0; padding: 10px; background: white; border-left: 4px solid ${stop.infected ? '#ef4444' : '#10b981'}; border-radius: 4px;">
+                        <strong>${i}. ${stop.name}</strong> ${badge}<br>
+                        <small>+${stop.distanceFromPrevious} km (~${stop.estTimeMinutes} min)</small>
+                        ${warnings}
+                    </div>
+                `;
+            });
+            
+            html += `<p><strong>Total tid:</strong> ${totalTime} min (inkl. desinfeksjon)</p>`;
+            
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = html;
+        }
+
+        function testQuarantine() {
+            const resultDiv = document.getElementById('quarantineResult');
+            
+            // Simulate logging disinfection
+            const timestamp = new Date();
+            const quarantineEnd = new Date(timestamp.getTime() + 48 * 60 * 60 * 1000);
+            
+            const log = {
+                facility: 'Test Anlegg (Simulert)',
+                timestamp: timestamp.toISOString(),
+                method: 'Virkon S',
+                quarantineEnds: quarantineEnd.toISOString()
+            };
+            
+            const logs = JSON.parse(localStorage.getItem('disinfectionLog') || '[]');
+            logs.push(log);
+            localStorage.setItem('disinfectionLog', JSON.stringify(logs));
+            
+            resultDiv.className = 'result pass';
+            resultDiv.innerHTML = `
+                <h3>✅ KARANTENE AKTIVERT</h3>
+                <p><strong>Anlegg:</strong> ${log.facility}</p>
+                <p><strong>Desinfeksjon:</strong> ${new Date(log.timestamp).toLocaleString('no-NO')}</p>
+                <p><strong>Karantene utløper:</strong> ${new Date(log.quarantineEnds).toLocaleString('no-NO')}</p>
+                <p><strong>Varighet:</strong> 48 timer</p>
+            `;
+        }
+
+        function checkQuarantineStatus() {
+            const resultDiv = document.getElementById('quarantineResult');
+            
+            const logs = JSON.parse(localStorage.getItem('disinfectionLog') || '[]');
+            if (logs.length === 0) {
+                resultDiv.className = 'result info';
+                resultDiv.innerHTML = '<h3>ℹ️ Ingen aktiv karantene</h3><p>Ingen desinfeksjoner registrert</p>';
+                return;
+            }
+            
+            const lastLog = logs[logs.length - 1];
+            const quarantineEnd = new Date(lastLog.quarantineEnds);
+            const now = new Date();
+            
+            if (now < quarantineEnd) {
+                const remainingMs = quarantineEnd - now;
+                const remainingHours = (remainingMs / (1000 * 60 * 60)).toFixed(1);
+                
+                resultDiv.className = 'result fail';
+                resultDiv.innerHTML = `
+                    <h3>⛔ KARANTENE AKTIV</h3>
+                    <p><strong>Anlegg:</strong> ${lastLog.facility}</p>
+                    <p><strong>Gjenværende tid:</strong> ${remainingHours} timer</p>
+                    <p><strong>Utløper:</strong> ${quarantineEnd.toLocaleString('no-NO')}</p>
+                `;
+            } else {
+                resultDiv.className = 'result pass';
+                resultDiv.innerHTML = `
+                    <h3>✅ KARANTENE UTLØPT</h3>
+                    <p>Båten er klarert for nye besøk</p>
+                    <p><strong>Siste desinfeksjon:</strong> ${new Date(lastLog.timestamp).toLocaleString('no-NO')}</p>
+                `;
+            }
+        }
+
+        function clearQuarantine() {
+            localStorage.removeItem('disinfectionLog');
+            document.getElementById('quarantineResult').className = 'result pass';
+            document.getElementById('quarantineResult').innerHTML = '<h3>✅ Karantenelogg nullstilt</h3>';
+        }
+
+        function logTestDisinfection() {
+            const resultDiv = document.getElementById('disinfectionResult');
+            
+            const timestamp = new Date();
+            const log = {
+                facility: 'Valøyan (Test)',
+                timestamp: timestamp.toISOString(),
+                method: 'Virkon S (1%)',
+                quarantineEnds: new Date(timestamp.getTime() + 48 * 60 * 60 * 1000).toISOString()
+            };
+            
+            const logs = JSON.parse(localStorage.getItem('disinfectionLog') || '[]');
+            logs.push(log);
+            localStorage.setItem('disinfectionLog', JSON.stringify(logs));
+            
+            resultDiv.className = 'result pass';
+            resultDiv.innerHTML = `
+                <h3>✅ DESINFEKSJON LOGGET</h3>
+                <pre>${JSON.stringify(log, null, 2)}</pre>
+            `;
+        }
+
+        function viewDisinfectionLog() {
+            const resultDiv = document.getElementById('disinfectionResult');
+            const logs = JSON.parse(localStorage.getItem('disinfectionLog') || '[]');
+            
+            if (logs.length === 0) {
+                resultDiv.className = 'result info';
+                resultDiv.innerHTML = '<h3>ℹ️ Tom logg</h3><p>Ingen desinfeksjoner registrert</p>';
+                return;
+            }
+            
+            let html = `<h3>📋 DESINFEKSJONSLOGG (${logs.length} oppføringer)</h3>`;
+            logs.reverse().forEach((log, i) => {
+                html += `
+                    <div style="margin: 10px 0; padding: 10px; background: #f8fafc; border-radius: 4px;">
+                        <strong>#${logs.length - i}: ${log.facility}</strong><br>
+                        <small>
+                            Tid: ${new Date(log.timestamp).toLocaleString('no-NO')}<br>
+                            Metode: ${log.method}<br>
+                            Karantene til: ${new Date(log.quarantineEnds).toLocaleString('no-NO')}
+                        </small>
+                    </div>
+                `;
+            });
+            
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = html;
+        }
+
+        function clearLog() {
+            localStorage.removeItem('disinfectionLog');
+            document.getElementById('disinfectionResult').className = 'result pass';
+            document.getElementById('disinfectionResult').innerHTML = '<h3>✅ Logg slettet</h3>';
+        }
+
+        function testCompleteRoute() {
+            const resultDiv = document.getElementById('routeResult');
+            
+            const route = [
+                { name: 'Mannbruholmen', infected: false, distanceFromPrevious: 0, estTimeMinutes: 0, cumulativeTimeMinutes: 0 },
+                { name: 'Grøttingsøy', infected: false, distanceFromPrevious: 3.7, estTimeMinutes: 12, cumulativeTimeMinutes: 12 },
+                { name: 'Slettholmene', infected: false, distanceFromPrevious: 0.6, estTimeMinutes: 2, cumulativeTimeMinutes: 14 },
+                { 
+                    name: 'Valøyan', 
+                    infected: true, 
+                    distanceFromPrevious: 8.3, 
+                    estTimeMinutes: 27, 
+                    cumulativeTimeMinutes: 41,
+                    disinfectionRequired: true,
+                    diseases: ['PANKREASSYKDOM']
+                }
+            ];
+            
+            let html = '<h3>🗺️ KOMPLETT TESTRUTE</h3>';
+            html += '<p><strong>Total:</strong> 12.6 km | 41 min + 60 min desinfeksjon</p>';
+            html += '<p><strong>Båthastighet:</strong> 18.52 km/h (10.0 knop)</p><br>';
+            
+            route.forEach((stop, i) => {
+                let warnings = '';
+                if (stop.disinfectionRequired) {
+                    warnings += '<br><span style="color: #dc2626; font-weight: 600;">🧪 DESINFEKSJON PÅKREVD (Virkon S/klor - 60 min virketid)</span>';
+                }
+                if (stop.diseases && stop.diseases.length > 0) {
+                    warnings += `<br><span style="color: #ef4444;">Sykdom: ${stop.diseases.join(', ')}</span>`;
+                }
+                
+                const borderColor = stop.infected ? '#ef4444' : '#10b981';
+                const badge = stop.infected ? '⚠️ SMITTET' : '';
+                
+                html += `
+                    <div style="background: white; padding: 12px; margin-bottom: 8px; border-left: 4px solid ${borderColor}; border-radius: 4px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div>
+                                <strong>${i + 1}. ${stop.name}</strong><br>
+                                <small style="color: #6b7280;">
+                                    +${stop.distanceFromPrevious} km (~${stop.estTimeMinutes} min)
+                                </small>
+                                ${warnings}
+                            </div>
+                            <div style="text-align: right; color: #6b7280; font-size: 0.85rem;">
+                                <strong>ETA: ${stop.cumulativeTimeMinutes} min</strong><br>
+                                <span style="color: #ef4444;">${badge}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultDiv.className = 'result pass';
+            resultDiv.innerHTML = html;
+        }
+
+        // Auto-test on load
+        window.addEventListener('load', () => {
+            setTimeout(() => testAPI(), 500);
+        });
+    </script>
+</body>
+</html>

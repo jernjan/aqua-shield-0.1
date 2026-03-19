@@ -1,0 +1,33 @@
+{
+  "infected_facilities": [
+    {
+      "code": "1234",
+      "name": "Testanlegg Vest",
+      "latitude": 60.5,
+      "longitude": 4.8,
+      "infected": true,
+      "diseases": ["ILA"],
+      "reported_date": "2026-02-15"
+    },
+    {
+      "code": "5678",
+      "name": "Fjord Farm Nord",
+      "latitude": 62.2,
+      "longitude": 5.5,
+      "infected": true,
+      "diseases": ["ILA", "PD"],
+      "reported_date": "2026-02-10"
+    },
+    {
+      "code": "9012",
+      "name": "Aqua Shelter East",
+      "latitude": 59.8,
+      "longitude": 6.2,
+      "infected": true,
+      "diseases": ["AGD"],
+      "reported_date": "2026-02-18"
+    }
+  ],
+  "last_updated": "2026-02-20T15:00:00Z",
+  "data_source": "Manual Test Data"
+}

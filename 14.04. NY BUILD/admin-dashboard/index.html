@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kyst Monitor - Admin Console</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="help-guide.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">KM</div>
+      <div>
+        <div class="brand-title">Kyst Monitor Admin</div>
+        <div class="brand-sub">Akvakultur-overvåking</div>
+      </div>
+    </div>
+    <div class="api-pill">
+      <span class="dot" id="apiDot"></span>
+      <span id="apiStatus">Kobler til...</span>
+      <span class="mono" id="apiBase">http://127.0.0.1:8000</span>
+    </div>
+    <div class="user-panel">
+      <div class="user-info" title="Admin tilgang">
+        <span class="user-role-badge" id="userRoleBadge">ADMIN</span>
+        <span class="user-name" id="userName">Admin</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- LAYOUT WRAPPER -->
+  <div class="layout-wrapper">
+    <!-- SIDEBAR NAV -->
+    <nav class="sidebar">
+      <!-- KEY METRICS (always visible) -->
+      <div class="sidebar-section">
+        <div style="padding: 12px 16px; color: var(--accent); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 8px;">
+          Status
+        </div>
+        <div style="padding: 10px 16px; font-size: 0.85rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--muted);">Anlegg:</span>
+            <span style="color: var(--accent-strong); font-weight: 600;" id="sidebarFacilities">--</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--muted);">Båter:</span>
+            <span style="color: var(--accent-strong); font-weight: 600;" id="sidebarVessels">--</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="color: var(--muted);">API:</span>
+            <span style="color: var(--success);" id="sidebarApi">●</span>
+          </div>
+          <!-- DATASOURCES -->
+          <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 8px; font-size: 0.80rem;">
+            <div id="datasourcesList" style="display: flex; flex-direction: column; gap: 4px;">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORY 1: SITUATION OVERVIEW -->
+      <div class="sidebar-section">
+        <div class="sidebar-category" id="cat-situation">
+          <button class="sidebar-category-btn" onclick="toggleCategory('situation')">
+            Situasjonsbilder
+            <span class="sidebar-category-icon">▼</span>
+          </button>
+          <div class="sidebar-items">
+            <button class="sidebar-item" onclick="sidebarSwitchTab('overview')">· Oversikt</button>
+            <button class="sidebar-item" onclick="sidebarSwitchTab('health')">· System-helse</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORY 2: DISEASE ANALYSIS -->
+      <div class="sidebar-section">
+        <div class="sidebar-category expanded" id="cat-disease">
+          <button class="sidebar-category-btn" onclick="toggleCategory('disease')">
+            Sykdomsanalyse
+            <span class="sidebar-category-icon">▼</span>
+          </button>
+          <div class="sidebar-items">
+            <button class="sidebar-item" onclick="sidebarSwitchTab('predictions')">· Risiko-prognoser</button>
+            <button class="sidebar-item" onclick="sidebarSwitchTab('facility-risks')">· BarentsWatch Zoner</button>
+            <button class="sidebar-item" onclick="sidebarSwitchTab('smittespredning')">· Smittespredning</button>
+                      <button class="sidebar-item" onclick="sidebarSwitchTab('predictions-lice')">· Luse-prognoser</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORY 3: MARITIME OPERATIONS -->
+      <div class="sidebar-section">
+        <div class="sidebar-category" id="cat-maritime">
+          <button class="sidebar-category-btn" onclick="toggleCategory('maritime')">
+            Maritim operasjon
+            <span class="sidebar-category-icon">▼</span>
+          </button>
+          <div class="sidebar-items">
+            <button class="sidebar-item" onclick="sidebarSwitchTab('vessel-risk')">· Båter ved risiko (sykdom)</button>
+            <button class="sidebar-item" onclick="sidebarSwitchTab('vessel-lice-risk')">· Båter ved høye lusetall</button>
+            <button class="sidebar-item" onclick="sidebarSwitchTab('vessel-clearing')">· Båt-klarering</button>
+            <button class="sidebar-item" onclick="sidebarSwitchTab('confirmed-plans')">· Bekrefta ruter</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORY 4: ADMINISTRATION & DATA -->
+      <div class="sidebar-section">
+        <div class="sidebar-category" id="cat-admin">
+          <button class="sidebar-category-btn" onclick="toggleCategory('admin')">
+            ⚙️ Admin & Data
+            <span class="sidebar-category-icon">▼</span>
+          </button>
+          <div class="sidebar-items">
+            <button class="sidebar-item" onclick="sidebarSwitchTab('admin')">· Risk Network</button>
+            <button class="sidebar-item" onclick="sidebarSwitchTab('audit-log')">· Revisjonslogg</button>
+            <button class="sidebar-item" onclick="sidebarSwitchTab('b-surveys')">· B-prøver</button>
+            <button class="sidebar-item" onclick="sidebarSwitchTab('lice-overview')">· Lus</button>
+            <button class="sidebar-item" onclick="sidebarSwitchTab('facilities')">· Anleggsregister</button>
+            <button class="sidebar-item" onclick="sidebarSwitchTab('vessels')">· Båtregister</button>
+            <button class="sidebar-item" onclick="sidebarSwitchTab('ocean')">· Sjøstrøm-data</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.08); margin-top: 16px; padding-top: 12px;">
+        <button class="sidebar-item" onclick="sidebarSwitchTab('risk')" style="padding: 10px 16px;">
+          📈 Risiko-oversikt
+        </button>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+      <section class="hero show" style="margin: 0; padding: 16px 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h1 style="margin: 0; font-size: 1.8rem;">Kyst Monitor Admin Console</h1>
+            <p style="margin: 4px 0 0 0; color: var(--muted);">Åpne en ekspandert kategori og velg en funksjon for å komme i gang</p>
+          </div>
+          <div style="display: flex; gap: 12px; font-size: 0.85rem; color: var(--muted);">
+            <span id="heroTime">--:--</span>
+            <span id="heroStatus">Klar</span>
+          </div>
+        </div>
+      </section>
+
+      <main class="content">
+
+        <!-- ========== INSIGHTS & ALERTS PANEL ========== -->
+        <section class="panel" id="insights-panel" style="background: linear-gradient(135deg, rgba(82, 182, 255, 0.05) 0%, rgba(74, 222, 128, 0.05) 100%); border: 1px solid rgba(82, 182, 255, 0.2); margin-bottom: 24px;">
+          <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h2>⚡ Insights & Varsler</h2>
+              <p>Sanntidsinnsikt og automatiske varsler om kritiske situasjoner</p>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" id="autoRefreshToggle" style="width: 18px; height: 18px; cursor: pointer;">
+                <span style="font-size: 0.9rem; color: var(--muted);">Auto-oppdater (30s)</span>
+              </label>
+              <span id="lastRefreshTime" style="font-size: 0.8rem; color: var(--muted); font-family: 'IBM Plex Mono';">--:--</span>
+            </div>
+          </div>
+          <div id="alertsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 16px;">
+            <div class="alert-card" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 16px;">
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">🔴</div>
+              <div style="font-size: 1.2rem; font-weight: 700; color: #ef4444;" id="alert-critical">--</div>
+              <div style="font-size: 0.85rem; color: var(--muted); margin-top: 4px;">Kritiske risikoområder</div>
+            </div>
+            <div class="alert-card" style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 8px; padding: 16px;">
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">⚠️</div>
+              <div style="font-size: 1.2rem; font-weight: 700; color: #fbbf24;" id="alert-vessels">--</div>
+              <div style="font-size: 0.85rem; color: var(--muted); margin-top: 4px;">Båter ved smittet anlegg</div>
+            </div>
+            <div class="alert-card" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; padding: 16px;">
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">🔄</div>
+              <div style="font-size: 1.2rem; font-weight: 700; color: #8b5cf6;" id="alert-chains">--</div>
+              <div style="font-size: 0.85rem; color: var(--muted); margin-top: 4px;">Aktive smittekjeder</div>
+            </div>
+            <div class="alert-card" style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 8px; padding: 16px;">
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">✅</div>
+              <div style="font-size: 1.2rem; font-weight: 700; color: #22c55e;" id="alert-cleared">--</div>
+              <div style="font-size: 0.85rem; color: var(--muted); margin-top: 4px;">Godkjente båter (48t)</div>
+            </div>
+          </div>
+          <div id="criticalAlerts" style="margin-top: 20px; padding: 16px; background: rgba(239, 68, 68, 0.05); border-radius: 8px; border-left: 4px solid #ef4444; display: none;">
+            <div style="font-weight: 700; color: #ef4444; margin-bottom: 8px;">⚠️ Kritiske varsler:</div>
+            <ul id="criticalAlertsList" style="margin: 0; padding-left: 20px; color: var(--muted); font-size: 0.9rem; line-height: 1.8;"></ul>
+          </div>
+          <div style="margin-top: 20px; padding: 16px; background: rgba(82, 182, 255, 0.05); border-radius: 8px; border-left: 4px solid var(--accent);">
+            <div style="font-weight: 700; color: var(--accent); margin-bottom: 8px;">ℹ️ Diseasefiltrering:</div>
+            <div style="font-size: 0.9rem; color: var(--muted);">PD-risiko vises ikke for alge-/landbaserte anlegg i henhold til Transportforskriften. Kun marine oppdrettsanlegg klassifiseres som mottakelig for Pankreassykdom.</div>
+          </div>
+        </section>
+
+        <!-- ========== DECISION LINE: "What should I do now?" ========== -->
+        <section class="panel" id="decision-line" style="background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%); border: 2px solid rgba(99, 102, 241, 0.3); margin-bottom: 24px;">
+          <div class="panel-header">
+            <div>
+              <h2>🎯 Prioriterte tiltak</h2>
+              <p>Hva bør du gjøre nå? Top 5 handlinger basert på karantene-frist, smittstatus og datakvalitet</p>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button onclick="loadDecisionLine()" style="padding: 8px 12px; background: var(--accent); border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: 500; font-size: 0.85rem;">Oppdater</button>
+              <span id="decisionLineTime" style="font-size: 0.8rem; color: var(--muted); font-family: 'IBM Plex Mono';">oppdatert nå</span>
+            </div>
+          </div>
+          <div id="decisionLineContainer" style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="text-align: center; color: var(--muted); padding: 32px 16px;">Laster prioriterte tiltak...</div>
+          </div>
+        </section>
+
+        <!-- ========== OVERVIEW ========== -->
+        <section class="panel active" id="overview">
+          <div class="panel-header">
+            <h2>System Oversikt</h2>
+            <p>Høynivå status for hele systemet. Statuspilene under viser tilkoblingsstatus for alle datakjelder.</p>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <div class="metric-card" style="background: rgba(76, 175, 80, 0.1); border-left: 3px solid #4caf50;">
+              <div style="font-size: 0.85rem; color: var(--muted); margin-bottom: 4px;">API Backend</div>
+              <div style="font-size: 1.8rem; font-weight: 700; color: #4caf50; margin-bottom: 2px;" id="overviewApiStatus">✓</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">port 8000</div>
+            </div>
+            <div class="metric-card" style="background: rgba(82, 182, 255, 0.1); border-left: 3px solid var(--accent);">
+              <div style="font-size: 0.85rem; color: var(--muted); margin-bottom: 4px;">Registrerte anlegg</div>
+              <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent);" id="overviewFacilities">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Akvakulturkart</div>
+            </div>
+            <div class="metric-card" style="background: rgba(108, 246, 214, 0.1); border-left: 3px solid var(--accent-strong);">
+              <div style="font-size: 0.85rem; color: var(--muted); margin-bottom: 4px;">Aktive båter</div>
+              <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent-strong);" id="overviewVessels">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">AIS-sporing</div>
+            </div>
+            <div class="metric-card" style="background: rgba(255, 180, 84, 0.1); border-left: 3px solid var(--warning);">
+              <div style="font-size: 0.85rem; color: var(--muted); margin-bottom: 4px;">Sjøstrøm-dekning</div>
+              <div style="font-size: 1.8rem; font-weight: 700; color: var(--warning);" id="overviewOcean">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">NorKyst-800</div>
+            </div>
+          </div>
+          <div class="panel-footer" style="background: rgba(108, 246, 214, 0.08); padding: 12px 16px; border-radius: 8px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+            <div><strong>Velg en kategori i menyen til venstre</strong> for å se detaljerte data. Hver kategori kan ekspanderes og viser relevante funksjoner.</div>
+            <div style="display: flex; gap: 12px; align-items: center; font-size: 0.8rem; color: var(--muted);">
+              <button onclick="AutoLoadManager?.refreshPanel('overview')" style="padding: 6px 10px; background: var(--accent); border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.75rem;">Oppdater</button>
+              <span id="overviewTimestamp" style="font-family: 'IBM Plex Mono'; white-space: nowrap;">oppdatert nå</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== PREDICTIONS (Risiko-prognoser) ========== -->
+        <section class="panel" id="predictions">
+          <div class="panel-header">
+            <h2>7-dagers risiko-prognoser</h2>
+            <p>Utbruddssannsynligheiter basert på båtbesøk, infeksjonsstatus og sjøstrømdata</p>
+          </div>
+          <div class="controls" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="predictionsSearch" placeholder="🔍 Søk etter anleggskode, navn, kommune..." style="flex: 1; min-width: 300px; padding: 10px 16px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-size: 0.9rem;">
+            <button class="btn primary" id="predictionsLoad">Laste prognoser</button>
+            <label style="display: inline-flex; align-items: center; gap: 8px; margin-left: 16px; cursor: pointer; color: var(--muted); font-size: 0.9rem;">
+              <input type="checkbox" id="showAllPredictionsToggle" style="cursor: pointer;">
+              <span>Vis også grønne anlegg (0-score)</span>
+            </label>
+            <label style="display: inline-flex; align-items: center; gap: 8px; margin-left: 16px; cursor: pointer; color: #dc2626; font-size: 0.9rem; font-weight: 600;">
+              <input type="checkbox" id="showOnlyProtectionToggle" style="cursor: pointer;">
+              <span>🔴 Kun beskyttelsessoner</span>
+            </label>
+            <label style="display: inline-flex; align-items: center; gap: 8px; margin-left: 16px; cursor: pointer; color: #f97316; font-size: 0.9rem; font-weight: 600;">
+              <input type="checkbox" id="showOnlySurveillanceToggle" style="cursor: pointer;">
+              <span>🟠 Kun overvåkingssoner</span>
+            </label>
+            <label style="display: inline-flex; align-items: center; gap: 8px; margin-left: 16px; cursor: pointer; color: #eab308; font-size: 0.9rem; font-weight: 600;">
+              <input type="checkbox" id="showOnlyWithin10kmToggle" style="cursor: pointer;">
+              <span>🟡 Kun innenfor 10 km</span>
+            </label>
+          </div>
+          <div id="predictions-summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px;">
+              <div class="summary-card" style="background: rgba(220, 53, 69, 0.1); border-top: 3px solid #dc3545;">
+                <div style="color: var(--muted); font-size: 0.85rem; margin-bottom: 4px;">⚠️ RISIKO ANLEGG</div>
+                <div style="font-size: 1.6rem; font-weight: 700; color: #dc3545;" id="pred-at-risk">--</div>
+                <div style="font-size: 0.75rem; color: var(--muted);">Høy/Medium risiko</div>
+              </div>
+            <div class="summary-card" id="pred-protection" style="background: rgba(220, 53, 69, 0.15); border-top: 3px solid #dc2626; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(220, 53, 69, 0.25)'" onmouseout="this.style.background='rgba(220, 53, 69, 0.15)'" onclick="document.getElementById('showOnlyProtectionToggle').click()">
+              <div style="color: var(--muted); font-size: 0.85rem; margin-bottom: 4px;">🔴 BESKYTTELSE</div>
+              <div style="font-size: 1.6rem; font-weight: 700; color: #dc2626;" id="pred-protection-count">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Klikk for filter</div>
+            </div>
+            <div class="summary-card" id="pred-surveillance" style="background: rgba(249, 115, 22, 0.15); border-top: 3px solid #f97316; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(249, 115, 22, 0.25)'" onmouseout="this.style.background='rgba(249, 115, 22, 0.15)'" onclick="document.getElementById('showOnlySurveillanceToggle').click()">
+              <div style="color: var(--muted); font-size: 0.85rem; margin-bottom: 4px;">🟠 OVERVÅKING</div>
+              <div style="font-size: 1.6rem; font-weight: 700; color: #f97316;" id="pred-surveillance-count">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Klikk for filter</div>
+            </div>
+            <div class="summary-card" id="pred-10km" style="background: rgba(234, 179, 8, 0.15); border-top: 3px solid #eab308; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(234, 179, 8, 0.25)'" onmouseout="this.style.background='rgba(234, 179, 8, 0.15)'" onclick="document.getElementById('showOnlyWithin10kmToggle').click()">
+              <div style="color: var(--muted); font-size: 0.85rem; margin-bottom: 4px;">🟡 INNENFOR 10 KM</div>
+              <div style="font-size: 1.6rem; font-weight: 700; color: #eab308;" id="pred-10km-count">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Klikk for filter</div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: rgba(82, 182, 255, 0.08); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">#</th>
+                  <th class="sortable" data-column="facility" style="padding: 12px; text-align: left; font-weight: 600; cursor: pointer; user-select: none;">Anlegg <span class="sort-arrow">↕️</span></th>
+                  <th class="sortable" data-column="score" style="padding: 12px; text-align: left; font-weight: 600; cursor: pointer; user-select: none;">Risiko-poeng <span class="sort-arrow">↕️</span></th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Nivå</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Status</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Sone</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Primær sykdom</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Risikofaktorar</th>
+                </tr>
+              </thead>
+              <tbody id="predictions-table">
+                <tr><td colspan="8" style="padding: 20px; text-align: center; color: var(--muted);">Klikk "Laste prognoser" for å fylle tabell</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== LICE PREDICTIONS ========== -->
+        <section class="panel" id="predictions-lice">
+          <div class="panel-header">
+            <h2>7-dagers luse-prognoser</h2>
+            <p>Anlegg rangert etter lusepress, avstand til høge lusenivå og havstraum</p>
+          </div>
+          <div class="controls" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="predictionsLiceSearch" placeholder="🔍 Søk etter anleggskode, navn..." style="flex: 1; min-width: 300px; padding: 10px 16px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-size: 0.9rem;">
+            <select id="predictionsLiceLevelFilter" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+              <option value="all">Alle nivå</option>
+              <option value="Critical">Kritisk</option>
+              <option value="Medium">Moderat</option>
+              <option value="Low">Låg</option>
+            </select>
+            <button class="btn primary" id="predictionsLiceLoad">Last inn luse-prognoser</button>
+          </div>
+          <div id="predictions-lice-summary" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px;">
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1.2rem; font-weight: 700; color: #dc3545;" id="pl-critical">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Kritisk</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1.2rem; font-weight: 700; color: var(--warning);" id="pl-medium">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Moderat</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1.2rem; font-weight: 700; color: var(--success);" id="pl-low">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Låg</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1.2rem; font-weight: 700; color: var(--accent-strong);" id="pl-total">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">TOTAL</div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: rgba(82, 182, 255, 0.08); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Anlegg</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Risiko</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Eige lusepress</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Næraste kjelde</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Avstand</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Havstraum</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Drivarar</th>
+                </tr>
+              </thead>
+              <tbody id="predictions-lice-table">
+                <tr><td colspan="7" style="padding: 20px; text-align: center; color: var(--muted);">Klikk "Last inn luse-prognoser" for å fylle tabell</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== FACILITY RISKS (BarentsWatch Zones) ========== -->
+        <section class="panel" id="facility-risks">
+          <div class="panel-header">
+            <h2>BarentsWatch sykdomssoner</h2>
+            <p>Regulatorsone fra Fiskeridirektoratet der sykdom er erklært</p>
+          </div>
+          <div class="controls" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="facilityRiskSearch" placeholder="🔍 Søk etter anlegg..." style="flex: 1; min-width: 250px; padding: 10px 16px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-size: 0.9rem;">
+            <select id="facility-risk-level" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+              <option value="all">Alle risikonivoer</option>
+              <option value="EKSTREM">EKSTREM</option>
+              <option value="HØY">HØY</option>
+              <option value="MODERAT">MODERAT</option>
+            </select>
+            <button class="btn primary" id="facility-risk-load">Laste anleg-risiko</button>
+          </div>
+          <div id="facility-risk-summary" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1.2rem; font-weight: 700; color: #dc3545;" id="fr-ekstrem">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">EKSTREM</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1.2rem; font-weight: 700; color: var(--warning);" id="fr-høy">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">HØY</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1.2rem; font-weight: 700; color: var(--accent);" id="fr-moderat">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">MODERAT</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1.2rem; font-weight: 700; color: var(--accent-strong);" id="fr-total">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">TOTAL</div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: rgba(82, 182, 255, 0.08); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Anlegg</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Kommune</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Risiko</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Sykdom</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Effektiv avstand</th>
+                </tr>
+              </thead>
+              <tbody id="facility-risk-table">
+                <tr><td colspan="5" style="padding: 20px; text-align: center; color: var(--muted);">Klikk "Laste anleg-risiko"</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== VESSEL RISK ========== -->
+        <section class="panel" id="vessel-risk">
+          <div class="panel-header">
+            <h2>Båter ved risikoanlegg</h2>
+            <p>Fartøy som har besøkt sykdomsområder eller risikoanlegg i siste 7 dager</p>
+          </div>
+          <div class="controls" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="vesselRiskSearch" placeholder="🔍 Søk MMSI eller båtnavn..." style="flex: 1; min-width: 250px; padding: 10px 16px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-size: 0.9rem;">
+            <select id="vessel-risk-filter" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+              <option value="all">Alle båter</option>
+              <option value="infected">Besøkt smittet anlegg (🔴)</option>
+              <option value="risk_zone">Besøkt anlegg i vernesone (🟠)</option>
+              <option value="near_10km">Besøkt anlegg innenfor 10 km-regel (📍)</option>
+            </select>
+            <select id="vessel-chain-filter" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+              <option value="all">Alle 48t-status</option>
+              <option value="true">Kun karantenebrudd (&lt;48t)</option>
+              <option value="false">Kun uten karantenebrudd</option>
+            </select>
+            <select id="vessel-quarantine-filter" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-weight: 600;">
+              <option value="priority" selected>🚨 Kun kritiske (brudd + aktiv)</option>
+              <option value="all">Alle karantenestatus</option>
+              <option value="breach">🚨 Kun karantenebrudd</option>
+              <option value="active">⏱️ Kun aktiv karantene</option>
+              <option value="cleared">✓ Kun utløpt karantene</option>
+              <option value="surveillance">🛡️ Kun overvåking (risikosone)</option>
+            </select>
+            <button class="btn primary" id="vessel-risk-load">Laste båt-risiko</button>
+          </div>
+          <div id="vessel-risk-summary" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 24px;">
+            <div class="summary-card" style="text-align: center; background: rgba(220, 38, 38, 0.12); border: 2px solid #991b1b;">
+              <div style="font-size: 1.6rem;">🚨</div>
+              <div style="font-size: 1rem; font-weight: 700;" id="vr-breach-count">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Karantenebrudd</div>
+            </div>
+            <div class="summary-card" style="text-align: center; background: rgba(249, 115, 22, 0.10); border: 2px solid #c2410c;">
+              <div style="font-size: 1.6rem;">⏱️</div>
+              <div style="font-size: 1rem; font-weight: 700;" id="vr-active-count">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">I karantene</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1.6rem;" id="vr-infected">🦠</div>
+              <div style="font-size: 1rem; font-weight: 700;" id="vr-infected-count">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Besøkt infisert</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1.6rem;" id="vr-risk">⚠️</div>
+              <div style="font-size: 1rem; font-weight: 700;" id="vr-risk-count">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Risikosone</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1.6rem;" id="vr-total">⛵</div>
+              <div style="font-size: 1rem; font-weight: 700;" id="vr-total-count">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Total</div>
+            </div>
+          </div>
+
+          <details style="margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; background: rgba(255,255,255,0.03);">
+            <summary style="cursor: pointer; padding: 10px 12px; font-weight: 600; color: var(--ink);">📘 Kort regelverk: karantene, desinfeksjon og anbefalinger</summary>
+            <div style="padding: 0 12px 12px 12px; color: var(--muted); font-size: 0.9rem; line-height: 1.45;">
+              <div style="margin-top: 8px;"><strong>Pålagt (kort):</strong> Ved bekreftet smittet anlegg er flytting/videre operasjon underlagt strenge krav fra Mattilsynet, inkludert vask/desinfeksjon og i enkelte tilfeller karantenetid/attest.</div>
+              <div style="margin-top: 6px;"><strong>Vår hard-regel i systemet:</strong> Besøk fra rødt anlegg til et annet anlegg innen 48t flagges som karantenebrudd.</div>
+              <div style="margin-top: 6px;"><strong>Ekstra datavarsler:</strong> Høyt lokalt smittepress (mange nærliggende risikokontakter) vises som rådgivende signal, selv om formell sone ikke alltid er etablert.</div>
+              <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 10px;">
+                <a href="https://lovdata.no/dokument/SF/forskrift/2017-08-29-1318" target="_blank" rel="noopener" style="color: var(--accent);">PD-forskriften</a>
+                <a href="https://lovdata.no/dokument/SF/forskrift/2008-06-17-822" target="_blank" rel="noopener" style="color: var(--accent);">Akvakulturdriftsforskriften</a>
+                <a href="https://www.mattilsynet.no/fisk-og-akvakultur/dere-ma-bruke-godkjente-midler" target="_blank" rel="noopener" style="color: var(--accent);">Godkjente desinfeksjonsmidler</a>
+              </div>
+            </div>
+          </details>
+
+          <div class="table-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: rgba(82, 182, 255, 0.08); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">MMSI</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Båtnavn</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Risiko</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Smittede anlegg</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Besøk (7d)</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Kategori</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">48t karantene</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Detaljer</th>
+                </tr>
+              </thead>
+              <tbody id="vessel-risk-table">
+                <tr><td colspan="8" style="padding: 20px; text-align: center; color: var(--muted);">Klikk "Laste båt-risiko"</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== VESSEL CLEARING ========== -->
+        <section class="panel" id="vessel-clearing">
+          <div class="panel-header">
+            <h2>🔒 Båt-klarering og godkjenning</h2>
+            <p>Oversikt over desinfeksjonsstatus og godkjenning for anleggsbesøk</p>
+          </div>
+          <div class="controls">
+            <select id="vessel-clearing-status" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+              <option value="all">Alle</option>
+              <option value="cleared">✓ Klarert</option>
+              <option value="pending">⏳ Avklaring</option>
+              <option value="atrisk">🔴 Risiko</option>
+            </select>
+            <button class="btn primary" id="vessel-clearing-load">Laste klarering</button>
+          </div>
+          <div id="vessel-clearing-summary" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px;">
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1rem; font-weight: 700; color: var(--success);" id="vc-cleared">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">✓ Klarert</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1rem; font-weight: 700; color: var(--warning);" id="vc-pending">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">⏳ Avklaring</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1rem; font-weight: 700; color: #dc3545;" id="vc-atrisk">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">🔴 Risiko</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1rem; font-weight: 700; color: var(--accent);" id="vc-total">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Total</div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: rgba(82, 182, 255, 0.08); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">MMSI</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Båtnamn</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Status</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Sist oppdatert</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Handling</th>
+                </tr>
+              </thead>
+              <tbody id="vessel-clearing-table">
+                <tr><td colspan="5" style="padding: 20px; text-align: center; color: var(--muted);">Klikk "Laste klarering"</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== CONFIRMED PLANS ========== -->
+        <section class="panel" id="confirmed-plans">
+          <div class="panel-header">
+            <h2>✓ Bekrefta båtruter</h2>
+            <p>Planlagde ruter som er bekrefta i båtapparatane og lagra på server</p>
+          </div>
+          <div class="controls">
+            <input type="text" id="confirmed-plans-mmsi" placeholder="Søk på MMSI..." style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; width: 200px;" />
+            <button class="btn primary" id="confirmed-plans-load">Laste ruter</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: rgba(82, 182, 255, 0.08); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">MMSI</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Båtnamn</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Planlagd start</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Etappar</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Status</th>
+                </tr>
+              </thead>
+              <tbody id="confirmed-plans-table">
+                <tr><td colspan="5" style="padding: 20px; text-align: center; color: var(--muted);">Klikk "Laste ruter"</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== VESSEL LICE RISK ========== -->
+        <section class="panel" id="vessel-lice-risk">
+          <div class="panel-header">
+            <h2>Båter ved høye lusetall</h2>
+            <p>Fartøy som har besøkt anlegg med forhøyd lusenivå i siste 7 dager</p>
+          </div>
+          <div class="controls" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px;">
+            <input type="text" id="vesselLiceSearch" placeholder="🔍 Søk MMSI eller båtnavn..." style="flex: 1; min-width: 250px; padding: 10px 16px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-size: 0.9rem;">
+            <select id="vesselLiceRiskFilter" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+              <option value="all">Alle lusenivå</option>
+              <option value="Critical">🔴 Kritisk</option>
+              <option value="Medium">🟠 Moderat</option>
+              <option value="Low">🟢 Låg</option>
+            </select>
+            <button class="btn primary" id="vessel-lice-risk-load">Last inn lus-båtar</button>
+          </div>
+          <div id="vessel-lice-risk-summary" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+            <div class="summary-card" style="text-align: center; background: rgba(220, 38, 38, 0.12); border: 2px solid #991b1b;">
+              <div style="font-size: 1.6rem;">🔴</div>
+              <div style="font-size: 1rem; font-weight: 700;" id="vrl-critical-count">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Kritisk</div>
+            </div>
+            <div class="summary-card" style="text-align: center; background: rgba(249, 115, 22, 0.10); border: 2px solid #c2410c;">
+              <div style="font-size: 1.6rem;">🟠</div>
+              <div style="font-size: 1rem; font-weight: 700;" id="vrl-medium-count">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Moderat</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1.6rem;">🟢</div>
+              <div style="font-size: 1rem; font-weight: 700;" id="vrl-low-count">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Låg</div>
+            </div>
+            <div class="summary-card" style="text-align: center;">
+              <div style="font-size: 1.6rem;">⛵</div>
+              <div style="font-size: 1rem; font-weight: 700;" id="vrl-total-count">--</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">Total</div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: rgba(82, 182, 255, 0.08); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">MMSI</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Båtnavn</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Lusenivå</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Høg-lus besøk</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Maks vaksne holus</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Besøkte anlegg</th>
+                </tr>
+              </thead>
+              <tbody id="vessel-lice-risk-table">
+                <tr><td colspan="6" style="padding: 20px; text-align: center; color: var(--muted);">Lice risk data will populate here after vessel risk is loaded.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== AUDIT LOG ========== -->
+        <section class="panel" id="audit-log">
+          <div class="panel-header">
+            <h2>🔍 Revisjonslogg - Anleggsbesøk</h2>
+            <p>Sporing av alle besøk, helsestatus og desinfeksjonshistorikk</p>
+          </div>
+          <div class="controls">
+            <input type="text" id="audit-mmsi" placeholder="Søk på MMSI..." style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; width: 150px;" />
+            <select id="audit-days" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+              <option value="7">Siste 7 dager</option>
+              <option value="30" selected>Siste 30 dager</option>
+              <option value="90">Siste 90 dager</option>
+            </select>
+            <button class="btn primary" id="audit-load">Laste revisjonslogg</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: rgba(82, 182, 255, 0.08); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Dato</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Båt (MMSI)</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Anlegg</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Sykdom</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Helsestatus</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Desinfeksjon</th>
+                </tr>
+              </thead>
+              <tbody id="audit-table">
+                <tr><td colspan="6" style="padding: 20px; text-align: center; color: var(--muted);">Klikk "Laste revisjonslogg"</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== B-SURVEYS (Overview) ========== -->
+        <section class="panel" id="b-surveys">
+          <div class="panel-header">
+            <h2>B-prøver</h2>
+            <p>Oversikt over B-undersøkelsesfrister – anlegg som trenger ny prøve snart</p>
+          </div>
+          <div class="controls">
+            <select id="b-survey-filter" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+              <option value="">Alle statusar</option>
+              <option value="alert">🔴 Utgått frist</option>
+              <option value="warning">🟡 Forfall snart (&lt;60 dagar)</option>
+              <option value="ok">🟢 OK (60+ dagar)</option>
+              <option value="unknown">❓ Ukjent</option>
+            </select>
+            <select id="b-survey-sort" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; margin-left: 8px;">
+              <option value="days">Sorter: Dagar til frist</option>
+              <option value="name">Sorter: Namn på anlegg</option>
+              <option value="condition">Sorter: Tilstand</option>
+            </select>
+            <button class="btn primary" id="b-surveys-load" style="margin-left: auto;">Last inn B-prøver</button>
+          </div>
+          <div style="background: rgba(59, 130, 246, 0.08); border-left: 4px solid #52b6ff; padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 0.85rem; color: var(--accent-strong);" id="b-surveys-summary">
+            <!-- Summary info populated by JavaScript -->
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: rgba(82, 182, 255, 0.08); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Kode</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Namn</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Art</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Siste rapport</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Frekvensi</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Fristen</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Dagar til frist</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Status</th>
+                </tr>
+              </thead>
+              <tbody id="b-surveys-table">
+                <tr><td colspan="8" style="padding: 20px; text-align: center; color: var(--muted);">Klikk "Last inn B-prøver" for å starta</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== LICE (Overview) ========== -->
+        <section class="panel" id="lice-overview">
+          <div class="panel-header">
+            <h2>Lus</h2>
+            <p>Eiga oversikt for lakselus: terskelbrot, rapportstatus og indikasjon på anlegg utan fisk</p>
+          </div>
+          <div class="controls">
+            <select id="lice-filter" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+              <option value="">Alle statusar</option>
+              <option value="high">🔴 Over terskel</option>
+              <option value="normal">🟢 Under terskel</option>
+              <option value="likely_without_fish">⚪ Truleg utan fisk</option>
+            </select>
+            <select id="lice-sort" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; margin-left: 8px;">
+              <option value="severity">Sorter: Høgast lus først</option>
+              <option value="name">Sorter: Namn</option>
+              <option value="recent">Sorter: Nyaste rapport</option>
+            </select>
+            <button class="btn primary" id="lice-load" style="margin-left: auto;">Last inn lus</button>
+          </div>
+          <div style="background: rgba(59, 130, 246, 0.08); border-left: 4px solid #52b6ff; padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 0.85rem; color: var(--accent-strong);" id="lice-summary"></div>
+          <div class="table-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: rgba(82, 182, 255, 0.08); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Kode</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Namn</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Vaksne holus</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Totalt lus</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Siste rapport</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Fisk i anlegg</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Status</th>
+                </tr>
+              </thead>
+              <tbody id="lice-table">
+                <tr><td colspan="7" style="padding: 20px; text-align: center; color: var(--muted);">Klikk "Last inn lus" for å starta</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== FACILITIES (Register) ========== -->
+        <section class="panel" id="facilities">
+          <div class="panel-header">
+            <h2>Anleggsregister</h2>
+            <p>Søk i akvakulturregisteret eller finn anlegg nær ein stad</p>
+          </div>
+          <div class="controls">
+            <input type="text" id="facility-search" placeholder="Søk etter namn, kode eller kommune..." style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; width: 300px;" />
+            <button class="btn primary" id="facilities-load">Søke anlegg</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: rgba(82, 182, 255, 0.08); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Kode</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Namn</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Kommune</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Lat</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Lon</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Produksjon</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">B-undersøkelse</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Type</th>
+                </tr>
+              </thead>
+              <tbody id="facilities-table">
+                <tr><td colspan="8" style="padding: 20px; text-align: center; color: var(--muted);">Søk etter anlegg</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== VESSELS (Register) ========== -->
+        <section class="panel" id="vessels">
+          <div class="panel-header">
+            <h2>Båtregister</h2>
+            <p>Søk i AIS-sporingsdatabasaen etter båter</p>
+          </div>
+          <div class="controls">
+            <input type="text" id="vessels-search" placeholder="Båtnamn eller MMSI..." style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; width: 250px;" />
+            <button class="btn primary" id="vessels-load">Søke båter</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: rgba(82, 182, 255, 0.08); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Namn</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">MMSI</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Lat</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Lon</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Fart (kn)</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Retning</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Sist oppdatert</th>
+                </tr>
+              </thead>
+              <tbody id="vessels-table">
+                <tr><td colspan="7" style="padding: 20px; text-align: center; color: var(--muted);">Søk etter båter</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== OCEAN (Currents) ========== -->
+        <section class="panel" id="ocean">
+          <div class="panel-header">
+            <h2>🌊 Sjøstrøm-data</h2>
+            <p>Spør NorKyst-800 etter aktuelle sjøstrøm-vektor</p>
+          </div>
+          <div class="controls">
+            <input type="number" id="ocean-lat" placeholder="Breddegrad" value="74.5" step="0.1" min="70" max="80" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; width: 120px;" />
+            <input type="number" id="ocean-lon" placeholder="Lengdegrad" value="25" step="0.1" min="10" max="35" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; width: 120px;" />
+            <button class="btn primary" id="ocean-load">Laste straumar</button>
+          </div>
+          <div style="background: var(--panel); padding: 20px; border-radius: 8px; font-family: var(--mono); font-size: 0.85rem; overflow-x: auto; max-height: 400px; overflow-y: auto;">
+            <pre id="ocean-data" style="margin: 0; white-space: pre-wrap; word-wrap: break-word; color: var(--muted);">Ventar på data...</pre>
+          </div>
+        </section>
+
+        <!-- ========== RISK (Overview) ========== -->
+        <section class="panel" id="risk">
+          <div class="panel-header">
+            <h2>📈 Risiko-oversikt</h2>
+            <p>Fører til den komplette risiko-motoren. Filtrer etter sjukadom og eksponering utan å laaste tusenvis</p>
+          </div>
+          <div class="controls">
+            <select id="risk-level" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+              <option value="all">Alle</option>
+              <option value="Critical">Kritisk</option>
+              <option value="High">Høg</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Låg</option>
+            </select>
+            <select id="risk-disease" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+              <option value="all">Alle sykdommer</option>
+              <option value="ila">ILA</option>
+              <option value="pd">PD</option>
+            </select>
+            <button class="btn primary" id="risk-load">Laste risiko</button>
+          </div>
+          <div id="risk-data" style="margin-top: 20px;">
+            <p style="color: var(--muted); text-align: center;">Klikk "Laste risiko" for å fylla data</p>
+          </div>
+        </section>
+
+        <!-- ========== SMITTESPREDNING (Infection Paths) ========== -->
+        <section class="panel" id="smittespredning">
+          <div class="panel-header">
+            <h2>Smittespredning</h2>
+            <p>Båter oppdaget ved anlegg med bekreftet sykdom, med potensiell spredning til andre områder</p>
+          </div>
+          <div class="controls">
+            <select id="smitte-status" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+              <option value="">Alle status</option>
+              <option value="DETECTED">DETECTED</option>
+              <option value="CONFIRMED_HEALTHY">CONFIRMED_HEALTHY</option>
+              <option value="CONFIRMED_INFECTED">CONFIRMED_INFECTED</option>
+            </select>
+            <button class="btn primary" id="smitte-load">Laste smittespredning</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: rgba(82, 182, 255, 0.08); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Båt (MMSI)</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Fra (sykdom)</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Til (destinasjon)</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 600;">Status</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 600;">Avstand (km)</th>
+                </tr>
+              </thead>
+              <tbody id="smitte-table">
+                <tr><td colspan="5" style="padding: 20px; text-align: center; color: var(--muted);">Klikk "Laste smittespredning"</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== ADMIN (Risk Network) ========== -->
+        <section class="panel" id="admin">
+          <div class="panel-header">
+            <h2>⚙️ Risk Network & Korrelasjoner</h2>
+            <p>Sanntids båt-anlegg påvirkning-visualisering og strategisk kontroll</p>
+          </div>
+          <div class="controls">
+            <button class="btn primary" id="admin-load">Laste Risk Network</button>
+            <button class="btn secondary" id="admin-refresh">Oppdatere</button>
+          </div>
+          <div id="admin-data" style="margin-top: 20px;">
+            <p style="color: var(--muted); text-align: center;">Klikk "Laste Risk Network"</p>
+          </div>
+        </section>
+
+        <!-- ========== HEALTH (System Health) ========== -->
+        <section class="panel" id="health">
+          <div class="panel-header">
+            <h2>🏥 System-helse</h2>
+            <p>Uke for uke fiskeheltsignaler (ILA / PD) fra NAIS</p>
+          </div>
+          <div class="controls">
+            <input type="number" id="health-year" placeholder="År (auto)" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; width: 100px;" />
+            <input type="number" id="health-week" placeholder="Veke (auto)" style="padding: 8px; background: var(--panel); color: var(--ink); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; width: 100px;" />
+            <button class="btn primary" id="health-load">Laste helsestatus</button>
+          </div>
+          <div style="background: var(--panel); padding: 20px; border-radius: 8px; font-family: var(--mono); font-size: 0.85rem; overflow-x: auto; max-height: 400px; overflow-y: auto;">
+            <pre id="health-data" style="margin: 0; white-space: pre-wrap; word-wrap: break-word; color: var(--muted);">Ventar på data...</pre>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // NAVIGATION SYSTEM
+    function toggleCategory(cat) {
+      const elem = document.getElementById(`cat-${cat}`);
+      elem.classList.toggle('expanded');
+    }
+
+    function sidebarSwitchTab(tabId) {
+      const panel = document.getElementById(tabId);
+      if (!panel) return;
+
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      panel.classList.add('active');
+
+      const hero = document.querySelector('.hero');
+      if (hero) hero.classList.remove('show');
+
+      document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+
+      const fromActiveElement = document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('sidebar-item')
+        ? document.activeElement
+        : null;
+
+      const fromSelector = document.querySelector(`.sidebar-item[onclick*="('${tabId}')"]`);
+      const clickedItem = fromActiveElement || fromSelector;
+      if (clickedItem) clickedItem.classList.add('active');
+
+      const tabToCategory = {
+        overview: 'cat-situation',
+        health: 'cat-situation',
+        predictions: 'cat-disease',
+        'facility-risks': 'cat-disease',
+        smittespredning: 'cat-disease',
+        'predictions-lice': 'cat-disease',
+        'vessel-risk': 'cat-maritime',
+        'vessel-lice-risk': 'cat-maritime',
+        'vessel-clearing': 'cat-maritime',
+        'confirmed-plans': 'cat-maritime',
+        admin: 'cat-admin',
+        'audit-log': 'cat-admin',
+        'lice-overview': 'cat-admin',
+        facilities: 'cat-admin',
+        vessels: 'cat-admin',
+        ocean: 'cat-admin'
+      };
+
+      const categoryId = tabToCategory[tabId];
+      if (categoryId) {
+        const category = document.getElementById(categoryId);
+        if (category) category.classList.add('expanded');
+      }
+    }
+
+    // CLOCK
+    setInterval(() => {
+      const now = new Date();
+      document.getElementById('heroTime').textContent = now.toLocaleTimeString('no-NO', {hour: '2-digit', minute:'2-digit'});
+    }, 1000);
+
+    // API STATUS CHECK
+    let apiBaseLastKnownGood = null;
+    let apiStatusRequestInFlight = false;
+
+    async function updateApiStatus() {
+      if (apiStatusRequestInFlight) return;
+      apiStatusRequestInFlight = true;
+
+      const isRender = window.location.hostname.includes('render.com');
+      const primary = isRender
+        ? 'https://kyst-api.render.com'
+        : (window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:8000' : 'http://localhost:8000');
+      const fallback = isRender ? null : (primary.includes('localhost') ? 'http://127.0.0.1:8000' : 'http://localhost:8000');
+      const orderedBases = [];
+
+      if (apiBaseLastKnownGood) orderedBases.push(apiBaseLastKnownGood);
+      orderedBases.push(primary);
+      if (fallback) orderedBases.push(fallback);
+
+      const baseCandidates = [...new Set(orderedBases)];
+
+      try {
+        let res = null;
+        let usedBase = null;
+        for (const base of baseCandidates) {
+          try {
+            res = await fetch(`${base}/health`, { cache: 'no-store' });
+            if (res.ok) {
+              usedBase = base;
+              break;
+            }
+          } catch (_) {
+          }
+        }
+
+        const ok = Boolean(res && res.ok);
+        if (ok && usedBase) {
+          apiBaseLastKnownGood = usedBase;
+        }
+        document.getElementById('apiDot').style.background = ok ? '#4caf50' : '#f44336';
+        document.getElementById('apiStatus').textContent = ok ? 'Tilkobla' : 'Feil';
+        document.getElementById('sidebarApi').textContent = ok ? '●' : '✕';
+      } catch(e) {
+        apiBaseLastKnownGood = null;
+        document.getElementById('apiDot').style.background = '#f44336';
+        document.getElementById('apiStatus').textContent = 'Feil';
+        document.getElementById('sidebarApi').textContent = '✕';
+      } finally {
+        apiStatusRequestInFlight = false;
+      }
+    }
+    updateApiStatus();
+    setInterval(updateApiStatus, 15 * 60 * 1000);
+
+    sidebarSwitchTab('overview');
+
+    // Placeholder for loading data functions - connect to existing app.js
+    document.getElementById('predictionsLoad').onclick = () => {
+      if(window.loadPredictions) window.loadPredictions();
+    };
+    document.getElementById('facility-risk-load').onclick = () => {
+      if(window.loadFacilityRisk) window.loadFacilityRisk();
+    };
+    document.getElementById('predictionsLiceLoad').onclick = () => {
+      if (window.loadLicePredictions) window.loadLicePredictions();
+    };
+    // ... etc for other load buttons
+  </script>
+  <script src="predictions-utils.js"></script>
+  <script src="predictions-module.js"></script>
+  <script src="lice-predictions-module.js"></script>
+  <script src="vessel-risk-module.js"></script>
+  <script src="audit-module.js"></script>
+  <script src="vessel-ops-module.js"></script>
+  <script src="smittespredning-module.js"></script>
+  <script src="facility-risk-module.js"></script>
+  <script src="correlation-network-module.js"></script>
+  <script src="admin-panel-module.js"></script>
+  <script src="overview-risk-module.js"></script>
+  <script src="data-loading-module.js"></script>
+  <script src="admin-core-module.js"></script>
+  <script src="ui-orchestration-module.js"></script>
+  <script src="listeners-module.js"></script>
+  <script src="correlation-detail-module.js"></script>
+  <script src="admin-correlations-render-module.js"></script>
+  <script src="admin-load-fallback-module.js"></script>
+  <script src="modal-helpers-module.js"></script>
+  <script src="graph-highlight-module.js"></script>
+  <script src="graph-controls-module.js"></script>
+  <script src="priority-actions-module.js"></script>
+  <script src="admin-actions-module.js"></script>
+  <script src="modal-events-module.js"></script>
+  <script src="ui-filter-bindings-module.js"></script>
+  <script src="smitte-listeners-module.js"></script>
+  <script src="core-load-bindings-module.js"></script>
+  <script src="vessel-risk-filters-module.js"></script>
+  <script src="predictions-zone-filters-module.js"></script>
+  <script src="vessel-search-module.js"></script>
+  <script src="b-surveys-module.js"></script>
+  <script src="lice-overview-module.js"></script>
+  <script src="dom-init-module.js"></script>
+  <script src="help-guide.js"></script>
+  <script src="auto-load-manager.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

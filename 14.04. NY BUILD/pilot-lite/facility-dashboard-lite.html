@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="nb">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Facility Dashboard Lite</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./app/dashboard-lite.css?v=20260319ag" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body class="facility-dashboard-page">
+    <div id="loadingOverlay" class="loading-overlay" style="display:none">
+        <div class="spinner"></div>
+        <p class="loading-text">Laster data...</p>
+    </div>
+    <div id="toastContainer" class="error-toast-container"></div>
+
+    <header class="topbar">
+        <h1>Facility Dashboard Lite</h1>
+        <nav class="links">
+            <a href="./index.html">Startside</a>
+            <a href="./ops-lite.html">Ops Lite</a>
+            <a href="./calendar-lite.html">Kalender Lite</a>
+            <a href="./vessel-dashboard-lite.html">Vessel Lite</a>
+            <a href="./system-check.html">System Check</a>
+            <a href="./feedback-inbox.html">Feedback Inbox</a>
+            <button id="demoResetBtn" type="button" class="topbar-link-btn" title="Nullstill lokal demo-state">Demo reset</button>
+            <span id="companyScopeBadge" style="font-size:11px;color:var(--muted);margin-left:8px;">Scope: -</span>
+        </nav>
+    </header>
+
+    <main class="container">
+        <p id="profileMeta" class="meta">Laster profil...</p>
+        <p id="dataStatusNote" class="meta data-status" style="display:none"></p>
+        <p id="apiHealthNote" class="meta"></p>
+
+        <div class="facility-map-layout facility-four-col-layout">
+
+            <!-- ── Venstre: verktøy / klikk ───────────────────── -->
+            <div class="facility-tools-col">
+
+                <!-- Anleggliste med varsler -->
+                <div class="panel facility-picker-panel" id="facilityPickerPanel">
+                    <button id="toggleFacilitiesBtn" type="button" class="panel-toggle" aria-expanded="true">
+                        <span class="panel-heading heading-box">Mine anlegg</span>
+                        <span class="panel-toggle-icon">▾</span>
+                    </button>
+                    <div id="facilityPanelBody">
+                        <div class="filters-compact">
+                            <select id="municipalityFilter" title="Filtrer på kommune">
+                                <option value="">Alle kommuner</option>
+                            </select>
+                            <label class="checkbox-inline" style="font-size:11px;"><input id="activeFacilitiesOnly" type="checkbox" checked /> Kun aktive</label>
+                            <button id="refreshAisBtn" type="button" class="btn-compact">↻ AIS</button>
+                        </div>
+                        <p class="facility-list-hint">Forklaring:
+                            <span class="facility-list-legend">
+                                <span class="fpl-state-dot active" title="Aktiv"></span>
+                                <span class="fpl-state-dot inactive" title="Ikke aktiv"></span>
+                                <span class="fpl-badge danger">Sykdom/sone</span>
+                                <span class="fpl-badge warn">Etterspørsel</span>
+                                <span class="fpl-badge ok">Anbefalt</span>
+                            </span>
+                        </p>
+                        <ul id="facilityPickerList" class="facility-picker-list"></ul>
+                    </div>
+                </div>
+
+                <!-- Ledige båter i nærheten -->
+                <div class="panel" id="boatsNearbyPanel">
+                    <button id="toggleBoatsBtn" type="button" class="panel-toggle" aria-expanded="true">
+                        <span class="panel-heading heading-box">Ledige båter i nærheten</span>
+                        <span class="panel-toggle-icon">▾</span>
+                    </button>
+                    <div id="boatsPanelBody">
+                        <div class="panel-heading-row">
+                            <h2 class="panel-heading">Filtrering</h2>
+                            <input id="boatSearchInput" type="search" class="filter-inline" placeholder="Søk båt / MMSI" />
+                            <select id="boatTypeFilter" class="filter-inline">
+                                <option value="">Alle typer</option>
+                                <option value="brønnbåt">Brønnbåt</option>
+                                <option value="servicefartøy">Servicefartøy</option>
+                                <option value="transport/logistikk">Transport/logistikk</option>
+                                <option value="frøy-kandidat">Frøy-kandidat</option>
+                            </select>
+                            <select id="boatPolicyFilter" class="filter-inline" title="Filtrer etter policy-status">
+                                <option value="all" selected>Alle policy</option>
+                                <option value="preferred">Kun foretrukne</option>
+                                <option value="blocked">Kun blokkerte</option>
+                                <option value="open">Kun åpne</option>
+                            </select>
+                        </div>
+                        <div class="panel-heading-row" style="margin-top:-2px;">
+                            <p id="boatAvailabilityMeta" class="panel-source" style="margin:0;">Dato: -</p>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <input id="boatFocusDate" type="date" class="filter-inline" title="Dato for kapasitetsøk" />
+                                <input id="boatFocusEndDate" type="date" class="filter-inline" title="Sluttdato for kapasitetsøk" />
+                                <select id="boatZoneRadius" class="filter-inline" title="Radius for planlagt tilgjengelighet">
+                                    <option value="20">20 km</option>
+                                    <option value="30" selected>30 km</option>
+                                    <option value="40">40 km</option>
+                                </select>
+                                <label class="checkbox-inline" style="font-size:11px;"><input id="onlyAvailableBoats" type="checkbox" checked /> Kun ledige</label>
+                                <input id="boatRequestTime" type="time" value="10:00" class="filter-inline" title="Ønsket tidspunkt for booking" />
+                                <input id="boatOperationMinutes" type="number" min="15" step="5" value="60" class="filter-inline" title="Operasjonstid i minutter" placeholder="Operasjon (min)" style="width:130px" />
+                                <details class="export-menu-wrap">
+                                    <summary class="mini-btn">Mer eksport/import ▾</summary>
+                                    <div class="export-menu-panel">
+                                        <button id="exportInteropPackBtn" type="button" class="mini-btn" title="Eksporter samlet pakke (CSV/JSON/TXT)">Eksporter pakke</button>
+                                        <button id="exportJobsCsvBtn" type="button" class="mini-btn" title="Eksporter jobbliste som CSV">Eksporter jobber (CSV)</button>
+                                        <button id="exportBoatsCsvBtn" type="button" class="mini-btn" title="Eksporter synlige båter som CSV">Eksporter båter (CSV)</button>
+                                        <button id="exportPolicyAuditBtn" type="button" class="mini-btn" title="Eksporter policyhistorikk for valgt anlegg">Eksporter policy</button>
+                                        <button id="exportAllPolicyAuditBtn" type="button" class="mini-btn" title="Eksporter policyhistorikk for alle anlegg">Eksporter alle policy</button>
+                                        <button id="importPolicyBtn" type="button" class="mini-btn" title="Importer policy fra JSON for valgt anlegg">Importer policy</button>
+                                    </div>
+                                </details>
+                                <input id="importPolicyFileInput" type="file" accept="application/json,.json" style="display:none" />
+                                <button id="resyncAllJobPoliciesBtn" type="button" class="mini-btn" title="Synk policy på alle jobber for valgt anlegg">Re-sync alle jobber</button>
+                                <button id="openPolicyHistoryBtn" type="button" class="mini-btn" title="Vis full policyhistorikk for valgt anlegg">Policy-historikk</button>
+                                <button id="undoPolicyChangeBtn" type="button" class="mini-btn" title="Angre siste policyendring for valgt anlegg">Angre siste policy</button>
+                            </div>
+                        </div>
+                        <p id="boatsDataSource" class="panel-source">Kilde: -</p>
+                        <p id="interopActivityMeta" class="panel-source">Siste interoperabilitet: -</p>
+                        <ul id="availableBoatsList" class="list list-sm"></ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ── Sentrum: kart + kalender ──────────────────── -->
+            <div class="facility-center-col">
+                <div class="fmap-panel" id="facilityMapPanel">
+                    <div id="facilityMap"></div>
+                </div>
+                <div class="panel" id="facilityMapLegendPanel">
+                    <div style="padding:0;">
+                        <div class="facility-legend-grid">
+                            <div class="facility-legend-box">
+                                <div class="subsection-title">Kartfarger</div>
+                                <div class="legend-chip-row">
+                                <span class="risk-legend risk-normal">Normal (nøytral)</span>
+                                <span class="risk-legend risk-severe">ILA vernesone</span>
+                                <span class="risk-legend risk-surveillance">ILA overvåkning</span>
+                                <span class="risk-legend risk-infected">Smittet</span>
+                                <span class="risk-legend risk-lice">Lus</span>
+                                <span class="risk-legend risk-selected">Valgt</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kalender for valgt anlegg (skjult inntil anlegg er valgt) -->
+                <div class="panel cue-blue" id="facilityCalendarPanel" style="display:none">
+                    <button id="toggleFacilityCalendarBtn" type="button" class="panel-toggle" aria-expanded="true">
+                        <span class="panel-heading heading-box">Kalender</span>
+                        <span class="panel-toggle-icon">▾</span>
+                    </button>
+                    <div id="facilityCalendarBody">
+                        <div class="panel-heading-row">
+                            <h2 class="panel-heading">Kalender – <span id="calFacilityName" class="cal-facility-name"></span></h2>
+                            <button id="goFirstPlannedBtn" type="button" class="mini-btn">Planlagte besøk</button>
+                        </div>
+                        <p class="mini-cal-hint">Klikk dag for detaljer. Fargemarkering: <span class="cal-dot green"></span> Ledig &nbsp;<span class="cal-dot red"></span> Opptatt &nbsp;<span class="cal-dot has-event"></span> Planlagt/importert besøk (varsel)</p>
+                        <div id="facilityMiniCalendar" class="mini-cal"></div>
+                        <div class="cal-mark-row">
+                            <span id="calSelectedDayLabel" class="cal-selected-day">Valgt dag: -</span>
+                            <button id="calMarkGreenBtn" type="button" class="cal-mark-btn ok">Sett ledig</button>
+                            <button id="calMarkRedBtn" type="button" class="cal-mark-btn danger">Sett opptatt</button>
+                            <button id="calMarkClearBtn" type="button" class="cal-mark-btn">Fjern markering</button>
+                        </div>
+                        <p id="calBookingSelectionMeta" class="panel-source" style="margin:4px 0 6px 0;">Valgt for booking: -</p>
+                        <p id="calMarkModeHint" class="panel-source" style="display:none;color:#0f766e;font-style:italic;"></p>
+                        <div id="calDayInfo" class="cal-day-info empty">Velg en dag for å se planlagte besøk.</div>
+                    </div>
+                </div>
+
+                <!-- 7-dagers plan (under kalender) -->
+                <div class="panel cue-blue" id="sevenDayPlanPanel" style="display:none">
+                    <h2 class="panel-heading heading-box">7-dagers plan</h2>
+                    <div id="sevenDayPlanContainer" class="seven-day-plan"></div>
+                </div>
+
+            </div>
+
+            <!-- ── Arbeidsbord: plan, forespørsler, godkjenning ─────────────── -->
+            <div class="facility-work-col">
+                <!-- Opprett jobbforespørsel (arbeidsflate) -->
+                <div class="panel cue-green" id="jobRequestPanel" style="display:none">
+                    <button id="toggleJobRequestBtn" type="button" class="panel-toggle" aria-expanded="true">
+                        <span class="panel-heading heading-box">Opprett jobbforespørsel</span>
+                        <span class="panel-toggle-icon">▾</span>
+                    </button>
+                    <div id="jobRequestPanelBody">
+                    <div id="calendarAutoSetup" class="cal-auto-setup" style="display:none;margin-bottom:10px;">
+                        <div class="cal-auto-title">Auto-oppsett (for jobbetterspørsel)</div>
+                        <div class="cal-auto-bulk-actions">
+                            <button id="autoRulesEnableAllBtn" type="button" class="mini-btn">Aktiver alle</button>
+                            <button id="autoRulesDisableAllBtn" type="button" class="mini-btn">Slå av alle</button>
+                        </div>
+                        <label class="cal-auto-item"><input id="autoRuleLiceDeadline" data-auto-rule="liceDeadline" value="Lusefrist 14 dager" type="checkbox" /> Lusefrist 14 dager (krav)</label>
+                        <label class="cal-auto-item"><input id="autoRuleBInvestigation" data-auto-rule="bInvestigation" value="B-undersøkelse NS 9410" type="checkbox" /> B-undersøkelse NS 9410 (krav)</label>
+                        <label class="cal-auto-item"><input id="autoRuleDiseaseTesting" data-auto-rule="diseaseTestingWindow" value="Sykdomstest-vindu 2 uker" type="checkbox" /> Sykdomstest-vindu 2 uker (anbefalt)</label>
+                        <label class="cal-auto-item"><input id="autoRuleBiomassPlanning" data-auto-rule="biomassPlanning" value="Biomasse >90% av MAB" type="checkbox" /> Biomasse >90% av MAB (anbefalt)</label>
+                        <label class="cal-auto-item"><input id="autoRuleWaterQualityMonthly" data-auto-rule="waterQualityMonthly" value="Månedlig vannkvalitet (ekstern)" type="checkbox" /> Månedlig vannkvalitet (ekstern, anbefalt)</label>
+                        <p class="panel-source" style="margin:4px 0 0 0;">Forslag kan legges rett inn som jobbetterspørsel og markere kalender-vindu grønt.</p>
+                        <div id="autoGeneratedRequestsPanel" class="cal-reminder-wrap" style="margin-top:8px;">
+                            <div class="cal-rule-title">Auto-genererte etterspørsler</div>
+                            <div id="autoGeneratedRequestsList" class="panel-source">Velg anlegg for å se forslag.</div>
+                        </div>
+                    </div>
+                    <form id="jobRequestForm" class="job-request-form">
+                        <div class="form-group">
+                            <label for="jobTypeSelect">Jobbtype:</label>
+                            <select id="jobTypeSelect" required>
+                                <option value="">Velg type</option>
+                                <option value="desinfeksjon">Desinfeksjon</option>
+                                <option value="dykking">Dykking</option>
+                                <option value="renovasjon">Renovasjon</option>
+                                <option value="smolt_transport">Smolt transport</option>
+                                <option value="fisk_transport">Fisk transport</option>
+                                <option value="service">Service/vedlikehold</option>
+                                <option value="inspeksjon">Inspeksjon</option>
+                                <option value="annet">Annet</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="jobDeadlineInput">Senest innen:</label>
+                            <input id="jobDeadlineInput" type="date" />
+                        </div>
+                        <div class="form-group">
+                            <label for="jobFlexibilitySelect">Tidsfleksibilitet:</label>
+                            <select id="jobFlexibilitySelect">
+                                <option value="exact">Nøyaktig dato</option>
+                                <option value="1w">±1 uke</option>
+                                <option value="2w">±2 uker</option>
+                                <option value="1m" selected>±1 mnd</option>
+                                <option value="2m">±2 mnd</option>
+                                <option value="6m">Innen 6 mnd</option>
+                                <option value="12m">Innen 12 mnd</option>
+                                <option value="24m">Innen 24 mnd</option>
+                            </select>
+                        </div>
+                        <input id="jobStartDateInput" type="hidden" />
+                        <input id="jobEndDateInput" type="hidden" />
+                        <div class="form-group">
+                            <label for="jobPrioritySelect">Prioritet:</label>
+                            <select id="jobPrioritySelect">
+                                <option value="normal" selected>Normal</option>
+                                <option value="high">Høy</option>
+                                <option value="low">Lav</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="jobPrefTimeInput">Foretrukket tidspunkt:</label>
+                            <input id="jobPrefTimeInput" type="time" value="10:00" />
+                        </div>
+                        <div class="form-group">
+                            <label for="jobEstHoursInput">Estimert timer:</label>
+                            <input id="jobEstHoursInput" type="number" min="1" max="72" value="4" />
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="jobNotesInput">Notat:</label>
+                            <textarea id="jobNotesInput" rows="2" placeholder="Detaljer om jobben..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Opprett jobbrequest</button>
+                        <p id="jobRequestStatus" class="panel-source" style="margin-top:8px;"></p>
+                    </form>
+                    <div id="jobListContainer" style="margin-top:12px;">
+                        <div class="panel-heading-row" style="margin-bottom:8px;">
+                            <h3 style="font-size:12px;margin:0;">Mine besøk</h3>
+                            <select id="jobStatusFilter" class="filter-inline" title="Filtrer jobber etter status">
+                                <option value="all" selected>Alle statuser</option>
+                                <option value="opprettet">Opprettet</option>
+                                <option value="forslag_sendt">Forslag sendt</option>
+                                <option value="godtatt">Godtatt</option>
+                                <option value="pågår">Pågår</option>
+                                <option value="fullført">Fullført</option>
+                                <option value="avbrutt">Avbrutt</option>
+                            </select>
+                        </div>
+                        <ul id="jobList" class="list list-sm"></ul>
+                    </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ── Høyre: informasjon ────────────────────────── -->
+            <div class="facility-info-col">
+
+                <!-- Valgt anlegg – nøkkeltall -->
+                <div class="panel cue-gray" id="selectedInfoPanel">
+                    <button id="toggleSelectedInfoBtn" type="button" class="panel-toggle" aria-expanded="true">
+                        <span class="panel-heading heading-box">Valgt anlegg</span>
+                        <span class="panel-toggle-icon">▾</span>
+                    </button>
+                    <div id="selectedInfoBody">
+                        <div id="facilityInfoBar" class="facility-info-bar">
+                            <span class="empty">Velg et anlegg fra listen for å se detaljer.</span>
+                        </div>
+                        <p id="facilityTypeMeta" class="panel-source">Type drift: -</p>
+                    </div>
+                </div>
+
+                <!-- Liten risikorubrikk -->
+                <div class="panel cue-orange" id="riskAssessmentPanel">
+                    <h2 class="panel-heading heading-box">Risikovurdering</h2>
+                    <div class="risk-mini-grid">
+                        <div class="risk-mini-card">
+                            <span class="risk-mini-label">Smitte</span>
+                            <span id="smitteRiskMini" class="risk-mini-value">-</span>
+                        </div>
+                        <div class="risk-mini-card">
+                            <span class="risk-mini-label">Lus</span>
+                            <span id="liceRiskMini" class="risk-mini-value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel cue-orange" id="operationsStatusPanel">
+                    <h2 class="panel-heading heading-box">Driftstatus</h2>
+                    <p class="panel-source" style="color:var(--muted);font-style:italic;font-size:10px;">Basert på systemdata og beregninger – kan inneholde feil.</p>
+                    <p id="facilityAlertSummary" class="panel-source">Velg anlegg.</p>
+                    <ul id="facilityAlertList" class="list list-sm"></ul>
+                </div>
+
+                <!-- Nærliggende anlegg -->
+                <div class="panel cue-gray" id="nearbyFacilitiesPanel">
+                    <button id="toggleNearbyFacilitiesBtn" type="button" class="panel-toggle" aria-expanded="true">
+                        <span class="panel-heading heading-box">Nærliggende anlegg</span>
+                        <span class="panel-toggle-icon">▾</span>
+                    </button>
+                    <div id="nearbyFacilitiesBody">
+                        <p id="nearbyFacilitiesSummary" class="panel-source">Velg anlegg.</p>
+                        <p class="panel-source">Kalender aktiv = anlegg med kalenderhendelser eller dagmarkering.</p>
+                        <ul id="nearbyFacilityList" class="list list-sm"></ul>
+                    </div>
+                </div>
+
+                <!-- Nærliggende risiko – utvidet -->
+                <div class="panel cue-gray" id="nearbyRiskPanel">
+                    <button id="toggleNearbyRiskBtn" type="button" class="panel-toggle" aria-expanded="true">
+                        <span class="panel-heading heading-box">Nærliggende risiko</span>
+                        <span class="panel-toggle-icon">▾</span>
+                    </button>
+                    <div id="nearbyRiskBody">
+                        <p id="riskDataSource" class="panel-source">Kilde: -</p>
+                        <p id="selectedSummary" class="empty" style="font-size:12px;margin-bottom:8px">Velg anlegg.</p>
+
+                        <p class="risk-subheader cat-infect">🔴 Sykdom / Smitte</p>
+                        <ul id="nearbyInfected" class="list list-sm"></ul>
+
+                        <p class="risk-subheader cat-lice">🟣 Lakselus</p>
+                        <ul id="nearbyLice" class="list list-sm"></ul>
+
+                        <p class="risk-subheader cat-zone">🟠 Risikosone (BW)</p>
+                        <ul id="nearbySevere" class="list list-sm"></ul>
+
+                        <p class="risk-subheader">AIS risiko-båter</p>
+                        <p id="aisCategorySummary" class="panel-source">Kategori: -</p>
+                        <ul id="nearbyAisRisk" class="list list-sm"></ul>
+
+                        <p class="risk-subheader">Signert grønne båter</p>
+                        <ul id="nearbyAisCleared" class="list list-sm"></ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Skjulte selects brukt av JS-logikk -->
+        <select id="selectedFacilityFilter" style="display:none"></select>
+        <select id="companyFilter" style="display:none"></select>
+    </main>
+
+    <div id="policyHistoryModal" class="simple-modal hidden" role="dialog" aria-modal="true" aria-labelledby="policyHistoryTitle">
+        <div class="simple-modal-card event-edit-modal-card">
+            <div class="panel-heading-row" style="margin-bottom:8px;">
+                <h3 id="policyHistoryTitle" class="panel-heading" style="margin:0;">Policy-historikk</h3>
+                <button id="closePolicyHistoryModalBtn" type="button" class="mini-btn">Lukk</button>
+            </div>
+            <p id="policyHistoryMeta" class="panel-source" style="margin:0 0 8px 0;">-</p>
+            <ul id="policyHistoryList" class="list list-sm" style="max-height:55vh;overflow:auto;"></ul>
+        </div>
+    </div>
+
+    <script type="module" src="./app/facility-dashboard-lite.js?v=20260319ah"></script>
+    <script type="module" src="./app/feedback-widget.js?v=20260319aa"></script>
+</body>
+</html>

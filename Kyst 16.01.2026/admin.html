@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KystMonitor Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: #f6f8fa;
+            margin: 0;
+            color: #23272f;
+        }
+        header {
+            background: #3b4a6b;
+            color: #fff;
+            padding: 32px 24px 24px 24px;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+        }
+        h1 {
+            margin: 0 0 8px 0;
+            font-size: 2.2em;
+            font-weight: 700;
+        }
+        .subtitle {
+            color: #eab308;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        .dashboard {
+            max-width: 1200px;
+            margin: 32px auto 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(44,62,80,0.09);
+            padding: 32px 28px;
+        }
+        .stats {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 22px 32px;
+            border-radius: 12px;
+            min-width: 180px;
+            flex: 1 1 180px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2.1em;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 1em;
+            opacity: 0.92;
+        }
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .tab {
+            background: #f3f4f6;
+            color: #3b4a6b;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 8px 8px 0 0;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .tab.active {
+            background: #3b4a6b;
+            color: #fff;
+        }
+        .tab-content {
+            background: #fff;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 1px 4px rgba(44,62,80,0.07);
+            padding: 24px 12px;
+        }
+        .search-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .search-row input, .search-row select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #c7d2fe;
+            font-size: 1em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+        }
+        th, td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 15px;
+        }
+        th {
+            background: #f3f4f6;
+            color: #3b4a6b;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: #f9fafb;
+        }
+        .risk-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 700;
+            text-align: center;
+            min-width: 70px;
+        }
+        .risk-CRITICAL { background: #b91c1c; color: #fff; }
+        .risk-HIGH { background: #eab308; color: #fff; }
+        .risk-MEDIUM { background: #fbbf24; color: #fff; }
+        .risk-LOW { background: #15803d; color: #fff; }
+        .pagination {
+            text-align: center;
+            margin: 18px 0 0 0;
+        }
+        .pagination button {
+            background: #3b4a6b;
+            color: #fff;
+            border: none;
+            padding: 7px 16px;
+            border-radius: 6px;
+            margin: 0 4px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .pagination button:disabled {
+            background: #c7d2fe;
+            color: #888;
+            cursor: not-allowed;
+        }
+        @media (max-width: 800px) {
+            .dashboard { padding: 12px 2vw; }
+            .stats { flex-direction: column; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>KystMonitor Admin</h1>
+        <div class="subtitle">Full oversikt over båter, anlegg, risiko og hendelser</div>
+    </header>
+    <div class="dashboard">
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number" id="stat-facilities">-</div>
+                <div class="stat-label">Antall anlegg</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="stat-vessels">-</div>
+                <div class="stat-label">Antall båter</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="stat-alerts">-</div>
+                <div class="stat-label">Aktive alarmer</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="stat-risk-critical">-</div>
+                <div class="stat-label">Kritisk risiko</div>
+            </div>
+        </div>
+        <div class="tabs">
+            <button class="tab active" data-tab="facilities">Anlegg</button>
+            <button class="tab" data-tab="vessels">Båter</button>
+            <button class="tab" data-tab="alerts">Alarmer</button>
+            <button class="tab" data-tab="system">Systemstatus</button>
+        </div>
+        <div class="tab-content" id="tab-content"></div>
+    </div>
+    <script>
+        // Dummydata for demo
+        const facilities = [
+            { id: 1, name: 'Mowi Nord', risk: 'CRITICAL', municipality: 'Tromsø', disease: 'ILA', alerts: 2 },
+            { id: 2, name: 'SalMar Sør', risk: 'HIGH', municipality: 'Bodø', disease: 'PD', alerts: 1 },
+            { id: 3, name: 'Cermaq Midt', risk: 'LOW', municipality: 'Trondheim', disease: '-', alerts: 0 },
+        ];
+        const vessels = [
+            { mmsi: '257123000', name: 'Aqua Pioneer', type: 'Service', risk: 'HIGH', closest_facility: 'Mowi Nord', distance: 2.1 },
+            { mmsi: '257456789', name: 'Laksen', type: 'Cargo', risk: 'LOW', closest_facility: 'SalMar Sør', distance: 8.7 },
+        ];
+        const alerts = [
+            { id: 1, facility: 'Mowi Nord', type: 'Sykdom', level: 'CRITICAL', message: 'ILA påvist', date: '2026-01-20' },
+            { id: 2, facility: 'SalMar Sør', type: 'Risiko', level: 'HIGH', message: 'Høy risiko for PD', date: '2026-01-19' },
+        ];
+        // Statistikk
+        document.getElementById('stat-facilities').textContent = facilities.length;
+        document.getElementById('stat-vessels').textContent = vessels.length;
+        document.getElementById('stat-alerts').textContent = alerts.length;
+        document.getElementById('stat-risk-critical').textContent = facilities.filter(f => f.risk === 'CRITICAL').length;
+
+        // Tabs
+        const tabs = document.querySelectorAll('.tab');
+        const tabContent = document.getElementById('tab-content');
+        tabs.forEach(tab => {
+            tab.onclick = () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                renderTab(tab.dataset.tab);
+            };
+        });
+        function renderTab(tab) {
+            if (tab === 'facilities') {
+                tabContent.innerHTML = `
+                <div class="search-row">
+                    <input type="text" id="facility-search" placeholder="Søk anlegg...">
+                    <select id="facility-risk-filter">
+                        <option value="">Alle risiko</option>
+                        <option value="CRITICAL">Kritisk</option>
+                        <option value="HIGH">Høy</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="LOW">Lav</option>
+                    </select>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>Anlegg</th><th>Kommune</th><th>Risiko</th><th>Sykdom</th><th>Alarmer</th></tr>
+                    </thead>
+                    <tbody id="facility-table-body"></tbody>
+                </table>
+                `;
+                renderFacilityTable();
+                document.getElementById('facility-search').oninput = renderFacilityTable;
+                document.getElementById('facility-risk-filter').onchange = renderFacilityTable;
+            } else if (tab === 'vessels') {
+                tabContent.innerHTML = `
+                <div class="search-row">
+                    <input type="text" id="vessel-search" placeholder="Søk båt...">
+                    <select id="vessel-risk-filter">
+                        <option value="">Alle risiko</option>
+                        <option value="CRITICAL">Kritisk</option>
+                        <option value="HIGH">Høy</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="LOW">Lav</option>
+                    </select>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>Båtnavn</th><th>MMSI</th><th>Type</th><th>Risiko</th><th>Nærmeste anlegg</th><th>Avstand (km)</th></tr>
+                    </thead>
+                    <tbody id="vessel-table-body"></tbody>
+                </table>
+                `;
+                renderVesselTable();
+                document.getElementById('vessel-search').oninput = renderVesselTable;
+                document.getElementById('vessel-risk-filter').onchange = renderVesselTable;
+            } else if (tab === 'alerts') {
+                tabContent.innerHTML = `
+                <table>
+                    <thead>
+                        <tr><th>Anlegg</th><th>Type</th><th>Nivå</th><th>Melding</th><th>Dato</th></tr>
+                    </thead>
+                    <tbody>
+                        ${alerts.map(a => `
+                            <tr>
+                                <td>${a.facility}</td>
+                                <td>${a.type}</td>
+                                <td><span class="risk-badge risk-${a.level}">${a.level}</span></td>
+                                <td>${a.message}</td>
+                                <td>${a.date}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                `;
+            } else if (tab === 'system') {
+                tabContent.innerHTML = `
+                <div style="padding:18px;">
+                    <h3>Systemstatus</h3>
+                    <ul>
+                        <li>API-status: <span style="color:green;">OK</span></li>
+                        <li>Database: <span style="color:green;">OK</span></li>
+                        <li>Eksterne datakilder: <span style="color:green;">OK</span></li>
+                        <li>Siste oppdatering: 2026-01-21 10:00</li>
+                    </ul>
+                </div>
+                `;
+            }
+        }
+        function renderFacilityTable() {
+            const search = document.getElementById('facility-search').value.toLowerCase();
+            const risk = document.getElementById('facility-risk-filter').value;
+            const tbody = document.getElementById('facility-table-body');
+            tbody.innerHTML = facilities
+                .filter(f => (!search || f.name.toLowerCase().includes(search)))
+                .filter(f => (!risk || f.risk === risk))
+                .map(f => `
+                    <tr>
+                        <td>${f.name}</td>
+                        <td>${f.municipality}</td>
+                        <td><span class="risk-badge risk-${f.risk}">${f.risk}</span></td>
+                        <td>${f.disease}</td>
+                        <td>${f.alerts}</td>
+                    </tr>
+                `).join('');
+        }
+        function renderVesselTable() {
+            const search = document.getElementById('vessel-search').value.toLowerCase();
+            const risk = document.getElementById('vessel-risk-filter').value;
+            const tbody = document.getElementById('vessel-table-body');
+            tbody.innerHTML = vessels
+                .filter(v => (!search || v.name.toLowerCase().includes(search) || v.mmsi.includes(search)))
+                .filter(v => (!risk || v.risk === risk))
+                .map(v => `
+                    <tr>
+                        <td>${v.name}</td>
+                        <td>${v.mmsi}</td>
+                        <td>${v.type}</td>
+                        <td><span class="risk-badge risk-${v.risk}">${v.risk}</span></td>
+                        <td>${v.closest_facility}</td>
+                        <td>${v.distance}</td>
+                    </tr>
+                `).join('');
+        }
+        // Init
+        renderTab('facilities');
+    </script>
+</body>
+</html>

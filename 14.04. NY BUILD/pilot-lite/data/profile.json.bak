@@ -1,0 +1,2349 @@
+{
+  "profileName": "Masoval + Froy Pilot",
+  "createdAt": "2026-03-12",
+  "scope": {
+    "nearbyFacilityRadiusKm": 20.0,
+    "maxVessels": 100,
+    "maxFacilities": 0,
+    "externalFacilityCompanyId": "nearby-external"
+  },
+  "companies": [
+    {
+      "id": "froy",
+      "name": "Frøy Gruppen",
+      "role": "Vessel Operator"
+    },
+    {
+      "id": "masoval",
+      "name": "Måsøval",
+      "role": "Facility Operator"
+    },
+    {
+      "id": "nearby-external",
+      "name": "Nærliggende anlegg",
+      "role": "External Facility Operator"
+    }
+  ],
+  "vessels": [
+    {
+      "id": "froy-saga",
+      "name": "Frøy Saga",
+      "companyId": "froy",
+      "mmsi": "258351500",
+      "type": "Brønnbåt/servicebåt",
+      "favorite": true
+    },
+    {
+      "id": "froy-supporter",
+      "name": "Frøy Supporter",
+      "companyId": "froy",
+      "mmsi": "259031610",
+      "type": "Brønnbåt/servicebåt",
+      "favorite": true
+    },
+    {
+      "id": "froy-leader",
+      "name": "Frøy Leader",
+      "companyId": "froy",
+      "mmsi": "257075200",
+      "type": "Brønnbåt/servicebåt",
+      "favorite": true
+    },
+    {
+      "id": "froy-ocean",
+      "name": "Frøy Ocean",
+      "companyId": "froy",
+      "mmsi": "258207480",
+      "type": "Brønnbåt/servicebåt",
+      "favorite": true
+    },
+    {
+      "id": "froy-master",
+      "name": "Frøy Master",
+      "companyId": "froy",
+      "mmsi": "257977700",
+      "type": "Brønnbåt/servicebåt",
+      "favorite": true
+    },
+    {
+      "id": "froy-bas",
+      "name": "Frøy Bas",
+      "companyId": "froy",
+      "mmsi": "257000210",
+      "type": "Brønnbåt/servicebåt",
+      "favorite": true
+    },
+    {
+      "id": "rubin",
+      "name": "Rubin",
+      "companyId": "froy",
+      "mmsi": "231908000",
+      "type": "Stykkgodsskip/fraktbåt",
+      "favorite": true
+    },
+    {
+      "id": "froy-stadt",
+      "name": "Frøy Stadt",
+      "companyId": "froy",
+      "mmsi": null,
+      "type": "Servicekatamaran",
+      "favorite": true
+    },
+    {
+      "id": "froysund",
+      "name": "Frøysund",
+      "companyId": "froy",
+      "mmsi": null,
+      "type": "Servicekatamaran",
+      "favorite": true
+    },
+    {
+      "id": "froy-neptun",
+      "name": "Frøy Neptun",
+      "companyId": "froy",
+      "mmsi": null,
+      "type": "Dykkerkatamaran",
+      "favorite": true
+    }
+  ],
+  "facilities": [
+    {
+      "id": "or-kristiansund",
+      "name": "Or",
+      "companyId": "masoval",
+      "municipality": "Kristiansund",
+      "localityNo": null,
+      "latitude": 63.1106,
+      "longitude": 7.7279,
+      "tags": [
+        "anlegg"
+      ]
+    },
+    {
+      "id": "kattholmen",
+      "name": "Kattholmen",
+      "companyId": "masoval",
+      "municipality": "Kristiansund",
+      "localityNo": null,
+      "latitude": 63.1032,
+      "longitude": 7.7247,
+      "tags": [
+        "anlegg"
+      ]
+    },
+    {
+      "id": "vartdalsfjorden",
+      "name": "Vartdalsfjorden",
+      "companyId": "masoval",
+      "municipality": "Vartdal",
+      "localityNo": null,
+      "latitude": 62.3242,
+      "longitude": 6.1273,
+      "tags": [
+        "anlegg"
+      ]
+    },
+    {
+      "id": "titran-smolt",
+      "name": "Titran",
+      "companyId": "masoval",
+      "municipality": "Titran",
+      "localityNo": null,
+      "latitude": 63.6764,
+      "longitude": 8.2961,
+      "tags": [
+        "smoltanlegg"
+      ]
+    },
+    {
+      "id": "froya-site-1",
+      "name": "Frøya - Site 1",
+      "companyId": "masoval",
+      "municipality": "Frøya",
+      "localityNo": null,
+      "latitude": 63.7218,
+      "longitude": 8.8324,
+      "tags": [
+        "anlegg"
+      ]
+    },
+    {
+      "id": "froya-site-2",
+      "name": "Frøya - Site 2",
+      "companyId": "masoval",
+      "municipality": "Frøya",
+      "localityNo": null,
+      "latitude": 63.7465,
+      "longitude": 8.7874,
+      "tags": [
+        "anlegg"
+      ]
+    },
+    {
+      "id": "hitra-main",
+      "name": "Hitra",
+      "companyId": "masoval",
+      "municipality": "Hitra",
+      "localityNo": null,
+      "latitude": 63.5645,
+      "longitude": 8.7723,
+      "tags": [
+        "slakteri",
+        "anlegg"
+      ]
+    },
+    {
+      "id": "hemne",
+      "name": "Hemne",
+      "companyId": "masoval",
+      "municipality": "Hemne",
+      "localityNo": null,
+      "latitude": 63.2891,
+      "longitude": 9.0895,
+      "tags": [
+        "anlegg"
+      ]
+    },
+    {
+      "id": "ulvoya",
+      "name": "Ulvøya",
+      "companyId": "masoval",
+      "municipality": "Hitra",
+      "localityNo": null,
+      "latitude": 63.5944,
+      "longitude": 8.9018,
+      "tags": [
+        "harvesting facility"
+      ]
+    },
+    {
+      "id": "reserve-site",
+      "name": "Reserve Site",
+      "companyId": "masoval",
+      "municipality": "Ukjent",
+      "localityNo": null,
+      "latitude": null,
+      "longitude": null,
+      "tags": [
+        "reserve"
+      ]
+    },
+    {
+      "id": "loc-24096",
+      "name": "Vestseøra",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "24096",
+      "latitude": 63.29535,
+      "longitude": 9.087754,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12361",
+      "name": "Bukkholmen S",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "12361",
+      "latitude": 63.72205,
+      "longitude": 8.86245,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12993",
+      "name": "Lamøya",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "12993",
+      "latitude": 63.73305,
+      "longitude": 8.854983,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-20815",
+      "name": "Slettvika",
+      "companyId": "nearby-external",
+      "municipality": "ØRSTA",
+      "localityNo": "20815",
+      "latitude": 62.334,
+      "longitude": 6.157667,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-34417",
+      "name": "Taraskjæra",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "34417",
+      "latitude": 63.704933,
+      "longitude": 8.86955,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12303",
+      "name": "Vartdal",
+      "companyId": "nearby-external",
+      "municipality": "ØRSTA",
+      "localityNo": "12303",
+      "latitude": 62.3065,
+      "longitude": 6.092,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45109",
+      "name": "Skjelvika",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "45109",
+      "latitude": 63.664333,
+      "longitude": 8.343667,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12871",
+      "name": "Hogsnes",
+      "companyId": "nearby-external",
+      "municipality": "AVERØY",
+      "localityNo": "12871",
+      "latitude": 63.093033,
+      "longitude": 7.675883,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-30377",
+      "name": "Hogsneset N",
+      "companyId": "nearby-external",
+      "municipality": "AVERØY",
+      "localityNo": "30377",
+      "latitude": 63.099933,
+      "longitude": 7.670267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12986",
+      "name": "Storelva",
+      "companyId": "nearby-external",
+      "municipality": "ØRSTA",
+      "localityNo": "12986",
+      "latitude": 62.300833,
+      "longitude": 6.080467,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-34437",
+      "name": "Måsskjæra",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "34437",
+      "latitude": 63.745817,
+      "longitude": 8.881883,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45272",
+      "name": "Tøfta",
+      "companyId": "nearby-external",
+      "municipality": "AVERØY",
+      "localityNo": "45272",
+      "latitude": 63.110833,
+      "longitude": 7.646667,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-33957",
+      "name": "Hofsøya",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "33957",
+      "latitude": 63.7224,
+      "longitude": 8.9145,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45125",
+      "name": "Smedvågen",
+      "companyId": "nearby-external",
+      "municipality": "AVERØY",
+      "localityNo": "45125",
+      "latitude": 63.0774,
+      "longitude": 7.660317,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45126",
+      "name": "Smedvågen II",
+      "companyId": "nearby-external",
+      "municipality": "AVERØY",
+      "localityNo": "45126",
+      "latitude": 63.075967,
+      "longitude": 7.654217,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13677",
+      "name": "Trøan Bjørklibukta",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "13677",
+      "latitude": 63.33155,
+      "longitude": 9.1231,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12348",
+      "name": "Kåholmen",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12348",
+      "latitude": 63.617183,
+      "longitude": 8.994133,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12872",
+      "name": "Kattholmen",
+      "companyId": "nearby-external",
+      "municipality": "KRISTIANSUND",
+      "localityNo": "12872",
+      "latitude": 63.055333,
+      "longitude": 7.695317,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12407",
+      "name": "Flesa",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12407",
+      "latitude": 63.64485,
+      "longitude": 8.879067,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45236",
+      "name": "Langtaren",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "45236",
+      "latitude": 63.75285,
+      "longitude": 8.9278,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12366",
+      "name": "Raskjæret",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "12366",
+      "latitude": 63.793617,
+      "longitude": 8.854567,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12370",
+      "name": "Måøydraga",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "12370",
+      "latitude": 63.676433,
+      "longitude": 8.757283,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10240",
+      "name": "Ilsøya Ø",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "10240",
+      "latitude": 63.651975,
+      "longitude": 8.88687,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19015",
+      "name": "Stokkvika",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "19015",
+      "latitude": 63.333533,
+      "longitude": 9.180583,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12406",
+      "name": "Rauodden",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12406",
+      "latitude": 63.664533,
+      "longitude": 8.884083,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-38997",
+      "name": "Ilsøya 2",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "38997",
+      "latitude": 63.66275,
+      "longitude": 8.447833,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13503",
+      "name": "Heggvika",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "13503",
+      "latitude": 63.610733,
+      "longitude": 9.0523,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12870",
+      "name": "Leite",
+      "companyId": "nearby-external",
+      "municipality": "AVERØY",
+      "localityNo": "12870",
+      "latitude": 63.03515,
+      "longitude": 7.676817,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-34837",
+      "name": "Dolmøy",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "34837",
+      "latitude": 63.654417,
+      "longitude": 8.77675,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12428",
+      "name": "Tverrvågen",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "12428",
+      "latitude": 63.728633,
+      "longitude": 8.62945,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10183",
+      "name": "Barstadvik",
+      "companyId": "nearby-external",
+      "municipality": "ØRSTA",
+      "localityNo": "10183",
+      "latitude": 62.359983,
+      "longitude": 6.263517,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45087",
+      "name": "Aukan",
+      "companyId": "nearby-external",
+      "municipality": "AVERØY",
+      "localityNo": "45087",
+      "latitude": 63.0603,
+      "longitude": 7.594283,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45158",
+      "name": "Fagerhamn",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "45158",
+      "latitude": 63.785267,
+      "longitude": 8.927783,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12879",
+      "name": "Endreset",
+      "companyId": "nearby-external",
+      "municipality": "KRISTIANSUND",
+      "localityNo": "12879",
+      "latitude": 63.029683,
+      "longitude": 7.713733,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12308",
+      "name": "Bjørndal",
+      "companyId": "nearby-external",
+      "municipality": "ØRSTA",
+      "localityNo": "12308",
+      "latitude": 62.274883,
+      "longitude": 6.00285,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-20559",
+      "name": "Langskjæra",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "20559",
+      "latitude": 63.8225,
+      "longitude": 8.75505,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12357",
+      "name": "Aursøysva",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "12357",
+      "latitude": 63.801967,
+      "longitude": 8.910767,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-33557",
+      "name": "Langskjæra II",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "33557",
+      "latitude": 63.821817,
+      "longitude": 8.743433,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12371",
+      "name": "Kalvøya",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12371",
+      "latitude": 63.651483,
+      "longitude": 8.7472,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-26535",
+      "name": "Jamnungen",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "26535",
+      "latitude": 63.798583,
+      "longitude": 8.64735,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45280",
+      "name": "Klovningan",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "45280",
+      "latitude": 63.827933,
+      "longitude": 8.771833,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-33817",
+      "name": "Orstranda",
+      "companyId": "nearby-external",
+      "municipality": "KRISTIANSUND",
+      "localityNo": "33817",
+      "latitude": 63.0345,
+      "longitude": 7.83515,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19875",
+      "name": "Or",
+      "companyId": "nearby-external",
+      "municipality": "KRISTIANSUND",
+      "localityNo": "19875",
+      "latitude": 63.039933,
+      "longitude": 7.850267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-32677",
+      "name": "Espnestaren",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "32677",
+      "latitude": 63.677883,
+      "longitude": 8.667,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10212",
+      "name": "Bogen",
+      "companyId": "nearby-external",
+      "municipality": "KRISTIANSUND",
+      "localityNo": "10212",
+      "latitude": 63.076783,
+      "longitude": 7.9046,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-14041",
+      "name": "Edøya",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "14041",
+      "latitude": 63.65835,
+      "longitude": 8.694417,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-38777",
+      "name": "Hallarvik",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "38777",
+      "latitude": 63.647267,
+      "longitude": 8.699267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-33697",
+      "name": "Forrahammaren",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "33697",
+      "latitude": 63.350433,
+      "longitude": 9.23325,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-30137",
+      "name": "Edøya II",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "30137",
+      "latitude": 63.65805,
+      "longitude": 8.683667,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-38597",
+      "name": "Langøy Sør",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "38597",
+      "latitude": 63.78455,
+      "longitude": 8.596083,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12380",
+      "name": "Langøya Kvaløya",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "12380",
+      "latitude": 63.791967,
+      "longitude": 8.60175,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13570",
+      "name": "Ulværholmen",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "13570",
+      "latitude": 63.598217,
+      "longitude": 9.116583,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-38537",
+      "name": "Synstøy-Bremøya",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "38537",
+      "latitude": 63.76675,
+      "longitude": 8.574683,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13720",
+      "name": "Ulvan",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "13720",
+      "latitude": 63.672233,
+      "longitude": 9.0329,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-26775",
+      "name": "Fjølværet Ø",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "26775",
+      "latitude": 63.819233,
+      "longitude": 8.636133,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-35437",
+      "name": "Skarvøya",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "35437",
+      "latitude": 63.650517,
+      "longitude": 8.650533,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13573",
+      "name": "Kistvika",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "13573",
+      "latitude": 63.384,
+      "longitude": 9.171467,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12422",
+      "name": "Laksåvatnet Laksåvik",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12422",
+      "latitude": 63.471567,
+      "longitude": 8.678917,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-29697",
+      "name": "Hafsmo",
+      "companyId": "nearby-external",
+      "municipality": "ORKLAND",
+      "localityNo": "29697",
+      "latitude": 63.3667,
+      "longitude": 9.245217,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13887",
+      "name": "Reitholmen",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "13887",
+      "latitude": 63.617183,
+      "longitude": 9.1311,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-34777",
+      "name": "Tømmervåg",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "34777",
+      "latitude": 63.152867,
+      "longitude": 7.939883,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-27376",
+      "name": "Hendneset",
+      "companyId": "nearby-external",
+      "municipality": "AVERØY",
+      "localityNo": "27376",
+      "latitude": 63.0573,
+      "longitude": 7.515133,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10204",
+      "name": "Hendneset",
+      "companyId": "nearby-external",
+      "municipality": "AVERØY",
+      "localityNo": "10204",
+      "latitude": 63.0601,
+      "longitude": 7.511167,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19457",
+      "name": "Nordskag",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "19457",
+      "latitude": 63.71165,
+      "longitude": 8.5614,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12394",
+      "name": "Ørnøya",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "12394",
+      "latitude": 63.760017,
+      "longitude": 8.4477,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45238",
+      "name": "Krutøya",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "45238",
+      "latitude": 63.6724,
+      "longitude": 8.612367,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12383",
+      "name": "Omsøyholman",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12383",
+      "latitude": 63.631967,
+      "longitude": 8.575567,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12392",
+      "name": "Lille Torsøy",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12392",
+      "latitude": 63.60615,
+      "longitude": 8.492133,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-25695",
+      "name": "Gjerde",
+      "companyId": "nearby-external",
+      "municipality": "ULSTEIN",
+      "localityNo": "25695",
+      "latitude": 62.259983,
+      "longitude": 5.929183,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12385",
+      "name": "Lyngvær Ø II",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "12385",
+      "latitude": 63.80621,
+      "longitude": 8.567418,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-37437",
+      "name": "Fagerholmen",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "37437",
+      "latitude": 63.66395,
+      "longitude": 8.603167,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19195",
+      "name": "Korsholman",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "19195",
+      "latitude": 63.597217,
+      "longitude": 8.51575,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13249",
+      "name": "Sagelva",
+      "companyId": "nearby-external",
+      "municipality": "ØRSTA",
+      "localityNo": "13249",
+      "latitude": 62.33795,
+      "longitude": 6.3815,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-28636",
+      "name": "Rataren",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "28636",
+      "latitude": 63.7813,
+      "longitude": 8.521533,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-37197",
+      "name": "Ruggstein",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "37197",
+      "latitude": 63.770083,
+      "longitude": 8.476033,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-39037",
+      "name": "Kvitingen Ved Grip",
+      "companyId": "nearby-external",
+      "municipality": "KRISTIANSUND",
+      "localityNo": "39037",
+      "latitude": 63.209833,
+      "longitude": 7.563767,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13572",
+      "name": "Badstuvika",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "13572",
+      "latitude": 63.533983,
+      "longitude": 9.1469,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-38357",
+      "name": "Holsneset",
+      "companyId": "nearby-external",
+      "municipality": "SULA",
+      "localityNo": "38357",
+      "latitude": 62.439917,
+      "longitude": 6.240267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-25315",
+      "name": "Skogsøya",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "25315",
+      "latitude": 63.853817,
+      "longitude": 8.631517,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13727",
+      "name": "Svellungen",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "13727",
+      "latitude": 63.655783,
+      "longitude": 9.15525,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-14042",
+      "name": "Kattholmen",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "14042",
+      "latitude": 63.867683,
+      "longitude": 8.677683,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13964",
+      "name": "Belsvik",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "13964",
+      "latitude": 63.415633,
+      "longitude": 9.018025,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-22296",
+      "name": "Grønset",
+      "companyId": "nearby-external",
+      "municipality": "GJEMNES",
+      "localityNo": "22296",
+      "latitude": 62.972017,
+      "longitude": 7.701983,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-33737",
+      "name": "Olausskjæret",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "33737",
+      "latitude": 63.7917,
+      "longitude": 8.504717,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-35657",
+      "name": "Varden",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "35657",
+      "latitude": 63.635717,
+      "longitude": 9.186467,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-30257",
+      "name": "Hausan",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "30257",
+      "latitude": 63.458317,
+      "longitude": 8.955683,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12278",
+      "name": "Standal Y",
+      "companyId": "nearby-external",
+      "municipality": "ØRSTA",
+      "localityNo": "12278",
+      "latitude": 62.2976,
+      "longitude": 6.411233,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45167",
+      "name": "Heggeset",
+      "companyId": "nearby-external",
+      "municipality": "AVERØY",
+      "localityNo": "45167",
+      "latitude": 62.973417,
+      "longitude": 7.645567,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-26835",
+      "name": "Pålskjæra",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "26835",
+      "latitude": 63.862833,
+      "longitude": 8.633517,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-15777",
+      "name": "Onsøyholmen",
+      "companyId": "nearby-external",
+      "municipality": "GJEMNES",
+      "localityNo": "15777",
+      "latitude": 62.96805,
+      "longitude": 7.7752,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-26155",
+      "name": "Slåttholmen",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "26155",
+      "latitude": 63.447787,
+      "longitude": 8.958173,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-38797",
+      "name": "Oløya N",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "38797",
+      "latitude": 63.852733,
+      "longitude": 8.591083,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45244",
+      "name": "Hingsskjæret",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "45244",
+      "latitude": 63.82505,
+      "longitude": 8.528333,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12449",
+      "name": "Tennøya",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "12449",
+      "latitude": 63.805033,
+      "longitude": 8.4444,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-31557",
+      "name": "Valøyan",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "31557",
+      "latitude": 63.81835,
+      "longitude": 8.463817,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19016",
+      "name": "Storskogøya",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "19016",
+      "latitude": 63.506067,
+      "longitude": 9.19075,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45182",
+      "name": "Batnfjorden",
+      "companyId": "nearby-external",
+      "municipality": "GJEMNES",
+      "localityNo": "45182",
+      "latitude": 62.931817,
+      "longitude": 7.7725,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-36377",
+      "name": "Mork II",
+      "companyId": "nearby-external",
+      "municipality": "AVERØY",
+      "localityNo": "36377",
+      "latitude": 62.9522,
+      "longitude": 7.569217,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12435",
+      "name": "Grøttingsøy",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "12435",
+      "latitude": 63.87955,
+      "longitude": 8.547883,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10232",
+      "name": "Mannbruholmen",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "10232",
+      "latitude": 63.84705,
+      "longitude": 8.536867,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-35377",
+      "name": "Kveitskjeret",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "35377",
+      "latitude": 63.825033,
+      "longitude": 8.444633,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19995",
+      "name": "Hagahammaren",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "19995",
+      "latitude": 63.137917,
+      "longitude": 8.0306,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-34857",
+      "name": "Salatskjæra",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "34857",
+      "latitude": 63.90485,
+      "longitude": 8.589133,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45260",
+      "name": "Korshamn",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "45260",
+      "latitude": 63.441117,
+      "longitude": 8.595233,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-26135",
+      "name": "Kjørsvikgrunn",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "26135",
+      "latitude": 63.457717,
+      "longitude": 9.0756,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-36877",
+      "name": "Munkskjæra",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "36877",
+      "latitude": 63.819683,
+      "longitude": 8.408817,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-28776",
+      "name": "Krekvikbogen",
+      "companyId": "nearby-external",
+      "municipality": "HUSTADVIKA",
+      "localityNo": "28776",
+      "latitude": 62.928533,
+      "longitude": 7.580517,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-37537",
+      "name": "Måløysundet",
+      "companyId": "nearby-external",
+      "municipality": "HERØY I MØRE OG ROMSDAL",
+      "localityNo": "37537",
+      "latitude": 62.2278,
+      "longitude": 5.82745,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45265",
+      "name": "Tjeldbergodden Biopark Vest",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "45265",
+      "latitude": 63.416,
+      "longitude": 8.7111,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-29616",
+      "name": "Tjeldbergodden Biopark",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "29616",
+      "latitude": 63.415567,
+      "longitude": 8.712267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45181",
+      "name": "Tjeldbergodden Øst",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "45181",
+      "latitude": 63.41455,
+      "longitude": 8.702917,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45183",
+      "name": "Tjeldbergodden Øst 2",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "45183",
+      "latitude": 63.413983,
+      "longitude": 8.698367,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19115",
+      "name": "Fugløya",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "19115",
+      "latitude": 63.475917,
+      "longitude": 9.109833,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13177",
+      "name": "Skorilla",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "13177",
+      "latitude": 63.36715,
+      "longitude": 9.385333,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12415",
+      "name": "Kjørsvikbugen",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "12415",
+      "latitude": 63.410817,
+      "longitude": 8.728083,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13243",
+      "name": "Sandvika",
+      "companyId": "nearby-external",
+      "municipality": "VOLDA",
+      "localityNo": "13243",
+      "latitude": 62.195667,
+      "longitude": 5.904417,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-37417",
+      "name": "Kallholmen",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "37417",
+      "latitude": 63.848033,
+      "longitude": 8.426083,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12302",
+      "name": "Tueneset",
+      "companyId": "nearby-external",
+      "municipality": "ÅLESUND",
+      "localityNo": "12302",
+      "latitude": 62.465471,
+      "longitude": 6.096801,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-39957",
+      "name": "Flatøyan",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "39957",
+      "latitude": 63.873583,
+      "longitude": 8.4714,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45175",
+      "name": "Hamnøya Sør",
+      "companyId": "nearby-external",
+      "municipality": "GISKE",
+      "localityNo": "45175",
+      "latitude": 62.50925,
+      "longitude": 6.17395,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45106",
+      "name": "Alida",
+      "companyId": "nearby-external",
+      "municipality": "VOLDA",
+      "localityNo": "45106",
+      "latitude": 62.186583,
+      "longitude": 5.982267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45193",
+      "name": "Ladeberget 4",
+      "companyId": "nearby-external",
+      "municipality": "GISKE",
+      "localityNo": "45193",
+      "latitude": 62.502133,
+      "longitude": 6.138767,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-37717",
+      "name": "Vassgåsholmen",
+      "companyId": "nearby-external",
+      "municipality": "ORKLAND",
+      "localityNo": "37717",
+      "latitude": 63.592167,
+      "longitude": 9.339833,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13246",
+      "name": "Voldnes",
+      "companyId": "nearby-external",
+      "municipality": "HERØY I MØRE OG ROMSDAL",
+      "localityNo": "13246",
+      "latitude": 62.2097,
+      "longitude": 5.7849,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-19855",
+      "name": "Segelråa",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "19855",
+      "latitude": 63.149745,
+      "longitude": 8.12855,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45189",
+      "name": "Storflua",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "45189",
+      "latitude": 63.8874,
+      "longitude": 8.950583,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10181",
+      "name": "Oksebåsen V",
+      "companyId": "nearby-external",
+      "municipality": "GISKE",
+      "localityNo": "10181",
+      "latitude": 62.52025,
+      "longitude": 6.16075,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12855",
+      "name": "Kornstad",
+      "companyId": "nearby-external",
+      "municipality": "AVERØY",
+      "localityNo": "12855",
+      "latitude": 62.960383,
+      "longitude": 7.45015,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12223",
+      "name": "Videild",
+      "companyId": "nearby-external",
+      "municipality": "VANYLVEN",
+      "localityNo": "12223",
+      "latitude": 62.18445,
+      "longitude": 5.791117,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-24197",
+      "name": "Værøya Ø",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "24197",
+      "latitude": 63.415967,
+      "longitude": 8.483883,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-32597",
+      "name": "Fjordprakken",
+      "companyId": "nearby-external",
+      "municipality": "SMØLA",
+      "localityNo": "32597",
+      "latitude": 63.256517,
+      "longitude": 7.928067,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-37517",
+      "name": "Skarvskjæret",
+      "companyId": "nearby-external",
+      "municipality": "HERØY I MØRE OG ROMSDAL",
+      "localityNo": "37517",
+      "latitude": 62.316,
+      "longitude": 5.74075,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-40337",
+      "name": "Gjøsundneset",
+      "companyId": "nearby-external",
+      "municipality": "GISKE",
+      "localityNo": "40337",
+      "latitude": 62.53105,
+      "longitude": 6.12745,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12895",
+      "name": "Halsbukta",
+      "companyId": "nearby-external",
+      "municipality": "TINGVOLL",
+      "localityNo": "12895",
+      "latitude": 63.077867,
+      "longitude": 8.143283,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45082",
+      "name": "Årsbogen",
+      "companyId": "nearby-external",
+      "municipality": "HUSTADVIKA",
+      "localityNo": "45082",
+      "latitude": 62.99845,
+      "longitude": 7.3135,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10375",
+      "name": "Nord Leksa",
+      "companyId": "nearby-external",
+      "municipality": "ORKLAND",
+      "localityNo": "10375",
+      "latitude": 63.589367,
+      "longitude": 9.409217,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-27436",
+      "name": "Solværet",
+      "companyId": "nearby-external",
+      "municipality": "SMØLA",
+      "localityNo": "27436",
+      "latitude": 63.256217,
+      "longitude": 7.854367,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12919",
+      "name": "Ørjavik",
+      "companyId": "nearby-external",
+      "municipality": "HUSTADVIKA",
+      "localityNo": "12919",
+      "latitude": 62.968433,
+      "longitude": 7.370267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-35837",
+      "name": "Løken Gård",
+      "companyId": "nearby-external",
+      "municipality": "HUSTADVIKA",
+      "localityNo": "35837",
+      "latitude": 62.989283,
+      "longitude": 7.319967,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13021",
+      "name": "Gaustad",
+      "companyId": "nearby-external",
+      "municipality": "HUSTADVIKA",
+      "localityNo": "13021",
+      "latitude": 62.9831,
+      "longitude": 7.328267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12269",
+      "name": "Urke",
+      "companyId": "nearby-external",
+      "municipality": "ØRSTA",
+      "localityNo": "12269",
+      "latitude": 62.209512,
+      "longitude": 6.565778,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45114",
+      "name": "Ramsvikneset",
+      "companyId": "nearby-external",
+      "municipality": "HUSTADVIKA",
+      "localityNo": "45114",
+      "latitude": 62.972483,
+      "longitude": 7.3473,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12898",
+      "name": "Hønsvikgulen",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "12898",
+      "latitude": 63.105017,
+      "longitude": 8.170517,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12213",
+      "name": "Kvangardsnes",
+      "companyId": "nearby-external",
+      "municipality": "VOLDA",
+      "localityNo": "12213",
+      "latitude": 62.145317,
+      "longitude": 5.94545,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-39017",
+      "name": "Vikane",
+      "companyId": "nearby-external",
+      "municipality": "GISKE",
+      "localityNo": "39017",
+      "latitude": 62.538167,
+      "longitude": 6.10265,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12298",
+      "name": "Røysa",
+      "companyId": "nearby-external",
+      "municipality": "GISKE",
+      "localityNo": "12298",
+      "latitude": 62.54865,
+      "longitude": 6.1417,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12784",
+      "name": "Ringholmen",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "12784",
+      "latitude": 63.55995,
+      "longitude": 9.409567,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12890",
+      "name": "Høybuvika",
+      "companyId": "nearby-external",
+      "municipality": "GJEMNES",
+      "localityNo": "12890",
+      "latitude": 62.957167,
+      "longitude": 8.049167,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-31717",
+      "name": "Gjerset V",
+      "companyId": "nearby-external",
+      "municipality": "HARAM",
+      "localityNo": "31717",
+      "latitude": 62.530233,
+      "longitude": 6.429083,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10224",
+      "name": "Korsneset",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "10224",
+      "latitude": 63.1434,
+      "longitude": 8.21755,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45108",
+      "name": "Vågsholmen",
+      "companyId": "nearby-external",
+      "municipality": "SMØLA",
+      "localityNo": "45108",
+      "latitude": 63.302917,
+      "longitude": 7.752267,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-24115",
+      "name": "Singsholmen",
+      "companyId": "nearby-external",
+      "municipality": "HITRA",
+      "localityNo": "24115",
+      "latitude": 63.419617,
+      "longitude": 8.4127,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10216",
+      "name": "Skåren",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "10216",
+      "latitude": 63.076283,
+      "longitude": 8.191733,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45237",
+      "name": "Jonskjæret",
+      "companyId": "nearby-external",
+      "municipality": "SMØLA",
+      "localityNo": "45237",
+      "latitude": 63.267067,
+      "longitude": 8.080433,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12209",
+      "name": "Rønstad",
+      "companyId": "nearby-external",
+      "municipality": "VOLDA",
+      "localityNo": "12209",
+      "latitude": 62.135117,
+      "longitude": 6.021433,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12214",
+      "name": "Dravlaus",
+      "companyId": "nearby-external",
+      "municipality": "VOLDA",
+      "localityNo": "12214",
+      "latitude": 62.123217,
+      "longitude": 5.9426,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-10213",
+      "name": "Naustneset",
+      "companyId": "nearby-external",
+      "municipality": "GJEMNES",
+      "localityNo": "10213",
+      "latitude": 62.9424,
+      "longitude": 8.0756,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-30597",
+      "name": "Eggesbønes",
+      "companyId": "nearby-external",
+      "municipality": "HERØY I MØRE OG ROMSDAL",
+      "localityNo": "30597",
+      "latitude": 62.321517,
+      "longitude": 5.655833,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12789",
+      "name": "Gunnarøya",
+      "companyId": "nearby-external",
+      "municipality": "ORKLAND",
+      "localityNo": "12789",
+      "latitude": 63.569483,
+      "longitude": 9.467983,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-17495",
+      "name": "Vullum",
+      "companyId": "nearby-external",
+      "municipality": "HEIM",
+      "localityNo": "17495",
+      "latitude": 63.04965,
+      "longitude": 8.2162,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12315",
+      "name": "Flø",
+      "companyId": "nearby-external",
+      "municipality": "ULSTEIN",
+      "localityNo": "12315",
+      "latitude": 62.400852,
+      "longitude": 5.851353,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-13178",
+      "name": "Nernesset",
+      "companyId": "nearby-external",
+      "municipality": "ORKLAND",
+      "localityNo": "13178",
+      "latitude": 63.465055,
+      "longitude": 9.491526,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12474",
+      "name": "Nordheim",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "12474",
+      "latitude": 63.21625,
+      "longitude": 8.237633,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12325",
+      "name": "Moltustranda",
+      "companyId": "nearby-external",
+      "municipality": "HERØY I MØRE OG ROMSDAL",
+      "localityNo": "12325",
+      "latitude": 62.295579,
+      "longitude": 5.615368,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-38477",
+      "name": "Solskjeløya",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "38477",
+      "latitude": 63.245767,
+      "longitude": 8.202117,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12265",
+      "name": "Gudmundset",
+      "companyId": "nearby-external",
+      "municipality": "ÅLESUND",
+      "localityNo": "12265",
+      "latitude": 62.452517,
+      "longitude": 6.6021,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45122",
+      "name": "Lausund",
+      "companyId": "nearby-external",
+      "municipality": "HARAM",
+      "localityNo": "45122",
+      "latitude": 62.598233,
+      "longitude": 6.180333,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12737",
+      "name": "Moldtua",
+      "companyId": "nearby-external",
+      "municipality": "ORKLAND",
+      "localityNo": "12737",
+      "latitude": 63.558085,
+      "longitude": 9.504218,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12892",
+      "name": "Sjølsvik",
+      "companyId": "nearby-external",
+      "municipality": "GJEMNES",
+      "localityNo": "12892",
+      "latitude": 62.9066,
+      "longitude": 8.11095,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45159",
+      "name": "Aukan",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "45159",
+      "latitude": 63.162167,
+      "longitude": 8.311933,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-45197",
+      "name": "Støylen",
+      "companyId": "nearby-external",
+      "municipality": "VOLDA",
+      "localityNo": "45197",
+      "latitude": 62.10625,
+      "longitude": 6.07805,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-33757",
+      "name": "Håbranden",
+      "companyId": "nearby-external",
+      "municipality": "FRØYA",
+      "localityNo": "33757",
+      "latitude": 63.942,
+      "longitude": 9.133483,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-31338",
+      "name": "Storskjeret",
+      "companyId": "nearby-external",
+      "municipality": "AURE",
+      "localityNo": "31338",
+      "latitude": 63.270483,
+      "longitude": 8.2298,
+      "tags": [
+        "nearby-auto"
+      ]
+    },
+    {
+      "id": "loc-12329",
+      "name": "Stokkset",
+      "companyId": "nearby-external",
+      "municipality": "SANDE I MØRE OG ROMSDAL",
+      "localityNo": "12329",
+      "latitude": 62.268867,
+      "longitude": 5.5517,
+      "tags": [
+        "nearby-auto"
+      ]
+    }
+  ],
+  "calendarEvents": [
+    {
+      "id": "evt-001",
+      "title": "Planlagt servicebesøk",
+      "vesselId": "froy-saga",
+      "facilityId": "or-kristiansund",
+      "start": "2026-03-18T08:00:00+01:00",
+      "end": "2026-03-18T14:00:00+01:00",
+      "status": "planned"
+    },
+    {
+      "id": "evt-002",
+      "title": "Smoltleveranse",
+      "vesselId": "froy-supporter",
+      "facilityId": "titran-smolt",
+      "start": "2026-03-19T07:30:00+01:00",
+      "end": "2026-03-19T12:00:00+01:00",
+      "status": "planned"
+    },
+    {
+      "id": "evt-003",
+      "title": "Henting etter slakt",
+      "vesselId": "rubin",
+      "facilityId": "hitra-main",
+      "start": "2026-03-20T10:00:00+01:00",
+      "end": "2026-03-20T15:30:00+01:00",
+      "status": "planned"
+    }
+  ]
+}
