@@ -1,13 +1,19 @@
 # Render deployment manifest
-# 1. Copy this file to render.yaml in the repo root
-# 2. Connect repo in Render Dashboard → New → Blueprint
-# 3. Set DATABASE_URL, JWT_SECRET, COLLECT_TOKEN as Render secrets (sync: false)
+# 1. This file is copied to render.yaml at the repo root automatically
+# 2. Push repo to GitHub, then in Render Dashboard: New → Blueprint → connect repo
+# 3. Set DATABASE_URL, JWT_SECRET, COLLECT_TOKEN as secrets in Render Dashboard
+#    (Environment → Secret Files or individual Env Vars, NOT in this file)
+#
+# Free tier notes:
+#   - Static site: always on, no spin-down
+#   - Web service (free): spins down after 15 min inactivity, cold start ~10-20s
+#   - Total cost: $0
 services:
   # ── Backend (FastAPI) ──────────────────────────────────────────────────────
   - type: web
     name: kyst-monitor-api
     env: python
-    plan: starter
+    plan: free             # Free instance – spins down after 15 min inactivity
     rootDir: EKTE_API
     buildCommand: pip install -r requirements.txt
     startCommand: python -m uvicorn src.api.main:app --host 0.0.0.0 --port $PORT --log-level info
@@ -16,27 +22,25 @@ services:
       - key: ENV
         value: production
       - key: DATABASE_URL
-        sync: false          # Set in Render Dashboard → Secret Files or Env Vars
+        sync: false          # ← Set this in Render Dashboard
       - key: JWT_SECRET
-        sync: false
+        sync: false          # ← Set this in Render Dashboard
       - key: COLLECT_TOKEN
-        sync: false
+        sync: false          # ← Set this in Render Dashboard
       - key: ALLOWED_ORIGINS
-        value: "*"           # Restrict after launch: https://kyst-pilot-lite.onrender.com
+        value: "*"           # Tighten after launch: https://kyst-pilot-lite.onrender.com
 
   # ── Frontend (Pilot Lite – static site) ───────────────────────────────────
+  # Static sites on Render free tier: always on, no spin-down, global CDN
   - type: web
     name: kyst-pilot-lite
     env: static
     plan: free
-    rootDir: 14.04. NY BUILD/pilot-lite
+    rootDir: "14.04. NY BUILD/pilot-lite"
     buildCommand: ""        # No build step – pure static HTML/JS/CSS
     staticPublishPath: .    # Serve the pilot-lite folder root
     headers:
       - path: /*
         name: Cache-Control
         value: no-cache, no-store, must-revalidate
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    # NOTE: No SPA rewrite – this is a multi-page site, each HTML file is served directly

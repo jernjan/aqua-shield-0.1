@@ -1,8 +1,41 @@
 services:
+  # ── Backend (FastAPI) ──────────────────────────────────────────────────────
+  # URL: https://kyst-monitor-api.onrender.com
+  # VIKTIG: Sett DATABASE_URL, JWT_SECRET, COLLECT_TOKEN manuelt i Render Dashboard
+  # Free-plan spinner ned etter 15 min inaktivitet – første kall etter det tar ~15s
+  - type: web
+    name: kyst-monitor-api
+    env: python
+    plan: free
+    rootDir: EKTE_API
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m uvicorn src.api.main:app --host 0.0.0.0 --port $PORT --log-level info
+    healthCheckPath: /health
+    pullRequestPreviewsEnabled: false
+    envVars:
+      - key: ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: COLLECT_TOKEN
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: "*"
+
+  # ── Frontend (Pilot Lite – static site) ───────────────────────────────────
+  # URL: https://kyst-pilot-lite.onrender.com
+  # Statiske sider spinner IKKE ned – alltid tilgjengelig på Render free
   - type: web
     name: kyst-pilot-lite
     env: static
+    plan: free
     rootDir: "14.04. NY BUILD/pilot-lite"
     buildCommand: ""
     staticPublishPath: .
     pullRequestPreviewsEnabled: false
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache, no-store, must-revalidate
