@@ -29,6 +29,10 @@ services:
         sync: false          # ← Set this in Render Dashboard
       - key: ALLOWED_ORIGINS
         value: "*"           # Tighten after launch: https://kyst-pilot-lite.onrender.com
+      - key: AUTH_REQUIRED
+        value: "true"
+      - key: DEMO_PASSWORD
+        value: "kyst"
 
   # ── Frontend (Pilot Lite – static site) ───────────────────────────────────
   # Static sites on Render free tier: always on, no spin-down, global CDN

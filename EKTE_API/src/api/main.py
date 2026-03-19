@@ -1,5 +1,5 @@
 """EKTE_API - FastAPI application with real data from BarentsWatch and NorKyst-800"""
-from fastapi import FastAPI, Query, Body, BackgroundTasks
+from fastapi import FastAPI, Query, Body, BackgroundTasks, Request, HTTPException
 from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -11,6 +11,7 @@ import math
 import time
 import asyncio
 import sqlite3
+import secrets
 from datetime import datetime, timedelta
 from typing import Optional
 from dotenv import load_dotenv
@@ -109,11 +110,144 @@ _vessels_cache: Optional[dict] = None
 _vessels_cache_ts: float = 0.0
 _VESSELS_CACHE_TTL: int = 90     # 90-second in-memory cache
 
+# Minimal demo auth (password-only)
+_auth_sessions: dict[str, dict] = {}
+
 # Facility dashboard snapshot cache
 _dashboard_snapshot: Optional[dict] = None
 _dashboard_snapshot_ts: float = 0.0
 _SNAPSHOT_TTL: int = 900        # 15-minute in-memory cache
 _snapshot_building: bool = False  # prevent concurrent rebuilds
+
+
+def is_auth_required() -> bool:
+    return os.getenv("AUTH_REQUIRED", "false").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def get_demo_password() -> str:
+    return os.getenv("DEMO_PASSWORD", "kyst")
+
+
+def get_auth_expiry_minutes() -> int:
+    try:
+        return max(10, int(os.getenv("JWT_EXPIRE_MINUTES", "480")))
+    except (TypeError, ValueError):
+        return 480
+
+
+def create_demo_session() -> dict:
+    token = secrets.token_urlsafe(32)
+    expires_at = datetime.utcnow() + timedelta(minutes=get_auth_expiry_minutes())
+    session = {
+        "token": token,
+        "role": "demo_user",
+        "expires_at": expires_at.isoformat() + "Z"
+    }
+    _auth_sessions[token] = session
+    return session
+
+
+def get_bearer_token(request: Request) -> str:
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.lower().startswith("bearer "):
+        return ""
+    return auth_header.split(" ", 1)[1].strip()
+
+
+def validate_demo_session(token: str) -> Optional[dict]:
+    if not token:
+        return None
+    session = _auth_sessions.get(token)
+    if not session:
+        return None
+    try:
+        expires_at = datetime.fromisoformat(session["expires_at"].replace("Z", "+00:00"))
+    except Exception:
+        _auth_sessions.pop(token, None)
+        return None
+    if expires_at <= datetime.now(expires_at.tzinfo):
+        _auth_sessions.pop(token, None)
+        return None
+    return session
+
+
+@app.middleware("http")
+async def auth_guard_middleware(request: Request, call_next):
+    if not is_auth_required():
+        return await call_next(request)
+
+    path = request.url.path or "/"
+    if request.method == "OPTIONS":
+        return await call_next(request)
+
+    public_paths = {
+        "/",
+        "/health",
+        "/health/deep",
+        "/docs",
+        "/redoc",
+        "/openapi.json",
+        "/api/auth/login"
+    }
+    if path in public_paths:
+        return await call_next(request)
+
+    if not path.startswith("/api"):
+        return await call_next(request)
+
+    session = validate_demo_session(get_bearer_token(request))
+    if session is None:
+        return JSONResponse(
+            status_code=401,
+            content={
+                "detail": "Authentication required",
+                "auth_required": True
+            }
+        )
+
+    request.state.demo_session = session
+    return await call_next(request)
+
+
+@app.post("/api/auth/login", tags=["Auth"])
+async def demo_login(payload: dict = Body(...)):
+    password = str((payload or {}).get("password") or "").strip()
+    if password != get_demo_password():
+        raise HTTPException(status_code=401, detail="Ugyldig passord")
+
+    session = create_demo_session()
+    return {
+        "ok": True,
+        "token": session["token"],
+        "expires_at": session["expires_at"],
+        "user": {
+            "name": "Kyst Demo",
+            "role": session["role"]
+        }
+    }
+
+
+@app.get("/api/auth/me", tags=["Auth"])
+async def demo_me(request: Request):
+    if not is_auth_required():
+        return {
+            "authenticated": False,
+            "auth_required": False
+        }
+
+    session = validate_demo_session(get_bearer_token(request))
+    if session is None:
+        raise HTTPException(status_code=401, detail="Ikke innlogget")
+
+    return {
+        "authenticated": True,
+        "auth_required": True,
+        "user": {
+            "name": "Kyst Demo",
+            "role": session["role"]
+        },
+        "expires_at": session["expires_at"]
+    }
 
 def get_bw_client():
     global _bw_client
