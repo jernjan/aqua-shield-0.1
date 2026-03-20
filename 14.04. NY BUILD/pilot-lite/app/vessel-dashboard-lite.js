@@ -475,7 +475,9 @@ async function loadAisVesselIndex(force = false) {
     }
 
     const payload = await response.json();
-    const vessels = Array.isArray(payload?.vessels) ? payload.vessels : [];
+    const vessels = Array.isArray(payload)
+        ? payload
+        : (Array.isArray(payload?.vessels) ? payload.vessels : []);
     const byMmsi = new Map();
     const byName = new Map();
 
