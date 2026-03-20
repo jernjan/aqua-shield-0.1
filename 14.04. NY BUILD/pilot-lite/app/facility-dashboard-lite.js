@@ -6,10 +6,10 @@ import { deriveAvailabilityWindows, distanceKmBetween } from './availability-win
 
 const API_BASE_OVERRIDE_KEY = 'pilotLiteApiBaseOverrideV1';
 function resolveApiBase() {
-    // On Render: API service name is "kyst-monitor-api" → https://kyst-monitor-api.onrender.com
+    // On Render: API service name is "aqua-shield-api" → https://aqua-shield-api.onrender.com
     // Override with ?apiBase=<url> or via system-check.html if the name differs.
     const fallback = window.location.hostname.includes('render.com')
-        ? 'https://kyst-monitor-api.onrender.com'
+        ? 'https://aqua-shield-api.onrender.com'
         : `${window.location.protocol}//${window.location.hostname}:8000`;
 
     const normalize = (value) => String(value || '').trim().replace(/\/$/, '');

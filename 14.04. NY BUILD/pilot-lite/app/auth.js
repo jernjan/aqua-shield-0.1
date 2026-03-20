@@ -4,7 +4,7 @@ const AUTH_NEXT_KEY = 'pilotLiteAuthNextV1';
 
 function resolveApiBase() {
     const fallback = window.location.hostname.includes('render.com')
-        ? 'https://kyst-monitor-api.onrender.com'
+        ? 'https://aqua-shield-api.onrender.com'
         : `${window.location.protocol}//${window.location.hostname}:8000`;
 
     const normalize = (value) => String(value || '').trim().replace(/\/$/, '');
