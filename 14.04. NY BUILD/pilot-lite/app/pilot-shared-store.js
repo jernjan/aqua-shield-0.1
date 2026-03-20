@@ -1,11 +1,27 @@
 const STORE_KEY = 'pilotLiteSharedDataV1';
 const API_BASE_OVERRIDE_KEY = 'pilotLiteApiBaseOverrideV1';
+const RENDER_API_BASE = 'https://aqua-shield-api.onrender.com';
+
+function migrateLegacyApiBase(value) {
+    const normalized = String(value || '').trim().replace(/\/$/, '');
+    if (!normalized) return '';
+
+    if (
+        normalized === 'https://kyst-api.render.com' ||
+        normalized === 'https://kyst-monitor-api.onrender.com'
+    ) {
+        return RENDER_API_BASE;
+    }
+
+    return normalized;
+}
+
 function resolveApiBase() {
     const fallback = window.location.hostname.includes('render.com')
-        ? 'https://kyst-api.render.com'
+        ? RENDER_API_BASE
         : `${window.location.protocol}//${window.location.hostname}:8000`;
 
-    const normalize = (value) => String(value || '').trim().replace(/\/$/, '');
+    const normalize = (value) => migrateLegacyApiBase(String(value || '').trim().replace(/\/$/, ''));
     const isHttpUrl = (value) => /^https?:\/\/.+/i.test(value);
 
     try {
@@ -20,7 +36,10 @@ function resolveApiBase() {
 
     try {
         const override = normalize(localStorage.getItem(API_BASE_OVERRIDE_KEY));
-        if (isHttpUrl(override)) return override;
+        if (isHttpUrl(override)) {
+            localStorage.setItem(API_BASE_OVERRIDE_KEY, override);
+            return override;
+        }
     } catch (_) {
         // ignore storage issues
     }
