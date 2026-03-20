@@ -1,6 +1,6 @@
 """EKTE_API - FastAPI application with real data from BarentsWatch and NorKyst-800"""
 from fastapi import FastAPI, Query, Body, BackgroundTasks, Request, HTTPException
-from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
+from fastapi.responses import JSONResponse, HTMLResponse, FileResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -120,6 +120,18 @@ _SNAPSHOT_TTL: int = 900        # 15-minute in-memory cache
 _snapshot_building: bool = False  # prevent concurrent rebuilds
 
 
+def _cors_headers_for_request(request: Request) -> dict:
+    origin = request.headers.get("origin", "*") or "*"
+    requested_headers = request.headers.get("access-control-request-headers", "authorization,content-type")
+    return {
+        "Access-Control-Allow-Origin": origin,
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": requested_headers,
+        "Access-Control-Max-Age": "3600",
+        "Vary": "Origin"
+    }
+
+
 def is_auth_required() -> bool:
     return os.getenv("AUTH_REQUIRED", "false").strip().lower() in {"1", "true", "yes", "on"}
 
@@ -173,11 +185,13 @@ def validate_demo_session(token: str) -> Optional[dict]:
 
 @app.middleware("http")
 async def auth_guard_middleware(request: Request, call_next):
-    if not is_auth_required():
-        return await call_next(request)
-
     path = request.url.path or "/"
-    if request.method == "OPTIONS":
+
+    # Handle API preflight directly so browser CORS checks always pass
+    if request.method == "OPTIONS" and path.startswith("/api"):
+        return Response(status_code=204, headers=_cors_headers_for_request(request))
+
+    if not is_auth_required():
         return await call_next(request)
 
     public_paths = {
@@ -202,7 +216,8 @@ async def auth_guard_middleware(request: Request, call_next):
             content={
                 "detail": "Authentication required",
                 "auth_required": True
-            }
+            },
+            headers=_cors_headers_for_request(request)
         )
 
     request.state.demo_session = session
