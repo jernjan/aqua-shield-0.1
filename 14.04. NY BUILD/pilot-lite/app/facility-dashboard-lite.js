@@ -5818,27 +5818,38 @@ async function init() {
         setCompanyScope(resolveActiveCompanyId());
         analysisRadiusKm = Number(profile?.scope?.nearbyFacilityRadiusKm) || 20;
 
-        let syncInfo = { added: 0, updated: 0, totalOwned: 0 };
-        try {
-            syncInfo = await syncCompanyFacilitiesFromApi();
-        } catch (_) {
-            syncInfo = { added: 0, updated: 0, totalOwned: (profile?.facilities || []).filter((facility) => String(facility?.companyId || '') === activeCompanyId).length };
-        }
+        const initialOwnedCount = (profile?.facilities || []).filter((facility) => String(facility?.companyId || '') === activeCompanyId).length;
+        let syncInfo = { added: 0, updated: 0, totalOwned: initialOwnedCount };
 
-        await loadDiseaseSpreadData();
-        await refreshClearanceCache(profile.profileName, pilotActor, true);
+        await Promise.all([
+            loadDiseaseSpreadData(),
+            refreshClearanceCache(profile.profileName, pilotActor, true)
+        ]);
 
         const scopedCompanyName = companyMap.get(activeCompanyId)?.name || activeCompanyId || 'Alle';
         meta.textContent = `Profil: ${profile.profileName || '-'} · Opprettet: ${profile.createdAt || '-'} · Selskap: ${scopedCompanyName} · Anlegg: ${syncInfo.totalOwned} · Radius: ${analysisRadiusKm} km`;
-
-        if (syncInfo.added > 0 || syncInfo.updated > 0) {
-            showToast('info', 'Anlegg synkronisert', `FDIR/BW oppdatert: ${syncInfo.added} nye, ${syncInfo.updated} oppdaterte anlegg.`);
-        }
 
         populateFilters();
         wireEvents();
         applyPanelPrefs();
         await renderAll();
+
+        (async () => {
+            try {
+                const latestSync = await syncCompanyFacilitiesFromApi();
+                if ((latestSync.added > 0 || latestSync.updated > 0) && latestSync.totalOwned > 0) {
+                    syncInfo = latestSync;
+                    const refreshedCompanyName = companyMap.get(activeCompanyId)?.name || activeCompanyId || 'Alle';
+                    meta.textContent = `Profil: ${profile.profileName || '-'} · Opprettet: ${profile.createdAt || '-'} · Selskap: ${refreshedCompanyName} · Anlegg: ${syncInfo.totalOwned} · Radius: ${analysisRadiusKm} km`;
+                    populateFilters();
+                    await renderAll();
+                    showToast('info', 'Anlegg synkronisert', `FDIR/BW oppdatert: ${syncInfo.added} nye, ${syncInfo.updated} oppdaterte anlegg.`);
+                }
+            } catch (_) {
+                // ignore background sync failures to keep UI responsive
+            }
+        })();
+
         if (dataStatus.disease === 'offline' || dataStatus.ais === 'offline' || dataStatus.quarantine === 'offline' || dataStatus.clearances === 'offline') {
             showToast('warning', 'API delvis offline', 'Noen datakilder er utilgjengelige. Dashboard viser fallback-data der det er mulig.');
         }
